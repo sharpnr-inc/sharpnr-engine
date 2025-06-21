@@ -1,6 +1,6 @@
 package types
 
-type Organisation struct {
+type Organization struct {
 	UniqueID       string   `json:"id"`              // Unique identifier for the organisation
 	TenentID       string   `json:"tenant_id"`       // Tenant ID for multi-tenancy support
 	Name           string   `json:"name"`            // The name of the organisation
