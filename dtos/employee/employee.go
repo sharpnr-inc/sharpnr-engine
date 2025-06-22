@@ -1,4 +1,4 @@
-package employeedto
+package employee
 
 // CreateEmployeeDTO represents the payload to create a new employee.
 //

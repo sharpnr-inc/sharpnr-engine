@@ -1,1 +1,1 @@
-package oraganizationdto
+package oraganization
