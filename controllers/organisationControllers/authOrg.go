@@ -39,8 +39,9 @@ import (
 func RegisterOrganization(c *gin.Context) {
 	var org models.Organization
 
+	// Bind & validate JSON input based on `binding:"required"` tags
 	if err := c.ShouldBindJSON(&org); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON payload"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input: " + err.Error()})
 		return
 	}
 
