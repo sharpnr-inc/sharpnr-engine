@@ -10,6 +10,51 @@ definitions:
     - email
     - password
     type: object
+  dto.OrganisationRegisterDTO:
+    properties:
+      address:
+        type: string
+      adminName:
+        type: string
+      bankAccNumber:
+        type: string
+      bankBranchName:
+        type: string
+      banker:
+        type: string
+      cinNumber:
+        type: string
+      email:
+        type: string
+      gstNumber:
+        type: string
+      ifscCode:
+        type: string
+      isPhysicalVerified:
+        description: optional, pointer so omitted if nil
+        type: boolean
+      isRegistered:
+        type: boolean
+      name:
+        type: string
+      organizationID:
+        type: string
+      organizationRegType:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      phone:
+        type: integer
+    required:
+    - adminName
+    - bankAccNumber
+    - email
+    - name
+    - organizationID
+    - password
+    - phone
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -66,7 +111,7 @@ paths:
         name: login
         required: true
         schema:
-          $ref: '#/definitions/dto.LoginRequest'
+          $ref: '#/definitions/dto.OrganisationRegisterDTO'
       produces:
       - application/json
       responses:

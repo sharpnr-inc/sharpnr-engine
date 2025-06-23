@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	dto "github.com/sharpnr-inc/sharpnr-engine/dtos/auths"
 	"github.com/sharpnr-inc/sharpnr-engine/models"
 	services "github.com/sharpnr-inc/sharpnr-engine/services/orgnisation"
 )
@@ -31,18 +32,37 @@ import (
 // @Tags Organization
 // @Accept  json
 // @Produce  json
-// @Param login body dto.LoginRequest true "Login Credentials"
+// @Param Register Organisation body dto.OrganisationRegisterDTO true "Login Credentials"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Router /organization/register [post]
 func RegisterOrganization(c *gin.Context) {
-	var org models.Organization
+	var orgDTO dto.OrganisationRegisterDTO
 
 	// Bind & validate JSON input based on `binding:"required"` tags
-	if err := c.ShouldBindJSON(&org); err != nil {
+	if err := c.ShouldBindJSON(&orgDTO); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input: " + err.Error()})
 		return
+	}
+
+	org := models.Organization{
+		Name:                orgDTO.Name,
+		OrganizationID:      orgDTO.OrganizationID,
+		Address:             orgDTO.Address,
+		Phone:               orgDTO.Phone,
+		Email:               orgDTO.Email,
+		IsPhysicalVerified:  boolPtrToVal(orgDTO.IsPhysicalVerified),
+		ISRegistered:        boolPtrToVal(orgDTO.ISRegistered),
+		CinNumber:           orgDTO.CinNumber,
+		GstNumber:           orgDTO.GstNumber,
+		OrganizationRegType: orgDTO.OrganizationRegType,
+		Banker:              orgDTO.Banker,
+		BankAccNumber:       orgDTO.BankAccNumber,
+		IfscCode:            orgDTO.IfscCode,
+		BankBranchName:      orgDTO.BankBranchName,
+		Password:            orgDTO.Password,
+		AdminName:           orgDTO.AdminName,
 	}
 
 	err := services.RegisterOrganizationService(&org)
@@ -52,6 +72,14 @@ func RegisterOrganization(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Organization registered successfully", "data": org})
+}
+
+// helper to convert *bool to bool, default false if nil
+func boolPtrToVal(b *bool) bool {
+	if b != nil {
+		return *b
+	}
+	return false
 }
 
 // OrganizationRootLogin handles login for organizations.

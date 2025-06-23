@@ -92,7 +92,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.LoginRequest"
+                            "$ref": "#/definitions/dto.OrganisationRegisterDTO"
                         }
                     }
                 ],
@@ -139,6 +139,70 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.OrganisationRegisterDTO": {
+            "type": "object",
+            "required": [
+                "adminName",
+                "bankAccNumber",
+                "email",
+                "name",
+                "organizationID",
+                "password",
+                "phone"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "adminName": {
+                    "type": "string"
+                },
+                "bankAccNumber": {
+                    "type": "string"
+                },
+                "bankBranchName": {
+                    "type": "string"
+                },
+                "banker": {
+                    "type": "string"
+                },
+                "cinNumber": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "gstNumber": {
+                    "type": "string"
+                },
+                "ifscCode": {
+                    "type": "string"
+                },
+                "isPhysicalVerified": {
+                    "description": "optional, pointer so omitted if nil",
+                    "type": "boolean"
+                },
+                "isRegistered": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "organizationID": {
+                    "type": "string"
+                },
+                "organizationRegType": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "phone": {
+                    "type": "integer"
                 }
             }
         }
