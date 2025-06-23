@@ -15,7 +15,7 @@ info:
   contact:
     email: support@sharpnr.com
     name: API Support
-  description: Backend APIs for SharpNR system.
+  description: Backend APIs for Sharpnr engine.
   termsOfService: http://sharpnr.com/terms/
   title: SharpNR API
   version: "1.0"

@@ -36,6 +36,8 @@ func LoadEnv() {
 		envFile = ".env.alpha"
 	case "beta":
 		envFile = ".env.beta"
+	case "production":
+		envFile = ".env.production"
 	default:
 		envFile = ".env"
 	}

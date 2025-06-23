@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Backend APIs for SharpNR system.",
-        "title": "SharpNR API",
+        "description": "Backend APIs for Sharpnr engine.",
+        "title": "Sharpnr API",
         "termsOfService": "http://sharpnr.com/terms/",
         "contact": {
             "name": "API Support",
