@@ -36,6 +36,6 @@ func RegisterOrganization(c *gin.Context) {
 // Returns:
 //   - 200 OK with JWT token
 //   - 401 Unauthorized if credentials are invalid
-func OrganizationLogin(c *gin.Context) {
+func OrganizationRootLogin(c *gin.Context) {
 	// Implementation here
 }
