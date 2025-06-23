@@ -1,0 +1,58 @@
+basePath: /api/v1
+definitions:
+  dto.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@sharpnr.com
+    name: API Support
+  description: Backend APIs for SharpNR system.
+  termsOfService: http://sharpnr.com/terms/
+  title: SharpNR API
+  version: "1.0"
+paths:
+  /organization/login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in an organization and returns JWT
+      parameters:
+      - description: Login Credentials
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login for organization root
+      tags:
+      - Organization
+swagger: "2.0"
