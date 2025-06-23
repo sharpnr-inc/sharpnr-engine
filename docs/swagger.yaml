@@ -15,7 +15,7 @@ info:
   contact:
     email: support@sharpnr.com
     name: API Support
-  description: Backend APIs for Sharpnr engine.
+  description: Backend APIs for SharpNR system.
   termsOfService: http://sharpnr.com/terms/
   title: SharpNR API
   version: "1.0"
@@ -53,6 +53,41 @@ paths:
               type: string
             type: object
       summary: Login for organization root
+      tags:
+      - Organization
+  /organization/register:
+    post:
+      consumes:
+      - application/json
+      description: This is Registration for the Organisation
+      parameters:
+      - description: Login Credentials
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register for organization Registration
       tags:
       - Organization
 swagger: "2.0"

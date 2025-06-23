@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Backend APIs for Sharpnr engine.",
-        "title": "Sharpnr API",
+        "description": "Backend APIs for SharpNR system.",
+        "title": "SharpNR API",
         "termsOfService": "http://sharpnr.com/terms/",
         "contact": {
             "name": "API Support",
@@ -26,6 +26,59 @@
                     "Organization"
                 ],
                 "summary": "Login for organization root",
+                "parameters": [
+                    {
+                        "description": "Login Credentials",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/organization/register": {
+            "post": {
+                "description": "This is Registration for the Organisation",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Organization"
+                ],
+                "summary": "Register for organization Registration",
                 "parameters": [
                     {
                         "description": "Login Credentials",

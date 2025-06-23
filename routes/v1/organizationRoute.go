@@ -10,6 +10,7 @@ func RegisterOrganizationRoutes(rg *gin.RouterGroup) {
 	org := rg.Group("/organization")
 	{
 		org.POST("/login", controllers.OrganizationRootLogin)
-		// add more routes here
+		org.POST("/register", controllers.RegisterOrganization)
+
 	}
 }
