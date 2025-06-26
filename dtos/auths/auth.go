@@ -25,7 +25,7 @@ type OrganisationRegisterDTO struct {
 }
 
 type OrganizationResponseDTO struct {
-	ID                  uint   `json:"id"`
+	ID                  string `json:"id"`
 	Name                string `json:"name"`
 	OrganizationID      string `json:"organizationID"`
 	Address             string `json:"address,omitempty"`

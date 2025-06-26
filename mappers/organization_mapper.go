@@ -9,7 +9,7 @@ import (
 
 func ToOrganizationResponseDTO(org *models.Organization) dto.OrganizationResponseDTO {
 	return dto.OrganizationResponseDTO{
-		ID:                  org.ID,
+		ID:                  org.SharpnrOrgID,
 		Name:                org.Name,
 		OrganizationID:      org.OrganizationID,
 		Address:             org.Address,
@@ -24,7 +24,6 @@ func ToOrganizationResponseDTO(org *models.Organization) dto.OrganizationRespons
 		BankAccNumber:       org.BankAccNumber,
 		IfscCode:            org.IfscCode,
 		BankBranchName:      org.BankBranchName,
-		AdminName:           org.AdminName,
 		CreatedAt:           org.CreatedAt.Format(time.RFC3339),
 	}
 }

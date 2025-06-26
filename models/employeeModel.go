@@ -1,12 +1,18 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+)
 
 type Employee struct {
-	gorm.Model
-	// beacuse of gorm.Model we already Have ID
-	Name            string
-	Email           string
-	Password        string
-	OraganizationID uint
+	EmployeeID     uint   `gorm:"primaryKey;autoIncrement"`
+	FirstName      string `gorm:"not null"`
+	LastName       *string
+	Email          string `gorm:"unique;not null"`
+	Phone          *string
+	OrganizationID string       `gorm:"size:16;not null"` // FK to Organization.SharpnrOrgID
+	Organization   Organization `gorm:"foreignKey:OrganizationID;references:SharpnrOrgID"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

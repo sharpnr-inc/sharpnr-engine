@@ -11,7 +11,7 @@ import (
 
 func RegisterOrganizationService(org *models.Organization) error {
 	// Basic validation already handled by Gin binding, but extra check
-	if org.Name == "" || org.OrganizationID == "" || org.Phone == 0 || org.Password == "" {
+	if org.Name == "" || org.SharpnrOrgID == "" || org.PublicContact == 0 || org.Password == "" {
 		return errors.New("missing required fields")
 	}
 

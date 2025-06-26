@@ -7,7 +7,7 @@ import (
 )
 
 func RegisterOrganizationRoutes(rg *gin.RouterGroup) {
-	org := rg.Group("/organization")
+	org := rg.Group("/org")
 	{
 		org.POST("/login", controllers.OrganizationRootLogin)
 		org.POST("/register", controllers.RegisterOrganization)

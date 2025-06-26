@@ -1,13 +1,17 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+)
 
 type Service struct {
-	gorm.Model
+	ServiceID      uint   `gorm:"primaryKey;autoIncrement"`
+	Name           string `gorm:"not null"`
+	Description    *string
+	Fee            float64      `gorm:"default:0"`
+	OrganizationID string       `gorm:"size:16;not null"` // FK to Organization.SharpnrOrgID
+	Organization   Organization `gorm:"foreignKey:OrganizationID;references:SharpnrOrgID"`
 
-	OrganizationID     string `gorm:"not null"` // Foreign key
-	ServiceName        string `gorm:"not null"` // Foreign key
-	ServicePrice       int
-	PricingType        string
-	ServiceDescription string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
