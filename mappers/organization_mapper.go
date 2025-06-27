@@ -1,29 +1,16 @@
 package mappers
 
 import (
-	"time"
-
-	dto "github.com/sharpnr-inc/sharpnr-engine/dtos/auths"
+	dto "github.com/sharpnr-inc/sharpnr-engine/dtos"
 	"github.com/sharpnr-inc/sharpnr-engine/models"
 )
 
-func ToOrganizationResponseDTO(org *models.Organization) dto.OrganizationResponseDTO {
-	return dto.OrganizationResponseDTO{
-		ID:                  org.SharpnrOrgID,
-		Name:                org.Name,
-		OrganizationID:      org.OrganizationID,
-		Address:             org.Address,
-		Phone:               org.Phone,
-		Email:               org.Email,
-		IsPhysicalVerified:  org.IsPhysicalVerified,
-		ISRegistered:        org.ISRegistered,
-		CinNumber:           org.CinNumber,
-		GstNumber:           org.GstNumber,
-		OrganizationRegType: org.OrganizationRegType,
-		Banker:              org.Banker,
-		BankAccNumber:       org.BankAccNumber,
-		IfscCode:            org.IfscCode,
-		BankBranchName:      org.BankBranchName,
-		CreatedAt:           org.CreatedAt.Format(time.RFC3339),
+func ToOrganizationResponseDTO(org *models.Organization) dto.OrganizationRegistrationResponseDTO {
+	return dto.OrganizationRegistrationResponseDTO{
+		SharpnrOrgID:    org.SharpnrOrgID,
+		Name:            org.Name,
+		OrgOprationType: org.OrgOprationType,
+		RootEmail:       org.RootEmail,
+		CreatedAt:       org.CreatedAt,
 	}
 }
