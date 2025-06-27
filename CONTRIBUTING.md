@@ -36,3 +36,4 @@ flowchart TD
   D --> E[Repository Layer]
   E --> F[PostgreSQL DB via GORM]
   D --> G[Mapper (DTO ↔ Model)]
+  ```
