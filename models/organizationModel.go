@@ -46,7 +46,12 @@ type Organization struct {
 
 	// Root details
 	Password       string `gorm:"not null"`
-	MasterPassword string `gorm:"not null"` // fixed typo
+	MasterPassword string `gorm:"not null"`
+
+	// Organisation System Details
+	// TerminalID *string `gorm:"type:varchar(50);unique"`       // Unique Terminal ID for organization
+	// AccessKey  *string `gorm:"type:varchar(50);unique"`       // Unique Access Key for organization
+	// OrgOS      *string `gorm:"type:varchar(50);default:null"` // Operating System of the organization (e.g. Android, iOS, Web)
 
 	// Relationships (fixed references to SharpnrOrgUUID)
 	Products  []Product  `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
