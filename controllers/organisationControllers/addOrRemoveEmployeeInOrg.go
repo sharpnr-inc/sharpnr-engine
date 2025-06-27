@@ -1,4 +1,4 @@
-package controllers
+package orgcontrollers
 
 import "github.com/gin-gonic/gin"
 
