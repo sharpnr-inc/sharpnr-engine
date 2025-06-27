@@ -4,16 +4,18 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
-var jwtSecret = []byte("your_secret_key") // move to env later
+var jwtSecretKey = []byte("your-very-secret-key") // Ideally load from config/env
 
-func GenerateToken(email string, orgId uint) (string, error) {
+func GenerateToken(orgUUID uuid.UUID, orgName string) (string, error) {
 	claims := jwt.MapClaims{
-		"email": email,
-		"orgId": orgId,
-		"exp":   time.Now().Add(24 * time.Hour).Unix(),
+		"org_uuid": orgUUID.String(),
+		"name":     orgName,
+		"exp":      time.Now().Add(time.Hour * 24 * 7).Unix(), // 7 days expiry
+		"iat":      time.Now().Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtSecret)
+	return token.SignedString(jwtSecretKey)
 }
