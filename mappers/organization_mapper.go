@@ -5,7 +5,16 @@ import (
 	"github.com/sharpnr-inc/sharpnr-engine/models"
 )
 
-func ToOrganizationResponseDTO(org *models.Organization) dto.OrganizationRegistrationResponseDTO {
+func ToOrganizationModel(req dto.OrganizationRegistrationRequestDTO) *models.Organization {
+	return &models.Organization{
+		Name:            req.Name,
+		OrgOprationType: req.OrgOprationType,
+		RootEmail:       req.RootEmail,
+	}
+
+}
+
+func ToOrganizationRegistrationResponseDTO(org *models.Organization) dto.OrganizationRegistrationResponseDTO {
 	return dto.OrganizationRegistrationResponseDTO{
 		SharpnrOrgID:    org.SharpnrOrgID,
 		Name:            org.Name,

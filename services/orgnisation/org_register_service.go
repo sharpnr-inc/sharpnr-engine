@@ -4,10 +4,15 @@ import (
 	"errors"
 
 	"github.com/sharpnr-inc/sharpnr-engine/database"
+	"github.com/sharpnr-inc/sharpnr-engine/interfaces"
 	"github.com/sharpnr-inc/sharpnr-engine/models"
 	"github.com/sharpnr-inc/sharpnr-engine/repositories"
 	"golang.org/x/crypto/bcrypt"
 )
+
+type organizationService struct {
+	repo interfaces.OrganizationRepository
+}
 
 func RegisterOrganizationService(org *models.Organization) error {
 	// Basic validation already handled by Gin binding, but extra check
