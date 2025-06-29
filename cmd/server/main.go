@@ -12,23 +12,26 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title SharpNR API
-// @version 1.0
-// @description Backend APIs for SharpNR system.
-// @termsOfService http://sharpnr.com/terms/
-
-// @contact.name API Support
-// @contact.email support@sharpnr.com
-
-// @host localhost:8080
-// @BasePath /api/v1
 func main() {
-	r := gin.Default()
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	config.LoadEnv()
+	config.LoadEnv()           // Load env vars like DB_HOST, DB_USER, etc.
+	db := database.ConnectDB() // Connect to DB
 
-	database.ConnectDB()
+	// Run migrations
+	err := database.MigrateDB(db)
+	if err != nil {
+		log.Fatalf("DB migration failed: %v", err)
+	}
+	log.Println("✅ Database migration completed.")
+
+	// Create Gin router
+	r := gin.Default()
+
+	// Swagger route
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// Register your API routes and inject DB
+	v1.RegisterV1Routes(r, db)
+
 	log.Println("App started...")
-	v1.RegisterV1Routes(r)
 	r.Run(":8080")
 }

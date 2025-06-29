@@ -1,3 +1,4 @@
+// utils/jwt.go
 package utils
 
 import (
@@ -7,15 +8,26 @@ import (
 	"github.com/google/uuid"
 )
 
-var jwtSecretKey = []byte("your-very-secret-key") // Ideally load from config/env
+var jwtSecret = []byte("your-super-secure-secret") // use env var in production
 
-func GenerateToken(orgUUID uuid.UUID, orgName string) (string, error) {
+func GenerateJWTToken(orgID uuid.UUID, email string) (string, error) {
 	claims := jwt.MapClaims{
-		"org_uuid": orgUUID.String(),
-		"name":     orgName,
-		"exp":      time.Now().Add(time.Hour * 24 * 7).Unix(), // 7 days expiry
-		"iat":      time.Now().Unix(),
+		"org_id": orgID.String(),
+		"email":  email,
+		"exp":    time.Now().Add(24 * time.Hour).Unix(), // token expires in 24h
+		"iat":    time.Now().Unix(),
 	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtSecretKey)
+	return token.SignedString(jwtSecret)
+}
+
+func ParseJWTToken(tokenStr string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		return jwtSecret, nil
+	})
+	if err != nil || !token.Valid {
+		return nil, err
+	}
+	return token.Claims.(jwt.MapClaims), nil
 }

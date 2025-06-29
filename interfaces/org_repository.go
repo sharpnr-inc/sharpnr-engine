@@ -18,4 +18,7 @@ type OrganizationRepository interface {
 
 	// FindBySharpnrOrgID returns the organization by its public-facing ID.
 	FindBySharpnrOrgID(id string) (*models.Organization, error)
+
+	ExistsBySharpnrOrgID(id string) (bool, error)
+	FindByEmail(email string, org *models.Organization) error
 }

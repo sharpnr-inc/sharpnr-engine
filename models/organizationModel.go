@@ -11,6 +11,7 @@ type Organization struct {
 
 	// Type of organization: Hotel, Salon, Retail, etc.
 	OrgOprationType string `gorm:"type:varchar(50)"`
+	OrgDescription  string `gorm:"type:varchar(255);default:null"` // Description of the organization
 
 	CreatedAt int64 `gorm:"autoCreateTime"` // Timestamp of creation
 	UpdatedAt int64 `gorm:"autoUpdateTime"` // Timestamp of last update
@@ -23,7 +24,7 @@ type Organization struct {
 	Country string `gorm:"type:varchar(100);not null"`
 
 	// Contact details
-	PublicContact  int     `gorm:"type:varchar(15);not null"`     // Assuming it's a contact number
+	PublicContact  string  `gorm:"type:varchar(15);not null"`     // Assuming it's a contact number
 	ContactNumber  string  `gorm:"type:varchar(15);not null"`     // Primary contact
 	ContactNumber2 *string `gorm:"type:varchar(15);default:null"` // Optional
 	MasterContact  *string `gorm:"type:varchar(15);default:null"` // Optional

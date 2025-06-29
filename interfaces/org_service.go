@@ -1,7 +1,6 @@
 package interfaces
 
 import (
-	"github.com/google/uuid"
 	dto "github.com/sharpnr-inc/sharpnr-engine/dtos"
 )
 
@@ -11,5 +10,7 @@ type OrganizationService interface {
 	RegisterOrganization(req dto.OrganizationRegistrationRequestDTO) (*dto.OrganizationRegistrationResponseDTO, string, error)
 
 	// UpdateOrganization updates an existing organization based on UUID.
-	UpdateOrganization(id uuid.UUID, req dto.OrganizationUpdateRequestDTO) (*dto.OrganizationUpdateResponseDTO, error)
+	// UpdateOrganization(id uuid.UUID, req dto.OrganizationUpdateRequestDTO) (*dto.OrganizationUpdateResponseDTO, error)
+
+	// LoginOrganization(email, password string) (*dto.OrganizationRegistrationResponseDTO, string, error)
 }

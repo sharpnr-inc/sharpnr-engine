@@ -1,7 +1,5 @@
 package orgcontrollers
 
-import "github.com/gin-gonic/gin"
-
 // OrganizationRootLogin handles login for organizations.
 //
 // Accepts either email or username and a password.
@@ -28,6 +26,3 @@ import "github.com/gin-gonic/gin"
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Router /organization/login [post]
-func OrganizationRootLogin(c *gin.Context) {
-	// Implementation here
-}

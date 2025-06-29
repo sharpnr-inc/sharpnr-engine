@@ -9,7 +9,7 @@ type OrganizationRegistrationRequestDTO struct {
 	City                string  `json:"city" validate:"required"`
 	Pincode             string  `json:"pincode" validate:"required"`
 	Country             string  `json:"country" validate:"required"`
-	PublicContact       int     `json:"public_contact" validate:"required"`
+	PublicContact       string  `json:"public_contact" validate:"required"`
 	ContactNumber       string  `json:"contact_number" validate:"required"`
 	ContactNumber2      *string `json:"contact_number2,omitempty"`
 	MasterContact       *string `json:"master_contact,omitempty"`
@@ -30,6 +30,7 @@ type OrganizationRegistrationRequestDTO struct {
 type OrganizationRegistrationResponseDTO struct {
 	SharpnrOrgID    string `json:"sharpnr_org_id"`
 	Name            string `json:"name"`
+	Description     string `json:"description"`
 	OrgOprationType string `json:"org_operation_type"`
 	RootEmail       string `json:"root_email"`
 	CreatedAt       int64  `json:"created_at"`

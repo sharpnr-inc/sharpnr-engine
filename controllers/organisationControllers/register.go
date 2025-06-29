@@ -5,8 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	dto "github.com/sharpnr-inc/sharpnr-engine/dtos"
-	"github.com/sharpnr-inc/sharpnr-engine/models"
-	services "github.com/sharpnr-inc/sharpnr-engine/services/orgnisation"
+	"github.com/sharpnr-inc/sharpnr-engine/interfaces"
 )
 
 // RegisterOrganization handles registration of a new organization.
@@ -37,33 +36,29 @@ import (
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Router /organization/register [post]
-func RegisterOrganization(c *gin.Context) {
-	var orgDTO dto.OrganizationRegistrationRequestDTO
+type OrganizationController struct {
+	service interfaces.OrganizationService
+}
 
-	// Bind & validate JSON input based on `binding:"required"` tags
-	if err := c.ShouldBindJSON(&orgDTO); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input: " + err.Error()})
+func NewOrganizationController(service interfaces.OrganizationService) *OrganizationController {
+	return &OrganizationController{service: service}
+}
+
+func (c *OrganizationController) Register(ctx *gin.Context) {
+	var req dto.OrganizationRegistrationRequestDTO
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	org := models.Organization{
-		Name:                orgDTO.Name,
-		Address:             orgDTO.Address,
-		CinNumber:           orgDTO.CinNumber,
-		GstNumber:           orgDTO.GstNumber,
-		OrganizationRegType: orgDTO.OrganizationRegType,
-		Banker:              orgDTO.Banker,
-		BankAccNumber:       orgDTO.BankAccNumber,
-		IfscCode:            orgDTO.IfscCode,
-		BankBranchName:      orgDTO.BankBranchName,
-		Password:            orgDTO.Password,
-	}
-
-	err := services.RegisterOrganizationService(&org)
+	respDTO, token, err := c.service.RegisterOrganization(req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Organization registered successfully", "data": org})
+	ctx.JSON(http.StatusCreated, gin.H{
+		"organization": respDTO,
+		"token":        token,
+	})
 }
