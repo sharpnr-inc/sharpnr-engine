@@ -13,6 +13,7 @@ on:
 env:
   AWS_REGION: ap-south-1
   EB_APPLICATION_NAME: sharpnr-engine
+  GOMODCACHE: ${{ github.workspace }}/.gomodcache
 
 jobs:
   test:
@@ -24,16 +25,15 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.21"
+          go-version: "1.24.4" # Change if your go.mod specifies a different version
 
-      # Fix: Clean Go modules cache before restoring cache
       - name: Clean Go modules cache before restore
-        run: rm -rf ~/go/pkg/mod
+        run: rm -rf $GOMODCACHE
 
       - name: Cache Go modules
         uses: actions/cache@v3
         with:
-          path: ~/go/pkg/mod
+          path: ${{ env.GOMODCACHE }}
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
@@ -49,16 +49,17 @@ jobs:
         with:
           version: latest
 
-      # Fix: Reset permissions to avoid permission denied on cleanup
       - name: Fix permissions for Go modules (post-job cleanup)
         if: always()
         run: |
-          sudo chown -R $(whoami) ~/go/pkg/mod || true
+          sudo chown -R $(whoami) $GOMODCACHE || true
 
   deploy-alpha:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/alpha-release' && github.event_name == 'push'
+    env:
+      GOMODCACHE: ${{ github.workspace }}/.gomodcache
 
     steps:
       - name: Checkout code
@@ -67,7 +68,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.21"
+          go-version: "1.24.4"
+
+      - name: Clean Go modules cache before build
+        run: rm -rf $GOMODCACHE
+
+      - name: Install dependencies
+        run: go mod download
 
       - name: Build application
         run: |
@@ -106,6 +113,8 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/beta-release' && github.event_name == 'push'
+    env:
+      GOMODCACHE: ${{ github.workspace }}/.gomodcache
 
     steps:
       - name: Checkout code
@@ -114,7 +123,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.21"
+          go-version: "1.24.4"
+
+      - name: Clean Go modules cache before build
+        run: rm -rf $GOMODCACHE
+
+      - name: Install dependencies
+        run: go mod download
 
       - name: Build application
         run: |
@@ -153,6 +168,8 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    env:
+      GOMODCACHE: ${{ github.workspace }}/.gomodcache
 
     steps:
       - name: Checkout code
@@ -161,7 +178,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.21"
+          go-version: "1.24.4"
+
+      - name: Clean Go modules cache before build
+        run: rm -rf $GOMODCACHE
+
+      - name: Install dependencies
+        run: go mod download
 
       - name: Build application
         run: |
