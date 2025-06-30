@@ -112,12 +112,12 @@ jobs:
 
       - name: Deploy to Alpha Environment
         run: |
-          aws s3 cp deploy.zip s3://${{ secrets.S3_BUCKET }}/alpha-${{ github.sha }}.zip
+          aws s3 cp deploy.zip s3://sharpnr-engine-deployment/alpha-${{ github.sha }}.zip
 
           aws elasticbeanstalk create-application-version \
           --application-name ${{ env.EB_APPLICATION_NAME }} \
           --version-label alpha-${{ github.sha }} \
-          --source-bundle S3Bucket=${{ secrets.S3_BUCKET }},S3Key=alpha-${{ github.sha }}.zip
+          --source-bundle S3Bucket=sharpnr-engine-deployment,S3Key=alpha-${{ github.sha }}.zip
 
           aws elasticbeanstalk update-environment \
           --application-name ${{ env.EB_APPLICATION_NAME }} \
