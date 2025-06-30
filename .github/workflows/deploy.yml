@@ -28,7 +28,9 @@ jobs:
           go-version: "1.24.4" # Change if your go.mod specifies a different version
 
       - name: Clean Go modules cache before restore
-        run: rm -rf $GOMODCACHE
+        run: |
+          sudo chmod -R u+w $GOMODCACHE || true
+          sudo rm -rf $GOMODCACHE
 
       - name: Cache Go modules
         uses: actions/cache@v3
@@ -71,7 +73,9 @@ jobs:
           go-version: "1.24.4"
 
       - name: Clean Go modules cache before build
-        run: rm -rf $GOMODCACHE
+        run: |
+          sudo chmod -R u+w $GOMODCACHE || true
+          sudo rm -rf $GOMODCACHE
 
       - name: Install dependencies
         run: go mod download
@@ -126,7 +130,9 @@ jobs:
           go-version: "1.24.4"
 
       - name: Clean Go modules cache before build
-        run: rm -rf $GOMODCACHE
+        run: |
+          sudo chmod -R u+w $GOMODCACHE || true
+          sudo rm -rf $GOMODCACHE
 
       - name: Install dependencies
         run: go mod download
@@ -181,7 +187,9 @@ jobs:
           go-version: "1.24.4"
 
       - name: Clean Go modules cache before build
-        run: rm -rf $GOMODCACHE
+        run: |
+          sudo chmod -R u+w $GOMODCACHE || true
+          sudo rm -rf $GOMODCACHE
 
       - name: Install dependencies
         run: go mod download
