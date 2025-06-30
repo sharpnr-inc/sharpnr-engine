@@ -26,7 +26,8 @@ jobs:
         with:
           go-version: "1.21"
 
-      - name: Clean Go modules cache
+      # Fix: Clean Go modules cache before restoring cache
+      - name: Clean Go modules cache before restore
         run: rm -rf ~/go/pkg/mod
 
       - name: Cache Go modules
@@ -47,6 +48,12 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
+
+      # Fix: Reset permissions to avoid permission denied on cleanup
+      - name: Fix permissions for Go modules (post-job cleanup)
+        if: always()
+        run: |
+          sudo chown -R $(whoami) ~/go/pkg/mod || true
 
   deploy-alpha:
     needs: test
