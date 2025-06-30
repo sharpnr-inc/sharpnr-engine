@@ -99,6 +99,13 @@ jobs:
         run: |
           zip -r deploy.zip . -x "*.git*" "*.github*" "tests/*" "*.md"
 
+      - name: Check S3_BUCKET secret
+        run: |
+          if [ -z "${{ secrets.S3_BUCKET }}" ]; then
+            echo "S3_BUCKET secret is not set. Please set it in the repository secrets.";
+            exit 1;
+          fi
+
       - name: Deploy to Alpha Environment
         run: |
           aws s3 cp deploy.zip s3://${{ secrets.S3_BUCKET }}/alpha-${{ github.sha }}.zip
