@@ -10,6 +10,51 @@ definitions:
     - email
     - password
     type: object
+  dto.OrganisationRegisterDTO:
+    properties:
+      address:
+        type: string
+      adminName:
+        type: string
+      bankAccNumber:
+        type: string
+      bankBranchName:
+        type: string
+      banker:
+        type: string
+      cinNumber:
+        type: string
+      email:
+        type: string
+      gstNumber:
+        type: string
+      ifscCode:
+        type: string
+      isPhysicalVerified:
+        description: optional, pointer so omitted if nil
+        type: boolean
+      isRegistered:
+        type: boolean
+      name:
+        type: string
+      organizationID:
+        type: string
+      organizationRegType:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      phone:
+        type: integer
+    required:
+    - adminName
+    - bankAccNumber
+    - email
+    - name
+    - organizationID
+    - password
+    - phone
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -53,6 +98,41 @@ paths:
               type: string
             type: object
       summary: Login for organization root
+      tags:
+      - Organization
+  /organization/register:
+    post:
+      consumes:
+      - application/json
+      description: This is Registration for the Organisation
+      parameters:
+      - description: Login Credentials
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OrganisationRegisterDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register for organization Registration
       tags:
       - Organization
 swagger: "2.0"

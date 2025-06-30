@@ -1,29 +1,61 @@
 package models
 
 import (
-	"gorm.io/gorm"
+	"github.com/google/uuid"
 )
 
 type Organization struct {
-	gorm.Model
+	Name           string    `gorm:"not null"`                // Name must not be null
+	SharpnrOrgID   string    `gorm:"size:16;unique;not null"` // Public-facing ID (e.g. SHR000000000001)
+	SharpnrOrgUUID uuid.UUID `gorm:"type:uuid;primaryKey"`    // Internal UUID for linking and security
 
-	Name                string `gorm:"unique;not null"`         // Name must be unique and not null
-	OrganizationID      string `gorm:"size:12;unique;not null"` // 12-digit unique number
-	Address             string
-	Phone               int        `gorm:"not null"`                   // Assuming phone number is required
-	Email               string     `gorm:"unique;not null"`            // Email should be unique and not null
-	Employees           []Employee `gorm:"foreignKey:OrganizationID"`  // One-to-many relationship
-	IsPhysicalVerified  bool       `gorm:"default:false"`              // Boolean, defaults to false
-	ISRegistered        bool       `gorm:"default:false"`              // Boolean, defaults to false
-	CinNumber           string     `gorm:"unique"`                     // CIN number, if registered, should be unique
-	GstNumber           string     `gorm:"unique"`                     // GST number must be unique
-	OrganizationRegType string     `gorm:"type:varchar(50)"`           // Registration type (Sole Proprietor, LLP, etc.)
-	Banker              string     `gorm:"type:varchar(100)"`          // Name of the banker
-	BankAccNumber       string     `gorm:"unique;not null"`            // Bank account number must be unique
-	IfscCode            string     `gorm:"type:varchar(20)"`           // IFSC code
-	BankBranchName      string     `gorm:"type:varchar(100)"`          // Branch name
-	Password            string     `gorm:"not null"`                   // Admin password
-	AdminName           string     `gorm:"type:varchar(100);not null"` // Admin name
-	Products            []Product  `gorm:"foreignKey:OrganizationID;references:OrganizationID"`
-	Service             []Service  `gorm:"foreignKey:OrganizationID;references:OrganizationID"`
+	// Type of organization: Hotel, Salon, Retail, etc.
+	OrgOprationType string `gorm:"type:varchar(50)"`
+	OrgDescription  string `gorm:"type:varchar(255);default:null"` // Description of the organization
+
+	CreatedAt int64 `gorm:"autoCreateTime"` // Timestamp of creation
+	UpdatedAt int64 `gorm:"autoUpdateTime"` // Timestamp of last update
+
+	// Address details
+	Address string `gorm:"type:varchar(255);not null"`
+	State   string `gorm:"type:varchar(100);not null"`
+	City    string `gorm:"type:varchar(100);not null"`
+	Pincode string `gorm:"type:varchar(20);not null"`
+	Country string `gorm:"type:varchar(100);not null"`
+
+	// Contact details
+	PublicContact  string  `gorm:"type:varchar(15);not null"`     // Assuming it's a contact number
+	ContactNumber  string  `gorm:"type:varchar(15);not null"`     // Primary contact
+	ContactNumber2 *string `gorm:"type:varchar(15);default:null"` // Optional
+	MasterContact  *string `gorm:"type:varchar(15);default:null"` // Optional
+	RootEmail      string  `gorm:"unique;not null"`
+	SecondaryEmail *string `gorm:"type:varchar(100);default:null"`
+
+	// Verification & registration
+	IsPhysicalVerified  bool    `gorm:"default:false"`
+	ISRegistered        bool    `gorm:"default:false"`
+	CinNumber           *string `gorm:"type:varchar(30);unique"`
+	GstNumber           *string `gorm:"type:varchar(20);unique"`
+	OrganizationRegType *string `gorm:"type:varchar(50)"`
+
+	// Banking
+	Banker         *string `gorm:"type:varchar(100)"`
+	BankAccNumber  string  `gorm:"type:varchar(30);unique;not null"`
+	IfscCode       *string `gorm:"type:varchar(20)"`
+	BankBranchName *string `gorm:"type:varchar(100)"`
+	UPIID          *string `gorm:"type:varchar(100);unique"`
+
+	// Root details
+	Password       string `gorm:"not null"`
+	MasterPassword string `gorm:"not null"`
+
+	// Organisation System Details
+	// TerminalID *string `gorm:"type:varchar(50);unique"`       // Unique Terminal ID for organization
+	// AccessKey  *string `gorm:"type:varchar(50);unique"`       // Unique Access Key for organization
+	// OrgOS      *string `gorm:"type:varchar(50);default:null"` // Operating System of the organization (e.g. Android, iOS, Web)
+
+	// Relationships (fixed references to SharpnrOrgUUID)
+	Products  []Product  `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
+	Service   []Service  `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
+	Employees []Employee `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
 }

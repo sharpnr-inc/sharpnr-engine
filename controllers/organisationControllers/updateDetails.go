@@ -1,4 +1,4 @@
-package controllers
+package orgcontrollers
 
 func UpdateOrgnisationDetails() {
 
