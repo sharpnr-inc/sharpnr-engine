@@ -26,6 +26,9 @@ jobs:
         with:
           go-version: "1.21"
 
+      - name: Clean Go modules cache
+        run: rm -rf ~/go/pkg/mod
+
       - name: Cache Go modules
         uses: actions/cache@v3
         with:
@@ -61,7 +64,7 @@ jobs:
 
       - name: Build application
         run: |
-          GOOS=linux GOARCH=amd64 go build -o bin/application main.go
+          GOOS=linux GOARCH=amd64 go build -o bin/application ./cmd/server
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -108,7 +111,7 @@ jobs:
 
       - name: Build application
         run: |
-          GOOS=linux GOARCH=amd64 go build -o bin/application main.go
+          GOOS=linux GOARCH=amd64 go build -o bin/application ./cmd/server
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -155,7 +158,7 @@ jobs:
 
       - name: Build application
         run: |
-          GOOS=linux GOARCH=amd64 go build -o bin/application main.go
+          GOOS=linux GOARCH=amd64 go build -o bin/application ./cmd/server
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
