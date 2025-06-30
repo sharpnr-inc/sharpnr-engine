@@ -1,0 +1,187 @@
+name: Deploy to AWS Elastic Beanstalk
+
+on:
+  push:
+    branches:
+      - main
+      - alpha-release
+      - beta-release
+  pull_request:
+    branches:
+      - main
+
+env:
+  AWS_REGION: ap-south-1
+  EB_APPLICATION_NAME: sharpnr-engine
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Run tests
+        run: go test -v ./...
+
+      - name: Run linter
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+
+  deploy-alpha:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/alpha-release' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+
+      - name: Build application
+        run: |
+          GOOS=linux GOARCH=amd64 go build -o bin/application main.go
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Copy Alpha DB Config
+        run: |
+          cp .ebextensions/02_database_alpha.config .ebextensions/02_database.config
+
+      - name: Create deployment package
+        run: |
+          zip -r deploy.zip . -x "*.git*" "*.github*" "tests/*" "*.md"
+
+      - name: Deploy to Alpha Environment
+        run: |
+          aws elasticbeanstalk create-application-version \
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --version-label alpha-${{ github.sha }} \
+            --source-bundle S3Bucket=${{ secrets.S3_BUCKET }},S3Key=alpha-${{ github.sha }}.zip
+
+          aws s3 cp deploy.zip s3://${{ secrets.S3_BUCKET }}/alpha-${{ github.sha }}.zip
+
+          aws elasticbeanstalk update-environment \
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --environment-name ${{ secrets.EB_ENVIRONMENT_ALPHA }} \
+            --version-label alpha-${{ github.sha }}
+
+  deploy-beta:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/beta-release' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+
+      - name: Build application
+        run: |
+          GOOS=linux GOARCH=amd64 go build -o bin/application main.go
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Copy Beta DB Config
+        run: |
+          cp .ebextensions/02_database_beta.config .ebextensions/02_database.config
+
+      - name: Create deployment package
+        run: |
+          zip -r deploy.zip . -x "*.git*" "*.github*" "tests/*" "*.md"
+
+      - name: Deploy to Beta Environment
+        run: |
+          aws elasticbeanstalk create-application-version \
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --version-label beta-${{ github.sha }} \
+            --source-bundle S3Bucket=${{ secrets.S3_BUCKET }},S3Key=beta-${{ github.sha }}.zip
+
+          aws s3 cp deploy.zip s3://${{ secrets.S3_BUCKET }}/beta-${{ github.sha }}.zip
+
+          aws elasticbeanstalk update-environment \
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --environment-name ${{ secrets.EB_ENVIRONMENT_BETA }} \
+            --version-label beta-${{ github.sha }}
+
+  deploy-production:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+
+      - name: Build application
+        run: |
+          GOOS=linux GOARCH=amd64 go build -o bin/application main.go
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Copy Production DB Config
+        run: |
+          cp .ebextensions/02_database_prod.config .ebextensions/02_database.config
+
+      - name: Create deployment package
+        run: |
+          zip -r deploy.zip . -x "*.git*" "*.github*" "tests/*" "*.md"
+
+      - name: Deploy to Production Environment
+        run: |
+          aws elasticbeanstalk create-application-version \
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --version-label prod-${{ github.sha }} \
+            --source-bundle S3Bucket=${{ secrets.S3_BUCKET }},S3Key=prod-${{ github.sha }}.zip
+
+          aws s3 cp deploy.zip s3://${{ secrets.S3_BUCKET }}/prod-${{ github.sha }}.zip
+
+          aws elasticbeanstalk update-environment \
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --environment-name ${{ secrets.EB_ENVIRONMENT_PROD }} \
+            --version-label prod-${{ github.sha }}
