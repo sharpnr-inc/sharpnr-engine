@@ -25,7 +25,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.24.4"
+          go-version: "1.21" # Use stable version
 
       - name: Clean Go modules cache before restore
         run: |
@@ -70,7 +70,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.24.4"
+          go-version: "1.21"
 
       - name: Clean Go modules cache before build
         run: |
@@ -82,7 +82,11 @@ jobs:
 
       - name: Build application
         run: |
-          GOOS=linux GOARCH=amd64 go build -o bin/application ./cmd/server
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o application ./cmd/server
+
+      - name: Create Procfile
+        run: |
+          echo "web: ./application" > Procfile
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -95,34 +99,40 @@ jobs:
         run: |
           cp .ebextensions/02_database_alpha.config .ebextensions/02_database.config
 
-      - name: Debug S3 Bucket
+      - name: Validate deployment package
         run: |
-          echo "Uploading to bucket: '${{ secrets.S3_BUCKET }}'"
+          echo "Checking required files..."
+          ls -la
+          if [ ! -f "application" ]; then echo "ERROR: application binary not found"; exit 1; fi
+          if [ ! -f "Procfile" ]; then echo "ERROR: Procfile not found"; exit 1; fi
+          echo "Files validated successfully"
 
       - name: Create deployment package
         run: |
-          zip -r deploy.zip . -x "*.git*" "*.github*" "tests/*" "*.md"
-
-      - name: Check S3_BUCKET secret
-        run: |
-          if [ -z "${{ secrets.S3_BUCKET }}" ]; then
-            echo "S3_BUCKET secret is not set. Please set it in the repository secrets.";
-            exit 1;
-          fi
+          zip -r deploy.zip . -x "*.git*" "*.github*" "tests/*" "*.md" "*.log"
 
       - name: Deploy to Alpha Environment
         run: |
+          # Upload to S3
           aws s3 cp deploy.zip s3://sharpnr-engine-deployment/alpha-${{ github.sha }}.zip
 
+          # Create application version
           aws elasticbeanstalk create-application-version \
-          --application-name ${{ env.EB_APPLICATION_NAME }} \
-          --version-label alpha-${{ github.sha }} \
-          --source-bundle S3Bucket=sharpnr-engine-deployment,S3Key=alpha-${{ github.sha }}.zip
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --version-label alpha-${{ github.sha }} \
+            --source-bundle S3Bucket=sharpnr-engine-deployment,S3Key=alpha-${{ github.sha }}.zip \
+            --description "Alpha deployment from commit ${{ github.sha }}"
 
+          # Update environment
           aws elasticbeanstalk update-environment \
-          --application-name ${{ env.EB_APPLICATION_NAME }} \
-          --environment-name ${{ secrets.EB_ENVIRONMENT_ALPHA }} \
-          --version-label alpha-${{ github.sha }}
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --environment-name ${{ secrets.EB_ENVIRONMENT_ALPHA }} \
+            --version-label alpha-${{ github.sha }}
+
+          # Wait for deployment to complete
+          aws elasticbeanstalk wait environment-updated \
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --environment-names ${{ secrets.EB_ENVIRONMENT_ALPHA }}
 
   deploy-beta:
     needs: test
@@ -138,7 +148,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.24.4"
+          go-version: "1.21"
 
       - name: Clean Go modules cache before build
         run: |
@@ -150,7 +160,11 @@ jobs:
 
       - name: Build application
         run: |
-          GOOS=linux GOARCH=amd64 go build -o bin/application ./cmd/server
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o application ./cmd/server
+
+      - name: Create Procfile
+        run: |
+          echo "web: ./application" > Procfile
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -163,9 +177,17 @@ jobs:
         run: |
           cp .ebextensions/02_database_beta.config .ebextensions/02_database.config
 
+      - name: Validate deployment package
+        run: |
+          echo "Checking required files..."
+          ls -la
+          if [ ! -f "application" ]; then echo "ERROR: application binary not found"; exit 1; fi
+          if [ ! -f "Procfile" ]; then echo "ERROR: Procfile not found"; exit 1; fi
+          echo "Files validated successfully"
+
       - name: Create deployment package
         run: |
-          zip -r deploy.zip . -x "*.git*" "*.github*" "tests/*" "*.md"
+          zip -r deploy.zip . -x "*.git*" "*.github*" "tests/*" "*.md" "*.log"
 
       - name: Deploy to Beta Environment
         run: |
@@ -174,12 +196,17 @@ jobs:
           aws elasticbeanstalk create-application-version \
             --application-name ${{ env.EB_APPLICATION_NAME }} \
             --version-label beta-${{ github.sha }} \
-            --source-bundle S3Bucket=${{ secrets.S3_BUCKET }},S3Key=beta-${{ github.sha }}.zip
+            --source-bundle S3Bucket=${{ secrets.S3_BUCKET }},S3Key=beta-${{ github.sha }}.zip \
+            --description "Beta deployment from commit ${{ github.sha }}"
 
           aws elasticbeanstalk update-environment \
             --application-name ${{ env.EB_APPLICATION_NAME }} \
             --environment-name ${{ secrets.EB_ENVIRONMENT_BETA }} \
             --version-label beta-${{ github.sha }}
+
+          aws elasticbeanstalk wait environment-updated \
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --environment-names ${{ secrets.EB_ENVIRONMENT_BETA }}
 
   deploy-production:
     needs: test
@@ -195,7 +222,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.24.4"
+          go-version: "1.21"
 
       - name: Clean Go modules cache before build
         run: |
@@ -207,7 +234,11 @@ jobs:
 
       - name: Build application
         run: |
-          GOOS=linux GOARCH=amd64 go build -o bin/application ./cmd/server
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o application ./cmd/server
+
+      - name: Create Procfile
+        run: |
+          echo "web: ./application" > Procfile
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -220,9 +251,17 @@ jobs:
         run: |
           cp .ebextensions/02_database_prod.config .ebextensions/02_database.config
 
+      - name: Validate deployment package
+        run: |
+          echo "Checking required files..."
+          ls -la
+          if [ ! -f "application" ]; then echo "ERROR: application binary not found"; exit 1; fi
+          if [ ! -f "Procfile" ]; then echo "ERROR: Procfile not found"; exit 1; fi
+          echo "Files validated successfully"
+
       - name: Create deployment package
         run: |
-          zip -r deploy.zip . -x "*.git*" "*.github*" "tests/*" "*.md"
+          zip -r deploy.zip . -x "*.git*" "*.github*" "tests/*" "*.md" "*.log"
 
       - name: Deploy to Production Environment
         run: |
@@ -231,9 +270,14 @@ jobs:
           aws elasticbeanstalk create-application-version \
             --application-name ${{ env.EB_APPLICATION_NAME }} \
             --version-label prod-${{ github.sha }} \
-            --source-bundle S3Bucket=${{ secrets.S3_BUCKET }},S3Key=prod-${{ github.sha }}.zip
+            --source-bundle S3Bucket=${{ secrets.S3_BUCKET }},S3Key=prod-${{ github.sha }}.zip \
+            --description "Production deployment from commit ${{ github.sha }}"
 
           aws elasticbeanstalk update-environment \
             --application-name ${{ env.EB_APPLICATION_NAME }} \
             --environment-name ${{ secrets.EB_ENVIRONMENT_PROD }} \
             --version-label prod-${{ github.sha }}
+
+          aws elasticbeanstalk wait environment-updated \
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --environment-names ${{ secrets.EB_ENVIRONMENT_PROD }}
