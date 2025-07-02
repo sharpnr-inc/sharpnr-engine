@@ -59,3 +59,7 @@ type Organization struct {
 	Service   []Service  `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
 	Employees []Employee `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
 }
+
+func (Organization) TableName() string {
+	return "organizations"
+}

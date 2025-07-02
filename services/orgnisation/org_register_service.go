@@ -1,3 +1,5 @@
+// Organization registration service
+// org_register_service.go
 package orgservices
 
 import (

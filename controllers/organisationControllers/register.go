@@ -36,6 +36,7 @@ import (
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Router /organization/register [post]
+
 type OrganizationController struct {
 	service interfaces.OrganizationService
 }
