@@ -33,7 +33,7 @@ func main() {
 	v1.RegisterV1Routes(r, db)
 
 	log.Println("App started...")
-	if err := r.Run(":8080"); err != nil {
+	if err := r.Run(":8081"); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }
