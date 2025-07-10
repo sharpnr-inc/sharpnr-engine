@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	dto "github.com/sharpnr-inc/sharpnr-engine/dtos"
+	dto "github.com/sharpnr-inc/sharpnr-engine/core/dtos"
 )
 
 // OrganizationService defines business logic for managing organizations.

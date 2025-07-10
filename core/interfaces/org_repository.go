@@ -2,7 +2,7 @@ package interfaces
 
 import (
 	"github.com/google/uuid"
-	"github.com/sharpnr-inc/sharpnr-engine/models"
+	"github.com/sharpnr-inc/sharpnr-engine/core/models"
 )
 
 // OrganizationRepository defines methods for interacting with the organization storage layer.
