@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/sharpnr-inc/sharpnr-engine/models"
+	"github.com/sharpnr-inc/sharpnr-engine/core/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

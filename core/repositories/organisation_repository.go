@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"github.com/google/uuid"
-	"github.com/sharpnr-inc/sharpnr-engine/models"
+	"github.com/sharpnr-inc/sharpnr-engine/core/models"
 	"gorm.io/gorm"
 )
 

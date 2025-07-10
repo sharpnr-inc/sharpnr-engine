@@ -1,8 +1,8 @@
 package mappers
 
 import (
-	dto "github.com/sharpnr-inc/sharpnr-engine/dtos"
-	"github.com/sharpnr-inc/sharpnr-engine/models"
+	dto "github.com/sharpnr-inc/sharpnr-engine/core/dtos"
+	"github.com/sharpnr-inc/sharpnr-engine/core/models"
 )
 
 func ToOrganizationModel(req dto.OrganizationRegistrationRequestDTO) *models.Organization {

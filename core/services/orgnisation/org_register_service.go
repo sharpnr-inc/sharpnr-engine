@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	dto "github.com/sharpnr-inc/sharpnr-engine/dtos"
-	"github.com/sharpnr-inc/sharpnr-engine/interfaces"
+	dto "github.com/sharpnr-inc/sharpnr-engine/core/dtos"
+	"github.com/sharpnr-inc/sharpnr-engine/core/interfaces"
 	"github.com/sharpnr-inc/sharpnr-engine/mappers"
-	"github.com/sharpnr-inc/sharpnr-engine/utils"
+	"github.com/sharpnr-inc/sharpnr-engine/shared/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 

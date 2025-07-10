@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	dto "github.com/sharpnr-inc/sharpnr-engine/dtos"
-	"github.com/sharpnr-inc/sharpnr-engine/interfaces"
+	dto "github.com/sharpnr-inc/sharpnr-engine/core/dtos"
+	"github.com/sharpnr-inc/sharpnr-engine/core/interfaces"
 )
 
 // RegisterOrganization handles registration of a new organization.

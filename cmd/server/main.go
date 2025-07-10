@@ -5,9 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sharpnr-inc/sharpnr-engine/config"
-	"github.com/sharpnr-inc/sharpnr-engine/database"
 	_ "github.com/sharpnr-inc/sharpnr-engine/docs"
 	v1 "github.com/sharpnr-inc/sharpnr-engine/routes/v1"
+	"github.com/sharpnr-inc/sharpnr-engine/shared/database"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )

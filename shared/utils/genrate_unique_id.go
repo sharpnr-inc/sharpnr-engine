@@ -7,7 +7,7 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/sharpnr-inc/sharpnr-engine/interfaces"
+	"github.com/sharpnr-inc/sharpnr-engine/core/interfaces"
 )
 
 // CHARSET includes alphanumeric uppercase (excluding confusing letters like I, O, 0)

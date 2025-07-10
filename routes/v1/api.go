@@ -4,8 +4,8 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	orgcontrollers "github.com/sharpnr-inc/sharpnr-engine/controllers/organisationControllers"
-	"github.com/sharpnr-inc/sharpnr-engine/repositories"
-	orgservices "github.com/sharpnr-inc/sharpnr-engine/services/orgnisation"
+	"github.com/sharpnr-inc/sharpnr-engine/core/repositories"
+	orgservices "github.com/sharpnr-inc/sharpnr-engine/core/services/orgnisation"
 	"gorm.io/gorm"
 )
 
