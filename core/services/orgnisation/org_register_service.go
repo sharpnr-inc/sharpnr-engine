@@ -1,5 +1,3 @@
-// Organization registration service
-// org_register_service.go
 package orgservices
 
 import (
@@ -15,10 +13,10 @@ import (
 )
 
 type organizationService struct {
-	repo interfaces.OrganizationRepository
+	repo interfaces.CoreOrganizationRepository
 }
 
-func NewOrganizationService(repo interfaces.OrganizationRepository) *organizationService {
+func NewOrganizationRegistrationService(repo interfaces.CoreOrganizationRepository) *organizationService {
 	return &organizationService{repo: repo}
 }
 

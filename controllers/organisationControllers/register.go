@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	dto "github.com/sharpnr-inc/sharpnr-engine/core/dtos"
-	"github.com/sharpnr-inc/sharpnr-engine/core/interfaces"
+	orgservices "github.com/sharpnr-inc/sharpnr-engine/core/services/orgnisation"
 )
 
 // RegisterOrganization handles registration of a new organization.
@@ -37,22 +37,14 @@ import (
 // @Failure 401 {object} map[string]string
 // @Router /organization/register [post]
 
-type OrganizationController struct {
-	service interfaces.OrganizationService
-}
-
-func NewOrganizationController(service interfaces.OrganizationService) *OrganizationController {
-	return &OrganizationController{service: service}
-}
-
-func (c *OrganizationController) Register(ctx *gin.Context) {
+func RegisterOrganization(ctx *gin.Context, service *orgservices.OrganizationRegistrationService) {
 	var req dto.OrganizationRegistrationRequestDTO
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	respDTO, token, err := c.service.RegisterOrganization(req)
+	respDTO, token, err := service.RegisterOrganization(req)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

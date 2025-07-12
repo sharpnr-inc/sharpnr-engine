@@ -27,12 +27,15 @@ type OrganizationRegistrationRequestDTO struct {
 	MasterPassword      string  `json:"master_password" validate:"required,min=6"`
 }
 
+// this is the Response _dto of the Response of Registration oof organization
+// we can edit based on user need or front end needs
 type OrganizationRegistrationResponseDTO struct {
 	SharpnrOrgID    string `json:"sharpnr_org_id"`
 	Name            string `json:"name"`
 	Description     string `json:"description"`
 	OrgOprationType string `json:"org_operation_type"`
 	RootEmail       string `json:"root_email"`
+	MasterContact   string `json:"master_contact"`
 	CreatedAt       int64  `json:"created_at"`
 }
 

@@ -5,6 +5,7 @@ import (
 	"github.com/sharpnr-inc/sharpnr-engine/core/models"
 )
 
+// This is the Mapper, it takes the dto of Request for Registering the organisation and returns the pointer of Organisation model
 func ToOrganizationModel(req dto.OrganizationRegistrationRequestDTO) *models.Organization {
 	return &models.Organization{
 		Name: req.Name,
