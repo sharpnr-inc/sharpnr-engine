@@ -1,0 +1,5 @@
+package orgcontrollers
+
+func CreateSale() {
+
+}
