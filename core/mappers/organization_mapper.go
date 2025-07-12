@@ -7,8 +7,8 @@ import (
 
 func ToOrganizationModel(req dto.OrganizationRegistrationRequestDTO) *models.Organization {
 	return &models.Organization{
-		Name:                req.Name,
-		OrgOprationType:     req.OrgOprationType,
+		Name: req.Name,
+		// OrgOprationType:     req.OrgOprationType,
 		RootEmail:           req.RootEmail,
 		OrgDescription:      req.Description,
 		Address:             req.Address,
@@ -37,11 +37,11 @@ func ToOrganizationModel(req dto.OrganizationRegistrationRequestDTO) *models.Org
 
 func ToOrganizationRegistrationResponseDTO(org *models.Organization) dto.OrganizationRegistrationResponseDTO {
 	return dto.OrganizationRegistrationResponseDTO{
-		SharpnrOrgID:    org.SharpnrOrgID,
-		Name:            org.Name,
-		Description:     org.OrgDescription,
-		OrgOprationType: org.OrgOprationType,
-		RootEmail:       org.RootEmail,
-		CreatedAt:       org.CreatedAt,
+		SharpnrOrgID: org.SharpnrOrgID,
+		Name:         org.Name,
+		Description:  org.OrgDescription,
+		// OrgOprationType: constants.OrgType,
+		RootEmail: org.RootEmail,
+		CreatedAt: org.CreatedAt,
 	}
 }

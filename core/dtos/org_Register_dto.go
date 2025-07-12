@@ -54,6 +54,7 @@ type OrganizationUpdateRequestDTO struct {
 	IfscCode            *string `json:"ifsc_code,omitempty"`
 	BankBranchName      *string `json:"bank_branch_name,omitempty"`
 	UPIID               *string `json:"upi_id,omitempty"`
+	MasterPassword      string
 }
 
 type OrganizationUpdateResponseDTO struct {

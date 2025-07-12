@@ -2,15 +2,16 @@ package models
 
 import (
 	"time"
+	"github.com/google/uuid"
 )
 
 type Service struct {
-	ServiceID      uint   `gorm:"primaryKey;autoIncrement"`
-	Name           string `gorm:"not null"`
+	ServiceID      uint      `gorm:"primaryKey;autoIncrement"`
+	Name           string    `gorm:"not null"`
 	Description    *string
-	Fee            float64      `gorm:"default:0"`
-	OrganizationID string       `gorm:"size:16;not null"` // FK to Organization.SharpnrOrgID
-	Organization   Organization `gorm:"foreignKey:OrganizationID;references:SharpnrOrgID"`
+	Fee            float64   `gorm:"default:0"`
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null"` // FK to Organization.SharpnrOrgUUID
+	Organization   Organization `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

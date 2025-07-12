@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	dto "github.com/sharpnr-inc/sharpnr-engine/core/dtos"
 	"github.com/sharpnr-inc/sharpnr-engine/core/interfaces"
-	"github.com/sharpnr-inc/sharpnr-engine/mappers"
+	"github.com/sharpnr-inc/sharpnr-engine/core/mappers"
 	"github.com/sharpnr-inc/sharpnr-engine/shared/utils"
 	"golang.org/x/crypto/bcrypt"
 )

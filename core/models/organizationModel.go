@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/google/uuid"
+	"github.com/sharpnr-inc/sharpnr-engine/core/constants"
 )
 
 type Organization struct {
@@ -10,7 +11,7 @@ type Organization struct {
 	SharpnrOrgUUID uuid.UUID `gorm:"type:uuid;primaryKey"`    // Internal UUID for linking and security
 
 	// Type of organization: Hotel, Salon, Retail, etc.
-	OrgOprationType string `gorm:"type:varchar(50)"`
+	OrgOprationType constants.OrgType `gorm:"type:varchar(50)"`
 	OrgDescription  string `gorm:"type:varchar(255);default:null"` // Description of the organization
 
 	CreatedAt int64 `gorm:"autoCreateTime"` // Timestamp of creation
@@ -55,9 +56,10 @@ type Organization struct {
 	// OrgOS      *string `gorm:"type:varchar(50);default:null"` // Operating System of the organization (e.g. Android, iOS, Web)
 
 	// Relationships (fixed references to SharpnrOrgUUID)
-	Products  []Product  `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
-	Service   []Service  `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
-	Employees []Employee `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
+	Products    []Product  `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
+	Service     []Service  `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
+	Employees   []Employee `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
+	Departments []Department `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
 }
 
 func (Organization) TableName() string {
