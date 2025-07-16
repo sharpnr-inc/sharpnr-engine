@@ -1,5 +1,6 @@
 package main
 
+// This is the Main file and Entry Point to application
 import (
 	"log"
 
