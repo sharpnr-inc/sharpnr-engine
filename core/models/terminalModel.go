@@ -30,4 +30,12 @@ type Terminal struct {
 	// Relationships
 	Organization Organization `gorm:"foreignKey:OrganizationID"`
 	Department   *Department  `gorm:"foreignKey:DepartmentID"`
+	Employees    []Employee   `gorm:"many2many:terminal_employees;"` // Many-to-many
+}
+
+type TerminalEmployee struct {
+	TerminalID uuid.UUID `gorm:"type:uuid;primary_key"`
+	EmployeeID uuid.UUID `gorm:"type:uuid;primary_key"`
+	CanAccess  bool      `gorm:"default:true"`
+	CreatedAt  time.Time
 }
