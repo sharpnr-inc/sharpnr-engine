@@ -17,8 +17,8 @@ type Terminal struct {
 	Type        string `gorm:"size:50;not null;index"` // master, accounting, hr, reception, housekeeping, etc.
 	Description string `gorm:"type:text"`
 
-	Features    pq.StringArray `gorm:"type:text[]"`
-	Permissions pq.StringArray `gorm:"type:text[]"`
+	TerminalOperations []TerminalOperations `gorm:"type:text[]"`
+	Permissions        pq.StringArray       `gorm:"type:text[]"`
 
 	IsActive  bool `gorm:"default:true"`
 	IsDefault bool `gorm:"default:false"`
@@ -38,4 +38,10 @@ type TerminalEmployee struct {
 	EmployeeID uuid.UUID `gorm:"type:uuid;primary_key"`
 	CanAccess  bool      `gorm:"default:true"`
 	CreatedAt  time.Time
+}
+
+type TerminalOperations struct {
+	TerminalID  uuid.UUID
+	OperationID uuid.UUID
+	CreatedAt   time.Time
 }
