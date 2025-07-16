@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/sharpnr-inc/sharpnr-engine/core/constants"
 	"gorm.io/gorm"
 )
 
@@ -13,10 +14,10 @@ type Department struct {
 	ID             uuid.UUID `gorm:"type:uuid;primary_key;default:gen_random_uuid()"`
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	Name        string `gorm:"size:100;not null"`
-	Code        string `gorm:"size:20;not null"`
-	Type        string `gorm:"size:50;not null"` // accounting, hr, marketing, reception, housekeeping, etc.
-	Description string `gorm:"type:text"`
+	Name        string                       `gorm:"size:100;not null"`
+	Code        string                       `gorm:"size:20;not null"`
+	Type        constants.BaseDepartmentType `gorm:"size:50;not null"` // Use the enum type
+	Description string                       `gorm:"type:text"`
 
 	IsDefault bool `gorm:"default:false"` // Default departments can't be deleted
 	IsActive  bool `gorm:"default:true"`
@@ -28,6 +29,7 @@ type Department struct {
 	// Relationships
 	Organization Organization `gorm:"foreignKey:OrganizationID"`
 	Terminals    []Terminal
+	Employees    []Employee `gorm:"default:null"`
 }
 
 // TableName specifies the table name
