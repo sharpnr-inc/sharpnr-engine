@@ -21,9 +21,7 @@ func (s *terminalService) InitializeDefaultAccountingTerminals(orgUUID uuid.UUID
 	terminal := &models.Terminal{
 		ID:             uuid.New(), // Corrected field name
 		OrganizationID: orgUUID,
-		DepartmentID:   &deptID, // DepartmentID is a pointer
 		Name:           "Accounting Terminal 01",
-		Type:           "accounting", // Example type
 		Description:    "Default terminal for accounting operations",
 		// Add other necessary fields for a terminal
 	}

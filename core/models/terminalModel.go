@@ -9,12 +9,10 @@ import (
 )
 
 type Terminal struct {
-	ID             uuid.UUID  `gorm:"type:uuid;primary_key;default:gen_random_uuid()"`
-	OrganizationID uuid.UUID  `gorm:"type:uuid;not null;index"`
-	DepartmentID   *uuid.UUID `gorm:"type:uuid;index"` // Nullable for master terminal
+	ID             uuid.UUID `gorm:"type:uuid;primary_key;default:gen_random_uuid()"`
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	Name        string `gorm:"size:100;not null"`
-	Type        string `gorm:"size:50;not null;index"` // master, accounting, hr, reception, housekeeping, etc.
 	Description string `gorm:"type:text"`
 
 	TerminalOperations []TerminalOperations `gorm:"type:text[]"`
@@ -29,7 +27,6 @@ type Terminal struct {
 
 	// Relationships
 	Organization Organization `gorm:"foreignKey:OrganizationID"`
-	Department   *Department  `gorm:"foreignKey:DepartmentID"`
 	Employees    []Employee   `gorm:"many2many:terminal_employees;"` // Many-to-many
 }
 

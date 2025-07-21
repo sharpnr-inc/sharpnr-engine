@@ -28,8 +28,7 @@ type Department struct {
 
 	// Relationships
 	Organization Organization `gorm:"foreignKey:OrganizationID"`
-	Terminals    []Terminal
-	Employees    []Employee `gorm:"default:null"`
+	Employees    []Employee   `gorm:"default:null"`
 }
 
 // TableName specifies the table name
