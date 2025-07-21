@@ -37,6 +37,15 @@ func (m *Module) Type() constants.OrgType {
 	return constants.OrgTypeBase
 }
 
-func (m *Module) Intialize(org *models.Organization) error {
+func (m *Module) Initialize(org *models.Organization) error {
 	fmt.Println("BASE MODULE: Initializing default")
+
+	// hrDept := models.Department{
+	// 	Name: "Human Resources",
+	// 	OrganizationID: org.SharpnrOrgUUID,
+	// 	ModuleType: constants.OrgTypeBase,
+	// }
+
+	return nil
+
 }

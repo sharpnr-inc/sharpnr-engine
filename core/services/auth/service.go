@@ -25,6 +25,7 @@ func CreateNewOrganization(repo interfaces.CoreOrganizationRepository) *organisa
 func (s *organisationService) RegisterOrganization(req dto.OrganizationRegistrationRequestDTO) (*dto.OrganizationRegistrationResponseDTO, string, error) {
 	org := mappers.ToOrganizationModel(req)
 	org.SharpnrOrgUUID = uuid.New()
+	org.OrgOprationType = "kakajs"
 
 	sharpID, err := utils.GenerateUniqueSharpnrOrgID(s.repo)
 	if err != nil {

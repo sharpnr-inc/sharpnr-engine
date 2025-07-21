@@ -6,6 +6,10 @@ import (
 	"github.com/google/uuid"
 )
 
+// Every Organisation Will gonna have either products or service
+// Every Organisation will gonna products or service
+// Or Gonna have only
+// this is Model for the Products
 type Product struct {
 	ProductID      uint   `gorm:"primaryKey;autoIncrement"`
 	Name           string `gorm:"not null"`
