@@ -16,18 +16,17 @@ type InitialiseBaseModule struct {
 var _ modules.IModule = (*Module)(nil)
 
 type Module struct {
-	depRepo  interfaces.DepartmentRepository
 	opRepo   interfaces.OperationsRepository
 	termRepo interfaces.TerminalRepository
 }
 
 func NewModule(
-	depRepo interfaces.DepartmentRepository,
+
 	opRepo interfaces.OperationsRepository,
 	termRepo interfaces.TerminalRepository,
 ) *Module {
 	return &Module{
-		depRepo:  depRepo,
+
 		opRepo:   opRepo,
 		termRepo: termRepo,
 	}

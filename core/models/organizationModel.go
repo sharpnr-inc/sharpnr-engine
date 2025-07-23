@@ -12,7 +12,7 @@ type Organization struct {
 
 	// Type of organization: Hotel, Salon, Retail, etc.
 	OrgOprationType constants.OrgType `gorm:"type:varchar(50)"`
-	OrgDescription  string `gorm:"type:varchar(255);default:null"` // Description of the organization
+	OrgDescription  string            `gorm:"type:varchar(255);default:null"` // Description of the organization
 
 	CreatedAt int64 `gorm:"autoCreateTime"` // Timestamp of creation
 	UpdatedAt int64 `gorm:"autoUpdateTime"` // Timestamp of last update
@@ -59,7 +59,7 @@ type Organization struct {
 	Products    []Product  `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
 	Service     []Service  `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
 	Employees   []Employee `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
-	Departments []Department `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
+	Departments []string   `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
 }
 
 func (Organization) TableName() string {

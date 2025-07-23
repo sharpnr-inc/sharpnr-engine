@@ -1,9 +1,6 @@
 package repositories
 
 import (
-	"fmt"
-
-	"github.com/sharpnr-inc/sharpnr-engine/core/models"
 	"gorm.io/gorm"
 )
 
@@ -15,10 +12,10 @@ func NewDepartmentRepository(db *gorm.DB) *departmentRepository {
 	return &departmentRepository{db: db}
 }
 
-func (r *departmentRepository) Create(dept *models.Department) error {
-	// In a real scenario, you would save the department to the database here.
-	// For now, we'll just simulate success.
-	fmt.Printf("Simulating creation of department: %s for Org UUID: %s\n", dept.Name, dept.OrganizationID)
-	// Example: return r.db.Create(dept).Error
-	return nil
-}
+// func (r *departmentRepository) Create(dept *models.Department) error {
+// 	// In a real scenario, you would save the department to the database here.
+// 	// For now, we'll just simulate success.
+// 	fmt.Printf("Simulating creation of department: %s for Org UUID: %s\n", dept.Name, dept.OrganizationID)
+// 	// Example: return r.db.Create(dept).Error
+// 	return nil
+// }

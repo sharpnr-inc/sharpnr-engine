@@ -1,15 +1,14 @@
-// core/models/department.go
-package models
+package base
 
 import (
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/sharpnr-inc/sharpnr-engine/core/constants"
+	"github.com/sharpnr-inc/sharpnr-engine/core/models"
 	"gorm.io/gorm"
 )
 
-// Department represents organizational departments
 type Department struct {
 	ID             uuid.UUID `gorm:"type:uuid;primary_key;default:gen_random_uuid()"`
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
@@ -27,8 +26,8 @@ type Department struct {
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 
 	// Relationships
-	Organization Organization `gorm:"foreignKey:OrganizationID"`
-	Employees    []Employee   `gorm:"default:null"`
+	Organization models.Organization `gorm:"foreignKey:OrganizationID"`
+	Employees    []models.Employee   `gorm:"default:null"`
 }
 
 // TableName specifies the table name
