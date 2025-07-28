@@ -1,8 +1,9 @@
 package models
 
 import (
+	"sharpnr-engine/core/constants"
+
 	"github.com/google/uuid"
-	"github.com/sharpnr-inc/sharpnr-engine/core/constants"
 )
 
 type Organization struct {

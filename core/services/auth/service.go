@@ -3,11 +3,12 @@ package services
 import (
 	"errors"
 
+	dto "sharpnr-engine/core/dtos"
+	"sharpnr-engine/core/interfaces"
+	"sharpnr-engine/core/mappers"
+	"sharpnr-engine/shared/utils"
+
 	"github.com/google/uuid"
-	dto "github.com/sharpnr-inc/sharpnr-engine/core/dtos"
-	"github.com/sharpnr-inc/sharpnr-engine/core/interfaces"
-	"github.com/sharpnr-inc/sharpnr-engine/core/mappers"
-	"github.com/sharpnr-inc/sharpnr-engine/shared/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 

@@ -3,10 +3,10 @@ package base
 import (
 	"fmt"
 
-	"github.com/sharpnr-inc/sharpnr-engine/core/constants"
-	"github.com/sharpnr-inc/sharpnr-engine/core/interfaces"
-	"github.com/sharpnr-inc/sharpnr-engine/core/models"
-	"github.com/sharpnr-inc/sharpnr-engine/modules"
+	"sharpnr-engine/core/constants"
+	"sharpnr-engine/core/interfaces"
+	"sharpnr-engine/core/models"
+	"sharpnr-engine/modules"
 )
 
 type InitialiseBaseModule struct {

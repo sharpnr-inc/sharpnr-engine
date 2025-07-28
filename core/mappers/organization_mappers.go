@@ -1,8 +1,8 @@
 package mappers
 
 import (
-	dto "github.com/sharpnr-inc/sharpnr-engine/core/dtos"
-	"github.com/sharpnr-inc/sharpnr-engine/core/models"
+	dto "sharpnr-engine/core/dtos"
+	"sharpnr-engine/core/models"
 )
 
 // This is the Mapper, it takes the dto of Request for Registering the organisation and returns the pointer of Organisation model

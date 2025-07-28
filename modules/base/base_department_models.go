@@ -3,9 +3,10 @@ package base
 import (
 	"time"
 
+	"sharpnr-engine/core/constants"
+	"sharpnr-engine/core/models"
+
 	"github.com/google/uuid"
-	"github.com/sharpnr-inc/sharpnr-engine/core/constants"
-	"github.com/sharpnr-inc/sharpnr-engine/core/models"
 	"gorm.io/gorm"
 )
 

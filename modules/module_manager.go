@@ -3,8 +3,8 @@ package modules
 import (
 	"fmt"
 
-	"github.com/sharpnr-inc/sharpnr-engine/core/constants"
-	"github.com/sharpnr-inc/sharpnr-engine/core/models"
+	"sharpnr-engine/core/constants"
+	"sharpnr-engine/core/models"
 )
 
 // IModule defines the standard interface for all business modules.

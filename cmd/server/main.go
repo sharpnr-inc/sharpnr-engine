@@ -4,11 +4,12 @@ package main
 import (
 	"log"
 
-	"github.com/sharpnr-inc/sharpnr-engine/api"
-	"github.com/sharpnr-inc/sharpnr-engine/config"
-	_ "github.com/sharpnr-inc/sharpnr-engine/docs"
+	"sharpnr-engine/api"
+	"sharpnr-engine/config"
+	_ "sharpnr-engine/docs"
 
-	"github.com/sharpnr-inc/sharpnr-engine/shared/database"
+	"sharpnr-engine/shared/database"
+
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )

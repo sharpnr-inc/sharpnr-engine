@@ -1,4 +1,4 @@
-module github.com/sharpnr-inc/sharpnr-engine
+module sharpnr-engine
 
 go 1.24.4
 

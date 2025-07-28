@@ -3,8 +3,9 @@ package services
 import (
 	"testing"
 
-	dto "github.com/sharpnr-inc/sharpnr-engine/core/dtos"
-	"github.com/sharpnr-inc/sharpnr-engine/core/models"
+	dto "sharpnr-engine/core/dtos"
+	"sharpnr-engine/core/models"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

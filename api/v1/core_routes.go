@@ -1,10 +1,11 @@
 package v1
 
 import (
+	orgcontrollers "sharpnr-engine/controllers/organisationControllers"
+	repositories "sharpnr-engine/core/repositories/organization"
+	services "sharpnr-engine/core/services/auth"
+
 	"github.com/gin-gonic/gin"
-	orgcontrollers "github.com/sharpnr-inc/sharpnr-engine/controllers/organisationControllers"
-	repositories "github.com/sharpnr-inc/sharpnr-engine/core/repositories/organization"
-	services "github.com/sharpnr-inc/sharpnr-engine/core/services/auth"
 	"gorm.io/gorm"
 )
 

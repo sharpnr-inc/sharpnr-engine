@@ -26,7 +26,7 @@ Service layer interface that defines the contract for organization-related busin
 
 ### Dependencies
 ```go
-import dto "github.com/sharpnr-inc/sharpnr-engine/core/dtos"
+import dto "sharpnr-engine/core/dtos"
 ```
 
 ### Interface Definition
@@ -66,7 +66,7 @@ Repository layer interface that defines the contract for organization data persi
 
 ### Dependencies
 ```go
-import "github.com/sharpnr-inc/sharpnr-engine/core/models"
+import "sharpnr-engine/core/models"
 ```
 
 ### Interface Definition

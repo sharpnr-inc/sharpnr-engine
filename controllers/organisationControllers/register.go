@@ -3,9 +3,10 @@ package orgcontrollers
 import (
 	"net/http"
 
+	dto "sharpnr-engine/core/dtos"
+	"sharpnr-engine/core/interfaces"
+
 	"github.com/gin-gonic/gin"
-	dto "github.com/sharpnr-inc/sharpnr-engine/core/dtos"
-	"github.com/sharpnr-inc/sharpnr-engine/core/interfaces"
 )
 
 type OrganisationController struct {

@@ -1,8 +1,9 @@
 package interfaces
 
 import (
+	"sharpnr-engine/core/models"
+
 	"github.com/google/uuid"
-	"github.com/sharpnr-inc/sharpnr-engine/core/models"
 )
 
 // This File Contains both Interfaces for the Teminal Like Service and Repository

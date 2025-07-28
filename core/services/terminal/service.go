@@ -3,9 +3,10 @@ package services
 import (
 	"fmt"
 
+	"sharpnr-engine/core/interfaces"
+	"sharpnr-engine/core/models"
+
 	"github.com/google/uuid"
-	"github.com/sharpnr-inc/sharpnr-engine/core/interfaces"
-	"github.com/sharpnr-inc/sharpnr-engine/core/models"
 )
 
 type terminalService struct {

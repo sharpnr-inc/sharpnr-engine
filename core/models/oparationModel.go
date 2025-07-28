@@ -3,8 +3,9 @@ package models
 import (
 	"time"
 
+	"sharpnr-engine/core/constants"
+
 	"github.com/google/uuid"
-	"github.com/sharpnr-inc/sharpnr-engine/core/constants"
 )
 
 type Operations struct {

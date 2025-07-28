@@ -1,8 +1,9 @@
 package api
 
 import (
+	v1 "sharpnr-engine/api/v1"
+
 	"github.com/gin-gonic/gin"
-	v1 "github.com/sharpnr-inc/sharpnr-engine/api/v1"
 	"gorm.io/gorm"
 )
 
