@@ -20,7 +20,7 @@ func ToOrganizationModel(req dto.OrganizationRegistrationRequestDTO) *models.Org
 		PublicContact:       req.PublicContact,
 		ContactNumber:       req.ContactNumber,
 		ContactNumber2:      req.ContactNumber2,
-		MasterContact:       req.MasterContact,
+		MasterPhoneNumber:   req.MasterContact,
 		SecondaryEmail:      req.SecondaryEmail,
 		CinNumber:           req.CinNumber,
 		GstNumber:           req.GstNumber,
@@ -43,6 +43,6 @@ func ToOrganizationRegistrationResponseDTO(org *models.Organization) dto.Organiz
 		Description:  org.OrgDescription,
 		// OrgOprationType: constants.OrgType,
 		RootEmail: org.RootEmail,
-		CreatedAt: org.CreatedAt,
+		CreatedAt: org.CreatedAt.Unix(),
 	}
 }

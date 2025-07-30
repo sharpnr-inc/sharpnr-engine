@@ -8,7 +8,6 @@ import (
 	"sharpnr-engine/core/mappers"
 	"sharpnr-engine/shared/utils"
 
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -25,7 +24,6 @@ func CreateNewOrganization(repo interfaces.CoreOrganizationRepository) *organisa
 
 func (s *organisationService) RegisterOrganization(req dto.OrganizationRegistrationRequestDTO) (*dto.OrganizationRegistrationResponseDTO, string, error) {
 	org := mappers.ToOrganizationModel(req)
-	org.SharpnrOrgUUID = uuid.New()
 	org.OrgOprationType = "kakajs"
 
 	sharpID, err := utils.GenerateUniqueSharpnrOrgID(s.repo)
@@ -53,7 +51,7 @@ func (s *organisationService) RegisterOrganization(req dto.OrganizationRegistrat
 		return nil, "", err
 	}
 
-	token, err := utils.GenerateJWTToken(org.SharpnrOrgUUID, org.Name)
+	token, err := utils.GenerateJWTToken(org.ID, org.Name)
 	if err != nil {
 		return nil, "", err
 	}

@@ -41,15 +41,15 @@ func NewModuleManager() *ModuleManager {
 // RegisterModule allows a module to be registered with the manager.
 // This should be called at application startup for each available module.
 // If a module is the base module, it is stored separately.
-func (m *ModuleManager) RegisterModule(module IModule) {
-	if module.Type() == constants.OrgTypeBase {
-		m.baseModule = module
-		fmt.Printf("Registered BASE module.\n")
-	} else {
-		m.modules[module.Type()] = module
-		fmt.Printf("Registered module for type: %s\n", module.Type())
-	}
-}
+// func (m *ModuleManager) RegisterModule(module IModule) {
+// 	if module.Type() == constants.OrgType() {
+// 		m.baseModule = module
+// 		fmt.Printf("Registered BASE module.\n")
+// 	} else {
+// 		m.modules[module.Type()] = module
+// 		fmt.Printf("Registered module for type: %s\n", module.Type())
+// 	}
+// }
 
 // InitializeModulesForOrg is the core function that sets up a new organization.
 // It is called by the OrganizationService after a new organization is created.
@@ -66,7 +66,7 @@ func (m *ModuleManager) InitializeModulesForOrg(org *models.Organization) error 
 	}
 
 	// 2. Find and initialize the specific module for the organization's type.
-	specificModule, exists := m.modules[org.OrgOprationType]
+	specificModule, exists := m.modules[constants.OrgType(org.OrgOprationType)]
 	if !exists {
 		// This is not necessarily an error. Some org types might only have a base module.
 		fmt.Printf("No specific module found for type '%s'. Only base module was initialized.\n", org.OrgOprationType)

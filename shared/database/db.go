@@ -36,6 +36,13 @@ func ConnectDB() *gorm.DB {
 }
 
 // Run migration to create tables
+// This Function will Create Database
 func MigrateDB(db *gorm.DB) error {
-	return db.AutoMigrate(&models.Organization{})
+	return db.AutoMigrate(
+		&models.Organization{}, // Parent of everything
+		&models.Department{},   // Belongs to Organization
+		&models.Employee{},     // Belongs to Department + Organization
+		&models.Product{},      // Belongs to Organization
+		&models.Service{},      // Belongs to Organization
+	)
 }
