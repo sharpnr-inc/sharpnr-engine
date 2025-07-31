@@ -4,11 +4,12 @@ package constants
 type OrgType string
 
 const (
-	Hotel      OrgType = "HOTEL"
-	Retail     OrgType = "RETAIL"
-	Salon      OrgType = "SALON"
-	Club       OrgType = "CLUB"
-	Restaurant OrgType = "RESTAURANT"
+	DefaultBase OrgType = "BASE"
+	Hotel       OrgType = "HOTEL"
+	Retail      OrgType = "RETAIL"
+	Salon       OrgType = "SALON"
+	Club        OrgType = "CLUB"
+	Restaurant  OrgType = "RESTAURANT"
 )
 
 // IsValid checks if the organization type is valid.

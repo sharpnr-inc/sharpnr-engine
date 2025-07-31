@@ -33,17 +33,19 @@ package base
 // }
 
 // func (m *Module) Type() constants.OrgType {
-// 	return constants.OrgTypeBase
+// 	return constants.DefaultBase
 // }
 
 // func (m *Module) Initialize(org *models.Organization) error {
 // 	fmt.Println("BASE MODULE: Initializing default")
 
-// 	// hrDept := models.Department{
-// 	// 	Name: "Human Resources",
-// 	// 	OrganizationID: org.SharpnrOrgUUID,
-// 	// 	ModuleType: constants.OrgTypeBase,
-// 	// }
+// 	hrDept := models.Department{
+// 		Name:           "Human Resources",
+// 		OrganizationID: org.ID,
+// 	}
+// 	if err := m.db.Create(&hrDept).Error; err != nil {
+// 		return fmt.Errorf("failed to create HR department: %w", err)
+// 	}
 
 // 	return nil
 
