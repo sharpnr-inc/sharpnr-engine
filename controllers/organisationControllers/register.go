@@ -3,16 +3,17 @@ package orgcontrollers
 import (
 	"net/http"
 
+	dto "sharpnr-engine/core/dtos"
+	"sharpnr-engine/core/interfaces"
+
 	"github.com/gin-gonic/gin"
-	dto "github.com/sharpnr-inc/sharpnr-engine/core/dtos"
-	"github.com/sharpnr-inc/sharpnr-engine/core/interfaces"
 )
 
 type OrganisationController struct {
-	service interfaces.CoreOrganisationService
+	service interfaces.AuthService
 }
 
-func NewOrganisationController(service interfaces.CoreOrganisationService) *OrganisationController {
+func NewOrganisationController(service interfaces.AuthService) *OrganisationController {
 	return &OrganisationController{service: service}
 }
 

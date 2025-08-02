@@ -3,9 +3,10 @@ package services
 import (
 	"fmt"
 
+	"sharpnr-engine/core/interfaces"
+	"sharpnr-engine/core/models"
+
 	"github.com/google/uuid"
-	"github.com/sharpnr-inc/sharpnr-engine/core/interfaces"
-	"github.com/sharpnr-inc/sharpnr-engine/core/models"
 )
 
 type terminalService struct {
@@ -21,9 +22,7 @@ func (s *terminalService) InitializeDefaultAccountingTerminals(orgUUID uuid.UUID
 	terminal := &models.Terminal{
 		ID:             uuid.New(), // Corrected field name
 		OrganizationID: orgUUID,
-		DepartmentID:   &deptID, // DepartmentID is a pointer
 		Name:           "Accounting Terminal 01",
-		Type:           "accounting", // Example type
 		Description:    "Default terminal for accounting operations",
 		// Add other necessary fields for a terminal
 	}

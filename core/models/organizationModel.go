@@ -1,67 +1,65 @@
 package models
 
 import (
-	"github.com/google/uuid"
-	"github.com/sharpnr-inc/sharpnr-engine/core/constants"
+	"sharpnr-engine/core/constants"
+	"time"
+
+	"gorm.io/gorm"
 )
 
 type Organization struct {
-	Name           string    `gorm:"not null"`                // Name must not be null
-	SharpnrOrgID   string    `gorm:"size:16;unique;not null"` // Public-facing ID (e.g. SHR000000000001)
-	SharpnrOrgUUID uuid.UUID `gorm:"type:uuid;primaryKey"`    // Internal UUID for linking and security
+	ID              string            `gorm:"not null;unique"`
+	Name            string            `gorm:"size:100;not null"`
+	SharpnrOrgID    string            `gorm:"not null;unique"`
+	OrgOprationType constants.OrgType `gorm:"type:varchar(20);not null"`
+	OrgDescription  string            `gorm:"type:text"`
 
-	// Type of organization: Hotel, Salon, Retail, etc.
-	OrgOprationType constants.OrgType `gorm:"type:varchar(50)"`
-	OrgDescription  string `gorm:"type:varchar(255);default:null"` // Description of the organization
-
-	CreatedAt int64 `gorm:"autoCreateTime"` // Timestamp of creation
-	UpdatedAt int64 `gorm:"autoUpdateTime"` // Timestamp of last update
-
-	// Address details
+	// Address fields
 	Address string `gorm:"type:varchar(255);not null"`
-	State   string `gorm:"type:varchar(100);not null"`
+	State   string `gorm:"type:varchar(100);not null" `
 	City    string `gorm:"type:varchar(100);not null"`
-	Pincode string `gorm:"type:varchar(20);not null"`
+	Pincode string `gorm:"type:varchar(20);not null" `
 	Country string `gorm:"type:varchar(100);not null"`
 
-	// Contact details
-	PublicContact  string  `gorm:"type:varchar(15);not null"`     // Assuming it's a contact number
-	ContactNumber  string  `gorm:"type:varchar(15);not null"`     // Primary contact
-	ContactNumber2 *string `gorm:"type:varchar(15);default:null"` // Optional
-	MasterContact  *string `gorm:"type:varchar(15);default:null"` // Optional
-	RootEmail      string  `gorm:"unique;not null"`
-	SecondaryEmail *string `gorm:"type:varchar(100);default:null"`
+	// Contact fields
+	PublicContact     string  `gorm:"type:varchar(100);not null"`
+	ContactNumber     string  `gorm:"type:varchar(20);not null"`
+	ContactNumber2    *string `gorm:"type:varchar(20)"`
+	MasterPhoneNumber string  `gorm:"type:varchar(20)"`
+	RootEmail         string  `gorm:"type:varchar(100);not null"`
+	SecondaryEmail    *string `gorm:"type:varchar(100)"`
 
-	// Verification & registration
-	IsPhysicalVerified  bool    `gorm:"default:false"`
-	ISRegistered        bool    `gorm:"default:false"`
-	CinNumber           *string `gorm:"type:varchar(30);unique"`
-	GstNumber           *string `gorm:"type:varchar(20);unique"`
-	OrganizationRegType *string `gorm:"type:varchar(50)"`
+	// Verification and registration
+	IsPhysicalVerified  bool    `gorm:"default:false;not null"`
+	ISRegistered        bool    `gorm:"default:false;not null"`
+	CinNumber           *string `gorm:"type:varchar(50)"`
+	GstNumber           *string `gorm:"type:varchar(50)"`
+	OrganizationRegType *string `gorm:"type:varchar(100)"`
 
-	// Banking
+	// Banking details
 	Banker         *string `gorm:"type:varchar(100)"`
-	BankAccNumber  string  `gorm:"type:varchar(30);unique;not null"`
+	BankAccNumber  string  `gorm:"type:varchar(30);not null"`
 	IfscCode       *string `gorm:"type:varchar(20)"`
 	BankBranchName *string `gorm:"type:varchar(100)"`
-	UPIID          *string `gorm:"type:varchar(100);unique"`
+	UPIID          *string `gorm:"type:varchar(100)"`
 
-	// Root details
-	Password       string `gorm:"not null"`
-	MasterPassword string `gorm:"not null"`
+	// Security
+	Password       string `gorm:"type:char(60);not null"`
+	MasterPassword string `gorm:"type:char(60);not null"`
 
-	// Organisation System Details
-	// TerminalID *string `gorm:"type:varchar(50);unique"`       // Unique Terminal ID for organization
-	// AccessKey  *string `gorm:"type:varchar(50);unique"`       // Unique Access Key for organization
-	// OrgOS      *string `gorm:"type:varchar(50);default:null"` // Operating System of the organization (e.g. Android, iOS, Web)
+	// Timestamps
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 
-	// Relationships (fixed references to SharpnrOrgUUID)
-	Products    []Product  `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
-	Service     []Service  `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
-	Employees   []Employee `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
-	Departments []Department `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
+	// Relationships
+	Products    []Product    `gorm:"foreignKey:OrganizationID"`
+	Services    []Service    `gorm:"foreignKey:OrganizationID"`
+	Employees   []Employee   `gorm:"foreignKey:OrganizationID"`
+	Departments []Department `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
+// TableName specifies the table name
 func (Organization) TableName() string {
 	return "organizations"
 }

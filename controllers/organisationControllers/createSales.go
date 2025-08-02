@@ -1,5 +1,1 @@
 package orgcontrollers
-
-func CreateSale() {
-
-}

@@ -2,20 +2,31 @@ package models
 
 import (
 	"time"
-	"github.com/google/uuid"
+
+	"gorm.io/gorm"
 )
 
 type Employee struct {
-	EmployeeID         uint      `gorm:"primaryKey;autoIncrement"`
-	FirstName          string    `gorm:"not null"`
-	LastName           *string
-	Email              string    `gorm:"unique;not null"`
-	Phone              *string
-	OrganizationID     uuid.UUID `gorm:"type:uuid;not null"` // FK to Organization.SharpnrOrgUUID
-	Organization       Organization `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
-	Department         string
-	TerminalAccess     bool
-	IdentificationCode string
-	CreatedAt          time.Time
-	UpdatedAt          time.Time
+	ID          string `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	FirstName   string `gorm:"size:50;not null"`
+	LastName    string `gorm:"size:50"`
+	Email       string `gorm:"not null;unique"`
+	PhoneNumber string `gorm:"size:20"`
+
+	OrganizationID string       `gorm:"type:uuid;not null;index"`
+	Organization   Organization `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+
+	DepartmentID string     `gorm:"type:uuid;not null;index"`
+	Department   Department `gorm:"foreignKey:DepartmentID;references:ID"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+
+	TerminalAccess []string `gorm:"type:text[]"`
+}
+
+// TableName specifies the table name
+func (Employee) TableName() string {
+	return "employees"
 }

@@ -3,19 +3,24 @@ package models
 import (
 	"time"
 
-	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
+// Every Organisation Will gonna have either products or service
+// Every Organisation will gonna products or service
+// Or Gonna have only
+// this is Model for the Products
 type Product struct {
-	ProductID      uint   `gorm:"primaryKey;autoIncrement"`
-	Name           string `gorm:"not null"`
-	Description    *string
-	SKU            *string      `gorm:"unique"`
-	Price          float64      `gorm:"default:0"`
-	OrganizationID uuid.UUID    `gorm:"type:uuid;not null"` // FK to Organization.SharpnrOrgUUID
-	Organization   Organization `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
+	ID          string  `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	Name        string  `gorm:"type:varchar(100);not null"`
+	Description string  `gorm:"type:text"`
+	Price       float64 `gorm:"not null"`
+	SKU         string  `gorm:"type:varchar(50);uniqueIndex"`
 
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	PictureUrl string `gorm:"default:null"`
+	OrganizationID string       `gorm:"type:uuid;not null;index"`
+	Organization   Organization `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }

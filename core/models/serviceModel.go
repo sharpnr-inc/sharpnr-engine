@@ -2,17 +2,21 @@ package models
 
 import (
 	"time"
-	"github.com/google/uuid"
+
+	"gorm.io/gorm"
 )
 
 type Service struct {
-	ServiceID      uint      `gorm:"primaryKey;autoIncrement"`
-	Name           string    `gorm:"not null"`
-	Description    *string
-	Fee            float64   `gorm:"default:0"`
-	OrganizationID uuid.UUID `gorm:"type:uuid;not null"` // FK to Organization.SharpnrOrgUUID
-	Organization   Organization `gorm:"foreignKey:OrganizationID;references:SharpnrOrgUUID"`
+	ID          string  `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	Name        string  `gorm:"type:varchar(100);not null"`
+	Description string  `gorm:"type:text"`
+	Duration    int     `gorm:"not null"` // duration in minutes
+	Price       float64 `gorm:"not null"`
+
+	OrganizationID string       `gorm:"type:uuid;not null;index"`
+	Organization   Organization `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }

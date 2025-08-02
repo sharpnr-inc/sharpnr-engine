@@ -1,6 +1,6 @@
 package interfaces
 
-import "github.com/sharpnr-inc/sharpnr-engine/core/models"
+import "sharpnr-engine/core/models"
 
 // CoreOrganizationRepository defines the interface for interacting with the core organization data store.
 // It provides a set of methods for creating, retrieving, and managing organizations,

@@ -5,14 +5,13 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
 )
 
 var jwtSecret = []byte("your-super-secure-secret") // use env var in production
 
-func GenerateJWTToken(orgID uuid.UUID, email string) (string, error) {
+func GenerateJWTToken(orgID string, email string) (string, error) {
 	claims := jwt.MapClaims{
-		"org_id": orgID.String(),
+		"org_id": orgID,
 		"email":  email,
 		"exp":    time.Now().Add(24 * time.Hour).Unix(), // token expires in 24h
 		"iat":    time.Now().Unix(),
