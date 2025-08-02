@@ -18,7 +18,7 @@ func (s *authService) Login(req dto.OrgAuthRequestDTO) (*dto.OrgAuthResponseDTO,
 		return nil, errors.New("invalid Password")
 	}
 
-	token, err := utils.GenerateJWTToken(org.ID, org.Name)
+	token, err := utils.GenerateJWTToken(org.SharpnrOrgID, org.RootEmail)
 	if err != nil {
 		return nil, errors.New("failed to generate token")
 	}
