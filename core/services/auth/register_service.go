@@ -13,16 +13,16 @@ import (
 
 // This Struct Return the Repository Interface or Contract
 // Which have 4 Signature functions
-type organisationService struct {
+type authService struct {
 	repo interfaces.CoreOrganizationRepository
 }
 
 // This service for the implemeting the Auth and Registration for the Organisations
-func CreateNewOrganization(repo interfaces.CoreOrganizationRepository) *organisationService {
-	return &organisationService{repo: repo}
+func NewAuthService(repo interfaces.CoreOrganizationRepository) interfaces.AuthService {
+	return &authService{repo: repo}
 }
 
-func (s *organisationService) RegisterOrganization(req dto.OrganizationRegistrationRequestDTO) (*dto.OrganizationRegistrationResponseDTO, string, error) {
+func (s *authService) RegisterOrganization(req dto.OrganizationRegistrationRequestDTO) (*dto.OrganizationRegistrationResponseDTO, string, error) {
 	org := mappers.ToOrganizationModel(req)
 	org.OrgOprationType = "kakajs"
 

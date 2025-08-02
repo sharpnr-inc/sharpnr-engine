@@ -10,10 +10,10 @@ import (
 )
 
 type OrganisationController struct {
-	service interfaces.CoreOrganisationService
+	service interfaces.AuthService
 }
 
-func NewOrganisationController(service interfaces.CoreOrganisationService) *OrganisationController {
+func NewOrganisationController(service interfaces.AuthService) *OrganisationController {
 	return &OrganisationController{service: service}
 }
 
