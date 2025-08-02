@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"sharpnr-engine/core/models"
+	accountingmodels "sharpnr-engine/modules/base/accounting/accounting_models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -46,5 +47,6 @@ func MigrateDB(db *gorm.DB) error {
 		&models.Service{},      // Belongs to Organization
 		&models.Operations{},   // Belongs to Department + Organization
 		&models.Terminal{},     // Belongs to Organization + has many-to-many with Employee & Operations
+		&accountingmodels.AccountingBills{},
 	)
 }
