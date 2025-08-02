@@ -11,8 +11,9 @@ import (
 
 func CoreV1Routes(v1 *gin.RouterGroup, db *gorm.DB) {
 	orgRepo := repositories.NewOrganizationRepository(db)
-	orgService := services.CreateNewOrganization(orgRepo)
-	orgController := orgcontrollers.NewOrganisationController(orgService)
+	authService := services.NewAuthService(orgRepo)
+	orgController := orgcontrollers.NewOrganisationController(authService)
 
 	v1.POST("/organisation/register", orgController.Register)
+	v1.POST("/organisation/login", orgController.Login)
 }
