@@ -2,23 +2,53 @@
 package utils
 
 import (
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/joho/godotenv"
 )
 
 var jwtSecret = []byte("your-super-secure-secret") // use env var in production
 
-func GenerateJWTToken(orgID string, email string) (string, error) {
-	claims := jwt.MapClaims{
-		"org_id": orgID,
-		"email":  email,
-		"exp":    time.Now().Add(24 * time.Hour).Unix(), // token expires in 24h
-		"iat":    time.Now().Unix(),
+func getJWTSecret() []byte {
+	_ = godotenv.Load() // ignore error, assume env already loaded in main
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		secret = "your-super-secure-secret" // fallback, only for dev
 	}
+	return []byte(secret)
+}
 
+func GenerateOTPToken(email string) (string, error) {
+	claims := jwt.MapClaims{
+		"email": email,
+		"exp":   time.Now().Add(15 * time.Minute).Unix(), // 15 min expiry
+		"iat":   time.Now().Unix(),
+	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtSecret)
+	return token.SignedString(getJWTSecret())
+}
+
+func GenerateAuthToken(email string) (string, error) {
+	claims := jwt.MapClaims{
+		"email":     email,
+		"tokenType": "auth",
+		"exp":       time.Now().Add(24 * time.Hour).Unix(), // 24h expiry
+		"iat":       time.Now().Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(getJWTSecret())
+}
+
+func ValidateJWT(tokenString string) (*jwt.Token, error) {
+	return jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return getJWTSecret(), nil
+	})
 }
 
 func ParseJWTToken(tokenStr string) (jwt.MapClaims, error) {

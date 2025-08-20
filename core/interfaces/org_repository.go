@@ -2,6 +2,30 @@ package interfaces
 
 import "sharpnr-engine/core/models"
 
+// ========================================
+// DATA FLOW: Redis + PostgreSQL
+// ========================================
+
+/*
+REGISTRATION FLOW:
+1. User submits registration → Redis (temporary, 24h expiry)
+2. User verifies email/OTP → Move from Redis → PostgreSQL (permanent)
+
+DATA DISTRIBUTION:
+┌─────────────────┐    ┌──────────────────────┐
+│     REDIS       │    │    POSTGRESQL        │
+│   (Temporary)   │    │    (Permanent)       │
+├─────────────────┤    ├──────────────────────┤
+│ • Pending       │    │ • Verified users     │
+│   registrations │    │ • Organizations      │
+│ • Session data  │    │ • User profiles      │
+│ • OTP codes     │    │ • Auth credentials   │
+│ • Cache         │    │ • Application data   │
+│ • Rate limiting │    │ • Audit logs         │
+└─────────────────┘    └──────────────────────┘
+      TTL: 24h              Permanent Storage
+*/
+
 // CoreOrganizationRepository defines the interface for interacting with the core organization data store.
 // It provides a set of methods for creating, retrieving, and managing organizations,
 // forming an abstraction layer between the business logic and the database.
@@ -28,4 +52,20 @@ type CoreOrganizationRepository interface {
 	// This is commonly used during login or recovery processes.
 	// It returns a pointer to the Organization model and an error if not found or if a database error occurs.
 	FindByMail(email string) (*models.Organization, error)
+}
+
+// CoreOrganizationRepository defines the interface for interacting with the core organization data store.
+// It provides a set of methods for creating, retrieving, and managing organizations,
+// forming an abstraction layer between the business logic and the database.
+type CoreInitialOrganizationRepository interface {
+	// So First of All we need to Find the If email/Phone or either one of Them Already Exist in the main DB
+	// In both DB
+	FindOrgByEmailInMainDB()
+
+	//
+	FindOrgByEmailInRedisDB()
+	// Then We need to
+	CreateTempOrg()
+	//
+	MoveTempOrgToMainDB()
 }

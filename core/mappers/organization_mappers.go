@@ -46,3 +46,14 @@ func ToOrganizationRegistrationResponseDTO(org *models.Organization) dto.Organiz
 		CreatedAt: org.CreatedAt.Unix(),
 	}
 }
+
+func ToTempOrgModel(req dto.OrgInitialRegistration_Request_Dto) *models.TempOrgRegistrationData {
+	return &models.TempOrgRegistrationData{
+		Email:    req.Email,
+		Name:     req.Name,
+		OrgType:  req.OrgType,
+		Phone:    req.Phone,
+		Password: req.Password,
+	}
+
+}

@@ -4,11 +4,13 @@ import (
 	"sharpnr-engine/core/constants"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
+// This is Master Model For the Organisation
 type Organization struct {
-	ID              string            `gorm:"not null;unique"`
+	ID              uuid.UUID         `gorm:"not null;unique"`
 	Name            string            `gorm:"size:100;not null"`
 	SharpnrOrgID    string            `gorm:"not null;unique"`
 	OrgOprationType constants.OrgType `gorm:"type:varchar(20);not null"`
