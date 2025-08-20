@@ -1,5 +1,7 @@
 package orgcontrollers
 
-func UpdateOrgnisationDetails() {
+import "github.com/gin-gonic/gin"
+
+func (c *OrganisationController) UpdateOrgRegistration(ctx *gin.Context) {
 
 }

@@ -1,62 +1,91 @@
 package services
 
 import (
-	"errors"
-
+	"context"
+	"fmt"
 	dto "sharpnr-engine/core/dtos"
 	"sharpnr-engine/core/interfaces"
-	"sharpnr-engine/core/mappers"
+	"sharpnr-engine/core/models"
+	"sharpnr-engine/shared/mailer"
 	"sharpnr-engine/shared/utils"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
-// This Struct Return the Repository Interface or Contract
-// Which have 4 Signature functions
-type authService struct {
-	repo interfaces.CoreOrganizationRepository
+type orgRegistrationService struct {
+	repo interfaces.IOrgRegistrationRepository
 }
 
-// This service for the implemeting the Auth and Registration for the Organisations
-func NewAuthService(repo interfaces.CoreOrganizationRepository) interfaces.AuthService {
-	return &authService{repo: repo}
+func OrgRegService(repo interfaces.IOrgRegistrationRepository) interfaces.OrgRegistrationService {
+	return &orgRegistrationService{repo: repo}
 }
 
-func (s *authService) RegisterOrganization(req dto.OrganizationRegistrationRequestDTO) (*dto.OrganizationRegistrationResponseDTO, string, error) {
-	org := mappers.ToOrganizationModel(req)
-	org.OrgOprationType = "kakajs"
+func (s *orgRegistrationService) InitiateOrgRegistration(ctx context.Context, req dto.OrgInitialRegistration_Request_Dto) (*dto.OrgInitialRegistration_Response_Dto, string, error) {
 
-	sharpID, err := utils.GenerateUniqueSharpnrOrgID(s.repo)
+	orgEmail := req.Email
+	orgPhone := req.Phone
+
+	// Step 1 → Check if email or phone exists in Redis
+	existsInRedis, err := s.repo.EmailOrPhoneExistsInRedis(ctx, orgEmail, orgPhone)
 	if err != nil {
-		return nil, "", err
+		return nil, "", fmt.Errorf("failed to check redis: %w", err)
 	}
 
-	org.SharpnrOrgID = sharpID
+	if existsInRedis {
+		// Update OTP in redis and send a NEW OTP mail
+		fmt.Println("ORG Email Exits")
+		ok, otp, err := mailer.VerifyOtp_Org_Registration(orgEmail)
+		if !ok || err != nil {
+			return nil, "", fmt.Errorf("failed to send otp email: %w", err)
+		}
 
-	hashedPasword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+		token, err := utils.GenerateOTPToken(orgEmail)
+		if err != nil {
+			return nil, "", err
+		}
+
+		// Save otp token in redis
+		update := &models.TempOrgRegistrationData{
+			Email: orgEmail,
+			Phone: orgPhone,
+			OTP:   otp,
+		}
+		if err := s.repo.CreateOrgInRedisDB(ctx, update); err != nil {
+			return nil, "", fmt.Errorf("failed to update redis otp: %w", err)
+		}
+
+		return &dto.OrgInitialRegistration_Response_Dto{
+			Token: token,
+		}, "", nil
+	}
+
+	// Step 2 → Not in Redis → Check MainDB
+	existsInMainDB, err := s.repo.EmailOrPhoneExistsInMainDB(ctx, orgEmail, orgPhone)
 	if err != nil {
-		return nil, "", errors.New("failed to Hash the Password")
+		return nil, "", fmt.Errorf("failed to check database: %w", err)
+	}
+	if existsInMainDB {
+		return nil, "", fmt.Errorf("email or phone already registered in main database")
 	}
 
-	org.Password = string(hashedPasword)
-
-	hashedMasterPasword, err := bcrypt.GenerateFromPassword([]byte(req.MasterPassword), bcrypt.DefaultCost)
-	if err != nil {
-		return nil, "", errors.New("failed to Hash the Password")
+	// Step 3 → Create temp org in Redis and send OTP mail
+	ok, otpToken, err := mailer.VerifyOtp_Org_Registration(orgEmail)
+	if !ok || err != nil {
+		return nil, "", fmt.Errorf("failed to send otp email: %w", err)
 	}
 
-	org.MasterPassword = string(hashedMasterPasword)
-
-	if err := s.repo.Create(org); err != nil {
-		return nil, "", err
+	tempOrg := &models.TempOrgRegistrationData{
+		Name:     req.Name,
+		Email:    orgEmail,
+		Phone:    orgPhone,
+		OrgType:  req.OrgType,
+		Password: req.Password,
+		OTP:      otpToken,
 	}
 
-	token, err := utils.GenerateJWTToken(org.ID, org.Name)
-	if err != nil {
-		return nil, "", err
+	if err := s.repo.CreateOrgInRedisDB(ctx, tempOrg); err != nil {
+		return nil, "", fmt.Errorf("failed to create temp org in redis: %w", err)
 	}
 
-	respDTO := mappers.ToOrganizationRegistrationResponseDTO(org)
-	return &respDTO, token, nil
-
+	return &dto.OrgInitialRegistration_Response_Dto{
+		Token: otpToken,
+	}, "", nil
 }

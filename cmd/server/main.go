@@ -15,7 +15,8 @@ import (
 )
 
 func main() {
-	config.LoadEnv()           // Load env vars like DB_HOST, DB_USER, etc.
+	config.LoadEnv() // Load env vars like DB_HOST, DB_USER, etc.
+	resdisDb := database.ConnectRedis()
 	db := database.ConnectDB() // Connect to DB
 
 	// Run migrations
@@ -26,7 +27,7 @@ func main() {
 	log.Println("✅ Database migration completed.")
 
 	// Create and configure the main router
-	r := api.SetupRouter(db)
+	r := api.SetupRouter(db, resdisDb)
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

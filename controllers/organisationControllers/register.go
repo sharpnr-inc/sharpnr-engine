@@ -10,29 +10,30 @@ import (
 )
 
 type OrganisationController struct {
-	service interfaces.AuthService
+	service interfaces.OrgRegistrationService
 }
 
-func NewOrganisationController(service interfaces.AuthService) *OrganisationController {
+func RegisterOrgController(service interfaces.OrgRegistrationService) *OrganisationController {
 	return &OrganisationController{service: service}
 }
 
-func (c *OrganisationController) Register(ctx *gin.Context) {
-	var req dto.OrganizationRegistrationRequestDTO
+func (c *OrganisationController) InitOrgReg(ctx *gin.Context) {
+	var req dto.OrgInitialRegistration_Request_Dto
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	respDTO, token, err := c.service.RegisterOrganization(req)
+	resDTO, _, err := c.service.InitiateOrgRegistration(ctx.Request.Context(), req)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{
-		"Organisation": respDTO,
-		"token":        token,
+	// success response
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": resDTO,
 	})
+
 }

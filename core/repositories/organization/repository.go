@@ -2,68 +2,84 @@ package repositories
 
 import (
 	// "github.com/google/uuid"
-	"sharpnr-engine/core/models"
 
+	"context"
+	"encoding/json"
+	"fmt"
+	"sharpnr-engine/core/models"
+	"sharpnr-engine/shared/database"
+	"time"
+
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
-type organizationRepository struct {
-	db *gorm.DB
+type initOrganizationRepository struct {
+	redis *redis.Client
+	db    *gorm.DB
 }
 
-func NewOrganizationRepository(db *gorm.DB) *organizationRepository {
-	return &organizationRepository{db}
+func InitializeNewOrgRegistration(db *gorm.DB, redis *redis.Client) *initOrganizationRepository {
+	return &initOrganizationRepository{
+		redis: database.RedisClient,
+		db:    database.DB,
+	}
 }
 
-// Create inserts a new organization record
-func (r *organizationRepository) Create(org *models.Organization) error {
-	return r.db.Create(org).Error
+func (r *initOrganizationRepository) CreateOrgInMainDB(ctx context.Context, tempOrg *models.TempOrgRegistrationData) error {
+	// TODO: insert into PostgreSQL (main DB)
+	return nil
 }
 
-// ExistsBySharpnrOrgID checks if a SharpnrOrgID already exists
-func (r *organizationRepository) ExistsBySharpnrOrgID(id string) (bool, error) {
+func (r *initOrganizationRepository) CreateOrgInRedisDB(ctx context.Context, tempOrg *models.TempOrgRegistrationData) error {
+	key := fmt.Sprintf("init_reg:%s", tempOrg.Email)
+
+	// Serialize struct to JSON
+	data, err := json.Marshal(tempOrg)
+	if err != nil {
+		return err
+	}
+
+	// Save in Redis with a TTL (e.g. 15 minutes)
+	return r.redis.Set(ctx, key, data, 15*time.Minute).Err()
+}
+
+func (r *initOrganizationRepository) EmailOrPhoneExistsInRedis(ctx context.Context, email string, phone string) (bool, error) {
+	emailKey := fmt.Sprintf("init_reg:%s", email)
+	phoneKey := fmt.Sprintf("init_reg_phone:%s", phone)
+
+	// check email
+	_, err := r.redis.Get(ctx, emailKey).Result()
+	if err == nil {
+		return true, nil
+	}
+	if err != redis.Nil {
+		return false, err
+	}
+
+	// check phone
+	_, err = r.redis.Get(ctx, phoneKey).Result()
+	if err == nil {
+		return true, nil
+	}
+	if err != redis.Nil {
+		return false, err
+	}
+
+	return false, nil
+}
+
+func (r *initOrganizationRepository) EmailOrPhoneExistsInMainDB(ctx context.Context, email string, phone string) (bool, error) {
 	var count int64
-	err := r.db.Model(&models.Organization{}).
-		Where("sharpnr_org_id = ?", id).
+
+	// Check if any record exists with the given email or phone
+	err := r.db.WithContext(ctx).Model(&models.Organization{}).
+		Where("root_email = ? OR master_phone_number = ?", email, phone).
 		Count(&count).Error
-	return count > 0, err
-}
 
-// FindBySharpnrOrgID checks if an organization exists by its public ID.
-// This method fulfills the CoreOrganizationRepository interface.
-func (r *organizationRepository) FindBySharpnrOrgID(id string) (bool, error) {
-	var count int64
-	err := r.db.Model(&models.Organization{}).Where("sharpnr_org_id = ?", id).Count(&count).Error
 	if err != nil {
 		return false, err
 	}
+
 	return count > 0, nil
-}
-
-// FindByUUID returns an org by its internal UUID string.
-func (r *organizationRepository) FindByUUID(uuid string) (*models.Organization, error) {
-	var org models.Organization
-	err := r.db.Where("sharpnr_org_uuid = ?", uuid).First(&org).Error
-	if err != nil {
-		return nil, err
-	}
-	return &org, nil
-}
-
-// FindByMail finds an org by its root email.
-// This method fulfills the CoreOrganizationRepository interface.
-func (r *organizationRepository) FindByMail(email string) (*models.Organization, error) {
-	var org models.Organization
-	// Assuming the column name is 'root_email' based on the previous implementation.
-	err := r.db.Where("root_email = ?", email).First(&org).Error
-	if err != nil {
-		return nil, err
-	}
-	return &org, nil
-}
-
-// Update saves changes to an existing organization model.
-// This method fulfills the CoreOrganizationRepository interface.
-func (r *organizationRepository) Update(org *models.Organization) error {
-	return r.db.Save(org).Error
 }
