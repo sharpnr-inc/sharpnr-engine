@@ -81,11 +81,16 @@ func (s *orgRegistrationService) InitiateOrgRegistration(ctx context.Context, re
 		OTP:      otpToken,
 	}
 
+	token, err := utils.GenerateOTPToken(orgEmail)
+	if err != nil {
+		return nil, "", err
+	}
+
 	if err := s.repo.CreateOrgInRedisDB(ctx, tempOrg); err != nil {
 		return nil, "", fmt.Errorf("failed to create temp org in redis: %w", err)
 	}
 
 	return &dto.OrgInitialRegistration_Response_Dto{
-		Token: otpToken,
+		Token: token,
 	}, "", nil
 }

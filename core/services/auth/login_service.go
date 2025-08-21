@@ -5,6 +5,6 @@ import (
 )
 
 func (s *orgRegistrationService) Login(req dto.OrgAuthRequestDTO) (*dto.OrgAuthResponseDTO, error) {
-	// TODO: implement login logic
+
 	return nil, nil
 }

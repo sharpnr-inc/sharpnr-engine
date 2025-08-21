@@ -26,8 +26,32 @@ func InitializeNewOrgRegistration(db *gorm.DB, redis *redis.Client) *initOrganiz
 	}
 }
 
-func (r *initOrganizationRepository) CreateOrgInMainDB(ctx context.Context, tempOrg *models.TempOrgRegistrationData) error {
-	// TODO: insert into PostgreSQL (main DB)
+func (r *initOrganizationRepository) GetOrgFromRedisDB(ctx context.Context, email string) (*models.TempOrgRegistrationData, error) {
+	key := fmt.Sprintf("init_reg:%s", email)
+	data, err := r.redis.Get(ctx, key).Result()
+	if err != nil {
+		if err == redis.Nil {
+			return nil, fmt.Errorf("no organisation founf for email : %s", email)
+		}
+		return nil, err
+	}
+
+	var tempOrg models.TempOrgRegistrationData
+	if err := json.Unmarshal([]byte(data), &tempOrg); err != nil {
+		return nil, err
+	}
+
+	return &tempOrg, nil
+}
+
+func (r *initOrganizationRepository) FindBySharpnrOrgID(id string) (bool, error) {
+	return false, nil
+}
+
+func (r *initOrganizationRepository) CreateOrgInMainDB(ctx context.Context, Org *models.Organization) error {
+	if err := r.db.WithContext(ctx).Create(Org).Error; err != nil {
+		return err
+	}
 	return nil
 }
 
