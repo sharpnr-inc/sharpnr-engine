@@ -2,8 +2,8 @@ package v1
 
 import (
 	orgcontrollers "sharpnr-engine/controllers/organisationControllers"
-	repositories "sharpnr-engine/core/repositories/organization"
-	services "sharpnr-engine/core/services/auth"
+	organizationrepositories "sharpnr-engine/core/repositories/organization_repo"
+	orgservices "sharpnr-engine/core/services/org_service"
 	"sharpnr-engine/shared/middlewares"
 
 	"github.com/gin-gonic/gin"
@@ -13,8 +13,8 @@ import (
 
 func CoreV1Routes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 
-	newOrgRepo := repositories.InitializeNewOrgRegistration(db, redis)
-	newOrgAuthService := services.OrgRegService(newOrgRepo)
+	newOrgRepo := organizationrepositories.InitializeNewOrgRegistration(db, redis)
+	newOrgAuthService := orgservices.OrgRegService(newOrgRepo)
 	newOrgRegController := orgcontrollers.RegisterOrgController(newOrgAuthService)
 
 	v1.POST("/org/register", newOrgRegController.InitOrgReg)

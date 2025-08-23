@@ -1,4 +1,4 @@
-package repositories
+package organizationrepositories
 
 import (
 	// "github.com/google/uuid"
