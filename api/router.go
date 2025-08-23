@@ -18,10 +18,13 @@ func SetupRouter(db *gorm.DB, redis *redis.Client) *gin.Engine {
 
 	// Register all V1 routes.
 	v1.CoreV1Routes(v1Group, db, redis)
+	v1.DepartmentsRoutes(v1Group, db, redis)
 	v1.RegisterModuleRoutes(v1Group, db)
 
 	// If you had a v2, you would register it here:
 	// v2.RegisterV2Routes(router, db)
+
+	v1.UtilsRoutes(v1Group)
 
 	return router
 }

@@ -3,12 +3,13 @@ package models
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Department struct {
-	ID             string `gorm:"primaryKey;"`
-	OrganizationID string `gorm:"type:varchar(256);not null;index"`
+	ID             uuid.UUID `gorm:"primaryKey;"`
+	OrganizationID string    `gorm:"type:varchar(256);not null;index"`
 
 	Name        string `gorm:"size:100;not null"`
 	Description string `gorm:"type:text"`

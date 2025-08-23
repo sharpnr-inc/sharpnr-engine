@@ -17,6 +17,16 @@ func RegisterOrgController(service interfaces.OrgRegistrationService) *Organisat
 	return &OrganisationController{service: service}
 }
 
+// InitOrgReg godoc
+// @Summary      Register a new organization
+// @Description  Start the registration process for a new organization
+// @Tags         Registration
+// @Accept       json
+// @Produce      json
+// @Param        request body dto.OrgInitialRegistration_Request_Dto true "Organization registration payload"
+// @Success      200  {object} dto.OrgInitialRegistration_Response_Dto
+// @Failure      400  {object} map[string]string
+// @Router       /org/register [post]
 func (c *OrganisationController) InitOrgReg(ctx *gin.Context) {
 	var req dto.OrgInitialRegistration_Request_Dto
 

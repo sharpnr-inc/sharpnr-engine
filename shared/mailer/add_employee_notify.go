@@ -1,0 +1,7 @@
+package mailer
+
+//
+
+func NotifyEmployee() {
+
+}

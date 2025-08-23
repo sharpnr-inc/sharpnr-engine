@@ -3,15 +3,16 @@ package models
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Employee struct {
-	ID          string `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
-	FirstName   string `gorm:"size:50;not null"`
-	LastName    string `gorm:"size:50"`
-	Email       string `gorm:"not null;unique"`
-	PhoneNumber string `gorm:"size:20"`
+	ID          uuid.UUID `gorm:"type:uuid;primaryKey"`
+	FirstName   string    `gorm:"size:50;not null"`
+	LastName    string    `gorm:"size:50"`
+	Email       string    `gorm:"not null;unique"`
+	PhoneNumber string    `gorm:"size:20"`
 
 	OrganizationID string       `gorm:"type:uuid;not null;index"`
 	Organization   Organization `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
@@ -23,7 +24,7 @@ type Employee struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 
-	TerminalAccess []string `gorm:"type:text[]"`
+	// TerminalAccess []string `gorm:"type:text[]"`
 }
 
 // TableName specifies the table name
