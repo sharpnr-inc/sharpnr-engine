@@ -23,6 +23,7 @@ type Employee struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
+	Role      string
 
 	// TerminalAccess []string `gorm:"type:text[]"`
 }
