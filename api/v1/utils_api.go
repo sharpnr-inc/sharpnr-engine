@@ -14,6 +14,7 @@ func UtilsRoutes(rg *gin.RouterGroup) {
 
 	utils.GET("/org-types", GetOrgTypes)
 	utils.GET("/org-reg-types", GetBusinessRegistrationType)
+	utils.GET("/employee-role-types", GetEmployeeRolesTypes)
 }
 
 // GetOrgTypes returns the list of available organization types.
@@ -46,4 +47,14 @@ func GetBusinessRegistrationType(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"business_registration_types": businessRegType,
 	})
+}
+
+func GetEmployeeRolesTypes(c *gin.Context) {
+	employeeRoles := []constants.EmployeeRoles{
+		constants.Admin,
+		constants.Department_Head,
+		constants.Manager,
+	}
+
+	c.JSON(http.StatusOK, gin.H{"employee_roles": employeeRoles})
 }
