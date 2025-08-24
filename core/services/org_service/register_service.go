@@ -4,19 +4,10 @@ import (
 	"context"
 	"fmt"
 	dto "sharpnr-engine/core/dtos"
-	"sharpnr-engine/core/interfaces"
 	"sharpnr-engine/core/models"
 	"sharpnr-engine/shared/mailer"
 	"sharpnr-engine/shared/utils"
 )
-
-type orgRegistrationService struct {
-	repo interfaces.IOrgRegistrationRepository
-}
-
-func OrgRegService(repo interfaces.IOrgRegistrationRepository) interfaces.OrgRegistrationService {
-	return &orgRegistrationService{repo: repo}
-}
 
 func (s *orgRegistrationService) InitiateOrgRegistration(ctx context.Context, req dto.OrgInitialRegistration_Request_Dto) (*dto.OrgInitialRegistration_Response_Dto, string, error) {
 

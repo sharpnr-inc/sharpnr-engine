@@ -14,9 +14,6 @@ func UtilsRoutes(rg *gin.RouterGroup) {
 
 	utils.GET("/org-types", GetOrgTypes)
 	utils.GET("/org-reg-types", GetBusinessRegistrationType)
-
-	// later: utils.GET("/genders", GetGenders)
-	// later: utils.GET("/languages", GetLanguages)
 }
 
 // GetOrgTypes returns the list of available organization types.

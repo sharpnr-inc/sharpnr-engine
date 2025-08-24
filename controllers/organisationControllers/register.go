@@ -4,18 +4,9 @@ import (
 	"net/http"
 
 	dto "sharpnr-engine/core/dtos"
-	"sharpnr-engine/core/interfaces"
 
 	"github.com/gin-gonic/gin"
 )
-
-type OrganisationController struct {
-	service interfaces.OrgRegistrationService
-}
-
-func RegisterOrgController(service interfaces.OrgRegistrationService) *OrganisationController {
-	return &OrganisationController{service: service}
-}
 
 // InitOrgReg godoc
 // @Summary      Register a new organization

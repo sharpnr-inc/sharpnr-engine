@@ -1,4 +1,4 @@
-package repositories
+package departmentrepositories
 
 import (
 	"context"
@@ -22,7 +22,3 @@ func (r *departmentRepository) CreateDepartment(ctx context.Context, Dept *model
 	}
 	return nil
 }
-
-// func (r *departmentRepository) FindByID() {
-
-// }
