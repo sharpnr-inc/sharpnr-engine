@@ -2,6 +2,7 @@ package api
 
 import (
 	v1 "sharpnr-engine/api/v1"
+	"sharpnr-engine/shared/middlewares"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -12,7 +13,7 @@ import (
 // It delegates the registration of specific API versions to their respective packages.
 func SetupRouter(db *gorm.DB, redis *redis.Client) *gin.Engine {
 	router := gin.Default()
-
+	router.Use(middlewares.CORSMiddleWare())
 	// Create a router group for the v1 API.
 	v1Group := router.Group("/api/v1")
 

@@ -10,7 +10,3 @@ func (s *departmentService) AddDepartmentInOrg(ctx context.Context, req dto.AddD
 	// call repo, handle logic
 	return nil
 }
-
-func (s *departmentService) RemoveDepartmentInOrg() {
-
-}

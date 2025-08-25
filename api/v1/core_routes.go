@@ -21,4 +21,6 @@ func CoreV1Routes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 	v1.POST("/org/verify-email-otp", middlewares.OrgRegOtpVerificationMiddleware(), newOrgRegController.VerifyOtp)
 	v1.GET("/org/reset-password", newOrgRegController.ResetOrgPassword)
 	v1.POST("/org/update", newOrgRegController.UpdateOrgRegistration)
+	v1.POST("/org/dashboard", newOrgRegController.GetOrgRootDashBoard)
+	v1.POST("/org/login", newOrgRegController.Login)
 }

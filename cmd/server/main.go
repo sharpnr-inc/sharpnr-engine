@@ -1,13 +1,12 @@
 package main
 
-// This is the Main file and Entry Point to application
+// Main entry point of the application
 import (
 	"log"
 
 	"sharpnr-engine/api"
 	"sharpnr-engine/config"
 	_ "sharpnr-engine/docs"
-
 	"sharpnr-engine/shared/database"
 
 	swaggerFiles "github.com/swaggo/files"
@@ -15,9 +14,9 @@ import (
 )
 
 func main() {
-	config.LoadEnv() // Load env vars like DB_HOST, DB_USER, etc.
-	resdisDb := database.ConnectRedis()
-	db := database.ConnectDB() // Connect to DB
+	config.LoadEnv() // Load environment variables
+	redisDb := database.ConnectRedis()
+	db := database.ConnectDB()
 
 	// Run migrations
 	err := database.MigrateDB(db)
@@ -27,13 +26,24 @@ func main() {
 	log.Println("✅ Database migration completed.")
 
 	// Create and configure the main router
-	r := api.SetupRouter(db, resdisDb)
+	r := api.SetupRouter(db, redisDb)
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	log.Println("App started on :8081...")
-	if err := r.Run(":8081"); err != nil {
+	// Get local IP
+	localIP, err := config.GetLocalIP()
+	if err != nil || localIP == "" {
+		log.Println("⚠️ Could not determine local IP, using 0.0.0.0")
+		localIP = "0.0.0.0"
+	}
+
+	port := "8080"
+	address := localIP + ":" + port
+	log.Printf("App started on http://%s ...", address)
+
+	// Run Gin server on detected local IP
+	if err := r.Run(address); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }
