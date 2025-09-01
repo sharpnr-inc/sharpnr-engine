@@ -7,24 +7,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"sharpnr-engine/core/models"
-	"sharpnr-engine/shared/database"
 	"time"
 
 	"github.com/redis/go-redis/v9"
-	"gorm.io/gorm"
 )
 
-type initOrganizationRepository struct {
-	redis *redis.Client
-	db    *gorm.DB
-}
-
-func InitializeNewOrgRegistration(db *gorm.DB, redis *redis.Client) *initOrganizationRepository {
-	return &initOrganizationRepository{
-		redis: database.RedisClient,
-		db:    database.DB,
-	}
-}
+//-----------------------------------------------------------------------------------------------------------------//
 
 func (r *initOrganizationRepository) GetOrgFromRedisDB(ctx context.Context, email string) (*models.TempOrgRegistrationData, error) {
 	key := fmt.Sprintf("init_reg:%s", email)
@@ -44,9 +32,13 @@ func (r *initOrganizationRepository) GetOrgFromRedisDB(ctx context.Context, emai
 	return &tempOrg, nil
 }
 
+//-----------------------------------------------------------------------------------------------------------------//
+
 func (r *initOrganizationRepository) FindBySharpnrOrgID(id string) (bool, error) {
 	return false, nil
 }
+
+//-----------------------------------------------------------------------------------------------------------------//
 
 func (r *initOrganizationRepository) CreateOrgInMainDB(ctx context.Context, Org *models.Organization) error {
 	if err := r.db.WithContext(ctx).Create(Org).Error; err != nil {
@@ -54,6 +46,8 @@ func (r *initOrganizationRepository) CreateOrgInMainDB(ctx context.Context, Org 
 	}
 	return nil
 }
+
+//-----------------------------------------------------------------------------------------------------------------//
 
 func (r *initOrganizationRepository) CreateOrgInRedisDB(ctx context.Context, tempOrg *models.TempOrgRegistrationData) error {
 	key := fmt.Sprintf("init_reg:%s", tempOrg.Email)
@@ -67,6 +61,8 @@ func (r *initOrganizationRepository) CreateOrgInRedisDB(ctx context.Context, tem
 	// Save in Redis with a TTL (e.g. 15 minutes)
 	return r.redis.Set(ctx, key, data, 15*time.Minute).Err()
 }
+
+//-----------------------------------------------------------------------------------------------------------------//
 
 func (r *initOrganizationRepository) EmailOrPhoneExistsInRedis(ctx context.Context, email string, phone string) (bool, error) {
 	emailKey := fmt.Sprintf("init_reg:%s", email)
@@ -93,6 +89,8 @@ func (r *initOrganizationRepository) EmailOrPhoneExistsInRedis(ctx context.Conte
 	return false, nil
 }
 
+//-----------------------------------------------------------------------------------------------------------------//
+
 func (r *initOrganizationRepository) EmailOrPhoneExistsInMainDB(ctx context.Context, email string, phone string) (bool, error) {
 	var count int64
 
@@ -107,3 +105,5 @@ func (r *initOrganizationRepository) EmailOrPhoneExistsInMainDB(ctx context.Cont
 
 	return count > 0, nil
 }
+
+//-----------------------------------------------------------------------------------------------------------------//

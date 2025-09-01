@@ -8,7 +8,6 @@ type OrgAuthRequestDTO struct {
 	Password string `json:"password" validate:"required,min=8,max=64"`
 }
 type OrgAuthResponseDTO struct {
-	Token string `json:"token"`
-}
-type OrgAuthErrorResponseDTO struct {
+	Token       string `json:"token"`
+	RedirectURL string `json:"redirectUrl"`
 }

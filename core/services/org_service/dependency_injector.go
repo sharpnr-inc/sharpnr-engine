@@ -26,3 +26,11 @@ type orgRegistrationService struct {
 func OrgRegService(repo interfaces.IOrgRegistrationRepository) interfaces.OrgRegistrationService {
 	return &orgRegistrationService{repo: repo}
 }
+
+type orgLoginService struct {
+	repo interfaces.IOrgLoginRepository
+}
+
+func OrgLoginService(repo interfaces.IOrgLoginRepository) interfaces.OrgLoginService {
+	return &orgLoginService{repo: repo}
+}

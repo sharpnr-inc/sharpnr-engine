@@ -8,7 +8,7 @@ import (
 
 func (c *OrganisationController) Login(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
-		"redirectUrl": "sharpnrapp://dashboard",
+		"redirectUrl": "sharpnrapp://auth-callback?token=12345",
 		"token":       "12345",
 	})
 }
