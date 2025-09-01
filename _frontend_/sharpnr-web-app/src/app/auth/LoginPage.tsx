@@ -1,14 +1,10 @@
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RootOrgLoginCard from "@/components/logincomp/RootOrgLoginCard";
 import EmployeeLoginCard from "@/components/logincomp/EmployeeLoginCard";
 import type React from "react";
 
 export default function LoginPage(): React.JSX.Element {
+
   return (
     <div className="flex items-center justify-center h-screen">
       <Tabs defaultValue="root" className="w-full max-w-sm">
@@ -23,6 +19,7 @@ export default function LoginPage(): React.JSX.Element {
           <EmployeeLoginCard />
         </TabsContent>
       </Tabs>
+      
     </div>
   );
 }

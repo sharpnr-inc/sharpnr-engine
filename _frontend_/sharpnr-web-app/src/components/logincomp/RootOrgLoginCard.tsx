@@ -9,8 +9,14 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import type React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function RootOrgLoginCard(): React.JSX.Element {
+
+  const nav = useNavigate()
+  const handlenav = () => {
+    nav("/dashboard")
+  }
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
@@ -50,7 +56,7 @@ export default function RootOrgLoginCard(): React.JSX.Element {
         </div>
       </CardContent>
       <CardFooter className="flex flex-col">
-        <Button className="w-full">Sign in</Button>
+        <Button onClick={handlenav} className="w-full">Sign in</Button>
         <div className="mt-4 text-center text-sm">
             <a href="#" className="underline">
               Forgot your password?
