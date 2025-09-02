@@ -1,5 +1,3 @@
-
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,8 +9,18 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import type React from "react";
+import * as z from "zod"
+import { useModal } from "@/context/ModalContext";
+import { useToastService } from "@/context/ToastContext";
 
 export default function EmployeeLoginCard(): React.JSX.Element {
+  const { showModal } = useModal();
+  const { success, error, warning, info } = useToastService();
+  const Login = z.object({
+
+  })
+
+
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
@@ -52,7 +60,7 @@ export default function EmployeeLoginCard(): React.JSX.Element {
         </div>
       </CardContent>
       <CardFooter className="flex flex-col">
-        <Button className="w-full">Sign in</Button>
+        <Button  onClick={() => success("Profile updated successfully ✅")} className="w-full">Sign in</Button>
         <div className="mt-4 text-center text-sm">
             <a href="#" className="underline">
               Forgot your password?
