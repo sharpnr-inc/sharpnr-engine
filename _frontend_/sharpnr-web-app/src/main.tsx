@@ -5,12 +5,16 @@ import App from "./App.tsx";
 import { ModalProvider } from "./context/ModalContext.tsx";
 import { ToastProvider } from "./context/ToastContext.tsx";
 
+import { LoaderProvider } from "./context/LoaderContext.tsx";
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ToastProvider>
-      <ModalProvider>
-        <App />
-      </ModalProvider>
+      <LoaderProvider>
+        <ModalProvider>
+          <App />
+        </ModalProvider>
+      </LoaderProvider>
     </ToastProvider>
   </StrictMode>
 );

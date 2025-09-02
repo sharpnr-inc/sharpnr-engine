@@ -1,3 +1,4 @@
+import { z } from "zod";
 /**
  * Login request payload
  *
@@ -36,3 +37,8 @@ export interface LoginResponse {
     access_token: string;
   };
 }
+
+export const ZodLoginSchema = z.object({
+  email: z.string().email("Invalid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
