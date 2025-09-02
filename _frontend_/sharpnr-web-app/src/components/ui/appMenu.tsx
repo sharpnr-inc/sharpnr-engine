@@ -51,7 +51,7 @@ export default function AppMenu(): React.JSX.Element {
                     <GridIcon className="w-6 h-6" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80">
+            <PopoverContent className="w-120">
                 <div className="grid grid-cols-3 gap-4">
                     {apps.map((app) => (
                         <div key={app.name} className="flex flex-col items-center justify-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
