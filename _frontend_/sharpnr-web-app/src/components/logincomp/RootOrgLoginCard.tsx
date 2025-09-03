@@ -90,9 +90,12 @@ export default function RootOrgLoginCard(): React.JSX.Element {
             </label>
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col">
+        <CardFooter className="flex flex-col space-y-2">
          <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? "Signing in..." : "Sign in"}
+          </Button>
+             <Button onClick={()=>{nav("/register")}} variant="secondary" className="w-full" disabled={isSubmitting}>
+            {"Register/Signup"}
           </Button>
           <div className="mt-4 text-center text-sm">
             <a href="#" className="underline">

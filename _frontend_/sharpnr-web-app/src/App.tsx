@@ -9,8 +9,8 @@ function App() {
     <BrowserRouter>
 
         <Routes>
-          <Route path="/" element={<AuthRoutes />} />
-          <Route path="/dashboard" element={<DashboardRoutes/>}></Route>
+          <Route path="/*" element={<AuthRoutes />} />
+          <Route path="/dashboard/*" element={<DashboardRoutes/>}></Route>
 
           {/* Catch-all (404) */}
           <Route path="*" element={<h1>404 - Page Not Found</h1>} />

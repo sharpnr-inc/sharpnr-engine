@@ -1,8 +1,9 @@
+
 import React, { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 
-const LoginPage = lazy(() => import("./LoginPage"))
-
+const LoginPage = lazy(() => import("./LoginPage"));
+const RegisterPage = lazy(() => import("./RegisterOrg"));
 
 /**
  * Authentication Routes
@@ -34,10 +35,10 @@ export default function AuthRoutes(): React.JSX.Element {
   return (
     <Suspense>
       <Routes>
-        <Route path="/" element={<LoginPage />}></Route>
-        <Route path="/otp-verification" element={<LoginPage />}></Route>
-        <Route path="/signup" element={<LoginPage />}></Route>
+        <Route index element={<LoginPage />} />
+        <Route path="/signup" element={<RegisterPage />}></Route>
         <Route path="/reset-password" element={<LoginPage />}></Route>
+        <Route path="/register" element={<RegisterPage />}></Route>
       </Routes>
     </Suspense>
   );
