@@ -5,7 +5,15 @@ package constants
 type EmployeeRoles string
 
 const (
-	Admin           EmployeeRoles = "ADMIN"
-	Manager         EmployeeRoles = "MANAGER"
-	Department_Head EmployeeRoles = "DEPARTMENT_HEAD"
+	Super_Admin EmployeeRoles = "SUPER_ADMIN"
+	Admin       EmployeeRoles = "ADMIN"
+	Manager     EmployeeRoles = "MANAGER"
+	Employee    EmployeeRoles = "EMPLOYEE"
+)
+
+type EmployeePermissions string
+
+const (
+	READ_ACCESS  EmployeePermissions = "READ_ACCESS"
+	WRITE_ACCESS EmployeePermissions = "WRITE_ACCESS"
 )

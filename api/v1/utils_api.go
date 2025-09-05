@@ -52,7 +52,6 @@ func GetBusinessRegistrationType(c *gin.Context) {
 func GetEmployeeRolesTypes(c *gin.Context) {
 	employeeRoles := []constants.EmployeeRoles{
 		constants.Admin,
-		constants.Department_Head,
 		constants.Manager,
 	}
 

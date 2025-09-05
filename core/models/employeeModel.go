@@ -1,6 +1,7 @@
 package models
 
 import (
+	"sharpnr-engine/core/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -20,10 +21,11 @@ type Employee struct {
 	DepartmentID string     `gorm:"type:uuid;not null;index"`
 	Department   Department `gorm:"foreignKey:DepartmentID;references:ID"`
 
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
-	Role      string
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
+	DeletedAt          gorm.DeletedAt `gorm:"index"`
+	Role               constants.EmployeeRoles
+	Permissions_Access []string
 
 	// TerminalAccess []string `gorm:"type:text[]"`
 }
