@@ -35,14 +35,3 @@ func ToOrganizationModel(req dto.OrganizationRegistrationRequestDTO) *models.Org
 	}
 
 }
-
-func ToOrganizationRegistrationResponseDTO(org *models.Organization) dto.OrganizationRegistrationResponseDTO {
-	return dto.OrganizationRegistrationResponseDTO{
-		SharpnrOrgID: org.SharpnrOrgID,
-		Name:         org.Name,
-		Description:  org.OrgDescription,
-		// OrgOprationType: constants.OrgType,
-		RootEmail: org.RootEmail,
-		CreatedAt: org.CreatedAt.Unix(),
-	}
-}

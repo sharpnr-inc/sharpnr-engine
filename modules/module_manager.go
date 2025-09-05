@@ -30,7 +30,7 @@ func (m *ModuleManager) InitializeModulesForOrg(org *models.Organization) error 
 	}
 	fmt.Printf("Initializing BASE module for organization: %s\n", org.Name)
 	if err := m.baseModule.Initialize(org); err != nil {
-		return fmt.Errorf("failed to initialize base module for org %s: %w", org.SharpnrOrgID, err)
+		return fmt.Errorf("failed to initialize base module for org %s: %w", org.SharpnrID, err)
 	}
 	return nil
 }

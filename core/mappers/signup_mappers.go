@@ -61,7 +61,7 @@ func FromVerifyOtpRES_ToDTO(org *models.Organization, token string) dto.Org_Veri
 	return dto.Org_Verify_Otp_RESPONSE_DTO{
 		Name:       org.Name,
 		Email:      org.RootEmail,
-		Sharpnr_Id: org.SharpnrOrgID,
+		Sharpnr_Id: org.SharpnrID,
 		Token:      token,
 		ORG_TYPE:   org.OrgOprationType,
 	}
