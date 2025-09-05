@@ -1,9 +1,9 @@
 package v1
 
 import (
-	orgcontrollers "sharpnr-engine/core/controllers/organisation_controllers"
+	signupcontrollers "sharpnr-engine/core/controllers/signup_controllers"
 	organizationrepositories "sharpnr-engine/core/repositories/organization_repo"
-	orgservices "sharpnr-engine/core/services/org_service"
+	signupservice "sharpnr-engine/core/services/signup_service"
 	"sharpnr-engine/shared/middlewares"
 
 	"github.com/gin-gonic/gin"
@@ -14,16 +14,16 @@ import (
 // These Are the Auth routes for the authentication registration
 func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 
-	newOrgRepo := organizationrepositories.InitializeNewOrgRegistration(db, redis)
-	newOrgAuthService := orgservices.OrgRegService(newOrgRepo)
-	newOrgRegController := orgcontrollers.RegisterOrgController(newOrgAuthService)
+	newOrgRepo := organizationrepositories.NewOrganizationRepo(db, redis)
+	newOrgAuthService := signupservice.NewSignupService(newOrgRepo)
+	newOrgRegController := signupcontrollers.NewSignUpController(newOrgAuthService)
 
 	//Register
-	v1.POST("/register", newOrgRegController.InitOrgReg)
+	v1.POST("/register", newOrgRegController.RegisterOrg)
 	//Need Middleware
-	v1.POST("/otp-verify", middlewares.OrgRegOtpVerificationMiddleware(), newOrgRegController.VerifyOtp)
+	v1.POST("/otp-verify", middlewares.OrgRegOtpVerificationMiddleware(), newOrgRegController.VerifyRegistrationOTP)
 	v1.POST("/complete-register")
-	v1.POST("/login", newOrgRegController.Login)
+	// v1.POST("/login", newOrgRegController.Login)
 
 	v1.POST("/reset-password")
 

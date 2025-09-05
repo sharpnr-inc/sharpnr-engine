@@ -9,7 +9,7 @@ import "sharpnr-engine/core/interfaces"
 // This struct embeds an IOrgRegistrationRepository dependency which
 // provides the data persistence operations.
 type orgRegistrationService struct {
-	repo interfaces.IOrgRegistrationRepository
+	repo interfaces.OrganizationRepository
 }
 
 // OrgRegService is a constructor function (also known as a service injector).
@@ -23,14 +23,14 @@ type orgRegistrationService struct {
 //
 //	repo := repositories.NewOrgRegistrationRepository(db)
 //	service := orgservices.OrgRegService(repo)
-func OrgRegService(repo interfaces.IOrgRegistrationRepository) interfaces.OrgRegistrationService {
-	return &orgRegistrationService{repo: repo}
-}
+// func OrgRegService(repo interfaces.OrganizationRepository) interfaces.OrganizationService {
+// 	return &orgRegistrationService{repo: repo}
+// }
 
-type orgLoginService struct {
-	repo interfaces.IOrgLoginRepository
-}
+// type orgLoginService struct {
+// 	repo interfaces.IOrgLoginRepository
+// }
 
-func OrgLoginService(repo interfaces.IOrgLoginRepository) interfaces.OrgLoginService {
-	return &orgLoginService{repo: repo}
-}
+// func OrgLoginService(repo interfaces.IOrgLoginRepository) interfaces.OrgLoginService {
+// 	return &orgLoginService{repo: repo}
+// }

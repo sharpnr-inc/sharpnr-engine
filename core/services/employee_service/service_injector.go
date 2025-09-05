@@ -4,11 +4,11 @@ import "sharpnr-engine/core/interfaces"
 
 type EmployeeServiceImpl struct {
 	emplRepo interfaces.EmployeeRepository
-	orgRepo  interfaces.IOrgRegistrationRepository
+	orgRepo  interfaces.OrganizationRepository
 }
 
 // EmployeeService is a constructor that injects the repositories
-func EmployeeService(orgRepo interfaces.IOrgRegistrationRepository, emplRepo interfaces.EmployeeRepository) *EmployeeServiceImpl {
+func EmployeeService(orgRepo interfaces.OrganizationRepository, emplRepo interfaces.EmployeeRepository) *EmployeeServiceImpl {
 	return &EmployeeServiceImpl{
 		orgRepo:  orgRepo,
 		emplRepo: emplRepo,

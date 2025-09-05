@@ -1,4 +1,4 @@
-package orgservices
+package signupservice
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"sharpnr-engine/shared/utils"
 )
 
-func (s *orgRegistrationService) InitiateOrgRegistration(ctx context.Context, req dto.OrgInitialRegistration_Request_Dto) (*dto.OrgInitialRegistration_Response_Dto, string, error) {
+func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.OrgInitialRegistration_Request_Dto) (*dto.OrgInitialRegistration_Response_Dto, string, error) {
 	if req.Name == "" || req.Email == "" || req.Phone == "" || req.Password == "" {
 		return nil, "", errors.New("all fields are required")
 	}
@@ -18,7 +18,7 @@ func (s *orgRegistrationService) InitiateOrgRegistration(ctx context.Context, re
 	orgPhone := req.Phone
 
 	// Step 1 → Check if email or phone exists in Redis
-	existsInRedis, err := s.repo.EmailOrPhoneExistsInRedis(ctx, orgEmail, orgPhone)
+	existsInRedis, err := s.orgRepo.EmailOrPhoneExistsInRedis(ctx, orgEmail, orgPhone)
 	if err != nil {
 		return nil, "", fmt.Errorf("failed to check redis: %w", err)
 	}
@@ -42,7 +42,7 @@ func (s *orgRegistrationService) InitiateOrgRegistration(ctx context.Context, re
 			Phone: orgPhone,
 			OTP:   otp,
 		}
-		if err := s.repo.CreateOrgInRedisDB(ctx, update); err != nil {
+		if err := s.orgRepo.CreateOrgInRedisDB(ctx, update); err != nil {
 			return nil, "", fmt.Errorf("failed to update redis otp: %w", err)
 		}
 
@@ -52,7 +52,7 @@ func (s *orgRegistrationService) InitiateOrgRegistration(ctx context.Context, re
 	}
 
 	// Step 2 → Not in Redis → Check MainDB
-	existsInMainDB, err := s.repo.EmailOrPhoneExistsInMainDB(ctx, orgEmail, orgPhone)
+	existsInMainDB, err := s.orgRepo.EmailOrPhoneExistsInMainDB(ctx, orgEmail, orgPhone)
 	if err != nil {
 		return nil, "", fmt.Errorf("failed to check database: %w", err)
 	}
@@ -67,10 +67,10 @@ func (s *orgRegistrationService) InitiateOrgRegistration(ctx context.Context, re
 	}
 
 	tempOrg := &models.TempOrgRegistrationData{
-		Name:     req.Name,
-		Email:    orgEmail,
-		Phone:    orgPhone,
-		OrgType:  req.OrgType,
+		Name:  req.Name,
+		Email: orgEmail,
+		Phone: orgPhone,
+		// OrgType:  req.OrgType,
 		Password: req.Password,
 		OTP:      otpToken,
 	}
@@ -80,7 +80,7 @@ func (s *orgRegistrationService) InitiateOrgRegistration(ctx context.Context, re
 		return nil, "", err
 	}
 
-	if err := s.repo.CreateOrgInRedisDB(ctx, tempOrg); err != nil {
+	if err := s.orgRepo.CreateOrgInRedisDB(ctx, tempOrg); err != nil {
 		return nil, "", fmt.Errorf("failed to create temp org in redis: %w", err)
 	}
 

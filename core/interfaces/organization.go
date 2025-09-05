@@ -13,7 +13,7 @@ import (
 //////////////////////////
 
 // OrgRegistrationService defines methods for registering an organization
-type OrgRegistrationService interface {
+type OrganizationSignUpService interface {
 	// InitiateOrgRegistration is the first step to start the registration process
 	InitiateOrgRegistration(ctx context.Context, req dto.OrgInitialRegistration_Request_Dto) (*dto.OrgInitialRegistration_Response_Dto, string, error)
 
@@ -25,7 +25,7 @@ type OrgRegistrationService interface {
 }
 
 // IOrgRegistrationRepository defines data access methods for organization registration
-type IOrgRegistrationRepository interface {
+type OrganizationRepository interface {
 	// CreateOrgInMainDB saves the organization in the main database
 	CreateOrgInMainDB(ctx context.Context, tempOrg *models.Organization) error
 
@@ -46,29 +46,4 @@ type IOrgRegistrationRepository interface {
 
 	//It will get find you the orgId
 	GetOrgUUID_By_SharpnrID(sharpnr_id string) (uuid.UUID, error)
-}
-
-//////////////////////////
-// ORGANIZATION LOGIN
-//////////////////////////
-
-// OrgLoginService defines methods for logging in an organization
-type OrgLoginService interface {
-	// Login authenticates using email/phone and password
-	Login(ctx context.Context, req dto.OrgAuthRequestDTO) (*dto.OrgAuthResponseDTO, error)
-
-	// RefreshToken refreshes JWT token if needed
-	// RefreshToken(ctx context.Context, refreshToken string) (*dto.OrgAuthResponseDTO, error)
-
-	// Logout invalidates the token or session
-	// Logout(ctx context.Context, token string) error
-}
-
-// IOrgLoginRepository defines data access methods for organization login
-type IOrgLoginRepository interface {
-	// FindByEmailOrPhone retrieves organization by email or phone
-	FindByEmailOrPhone(ctx context.Context, identifier string) (*models.Organization, error)
-
-	// VerifyPassword compares hashed password with plain text
-	VerifyPassword(hash string, password string) bool
 }

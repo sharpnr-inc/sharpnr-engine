@@ -15,7 +15,7 @@ import (
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *initOrganizationRepository) GetOrgFromRedisDB(ctx context.Context, email string) (*models.TempOrgRegistrationData, error) {
+func (r *organizationRepository) GetOrgFromRedisDB(ctx context.Context, email string) (*models.TempOrgRegistrationData, error) {
 	key := fmt.Sprintf("init_reg:%s", email)
 	data, err := r.redis.Get(ctx, key).Result()
 	if err != nil {
@@ -35,13 +35,13 @@ func (r *initOrganizationRepository) GetOrgFromRedisDB(ctx context.Context, emai
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *initOrganizationRepository) FindBySharpnrOrgID(id string) (bool, error) {
+func (r *organizationRepository) FindBySharpnrOrgID(id string) (bool, error) {
 	return false, nil
 }
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *initOrganizationRepository) CreateOrgInMainDB(ctx context.Context, Org *models.Organization) error {
+func (r *organizationRepository) CreateOrgInMainDB(ctx context.Context, Org *models.Organization) error {
 	if err := r.db.WithContext(ctx).Create(Org).Error; err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ func (r *initOrganizationRepository) CreateOrgInMainDB(ctx context.Context, Org 
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *initOrganizationRepository) CreateOrgInRedisDB(ctx context.Context, tempOrg *models.TempOrgRegistrationData) error {
+func (r *organizationRepository) CreateOrgInRedisDB(ctx context.Context, tempOrg *models.TempOrgRegistrationData) error {
 	key := fmt.Sprintf("init_reg:%s", tempOrg.Email)
 
 	// Serialize struct to JSON
@@ -65,7 +65,7 @@ func (r *initOrganizationRepository) CreateOrgInRedisDB(ctx context.Context, tem
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *initOrganizationRepository) EmailOrPhoneExistsInRedis(ctx context.Context, email string, phone string) (bool, error) {
+func (r *organizationRepository) EmailOrPhoneExistsInRedis(ctx context.Context, email string, phone string) (bool, error) {
 	emailKey := fmt.Sprintf("init_reg:%s", email)
 	phoneKey := fmt.Sprintf("init_reg_phone:%s", phone)
 
@@ -92,7 +92,7 @@ func (r *initOrganizationRepository) EmailOrPhoneExistsInRedis(ctx context.Conte
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *initOrganizationRepository) EmailOrPhoneExistsInMainDB(ctx context.Context, email string, phone string) (bool, error) {
+func (r *organizationRepository) EmailOrPhoneExistsInMainDB(ctx context.Context, email string, phone string) (bool, error) {
 	var count int64
 
 	// Check if any record exists with the given email or phone
@@ -109,7 +109,7 @@ func (r *initOrganizationRepository) EmailOrPhoneExistsInMainDB(ctx context.Cont
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *initOrganizationRepository) GetOrgUUID_By_SharpnrID(sharpnr_id string) (uuid.UUID, error) {
+func (r *organizationRepository) GetOrgUUID_By_SharpnrID(sharpnr_id string) (uuid.UUID, error) {
 	// This is the function finding the orgId and return uuid
 	var org models.Organization
 	if err := r.db.Where("sharpnr_org_id = ?", sharpnr_id).First(&org).Error; err != nil {

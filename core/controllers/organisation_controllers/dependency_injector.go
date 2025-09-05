@@ -15,7 +15,7 @@ import "sharpnr-engine/core/interfaces"
 // organization registration and management. It delegates the core business
 // logic to the OrgRegistrationService.
 type OrganisationController struct {
-	service interfaces.OrgRegistrationService
+	service interfaces.OrganizationSignUpService
 }
 
 // RegisterOrgController creates a new OrganisationController instance.
@@ -30,6 +30,6 @@ type OrganisationController struct {
 //
 //	service := services.NewOrgRegistrationService(repo)
 //	controller := orgcontrollers.RegisterOrgController(service)
-func RegisterOrgController(service interfaces.OrgRegistrationService) *OrganisationController {
+func RegisterOrgController(service interfaces.OrganizationSignUpService) *OrganisationController {
 	return &OrganisationController{service: service}
 }

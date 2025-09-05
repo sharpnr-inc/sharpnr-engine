@@ -13,7 +13,7 @@ import (
 )
 
 func EmployeeRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
-	newOrgRepo := organizationrepositories.InitializeNewOrgRegistration(db, redis)
+	newOrgRepo := organizationrepositories.NewOrganizationRepo(db, redis)
 	newEmployeeRepo := employeerepo.EmployeeRepo(db)
 	newEmployeeService := employeeservice.EmployeeService(newOrgRepo, newEmployeeRepo)
 	newEmployeeController := employeecontrollers.EmployeeController(newEmployeeService)

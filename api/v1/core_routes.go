@@ -14,7 +14,7 @@ import (
 // These are Org-Core routes
 func CoreV1Routes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 
-	newOrgRepo := organizationrepositories.InitializeNewOrgRegistration(db, redis)
+	newOrgRepo := organizationrepositories.NewOrganizationRepo(db, redis)
 	newEmployeeRepo := employeerepo.EmployeeRepo(db)
 	newEmployeeService := employeeservice.EmployeeService(newOrgRepo, newEmployeeRepo)
 	newEmployeeController := employeecontrollers.EmployeeController(newEmployeeService)
