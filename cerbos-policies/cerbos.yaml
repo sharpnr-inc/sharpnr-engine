@@ -1,8 +1,0 @@
-server:
-  httpListenAddr: ":3592"
-  grpcListenAddr: ":3595"
-
-storage:
-  driver: disk
-  disk:
-    directory: /policies

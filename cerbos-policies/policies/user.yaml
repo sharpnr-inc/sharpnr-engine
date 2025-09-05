@@ -1,9 +1,0 @@
-apiVersion: api.cerbos.dev/v1
-principalPolicy:
-  principal: user
-  version: "default"
-  rules:
-    - resource: document
-      actions:
-        - "read"
-      effect: EFFECT_ALLOW
