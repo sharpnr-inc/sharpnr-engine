@@ -1,11 +1,21 @@
 package accounting
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
-func AccountingRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
+func RegisterAccountingRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
+	v1.POST("/acc/creat-invoice")
+	v1.POST("/acc/list-invoice")
+	v1.POST("/acc/add-expense")
+	v1.POST("/acc/ping", PingHandler)
+}
 
+func PingHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"message": "pong",
+	})
 }

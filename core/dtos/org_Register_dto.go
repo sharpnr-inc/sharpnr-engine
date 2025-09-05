@@ -35,12 +35,11 @@ type OrganizationRegistrationRequestDTO struct {
 // This is the Initial Organisation Registration Process
 // With the Minimal Data we need for the Org Implemetation
 type OrgInitialRegistration_Request_Dto struct {
-	Name        string
-	Description string
-	Email       string
-	Phone       string
-	OrgType     string
-	Password    string
+	Name     string
+	Email    string
+	Phone    string
+	OrgType  string
+	Password string
 }
 
 type OrgInitialRegistration_Response_Dto struct {

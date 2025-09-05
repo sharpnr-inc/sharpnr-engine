@@ -1,26 +1,27 @@
 package v1
 
 import (
-	orgcontrollers "sharpnr-engine/core/controllers/organisationControllers"
+	employeecontrollers "sharpnr-engine/core/controllers/employeeControllers"
+	employeerepo "sharpnr-engine/core/repositories/employee_repo"
 	organizationrepositories "sharpnr-engine/core/repositories/organization_repo"
-	orgservices "sharpnr-engine/core/services/org_service"
-	"sharpnr-engine/shared/middlewares"
+	employeeservice "sharpnr-engine/core/services/employee_service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
+// These are Org-Core routes
 func CoreV1Routes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 
 	newOrgRepo := organizationrepositories.InitializeNewOrgRegistration(db, redis)
-	newOrgAuthService := orgservices.OrgRegService(newOrgRepo)
-	newOrgRegController := orgcontrollers.RegisterOrgController(newOrgAuthService)
+	newEmployeeRepo := employeerepo.EmployeeRepo(db)
+	newEmployeeService := employeeservice.EmployeeService(newOrgRepo, newEmployeeRepo)
+	newEmployeeController := employeecontrollers.EmployeeController(newEmployeeService)
 
-	v1.POST("/org/register", newOrgRegController.InitOrgReg)
-	v1.POST("/org/verify-email-otp", middlewares.OrgRegOtpVerificationMiddleware(), newOrgRegController.VerifyOtp)
-	v1.GET("/org/reset-password", newOrgRegController.ResetOrgPassword)
-	v1.POST("/org/update", newOrgRegController.UpdateOrgRegistration)
-	v1.POST("/org/dashboard", newOrgRegController.GetOrgRootDashBoard)
-	v1.POST("/org/login", newOrgRegController.Login)
+	v1.GET("/org/dashboard")
+	v1.GET("/org/get-employee", newEmployeeController.AddEmployeeInOrg)
+	v1.POST("/org/add-employee")
+	v1.POST("/org/update-employee")
+	v1.GET("/org/profile")
 }

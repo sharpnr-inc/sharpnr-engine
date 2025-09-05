@@ -1,89 +1,100 @@
-basePath: /api/v1
 definitions:
-  dto.LoginRequest:
+  dto.OrgInitialRegistration_Request_Dto:
     properties:
-      email:
-        type: string
-      password:
-        type: string
-    required:
-    - email
-    - password
-    type: object
-  dto.OrganisationRegisterDTO:
-    properties:
-      address:
-        type: string
-      adminName:
-        type: string
-      bankAccNumber:
-        type: string
-      bankBranchName:
-        type: string
-      banker:
-        type: string
-      cinNumber:
+      description:
         type: string
       email:
         type: string
-      gstNumber:
-        type: string
-      ifscCode:
-        type: string
-      isPhysicalVerified:
-        description: optional, pointer so omitted if nil
-        type: boolean
-      isRegistered:
-        type: boolean
       name:
         type: string
-      organizationID:
-        type: string
-      organizationRegType:
+      orgType:
         type: string
       password:
-        minLength: 6
         type: string
       phone:
-        type: integer
-    required:
-    - adminName
-    - bankAccNumber
-    - email
-    - name
-    - organizationID
-    - password
-    - phone
+        type: string
     type: object
-host: localhost:8080
+  dto.OrgInitialRegistration_Response_Dto:
+    properties:
+      message:
+        type: string
+      token:
+        type: string
+    type: object
+  dto.OrgVerifyOTP_Req_Dto:
+    properties:
+      otp:
+        type: string
+    type: object
+  dto.OrgVerifyOTP_Res_Dto:
+    properties:
+      created_at:
+        type: integer
+      description:
+        type: string
+      master_contact:
+        type: string
+      message:
+        type: string
+      name:
+        type: string
+      org_operation_type:
+        type: string
+      root_email:
+        type: string
+      sharpnr_org_id:
+        type: string
+    type: object
 info:
-  contact:
-    email: support@sharpnr.com
-    name: API Support
-  description: Backend APIs for SharpNR system.
-  termsOfService: http://sharpnr.com/terms/
-  title: SharpNR API
-  version: "1.0"
+  contact: {}
 paths:
-  /organization/login:
+  /org/register:
     post:
       consumes:
       - application/json
-      description: Logs in an organization and returns JWT
+      description: Start the registration process for a new organization
       parameters:
-      - description: Login Credentials
+      - description: Organization registration payload
         in: body
-        name: login
+        name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.LoginRequest'
+          $ref: '#/definitions/dto.OrgInitialRegistration_Request_Dto'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties: true
+            $ref: '#/definitions/dto.OrgInitialRegistration_Response_Dto'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register a new organization
+      tags:
+      - Registration
+  /org/reset-password:
+    get:
+      consumes:
+      - application/json
+      description: Reset the password for an existing organization
+      parameters:
+      - description: Organization email
+        in: query
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
             type: object
         "400":
           description: Bad Request
@@ -91,48 +102,35 @@ paths:
             additionalProperties:
               type: string
             type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Login for organization root
+      summary: Reset organization password
       tags:
-      - Organization
-  /organization/register:
+      - Auth
+  /org/verify-email-otp:
     post:
       consumes:
       - application/json
-      description: This is Registration for the Organisation
+      description: Verifies OTP sent during registration
       parameters:
-      - description: Login Credentials
+      - description: OTP verification payload
         in: body
-        name: login
+        name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.OrganisationRegisterDTO'
+          $ref: '#/definitions/dto.OrgVerifyOTP_Req_Dto'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/dto.OrgVerifyOTP_Res_Dto'
         "400":
           description: Bad Request
           schema:
             additionalProperties:
               type: string
             type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Register for organization Registration
+      summary: Verify organization email with OTP
       tags:
-      - Organization
+      - Registration
 swagger: "2.0"

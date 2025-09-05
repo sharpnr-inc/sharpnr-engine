@@ -1,18 +1,20 @@
 package dto
 
+import "github.com/google/uuid"
+
 type CreateEmployeeInOrganisationRequestDTO struct {
 	Name           string `json:"name" binding:"required"`
 	Email          string `json:"email" binding:"required,email"`
 	Password       string `json:"password" binding:"required,min=6"`
-	OrganizationID uint   `json:"organizationId" binding:"required"`
+	OrganizationID string `json:"organizationId" binding:"required"`
 }
 
 type CreateEmployeeInOrganisationResponseDTO struct {
-	ID             uint   `json:"id"`
-	Name           string `json:"name"`
-	Email          string `json:"email"`
-	OrganizationID uint   `json:"organizationId"`
-	CreatedAt      string `json:"createdAt"`
+	ID             uuid.UUID `json:"id"`
+	Name           string    `json:"name"`
+	Email          string    `json:"email"`
+	OrganizationID string    `json:"organizationId"`
+	CreatedAt      string    `json:"createdAt"`
 }
 
 type UpdateEmployeeInOrganisationRequestDTO struct {

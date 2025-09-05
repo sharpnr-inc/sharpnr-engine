@@ -9,6 +9,7 @@ import (
 	"sharpnr-engine/core/models"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -107,3 +108,12 @@ func (r *initOrganizationRepository) EmailOrPhoneExistsInMainDB(ctx context.Cont
 }
 
 //-----------------------------------------------------------------------------------------------------------------//
+
+func (r *initOrganizationRepository) GetOrgUUID_By_SharpnrID(sharpnr_id string) (uuid.UUID, error) {
+	// This is the function finding the orgId and return uuid
+	var org models.Organization
+	if err := r.db.Where("sharpnr_org_id = ?", sharpnr_id).First(&org).Error; err != nil {
+		return uuid.Nil, fmt.Errorf("organization not found: %w", err)
+	}
+	return org.ID, nil
+}

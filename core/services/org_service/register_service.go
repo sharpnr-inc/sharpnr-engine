@@ -2,6 +2,7 @@ package orgservices
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	dto "sharpnr-engine/core/dtos"
 	"sharpnr-engine/core/models"
@@ -10,7 +11,9 @@ import (
 )
 
 func (s *orgRegistrationService) InitiateOrgRegistration(ctx context.Context, req dto.OrgInitialRegistration_Request_Dto) (*dto.OrgInitialRegistration_Response_Dto, string, error) {
-
+	if req.Name == "" || req.Email == "" || req.Phone == "" || req.Password == "" {
+		return nil, "", errors.New("all fields are required")
+	}
 	orgEmail := req.Email
 	orgPhone := req.Phone
 

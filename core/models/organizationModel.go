@@ -10,7 +10,7 @@ import (
 
 // This is Master Model For the Organisation
 type Organization struct {
-	ID              uuid.UUID         `gorm:"not null;unique"`
+	ID              uuid.UUID         `gorm:"not null;primaryKey"`
 	Name            string            `gorm:"size:100;not null"`
 	SharpnrOrgID    string            `gorm:"not null;unique"`
 	OrgOprationType constants.OrgType `gorm:"type:varchar(20);not null"`

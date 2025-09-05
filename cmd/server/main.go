@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"sharpnr-engine/api"
+	_ "sharpnr-engine/cmd/server/docs"
 	"sharpnr-engine/config"
-	_ "sharpnr-engine/docs"
 	"sharpnr-engine/shared/database"
 
 	swaggerFiles "github.com/swaggo/files"

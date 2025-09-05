@@ -9,19 +9,15 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "http://sharpnr.com/terms/",
-        "contact": {
-            "name": "API Support",
-            "email": "support@sharpnr.com"
-        },
+        "contact": {},
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/organization/login": {
+        "/org/register": {
             "post": {
-                "description": "Logs in an organization and returns JWT",
+                "description": "Start the registration process for a new organization",
                 "consumes": [
                     "application/json"
                 ],
@@ -29,17 +25,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Organization"
+                    "Registration"
                 ],
-                "summary": "Login for organization root",
+                "summary": "Register a new organization",
                 "parameters": [
                     {
-                        "description": "Login Credentials",
-                        "name": "login",
+                        "description": "Organization registration payload",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.LoginRequest"
+                            "$ref": "#/definitions/dto.OrgInitialRegistration_Request_Dto"
                         }
                     }
                 ],
@@ -47,21 +43,11 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/dto.OrgInitialRegistration_Response_Dto"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -72,9 +58,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/organization/register": {
-            "post": {
-                "description": "This is Registration for the Organisation",
+        "/org/reset-password": {
+            "get": {
+                "description": "Reset the password for an existing organization",
                 "consumes": [
                     "application/json"
                 ],
@@ -82,18 +68,16 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Organization"
+                    "Auth"
                 ],
-                "summary": "Register for organization Registration",
+                "summary": "Reset organization password",
                 "parameters": [
                     {
-                        "description": "Login Credentials",
-                        "name": "login",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.OrganisationRegisterDTO"
-                        }
+                        "type": "string",
+                        "description": "Organization email",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -101,7 +85,9 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "type": "object",
-                            "additionalProperties": true
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
@@ -112,9 +98,43 @@ const docTemplate = `{
                                 "type": "string"
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/org/verify-email-otp": {
+            "post": {
+                "description": "Verifies OTP sent during registration",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Registration"
+                ],
+                "summary": "Verify organization email with OTP",
+                "parameters": [
+                    {
+                        "description": "OTP verification payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.OrgVerifyOTP_Req_Dto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.OrgVerifyOTP_Res_Dto"
+                        }
                     },
-                    "401": {
-                        "description": "Unauthorized",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -127,82 +147,74 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.LoginRequest": {
+        "dto.OrgInitialRegistration_Request_Dto": {
             "type": "object",
-            "required": [
-                "email",
-                "password"
-            ],
             "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.OrganisationRegisterDTO": {
-            "type": "object",
-            "required": [
-                "adminName",
-                "bankAccNumber",
-                "email",
-                "name",
-                "organizationID",
-                "password",
-                "phone"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "adminName": {
-                    "type": "string"
-                },
-                "bankAccNumber": {
-                    "type": "string"
-                },
-                "bankBranchName": {
-                    "type": "string"
-                },
-                "banker": {
-                    "type": "string"
-                },
-                "cinNumber": {
+                "description": {
                     "type": "string"
                 },
                 "email": {
                     "type": "string"
-                },
-                "gstNumber": {
-                    "type": "string"
-                },
-                "ifscCode": {
-                    "type": "string"
-                },
-                "isPhysicalVerified": {
-                    "description": "optional, pointer so omitted if nil",
-                    "type": "boolean"
-                },
-                "isRegistered": {
-                    "type": "boolean"
                 },
                 "name": {
                     "type": "string"
                 },
-                "organizationID": {
-                    "type": "string"
-                },
-                "organizationRegType": {
+                "orgType": {
                     "type": "string"
                 },
                 "password": {
-                    "type": "string",
-                    "minLength": 6
+                    "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.OrgInitialRegistration_Response_Dto": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.OrgVerifyOTP_Req_Dto": {
+            "type": "object",
+            "properties": {
+                "otp": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.OrgVerifyOTP_Res_Dto": {
+            "type": "object",
+            "properties": {
+                "created_at": {
                     "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "master_contact": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "org_operation_type": {
+                    "type": "string"
+                },
+                "root_email": {
+                    "type": "string"
+                },
+                "sharpnr_org_id": {
+                    "type": "string"
                 }
             }
         }
@@ -211,12 +223,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
-	Host:             "localhost:8080",
-	BasePath:         "/api/v1",
+	Version:          "",
+	Host:             "",
+	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "SharpNR API",
-	Description:      "Backend APIs for SharpNR system.",
+	Title:            "",
+	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

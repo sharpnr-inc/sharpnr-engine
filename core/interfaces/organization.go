@@ -4,6 +4,8 @@ import (
 	"context"
 	dto "sharpnr-engine/core/dtos"
 	"sharpnr-engine/core/models"
+
+	"github.com/google/uuid"
 )
 
 //////////////////////////
@@ -41,6 +43,9 @@ type IOrgRegistrationRepository interface {
 
 	// FindBySharpnrOrgID checks if an organization exists by its Sharpnr ID
 	FindBySharpnrOrgID(id string) (bool, error)
+
+	//It will get find you the orgId
+	GetOrgUUID_By_SharpnrID(sharpnr_id string) (uuid.UUID, error)
 }
 
 //////////////////////////

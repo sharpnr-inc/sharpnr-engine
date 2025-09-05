@@ -13,8 +13,8 @@ import (
 // @Tags         Registration
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.VerifyOtpRequest true "OTP verification payload"
-// @Success      200  {object} dto.VerifyOtpResponse
+// @Param        request body dto.OrgVerifyOTP_Req_Dto true "OTP verification payload"
+// @Success      200  {object} dto.OrgVerifyOTP_Res_Dto
 // @Failure      400  {object} map[string]string
 // @Router       /org/verify-email-otp [post]
 func (c *OrganisationController) VerifyOtp(ctx *gin.Context) {
