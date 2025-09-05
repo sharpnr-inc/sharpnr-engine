@@ -10,12 +10,12 @@ import (
 	"sharpnr-engine/shared/utils"
 )
 
-func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.OrgInitialRegistration_Request_Dto) (*dto.OrgInitialRegistration_Response_Dto, string, error) {
-	if req.Name == "" || req.Email == "" || req.Phone == "" || req.Password == "" {
+func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org_Signup_REQUEST_DTO) (*dto.Org_Signup_RESPONSE_DTO, string, error) {
+	if req.Name == "" || req.Email == "" || req.Mobile == "" || req.Password == "" {
 		return nil, "", errors.New("all fields are required")
 	}
 	orgEmail := req.Email
-	orgPhone := req.Phone
+	orgPhone := req.Mobile
 
 	// Step 1 → Check if email or phone exists in Redis
 	existsInRedis, err := s.orgRepo.EmailOrPhoneExistsInRedis(ctx, orgEmail, orgPhone)
@@ -46,7 +46,7 @@ func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org
 			return nil, "", fmt.Errorf("failed to update redis otp: %w", err)
 		}
 
-		return &dto.OrgInitialRegistration_Response_Dto{
+		return &dto.Org_Signup_RESPONSE_DTO{
 			Token: token,
 		}, "", nil
 	}
@@ -84,7 +84,7 @@ func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org
 		return nil, "", fmt.Errorf("failed to create temp org in redis: %w", err)
 	}
 
-	return &dto.OrgInitialRegistration_Response_Dto{
+	return &dto.Org_Signup_RESPONSE_DTO{
 		Token: token,
 	}, "", nil
 }

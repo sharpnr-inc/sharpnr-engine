@@ -1,8 +1,6 @@
 package organizationrepositories
 
 import (
-	"sharpnr-engine/shared/database"
-
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
@@ -28,7 +26,7 @@ type organizationRepository struct {
 //   - Pointer to an initialized organizationRepository.
 func NewOrganizationRepo(db *gorm.DB, redis *redis.Client) *organizationRepository {
 	return &organizationRepository{
-		redis: database.RedisClient, // Currently using global Redis client
-		db:    database.DB,          // Currently using global DB instance
+		redis: redis,
+		db:    db,
 	}
 }

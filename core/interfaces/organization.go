@@ -15,7 +15,7 @@ import (
 // OrgRegistrationService defines methods for registering an organization
 type OrganizationSignUpService interface {
 	// InitiateOrgRegistration is the first step to start the registration process
-	InitiateOrgRegistration(ctx context.Context, req dto.OrgInitialRegistration_Request_Dto) (*dto.OrgInitialRegistration_Response_Dto, string, error)
+	InitiateOrgRegistration(ctx context.Context, req dto.Org_Signup_REQUEST_DTO) (*dto.Org_Signup_RESPONSE_DTO, string, error)
 
 	// VerifyOrgRegistration verifies the OTP/token sent to the organization
 	VerifyOrgRegistration(ctx context.Context, token, code string) (*dto.OrgVerifyOTP_Res_Dto, bool, error)
