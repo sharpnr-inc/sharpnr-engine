@@ -2,6 +2,7 @@ package v1
 
 import (
 	"sharpnr-engine/modules/base"
+	"sharpnr-engine/modules/hotel"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -10,4 +11,5 @@ import (
 // RegisterModuleRoutes sets up all routes related to the specific business modules.
 func RegisterModuleRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	base.RegisterBaseModuleRoutes(v1, db)
+	hotel.RegisterHotelModuleRoutes(v1, db)
 }
