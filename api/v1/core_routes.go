@@ -1,7 +1,7 @@
 package v1
 
 import (
-	employeecontrollers "sharpnr-engine/core/controllers/employeeControllers"
+	employeecontrollers "sharpnr-engine/core/controllers/employee_controllers"
 	employeerepo "sharpnr-engine/core/repositories/employee_repo"
 	organizationrepositories "sharpnr-engine/core/repositories/organization_repo"
 	employeeservice "sharpnr-engine/core/services/employee_service"

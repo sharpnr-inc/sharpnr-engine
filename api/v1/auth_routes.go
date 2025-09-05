@@ -1,7 +1,7 @@
 package v1
 
 import (
-	orgcontrollers "sharpnr-engine/core/controllers/organisationControllers"
+	orgcontrollers "sharpnr-engine/core/controllers/organisation_controllers"
 	organizationrepositories "sharpnr-engine/core/repositories/organization_repo"
 	orgservices "sharpnr-engine/core/services/org_service"
 	"sharpnr-engine/shared/middlewares"
