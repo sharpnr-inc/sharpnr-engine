@@ -6,12 +6,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type initEmployeeRepository struct {
+type employeeRepository struct {
 	db *gorm.DB
 }
 
-func EmployeeRepo(db *gorm.DB) *initEmployeeRepository {
-	return &initEmployeeRepository{
+func EmployeeRepo(db *gorm.DB) *employeeRepository {
+	return &employeeRepository{
 		db: database.DB,
 	}
 

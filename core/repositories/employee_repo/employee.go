@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (r *initEmployeeRepository) CreateEmployee(ctx context.Context, emp *models.Employee) (*models.Employee, error) {
+func (r *employeeRepository) CreateEmployee(ctx context.Context, emp *models.Employee) (*models.Employee, error) {
 	// Convert org string to uuid.UUID
 
 	// Insert into database
@@ -21,7 +21,7 @@ func (r *initEmployeeRepository) CreateEmployee(ctx context.Context, emp *models
 }
 
 // FindEmployeeById retrieves an employee by organization ID and employee ID
-func (r *initEmployeeRepository) FindEmployeeById(ctx context.Context, orgID, empID uuid.UUID) (*models.Employee, bool, error) {
+func (r *employeeRepository) FindEmployeeById(ctx context.Context, orgID, empID uuid.UUID) (*models.Employee, bool, error) {
 	var emp models.Employee
 	err := r.db.WithContext(ctx).
 		Where("id = ? AND organization_id = ?", empID, orgID).
@@ -38,7 +38,7 @@ func (r *initEmployeeRepository) FindEmployeeById(ctx context.Context, orgID, em
 }
 
 // FindByEmail retrieves an employee by organization ID and email
-func (r *initEmployeeRepository) FindByEmail(ctx context.Context, orgID uuid.UUID, email string) (*models.Employee, bool, error) {
+func (r *employeeRepository) FindByEmail(ctx context.Context, orgID uuid.UUID, email string) (*models.Employee, bool, error) {
 	var emp models.Employee
 	err := r.db.WithContext(ctx).
 		Where("email = ? AND organization_id = ?", email, orgID).
@@ -55,7 +55,7 @@ func (r *initEmployeeRepository) FindByEmail(ctx context.Context, orgID uuid.UUI
 }
 
 // ListEmployees retrieves all employees for a given organization
-func (r *initEmployeeRepository) ListEmployees(ctx context.Context, orgID uuid.UUID) ([]*models.Employee, error) {
+func (r *employeeRepository) ListEmployees(ctx context.Context, orgID uuid.UUID) ([]*models.Employee, error) {
 	var employees []*models.Employee
 	if err := r.db.WithContext(ctx).
 		Where("organization_id = ?", orgID).
@@ -67,7 +67,7 @@ func (r *initEmployeeRepository) ListEmployees(ctx context.Context, orgID uuid.U
 }
 
 // UpdateEmployeeDetails updates the provided employee's details
-func (r *initEmployeeRepository) UpdateEmployeeDetails(ctx context.Context, emp *models.Employee) (*models.Employee, error) {
+func (r *employeeRepository) UpdateEmployeeDetails(ctx context.Context, emp *models.Employee) (*models.Employee, error) {
 	if emp.ID == uuid.Nil {
 		return nil, fmt.Errorf("employee ID is required")
 	}
@@ -80,7 +80,7 @@ func (r *initEmployeeRepository) UpdateEmployeeDetails(ctx context.Context, emp 
 }
 
 // RemoveEmployee deletes an employee from the given organization
-func (r *initEmployeeRepository) RemoveEmployee(ctx context.Context, orgID, empID uuid.UUID) error {
+func (r *employeeRepository) RemoveEmployee(ctx context.Context, orgID, empID uuid.UUID) error {
 	if err := r.db.WithContext(ctx).
 		Where("id = ? AND organization_id = ?", empID, orgID).
 		Delete(&models.Employee{}).Error; err != nil {
