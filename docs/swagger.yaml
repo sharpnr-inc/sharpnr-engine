@@ -56,7 +56,45 @@ definitions:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         type: string
     type: object
-host: localhost:8080
+  dto.Org_Verify_Otp_REQUEST_DTO:
+    properties:
+      otp:
+        description: OTP is the one-time password sent to the organization's email
+          or mobile.
+        example: "123456"
+        type: string
+      token:
+        description: Token is the temporary token associated with the OTP verification
+          process.
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+    type: object
+  dto.Org_Verify_Otp_RESPONSE_DTO:
+    properties:
+      email:
+        description: Email of the organization.
+        example: hotel@example.com
+        type: string
+      name:
+        description: Name of the organization.
+        example: Sharpnr Hotel
+        type: string
+      org_type:
+        allOf:
+        - $ref: '#/definitions/constants.OrgType'
+        description: ORG_TYPE specifies the type of the organization.
+        example: HOTEL
+      sharpnr_id:
+        description: Sharpnr_Id is the unique identifier assigned to the organization.
+        example: SHRabc123def456
+        type: string
+      token:
+        description: Token is the authentication token issued after successful OTP
+          verification.
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+    type: object
+host: 192.168.1.35:8080
 info:
   contact:
     email: support@sharpnr.com
@@ -67,7 +105,7 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT
   termsOfService: http://swagger.io/terms/
-  title: Sharpnr Engine API
+  title: Sharpnr Engine APIs
   version: "1.0"
 paths:
   /register:
@@ -97,5 +135,39 @@ paths:
             type: object
       summary: Create a new organization
       tags:
-      - Organization
+      - Org SignUp
+  /verify-otp:
+    post:
+      consumes:
+      - application/json
+      description: Verifies the OTP sent to the organization's email during signup.
+      parameters:
+      - description: OTP verification payload
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.Org_Verify_Otp_REQUEST_DTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OTP verified successfully
+          schema:
+            $ref: '#/definitions/dto.Org_Verify_Otp_RESPONSE_DTO'
+        "400":
+          description: Invalid request payload or verification failed
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Invalid OTP or token expired
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Verify OTP for organization registration
+      tags:
+      - Org SignUp
 swagger: "2.0"

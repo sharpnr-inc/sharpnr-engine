@@ -26,7 +26,7 @@ import (
 // @license.name MIT
 // @license.url https://opensource.org/licenses/MIT
 
-// @host localhost:8080
+// @host 192.168.1.35:8080
 // @BasePath /api/v1
 func main() {
 	config.LoadEnv() // Load environment variables
