@@ -11,9 +11,11 @@ import (
 )
 
 func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org_Signup_REQUEST_DTO) (*dto.Org_Signup_RESPONSE_DTO, string, error) {
+	// Step 1 we will check first that if data is there
 	if req.Name == "" || req.Email == "" || req.Mobile == "" || req.Password == "" {
 		return nil, "", errors.New("all fields are required")
 	}
+
 	orgEmail := req.Email
 	orgPhone := req.Mobile
 

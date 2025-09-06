@@ -1,8 +1,6 @@
 package organizationrepositories
 
 import (
-	// "github.com/google/uuid"
-
 	"context"
 	"encoding/json"
 	"fmt"
@@ -11,41 +9,28 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
+	"gorm.io/gorm"
 )
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *organizationRepository) GetOrgFromRedisDB(ctx context.Context, email string) (*models.TempOrgRegistrationData, error) {
-	key := fmt.Sprintf("init_reg:%s", email)
-	data, err := r.redis.Get(ctx, key).Result()
-	if err != nil {
-		if err == redis.Nil {
-			return nil, fmt.Errorf("no organisation founf for email : %s", email)
-		}
-		return nil, err
+func (r *organizationRepository) EmailOrPhoneExistsInRedis(ctx context.Context, email, phone string) (bool, error) {
+	emailKey := fmt.Sprintf("init_reg:%s", email)
+	phoneKey := fmt.Sprintf("init_reg_phone:%s", phone)
+
+	if _, err := r.redis.Get(ctx, emailKey).Result(); err == nil {
+		return true, nil
+	} else if err != redis.Nil {
+		return false, err
 	}
 
-	var tempOrg models.TempOrgRegistrationData
-	if err := json.Unmarshal([]byte(data), &tempOrg); err != nil {
-		return nil, err
+	if _, err := r.redis.Get(ctx, phoneKey).Result(); err == nil {
+		return true, nil
+	} else if err != redis.Nil {
+		return false, err
 	}
 
-	return &tempOrg, nil
-}
-
-//-----------------------------------------------------------------------------------------------------------------//
-
-func (r *organizationRepository) FindBySharpnrOrgID(id string) (bool, error) {
 	return false, nil
-}
-
-//-----------------------------------------------------------------------------------------------------------------//
-
-func (r *organizationRepository) CreateOrgInMainDB(ctx context.Context, Org *models.Organization) error {
-	if err := r.db.WithContext(ctx).Create(Org).Error; err != nil {
-		return err
-	}
-	return nil
 }
 
 //-----------------------------------------------------------------------------------------------------------------//
@@ -65,29 +50,29 @@ func (r *organizationRepository) CreateOrgInRedisDB(ctx context.Context, tempOrg
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *organizationRepository) EmailOrPhoneExistsInRedis(ctx context.Context, email string, phone string) (bool, error) {
+func (r *organizationRepository) GetOrgFromRedisDB(ctx context.Context, email string) (*models.TempOrgRegistrationData, error) {
+	key := fmt.Sprintf("init_reg:%s", email)
+	data, err := r.redis.Get(ctx, key).Result()
+	if err != nil {
+		if err == redis.Nil {
+			return nil, fmt.Errorf("no organisation found for email : %s", email)
+		}
+		return nil, err
+	}
+
+	var tempOrg models.TempOrgRegistrationData
+	if err := json.Unmarshal([]byte(data), &tempOrg); err != nil {
+		return nil, err
+	}
+
+	return &tempOrg, nil
+}
+
+//-----------------------------------------------------------------------------------------------------------------//
+
+func (r *organizationRepository) DeleteOrgFromRedisDB(ctx context.Context, email string) error {
 	emailKey := fmt.Sprintf("init_reg:%s", email)
-	phoneKey := fmt.Sprintf("init_reg_phone:%s", phone)
-
-	// check email
-	_, err := r.redis.Get(ctx, emailKey).Result()
-	if err == nil {
-		return true, nil
-	}
-	if err != redis.Nil {
-		return false, err
-	}
-
-	// check phone
-	_, err = r.redis.Get(ctx, phoneKey).Result()
-	if err == nil {
-		return true, nil
-	}
-	if err != redis.Nil {
-		return false, err
-	}
-
-	return false, nil
+	return r.redis.Del(ctx, emailKey).Err()
 }
 
 //-----------------------------------------------------------------------------------------------------------------//
@@ -105,6 +90,36 @@ func (r *organizationRepository) EmailOrPhoneExistsInMainDB(ctx context.Context,
 	}
 
 	return count > 0, nil
+}
+
+//-----------------------------------------------------------------------------------------------------------------//
+
+func (r *organizationRepository) CreateOrgInMainDB(ctx context.Context, Org *models.Organization) error {
+	if err := r.db.WithContext(ctx).Create(Org).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+//-----------------------------------------------------------------------------------------------------------------//
+
+func (r *organizationRepository) FindOrgBySharpnrID(ctx context.Context, id string) (*models.Organization, bool, error) {
+	var org models.Organization
+
+	if err := r.db.WithContext(ctx).
+		Where("sharpnr_org_id = ?", id).
+		First(&org).Error; err != nil {
+
+		if err == gorm.ErrRecordNotFound {
+			// Not found
+			return nil, false, nil
+		}
+		// Real DB error
+		return nil, false, err
+	}
+
+	// Found
+	return &org, true, nil
 }
 
 //-----------------------------------------------------------------------------------------------------------------//

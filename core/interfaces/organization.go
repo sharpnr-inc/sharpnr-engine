@@ -24,26 +24,37 @@ type OrganizationSignUpService interface {
 	// CompleteOrgRegistration(token string) (*dto.OrgRegistrationComplete_Response_Dto, error)
 }
 
-// IOrgRegistrationRepository defines data access methods for organization registration
+// OrganizationRepository defines methods for organization signup & lookup.
 type OrganizationRepository interface {
-	// CreateOrgInMainDB saves the organization in the main database
-	CreateOrgInMainDB(ctx context.Context, tempOrg *models.Organization) error
+	// -----------------------------
+	// Redis / Temporary Signup Data
+	// -----------------------------
 
-	// CreateOrgInRedisDB stores temporary registration data in Redis
+	// EmailOrPhoneExistsInRedis checks if email or phone exists in Redis.
+	EmailOrPhoneExistsInRedis(ctx context.Context, email, phone string) (bool, error)
+
+	// CreateOrgInRedisDB saves temporary org registration data in Redis (OTP, etc.).
 	CreateOrgInRedisDB(ctx context.Context, tempOrg *models.TempOrgRegistrationData) error
 
-	// EmailOrPhoneExistsInRedis checks if email or phone exists in Redis
-	EmailOrPhoneExistsInRedis(ctx context.Context, email string, phone string) (bool, error)
-
-	// EmailOrPhoneExistsInMainDB checks if email or phone exists in main DB
-	EmailOrPhoneExistsInMainDB(ctx context.Context, email string, phone string) (bool, error)
-
-	// GetOrgFromRedisDB retrieves temporary registration data from Redis
+	// GetOrgFromRedisDB retrieves temporary org registration data by email.
 	GetOrgFromRedisDB(ctx context.Context, email string) (*models.TempOrgRegistrationData, error)
 
-	// FindBySharpnrOrgID checks if an organization exists by its Sharpnr ID
-	FindBySharpnrOrgID(id string) (bool, error)
+	// DeleteOrgFromRedisDB removes temporary org registration data after successful OTP verification.
+	DeleteOrgFromRedisDB(ctx context.Context, email string) error
 
-	//It will get find you the orgId
-	GetOrgUUID_By_SharpnrID(sharpnr_id string) (uuid.UUID, error)
+	// -----------------------------
+	// Main DB / Permanent Org Data
+	// -----------------------------
+
+	// EmailOrPhoneExistsInMainDB checks if email or phone exists in the main database.
+	EmailOrPhoneExistsInMainDB(ctx context.Context, email, phone string) (bool, error)
+
+	// CreateOrgInMainDB saves the organization permanently in the main database.
+	CreateOrgInMainDB(ctx context.Context, org *models.Organization) error
+
+	// FindBySharpnrOrgID checks if an organization exists by SharpnrOrgID.
+	FindOrgBySharpnrID(ctx context.Context, id string) (*models.Organization, bool, error)
+
+	// GetOrgUUID_By_SharpnrID retrieves the UUID of the organization by SharpnrOrgID.
+	GetOrgUUID_By_SharpnrID(sharpnrID string) (uuid.UUID, error)
 }

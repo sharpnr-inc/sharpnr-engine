@@ -21,11 +21,10 @@ type Employee struct {
 	DepartmentID string     `gorm:"type:uuid;not null;index"`
 	Department   Department `gorm:"foreignKey:DepartmentID;references:ID"`
 
-	CreatedAt          time.Time
-	UpdatedAt          time.Time
-	DeletedAt          gorm.DeletedAt `gorm:"index"`
-	Role               constants.EmployeeRoles
-	Permissions_Access []string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+	Role      constants.EmployeeRoles
 
 	// TerminalAccess []string `gorm:"type:text[]"`
 }
