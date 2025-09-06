@@ -15,13 +15,13 @@ import (
 func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 
 	newOrgRepo := organizationrepositories.NewOrganizationRepo(db, redis)
-	newOrgAuthService := signupservice.NewSignupService(newOrgRepo)
-	newOrgRegController := signupcontrollers.NewSignUpController(newOrgAuthService)
+	newSignupService := signupservice.NewSignupService(newOrgRepo)
+	newSignupController := signupcontrollers.NewSignUpController(newSignupService)
 
 	//Register
-	v1.POST("/register", newOrgRegController.RegisterOrg)
+	v1.POST("/register", newSignupController.RegisterOrg)
 	//Need Middleware
-	v1.POST("/otp-verify", middlewares.OrgRegOtpVerificationMiddleware(), newOrgRegController.VerifyRegistrationOTP)
+	v1.POST("/otp-verify", middlewares.OrgRegOtpVerificationMiddleware(), newSignupController.VerifyRegistrationOTP)
 	v1.POST("/complete-register")
 	// v1.POST("/login", newOrgRegController.Login)
 

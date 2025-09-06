@@ -10,8 +10,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var jwtSecret = []byte("your-super-secure-secret") // use env var in production
-
 func getJWTSecret() []byte {
 	_ = godotenv.Load() // ignore error, assume env already loaded in main
 	secret := os.Getenv("JWT_SECRET")
@@ -20,6 +18,8 @@ func getJWTSecret() []byte {
 	}
 	return []byte(secret)
 }
+
+var jwtSecret = getJWTSecret()
 
 func GenerateOTPToken(email string) (string, error) {
 	claims := jwt.MapClaims{

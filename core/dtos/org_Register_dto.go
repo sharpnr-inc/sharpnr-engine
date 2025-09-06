@@ -32,46 +32,6 @@ type OrganizationRegistrationRequestDTO struct {
 	MasterPassword      string  `json:"master_password" validate:"required,min=6"`
 }
 
-// This is the Initial Organisation Registration Process
-// With the Minimal Data we need for the Org Implemetation
-type OrgInitialRegistration_Request_Dto struct {
-	Name     string
-	Email    string
-	Phone    string
-	OrgType  string
-	Password string
-}
-
-type OrgInitialRegistration_Response_Dto struct {
-	Token   string
-	Message string
-}
-
-type OrgVerifyOTP_Req_Dto struct {
-	Otp string
-}
-
-type OrgVerifyOTP_Res_Dto struct {
-	Message         string
-	SharpnrOrgID    string `json:"sharpnr_org_id"`
-	Name            string `json:"name"`
-	Description     string `json:"description"`
-	OrgOprationType string `json:"org_operation_type"`
-	RootEmail       string `json:"root_email"`
-	MasterContact   string `json:"master_contact"`
-	CreatedAt       int64  `json:"created_at"`
-}
-
-type OrganizationRegistrationResponseDTO struct {
-	SharpnrOrgID    string `json:"sharpnr_org_id"`
-	Name            string `json:"name"`
-	Description     string `json:"description"`
-	OrgOprationType string `json:"org_operation_type"`
-	RootEmail       string `json:"root_email"`
-	MasterContact   string `json:"master_contact"`
-	CreatedAt       int64  `json:"created_at"`
-}
-
 type OrganizationUpdateRequestDTO struct {
 	Name                *string `json:"name,omitempty"`
 	Address             *string `json:"address,omitempty"`
