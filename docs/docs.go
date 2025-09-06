@@ -9,15 +9,24 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.sharpnr.com/support",
+            "email": "support@sharpnr.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/org/register": {
+        "/register": {
             "post": {
-                "description": "Start the registration process for a new organization",
+                "description": "Registers a new organization",
                 "consumes": [
                     "application/json"
                 ],
@@ -25,17 +34,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Registration"
+                    "Organization"
                 ],
-                "summary": "Register a new organization",
+                "summary": "Create a new organization",
                 "parameters": [
                     {
-                        "description": "Organization registration payload",
-                        "name": "request",
+                        "description": "Organization signup data",
+                        "name": "input",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.OrgInitialRegistration_Request_Dto"
+                            "$ref": "#/definitions/dto.Org_Signup_REQUEST_DTO"
                         }
                     }
                 ],
@@ -43,94 +52,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.OrgInitialRegistration_Response_Dto"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/org/reset-password": {
-            "get": {
-                "description": "Reset the password for an existing organization",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Reset organization password",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Organization email",
-                        "name": "email",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/org/verify-email-otp": {
-            "post": {
-                "description": "Verifies OTP sent during registration",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Registration"
-                ],
-                "summary": "Verify organization email with OTP",
-                "parameters": [
-                    {
-                        "description": "OTP verification payload",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.OrgVerifyOTP_Req_Dto"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.OrgVerifyOTP_Res_Dto"
+                            "$ref": "#/definitions/dto.Org_Signup_RESPONSE_DTO"
                         }
                     },
                     "400": {
@@ -147,74 +69,74 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.OrgInitialRegistration_Request_Dto": {
+        "constants.OrgType": {
+            "type": "string",
+            "enum": [
+                "HOTEL",
+                "RETAIL",
+                "SALON",
+                "CLUB",
+                "RESTAURANT"
+            ],
+            "x-enum-varnames": [
+                "Hotel",
+                "Retail",
+                "Salon",
+                "Club",
+                "Restaurant"
+            ]
+        },
+        "dto.Org_Signup_REQUEST_DTO": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string"
-                },
                 "email": {
-                    "type": "string"
+                    "description": "Email address of the organization for contact and login purposes.",
+                    "type": "string",
+                    "example": "hotel@example.com"
+                },
+                "mobile": {
+                    "description": "Mobile number of the organization or primary contact person.",
+                    "type": "string",
+                    "example": "+911234567890"
                 },
                 "name": {
-                    "type": "string"
+                    "description": "Name of the organization.",
+                    "type": "string",
+                    "example": "Sharpnr Hotel"
                 },
-                "orgType": {
-                    "type": "string"
+                "org_type": {
+                    "description": "ORG_TYPE specifies the type of organization.\nUses the OrgType constant defined in the constants package.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.OrgType"
+                        }
+                    ],
+                    "example": "HOTEL"
                 },
                 "password": {
-                    "type": "string"
-                },
-                "phone": {
-                    "type": "string"
+                    "description": "Password for the organization login.",
+                    "type": "string",
+                    "example": "supersecure"
                 }
             }
         },
-        "dto.OrgInitialRegistration_Response_Dto": {
+        "dto.Org_Signup_RESPONSE_DTO": {
             "type": "object",
             "properties": {
+                "email": {
+                    "description": "Email of the organization.",
+                    "type": "string",
+                    "example": "hotel@example.com"
+                },
                 "message": {
-                    "type": "string"
+                    "description": "Message provides additional information about the signup operation.",
+                    "type": "string",
+                    "example": "OTP sent successfully"
                 },
                 "token": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.OrgVerifyOTP_Req_Dto": {
-            "type": "object",
-            "properties": {
-                "otp": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.OrgVerifyOTP_Res_Dto": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "integer"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "master_contact": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "org_operation_type": {
-                    "type": "string"
-                },
-                "root_email": {
-                    "type": "string"
-                },
-                "sharpnr_org_id": {
-                    "type": "string"
+                    "description": "Token is the authentication token issued for the newly created organization.",
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 }
             }
         }
@@ -223,12 +145,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
+	Version:          "1.0",
+	Host:             "localhost:8080",
+	BasePath:         "/api/v1",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "Sharpnr Engine API",
+	Description:      "Sharpnr Engine API Documentation",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

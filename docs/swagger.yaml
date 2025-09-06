@@ -1,136 +1,101 @@
+basePath: /api/v1
 definitions:
-  dto.OrgInitialRegistration_Request_Dto:
+  constants.OrgType:
+    enum:
+    - HOTEL
+    - RETAIL
+    - SALON
+    - CLUB
+    - RESTAURANT
+    type: string
+    x-enum-varnames:
+    - Hotel
+    - Retail
+    - Salon
+    - Club
+    - Restaurant
+  dto.Org_Signup_REQUEST_DTO:
     properties:
-      description:
-        type: string
       email:
+        description: Email address of the organization for contact and login purposes.
+        example: hotel@example.com
+        type: string
+      mobile:
+        description: Mobile number of the organization or primary contact person.
+        example: "+911234567890"
         type: string
       name:
+        description: Name of the organization.
+        example: Sharpnr Hotel
         type: string
-      orgType:
-        type: string
+      org_type:
+        allOf:
+        - $ref: '#/definitions/constants.OrgType'
+        description: |-
+          ORG_TYPE specifies the type of organization.
+          Uses the OrgType constant defined in the constants package.
+        example: HOTEL
       password:
-        type: string
-      phone:
+        description: Password for the organization login.
+        example: supersecure
         type: string
     type: object
-  dto.OrgInitialRegistration_Response_Dto:
+  dto.Org_Signup_RESPONSE_DTO:
     properties:
+      email:
+        description: Email of the organization.
+        example: hotel@example.com
+        type: string
       message:
+        description: Message provides additional information about the signup operation.
+        example: OTP sent successfully
         type: string
       token:
+        description: Token is the authentication token issued for the newly created
+          organization.
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         type: string
     type: object
-  dto.OrgVerifyOTP_Req_Dto:
-    properties:
-      otp:
-        type: string
-    type: object
-  dto.OrgVerifyOTP_Res_Dto:
-    properties:
-      created_at:
-        type: integer
-      description:
-        type: string
-      master_contact:
-        type: string
-      message:
-        type: string
-      name:
-        type: string
-      org_operation_type:
-        type: string
-      root_email:
-        type: string
-      sharpnr_org_id:
-        type: string
-    type: object
+host: localhost:8080
 info:
-  contact: {}
+  contact:
+    email: support@sharpnr.com
+    name: API Support
+    url: http://www.sharpnr.com/support
+  description: Sharpnr Engine API Documentation
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Sharpnr Engine API
+  version: "1.0"
 paths:
-  /org/register:
+  /register:
     post:
       consumes:
       - application/json
-      description: Start the registration process for a new organization
+      description: Registers a new organization
       parameters:
-      - description: Organization registration payload
+      - description: Organization signup data
         in: body
-        name: request
+        name: input
         required: true
         schema:
-          $ref: '#/definitions/dto.OrgInitialRegistration_Request_Dto'
+          $ref: '#/definitions/dto.Org_Signup_REQUEST_DTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.OrgInitialRegistration_Response_Dto'
+            $ref: '#/definitions/dto.Org_Signup_RESPONSE_DTO'
         "400":
           description: Bad Request
           schema:
             additionalProperties:
               type: string
             type: object
-      summary: Register a new organization
+      summary: Create a new organization
       tags:
-      - Registration
-  /org/reset-password:
-    get:
-      consumes:
-      - application/json
-      description: Reset the password for an existing organization
-      parameters:
-      - description: Organization email
-        in: query
-        name: email
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Reset organization password
-      tags:
-      - Auth
-  /org/verify-email-otp:
-    post:
-      consumes:
-      - application/json
-      description: Verifies OTP sent during registration
-      parameters:
-      - description: OTP verification payload
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.OrgVerifyOTP_Req_Dto'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.OrgVerifyOTP_Res_Dto'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Verify organization email with OTP
-      tags:
-      - Registration
+      - Organization
 swagger: "2.0"

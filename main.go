@@ -5,14 +5,29 @@ import (
 	"log"
 
 	"sharpnr-engine/api"
-	_ "sharpnr-engine/cmd/server/docs"
 	"sharpnr-engine/config"
 	"sharpnr-engine/shared/database"
+
+	_ "sharpnr-engine/docs"
 
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title Sharpnr Engine APIs
+// @version 1.0
+// @description Sharpnr Engine API Documentation
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.sharpnr.com/support
+// @contact.email support@sharpnr.com
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8080
+// @BasePath /api/v1
 func main() {
 	config.LoadEnv() // Load environment variables
 	redisDb := database.ConnectRedis()
