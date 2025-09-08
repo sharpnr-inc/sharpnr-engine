@@ -41,9 +41,11 @@ func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org
 
 		// Save otp token in redis
 		update := &models.TempOrgRegistrationData{
-			Email: orgEmail,
-			Phone: orgPhone,
-			OTP:   otp,
+			Email:   orgEmail,
+			Phone:   orgPhone,
+			OTP:     otp,
+			Name:    req.Name,
+			OrgType: req.ORG_TYPE,
 		}
 		if err := s.orgRepo.CreateOrgInRedisDB(ctx, update); err != nil {
 			return nil, "", fmt.Errorf("failed to update redis otp: %w", err)
@@ -60,7 +62,7 @@ func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org
 		return nil, "", fmt.Errorf("failed to check database: %w", err)
 	}
 	if existsInMainDB {
-		return nil, "", fmt.Errorf("email or phone already registered in main database")
+		return nil, "", fmt.Errorf("email or phone already registered")
 	}
 
 	// Step 3 → Create temp org in Redis and send OTP mail
@@ -70,10 +72,10 @@ func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org
 	}
 
 	tempOrg := &models.TempOrgRegistrationData{
-		Name:  req.Name,
-		Email: orgEmail,
-		Phone: orgPhone,
-		// OrgType:  req.OrgType,
+		Name:     req.Name,
+		Email:    orgEmail,
+		Phone:    orgPhone,
+		OrgType:  req.ORG_TYPE,
 		Password: req.Password,
 		OTP:      otpToken,
 	}
