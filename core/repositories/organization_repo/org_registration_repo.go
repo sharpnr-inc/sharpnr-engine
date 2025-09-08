@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sharpnr-engine/core/models"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -51,18 +52,21 @@ func (r *organizationRepository) CreateOrgInRedisDB(ctx context.Context, tempOrg
 //-----------------------------------------------------------------------------------------------------------------//
 
 func (r *organizationRepository) GetOrgFromRedisDB(ctx context.Context, email string) (*models.TempOrgRegistrationData, error) {
+	email = strings.TrimSpace(email)
 	key := fmt.Sprintf("init_reg:%s", email)
+	fmt.Println("Looking for Redis key:", key)
+
 	data, err := r.redis.Get(ctx, key).Result()
 	if err != nil {
 		if err == redis.Nil {
-			return nil, fmt.Errorf("no organisation found for email : %s", email)
+			return nil, fmt.Errorf("no organisation found for email: %s", email)
 		}
 		return nil, err
 	}
 
 	var tempOrg models.TempOrgRegistrationData
 	if err := json.Unmarshal([]byte(data), &tempOrg); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to unmarshal Redis data: %w", err)
 	}
 
 	return &tempOrg, nil
@@ -107,7 +111,7 @@ func (r *organizationRepository) FindOrgBySharpnrID(ctx context.Context, id stri
 	var org models.Organization
 
 	if err := r.db.WithContext(ctx).
-		Where("sharpnr_org_id = ?", id).
+		Where("sharpnr_id = ?", id).
 		First(&org).Error; err != nil {
 
 		if err == gorm.ErrRecordNotFound {

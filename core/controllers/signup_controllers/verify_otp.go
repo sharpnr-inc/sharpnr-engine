@@ -12,11 +12,12 @@ import (
 // @Tags         Org SignUp
 // @Accept       json
 // @Produce      json
+// @Param        Authorization  header    string  true  "Bearer token"
 // @Param        body  body      dto.Org_Verify_Otp_REQUEST_DTO  true  "OTP verification payload"
 // @Success      200   {object}  dto.Org_Verify_Otp_RESPONSE_DTO  "OTP verified successfully"
 // @Failure      400   {object}  map[string]string "Invalid request payload or verification failed"
 // @Failure      401   {object}  map[string]string "Invalid OTP or token expired"
-// @Router       /verify-otp [post]
+// @Router       /otp-verify [post]
 func (c *SignUpController) VerifyRegistrationOTP(ctx *gin.Context) {
 	var req dto.Org_Verify_Otp_REQUEST_DTO
 
@@ -46,13 +47,7 @@ func (c *SignUpController) VerifyRegistrationOTP(ctx *gin.Context) {
 		return
 	}
 
-	// 3️⃣ Return successful response
-	ctx.JSON(200, gin.H{
-		"name":       res.Name,
-		"email":      res.Email,
-		"sharpnr_id": res.Sharpnr_Id,
-		"org_type":   res.ORG_TYPE,
-		"token":      res.Token,
-		"status":     "verified",
-	})
+	// @Success 200 {object} dto.Org_Verify_Otp_RESPONSE_DTO "OTP verified successfully"
+	ctx.JSON(200, res)
+
 }

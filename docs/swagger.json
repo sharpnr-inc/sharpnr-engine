@@ -18,6 +18,65 @@
     "host": "192.168.1.35:8080",
     "basePath": "/api/v1",
     "paths": {
+        "/otp-verify": {
+            "post": {
+                "description": "Verifies the OTP sent to the organization's email during signup.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Org SignUp"
+                ],
+                "summary": "Verify OTP for organization registration",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "OTP verification payload",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.Org_Verify_Otp_REQUEST_DTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OTP verified successfully",
+                        "schema": {
+                            "$ref": "#/definitions/dto.Org_Verify_Otp_RESPONSE_DTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request payload or verification failed",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid OTP or token expired",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/register": {
             "post": {
                 "description": "Registers a new organization",
@@ -51,58 +110,6 @@
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/verify-otp": {
-            "post": {
-                "description": "Verifies the OTP sent to the organization's email during signup.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Org SignUp"
-                ],
-                "summary": "Verify OTP for organization registration",
-                "parameters": [
-                    {
-                        "description": "OTP verification payload",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.Org_Verify_Otp_REQUEST_DTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OTP verified successfully",
-                        "schema": {
-                            "$ref": "#/definitions/dto.Org_Verify_Otp_RESPONSE_DTO"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request payload or verification failed",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid OTP or token expired",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {

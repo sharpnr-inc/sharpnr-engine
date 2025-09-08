@@ -9,11 +9,13 @@ import (
 )
 
 type Employee struct {
-	ID          uuid.UUID `gorm:"type:uuid;primaryKey"`
-	FirstName   string    `gorm:"size:50;not null"`
-	LastName    string    `gorm:"size:50"`
-	Email       string    `gorm:"not null;unique"`
-	PhoneNumber string    `gorm:"size:20"`
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
+	FirstName string    `gorm:"size:50;not null"`
+	// Must be In the Org Scope
+	NickName    string
+	LastName    string `gorm:"size:50"`
+	Email       string `gorm:"not null;unique"`
+	PhoneNumber string `gorm:"size:20"`
 
 	OrganizationID uuid.UUID    `gorm:"type:uuid;not null;index"`
 	Organization   Organization `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`

@@ -23,9 +23,10 @@ var jwtSecret = getJWTSecret()
 
 func GenerateOTPToken(email string) (string, error) {
 	claims := jwt.MapClaims{
-		"email": email,
-		"exp":   time.Now().Add(15 * time.Minute).Unix(), // 15 min expiry
-		"iat":   time.Now().Unix(),
+		"email":     email,
+		"tokenType": "OTP_VERIFICATION",
+		"exp":       time.Now().Add(15 * time.Minute).Unix(), // 15 min expiry
+		"iat":       time.Now().Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(getJWTSecret())

@@ -108,40 +108,17 @@ info:
   title: Sharpnr Engine APIs
   version: "1.0"
 paths:
-  /register:
-    post:
-      consumes:
-      - application/json
-      description: Registers a new organization
-      parameters:
-      - description: Organization signup data
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/dto.Org_Signup_REQUEST_DTO'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.Org_Signup_RESPONSE_DTO'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Create a new organization
-      tags:
-      - Org SignUp
-  /verify-otp:
+  /otp-verify:
     post:
       consumes:
       - application/json
       description: Verifies the OTP sent to the organization's email during signup.
       parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: OTP verification payload
         in: body
         name: body
@@ -168,6 +145,34 @@ paths:
               type: string
             type: object
       summary: Verify OTP for organization registration
+      tags:
+      - Org SignUp
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Registers a new organization
+      parameters:
+      - description: Organization signup data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.Org_Signup_REQUEST_DTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Org_Signup_RESPONSE_DTO'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new organization
       tags:
       - Org SignUp
 swagger: "2.0"
