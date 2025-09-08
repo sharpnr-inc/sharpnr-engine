@@ -19,18 +19,24 @@ func (r *organizationRepository) EmailOrPhoneExistsInRedis(ctx context.Context, 
 	emailKey := fmt.Sprintf("init_reg:%s", email)
 	phoneKey := fmt.Sprintf("init_reg_phone:%s", phone)
 
-	if _, err := r.redis.Get(ctx, emailKey).Result(); err == nil {
+	existsEmail, err := r.redis.Exists(ctx, emailKey).Result()
+	if err != nil {
+		return false, fmt.Errorf("failed to check email key in Redis: %w", err)
+	}
+	if existsEmail > 0 {
 		return true, nil
-	} else if err != redis.Nil {
-		return false, err
 	}
 
-	if _, err := r.redis.Get(ctx, phoneKey).Result(); err == nil {
+	// Check if phone exists
+	existsPhone, err := r.redis.Exists(ctx, phoneKey).Result()
+	if err != nil {
+		return false, fmt.Errorf("failed to check phone key in Redis: %w", err)
+	}
+	if existsPhone > 0 {
 		return true, nil
-	} else if err != redis.Nil {
-		return false, err
 	}
 
+	// Neither exists
 	return false, nil
 }
 

@@ -27,8 +27,6 @@ type Employee struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 	Role      constants.EmployeeRoles
-
-	// TerminalAccess []string `gorm:"type:text[]"`
 }
 
 // TableName specifies the table name

@@ -8,6 +8,7 @@ import (
 	"sharpnr-engine/core/models"
 	"sharpnr-engine/shared/mailer"
 	"sharpnr-engine/shared/utils"
+	"strings"
 )
 
 func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org_Signup_REQUEST_DTO) (*dto.Org_Signup_RESPONSE_DTO, string, error) {
@@ -16,8 +17,8 @@ func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org
 		return nil, "", errors.New("all fields are required")
 	}
 
-	orgEmail := req.Email
-	orgPhone := req.Mobile
+	orgEmail := strings.TrimSpace(req.Email)
+	orgPhone := strings.TrimSpace(req.Mobile)
 
 	// Step 1 → Check if email or phone exists in Redis
 	existsInRedis, err := s.orgRepo.EmailOrPhoneExistsInRedis(ctx, orgEmail, orgPhone)
