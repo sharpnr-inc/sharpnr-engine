@@ -7,10 +7,13 @@ import "sharpnr-engine/core/interfaces"
 // SignupService handles organization signup logic
 type signupService struct {
 	orgRepo interfaces.OrganizationRepository // interface, not concrete struct
+	// This is Employee Repo for the creation of employee during the signup of Organisation
+	empRepo interfaces.EmployeeRepository
 }
 
-func NewSignupService(repo interfaces.OrganizationRepository) *signupService {
+func NewSignupService(repo interfaces.OrganizationRepository, emprepo interfaces.EmployeeRepository) *signupService {
 	return &signupService{
 		orgRepo: repo,
+		empRepo: emprepo,
 	}
 }

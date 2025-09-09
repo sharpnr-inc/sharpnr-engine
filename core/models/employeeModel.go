@@ -17,6 +17,11 @@ type Employee struct {
 	Email       string `gorm:"not null;unique"`
 	PhoneNumber string `gorm:"size:20"`
 
+	//This is a EmployeeID
+	ReportingMangerID string
+
+	SkipLevelMangerID string
+
 	OrganizationID uuid.UUID    `gorm:"type:uuid;not null;index"`
 	Organization   Organization `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 
