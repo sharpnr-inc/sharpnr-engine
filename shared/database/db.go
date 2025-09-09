@@ -45,8 +45,6 @@ func MigrateDB(db *gorm.DB) error {
 		&models.Employee{},     // Belongs to Department + Organization
 		&models.Product{},      // Belongs to Organization
 		&models.Service{},      // Belongs to Organization
-		&models.Operations{},   // Belongs to Department + Organization
-		&models.Terminal{},     // Belongs to Organization + has many-to-many with Employee & Operations
 		&accountingmodels.AccountingBills{},
 	)
 }

@@ -65,6 +65,22 @@ func (s *signupService) VerifyOrgRegistration(ctx context.Context, token string,
 		return nil, false, fmt.Errorf("failed to save organization in main DB: %w", err)
 	}
 
+	// here we create superAdmin
+	defaultSuperAdmin := &models.Employee{
+		ID:          uuid.New(),
+		FirstName:   "DEFAULT_ADMIN",
+		NickName:    "__",
+		LastName:    "__",
+		PhoneNumber: tempOrg.Phone,
+	}
+
+	admin, err := s.empRepo.CreateEmployee(ctx, defaultSuperAdmin)
+	if err != nil {
+		return nil, false, fmt.Errorf("error creating a super Admin %w", err)
+	}
+
+	fmt.Printf("Super Admin created with ID: %s\n", admin.ID)
+
 	newToken, err := utils.GenerateAuthToken(org.RootEmail)
 	if err != nil {
 		return nil, false, fmt.Errorf("failed to generate auth token: %w", err)
