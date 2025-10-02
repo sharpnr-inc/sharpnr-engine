@@ -22,11 +22,10 @@ type Employee struct {
 
 	SkipLevelMangerID string
 
-	OrganizationID uuid.UUID    `gorm:"type:uuid;not null;index"`
-	Organization   Organization `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
+	// Organization   Organization `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 
-	DepartmentID string     `gorm:"type:uuid;not null;index"`
-	Department   Department `gorm:"foreignKey:DepartmentID;references:ID"`
+	DepartmentID *string `gorm:"type:uuid;index"` // Changed to pointer to allow NULL
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

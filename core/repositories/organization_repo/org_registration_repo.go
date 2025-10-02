@@ -13,31 +13,34 @@ import (
 	"gorm.io/gorm"
 )
 
-//-----------------------------------------------------------------------------------------------------------------//
-
+// -----------------------------------------------------------------------------------------------------------------//
 func (r *organizationRepository) EmailOrPhoneExistsInRedis(ctx context.Context, email, phone string) (bool, error) {
-	emailKey := fmt.Sprintf("init_reg:%s", email)
-	phoneKey := fmt.Sprintf("init_reg_phone:%s", phone)
+	// Build keys with constants for better maintainability
+	const (
+		emailKeyPrefix = "init_reg:"
+		phoneKeyPrefix = "init_reg_phone:"
+	)
 
-	existsEmail, err := r.redis.Exists(ctx, emailKey).Result()
+	keys := make([]string, 0, 2)
+	if email != "" {
+		keys = append(keys, emailKeyPrefix+email)
+	}
+	if phone != "" {
+		keys = append(keys, phoneKeyPrefix+phone)
+	}
+
+	// Handle edge case where both are empty
+	if len(keys) == 0 {
+		return false, nil
+	}
+
+	// Check both keys in a single Redis call for better performance
+	existsCount, err := r.redis.Exists(ctx, keys...).Result()
 	if err != nil {
-		return false, fmt.Errorf("failed to check email key in Redis: %w", err)
-	}
-	if existsEmail > 0 {
-		return true, nil
+		return false, fmt.Errorf("failed to check existence in Redis: %w", err)
 	}
 
-	// Check if phone exists
-	existsPhone, err := r.redis.Exists(ctx, phoneKey).Result()
-	if err != nil {
-		return false, fmt.Errorf("failed to check phone key in Redis: %w", err)
-	}
-	if existsPhone > 0 {
-		return true, nil
-	}
-
-	// Neither exists
-	return false, nil
+	return existsCount > 0, nil
 }
 
 //-----------------------------------------------------------------------------------------------------------------//
@@ -141,4 +144,27 @@ func (r *organizationRepository) GetOrgUUID_By_SharpnrID(sharpnr_id string) (uui
 		return uuid.Nil, fmt.Errorf("organization not found: %w", err)
 	}
 	return org.ID, nil
+}
+
+// UpdateOrg updates an existing organization in the main database
+func (r *organizationRepository) UpdateOrg(ctx context.Context, org *models.Organization) error {
+	if org == nil {
+		return fmt.Errorf("organization cannot be nil")
+	}
+
+	if org.ID == uuid.Nil {
+		return fmt.Errorf("organization ID cannot be empty")
+	}
+
+	// Use Save() which updates all fields, or use Updates() for selective updates
+	result := r.db.WithContext(ctx).Save(org)
+	if result.Error != nil {
+		return fmt.Errorf("failed to update organization: %w", result.Error)
+	}
+
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("organization not found with ID: %s", org.ID)
+	}
+
+	return nil
 }

@@ -2,7 +2,9 @@ package signupcontrollers
 
 import (
 	"net/http"
+	"sharpnr-engine/core/constants"
 	dto "sharpnr-engine/core/dtos"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,9 +24,15 @@ func (c *SignUpController) RegisterOrg(ctx *gin.Context) {
 
 	// Step 1: Bind JSON request
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error":   "invalid request",
-			"details": err.Error(),
+		ctx.JSON(http.StatusOK, dto.Response[any]{
+			StatusCode: int(constants.StatusBadReq),
+			Message:    "Invalid Request",
+			Error: dto.ErrorResponse{
+				Message: err.Error(),
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
 		})
 		return
 	}
@@ -32,16 +40,27 @@ func (c *SignUpController) RegisterOrg(ctx *gin.Context) {
 	// Step 2: Call Signup Service
 	res, _, err := c.service.InitiateOrgRegistration(ctx, req)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+		ctx.JSON(http.StatusOK, dto.Response[any]{
+			StatusCode: 500,
+			Message:    "failed to register organization",
+			Error: dto.ErrorResponse{
+				Message: err.Error(),
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
 		})
 		return
 	}
 
 	// Step 3: Return success response
-	ctx.JSON(http.StatusOK, gin.H{
-		"message": "OTP sent to email",
-		"token":   res.Token,
-		"email":   req.Email,
+	ctx.JSON(http.StatusOK, dto.Response[dto.Org_Signup_RESPONSE_DTO]{
+		StatusCode: 200,
+		Message:    "OTP sent to email",
+		Error: dto.ErrorResponse{
+			IsError: false,
+		},
+		Data:      res, // your DTO response
+		Timestamp: time.Now(),
 	})
 }

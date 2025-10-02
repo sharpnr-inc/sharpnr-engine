@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -54,11 +55,17 @@ type Organization struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 
+	Policy datatypes.JSON `gorm:"type:jsonb;default:'{}'"`
+
+	// Super Admins
+	// We add the Employee ID
+	// SuperAdmin []string
+
 	// Relationships
-	Products    []Product    `gorm:"foreignKey:OrganizationID"`
-	Services    []Service    `gorm:"foreignKey:OrganizationID"`
-	Employees   []Employee   `gorm:"foreignKey:OrganizationID"`
-	Departments []Department `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Products  []Product  `gorm:"foreignKey:OrganizationID"`
+	Services  []Service  `gorm:"foreignKey:OrganizationID"`
+	Employees []Employee `gorm:"foreignKey:OrganizationID"`
+	// Departments []Department `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // TableName specifies the table name

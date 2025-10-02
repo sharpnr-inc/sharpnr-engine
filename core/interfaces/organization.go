@@ -57,4 +57,6 @@ type OrganizationRepository interface {
 
 	// GetOrgUUID_By_SharpnrID retrieves the UUID of the organization by SharpnrOrgID.
 	GetOrgUUID_By_SharpnrID(sharpnrID string) (uuid.UUID, error)
+
+	UpdateOrg(ctx context.Context, org *models.Organization) error
 }
