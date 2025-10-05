@@ -5,7 +5,8 @@ import (
 	"fmt"
 	dto "sharpnr-engine/core/dtos"
 	"sharpnr-engine/core/models"
-	policyengine "sharpnr-engine/policy_engine"
+
+	// policyengine "sharpnr-engine/policy_engine"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/google/uuid"
@@ -66,16 +67,16 @@ func (s *signupService) VerifyOrgRegistration(ctx context.Context, token string,
 		return nil, false, fmt.Errorf("failed to save organization in main DB: %w", err)
 	}
 
-	policyJSON, err := policyengine.CreateDefaultPolicy(org)
-	if err != nil {
-		return nil, false, fmt.Errorf("failed to create default policy: %w", err)
-	}
+	// policyJSON, err := policyengine.CreateDefaultPolicy(org)
+	// if err != nil {
+	// 	return nil, false, fmt.Errorf("failed to create default policy: %w", err)
+	// }
 
-	org.Policy = policyJSON
+	// org.Policy = policyJSON
 
-	if err := s.orgRepo.UpdateOrg(ctx, org); err != nil {
-		return nil, false, fmt.Errorf("failed to update organization with policy: %w", err)
-	}
+	// if err := s.orgRepo.UpdateOrg(ctx, org); err != nil {
+	// 	return nil, false, fmt.Errorf("failed to update organization with policy: %w", err)
+	// }
 
 	// here we create superAdmin
 	defaultSuperAdmin := &models.Employee{

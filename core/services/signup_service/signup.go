@@ -53,6 +53,7 @@ func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org
 
 		return &dto.Org_Signup_RESPONSE_DTO{
 			Token: token,
+			Email: orgEmail,
 		}, "", nil
 	}
 
@@ -91,5 +92,6 @@ func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org
 
 	return &dto.Org_Signup_RESPONSE_DTO{
 		Token: token,
+		Email: orgEmail,
 	}, "", nil
 }

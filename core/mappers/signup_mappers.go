@@ -40,9 +40,8 @@ func FromSignUpREQ_ToModel(req dto.Org_Signup_REQUEST_DTO) (*models.TempOrgRegis
 //   - An error (currently always nil, but can be extended for validation or error handling).
 func FromSignUp_RES_ToDTO(temp_org *models.TempOrgRegistrationData, token, message string) (dto.Org_Signup_RESPONSE_DTO, error) {
 	return dto.Org_Signup_RESPONSE_DTO{
-		Email:   temp_org.Email,
-		Token:   token,
-		Message: message,
+		Email: temp_org.Email,
+		Token: token,
 	}, nil
 }
 

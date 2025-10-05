@@ -1,7 +1,10 @@
 package signupcontrollers
 
 import (
+	"net/http"
+	"sharpnr-engine/core/constants"
 	dto "sharpnr-engine/core/dtos"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,40 +17,66 @@ import (
 // @Produce      json
 // @Param        Authorization  header    string  true  "Bearer token"
 // @Param        body  body      dto.Org_Verify_Otp_REQUEST_DTO  true  "OTP verification payload"
-// @Success      200   {object}  dto.Org_Verify_Otp_RESPONSE_DTO  "OTP verified successfully"
-// @Failure      400   {object}  map[string]string "Invalid request payload or verification failed"
-// @Failure      401   {object}  map[string]string "Invalid OTP or token expired"
+// @Success      200   {object}  dto.Response[dto.Org_Verify_Otp_RESPONSE_DTO]
+// @Failure      400   {object}  dto.Response[any]
+// @Failure      401   {object}  dto.Response[any]
 // @Router       /otp-verify [post]
 func (c *SignUpController) VerifyRegistrationOTP(ctx *gin.Context) {
 	var req dto.Org_Verify_Otp_REQUEST_DTO
 
-	// 1️⃣ Bind JSON body to DTO
+	// Step 1: Bind request
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(400, gin.H{
-			"error":   "invalid request payload",
-			"details": err.Error(),
+		ctx.JSON(http.StatusOK, dto.Response[any]{
+			StatusCode: int(constants.StatusBadReq),
+			Message:    "Invalid request payload",
+			Error: dto.ErrorResponse{
+				Message: err.Error(),
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
 		})
 		return
 	}
 
-	// 2️⃣ Call service to verify OTP
+	// Step 2: Verify OTP via service
 	res, ok, err := c.service.VerifyOrgRegistration(ctx, req.Token, req.OTP)
 	if err != nil {
-		ctx.JSON(400, gin.H{
-			"error":   "verification failed",
-			"details": err.Error(),
+		ctx.JSON(http.StatusOK, dto.Response[any]{
+			StatusCode: http.StatusBadRequest,
+			Message:    "verification failed",
+			Error: dto.ErrorResponse{
+				Message: err.Error(),
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
 		})
 		return
 	}
 
 	if !ok {
-		ctx.JSON(401, gin.H{
-			"error": "invalid OTP or token expired",
+		ctx.JSON(http.StatusOK, dto.Response[any]{
+			StatusCode: http.StatusUnauthorized,
+			Message:    "invalid OTP or token expired",
+			Error: dto.ErrorResponse{
+				Message: "invalid OTP or token expired",
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
 		})
 		return
 	}
 
-	// @Success 200 {object} dto.Org_Verify_Otp_RESPONSE_DTO "OTP verified successfully"
-	ctx.JSON(200, res)
-
+	// Step 3: Success response
+	ctx.JSON(http.StatusOK, dto.Response[dto.Org_Verify_Otp_RESPONSE_DTO]{
+		StatusCode: http.StatusOK,
+		Message:    "OTP verified successfully",
+		Error: dto.ErrorResponse{
+			IsError: false,
+		},
+		Data:      res,
+		Timestamp: time.Now(),
+	})
 }

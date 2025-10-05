@@ -27,7 +27,6 @@ type Org_Signup_RESPONSE_DTO struct {
 	Token string `json:"token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."`
 
 	// Message provides additional information about the signup operation.
-	Message string `json:"message" example:"OTP sent successfully"`
 
 	// Email of the organization.
 	Email string `json:"email" example:"hotel@example.com"`
@@ -58,4 +57,12 @@ type Org_Verify_Otp_RESPONSE_DTO struct {
 
 	// ORG_TYPE specifies the type of the organization.
 	ORG_TYPE constants.OrgType `json:"org_type" example:"HOTEL"`
+}
+
+type Org_Complete_Regesistration_DTO struct {
+	IsRegistered           string `json:"is_registered"`
+	Address                string
+	BankDetails            string
+	OwnerDetails           string
+	OrgRegistrationDetails string
 }

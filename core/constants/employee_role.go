@@ -5,6 +5,7 @@ package constants
 type EmployeeRoles string
 
 const (
+	Org_Owners  EmployeeRoles = "ORG_ADMIN"
 	Super_Admin EmployeeRoles = "SUPER_ADMIN"
 	Admin       EmployeeRoles = "ADMIN"
 	Manager     EmployeeRoles = "MANAGER"

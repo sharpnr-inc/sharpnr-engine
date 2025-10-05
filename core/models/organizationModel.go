@@ -55,15 +55,14 @@ type Organization struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 
-	Policy datatypes.JSON `gorm:"type:jsonb;default:'{}'"`
+	Policy                 datatypes.JSON `gorm:"type:jsonb;default:'{}'"`
+	IsRegistrationComplete bool           `gorm:"default:false; not null"`
 
 	// Super Admins
 	// We add the Employee ID
 	// SuperAdmin []string
 
 	// Relationships
-	Products  []Product  `gorm:"foreignKey:OrganizationID"`
-	Services  []Service  `gorm:"foreignKey:OrganizationID"`
 	Employees []Employee `gorm:"foreignKey:OrganizationID"`
 	// Departments []Department `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }

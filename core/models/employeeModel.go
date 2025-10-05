@@ -14,7 +14,7 @@ type Employee struct {
 	// Must be In the Org Scope
 	NickName    string
 	LastName    string `gorm:"size:50"`
-	Email       string `gorm:"not null;unique"`
+	Email       string `gorm:"not null"`
 	PhoneNumber string `gorm:"size:20"`
 
 	//This is a EmployeeID
