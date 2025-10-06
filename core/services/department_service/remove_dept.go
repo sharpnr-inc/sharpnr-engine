@@ -1,5 +1,5 @@
 package departmentservice
 
-func (s *departmentService) RemoveDepartmentInOrg() {
+// func (s *departmentService) RemoveDepartmentInOrg() {
 
-}
+// }

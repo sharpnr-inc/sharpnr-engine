@@ -54,13 +54,14 @@ func (s *signupService) VerifyOrgRegistration(ctx context.Context, token string,
 	}
 
 	org := &models.Organization{
-		ID:                uuid.New(),
-		SharpnrID:         newOrgId,
-		Name:              tempOrg.Name,
-		RootEmail:         tempOrg.Email,
-		MasterPhoneNumber: tempOrg.Phone,
-		Password:          tempOrg.Password,
-		OrgOprationType:   tempOrg.OrgType,
+		ID:                     uuid.New(),
+		SharpnrID:              newOrgId,
+		Name:                   tempOrg.Name,
+		RootEmail:              tempOrg.Email,
+		MasterPhoneNumber:      tempOrg.Phone,
+		Password:               tempOrg.Password,
+		OrgOprationType:        tempOrg.OrgType,
+		IsRegistrationComplete: false,
 	}
 
 	if err := s.orgRepo.CreateOrgInMainDB(ctx, org); err != nil {

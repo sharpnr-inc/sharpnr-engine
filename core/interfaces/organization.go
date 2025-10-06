@@ -21,7 +21,7 @@ type OrganizationSignUpService interface {
 	VerifyOrgRegistration(ctx context.Context, token, code string) (*dto.Org_Verify_Otp_RESPONSE_DTO, bool, error)
 
 	// Optional: CompleteOrgRegistration finalizes the registration
-	// CompleteOrgRegistration(token string) (*dto.OrgRegistrationComplete_Response_Dto, error)
+	CompleteOrgRegistration(token string) error
 }
 
 // OrganizationRepository defines methods for organization signup & lookup.

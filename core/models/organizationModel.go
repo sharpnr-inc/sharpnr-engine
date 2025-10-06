@@ -25,12 +25,13 @@ type Organization struct {
 	Country string `gorm:"type:varchar(100);not null"`
 
 	// Contact fields
-	PublicContact     string  `gorm:"type:varchar(100);not null"`
-	ContactNumber     string  `gorm:"type:varchar(20);not null"`
-	ContactNumber2    *string `gorm:"type:varchar(20)"`
-	MasterPhoneNumber string  `gorm:"type:varchar(20)"`
-	RootEmail         string  `gorm:"type:varchar(100);not null"`
-	SecondaryEmail    *string `gorm:"type:varchar(100)"`
+	PublicContact        string  `gorm:"type:varchar(100);not null"`
+	ContactNumber        string  `gorm:"type:varchar(20);not null"`
+	ContactNumber2       *string `gorm:"type:varchar(20)"`
+	MasterPhoneNumber    string  `gorm:"type:varchar(20)"`
+	RootEmail            string  `gorm:"type:varchar(100);not null"`
+	Is_RootEmailVerified bool    `gorm:"default:false; not null"`
+	SecondaryEmail       *string `gorm:"type:varchar(100)"`
 
 	// Verification and registration
 	IsPhysicalVerified  bool    `gorm:"default:false;not null"`
