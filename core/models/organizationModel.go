@@ -40,16 +40,8 @@ type Organization struct {
 	GstNumber           *string `gorm:"type:varchar(50)"`
 	OrganizationRegType *string `gorm:"type:varchar(100)"`
 
-	// Banking details
-	Banker         *string `gorm:"type:varchar(100)"`
-	BankAccNumber  string  `gorm:"type:varchar(30);not null"`
-	IfscCode       *string `gorm:"type:varchar(20)"`
-	BankBranchName *string `gorm:"type:varchar(100)"`
-	UPIID          *string `gorm:"type:varchar(100)"`
-
 	// Security
-	Password       string `gorm:"type:char(60);not null"`
-	MasterPassword string `gorm:"type:char(60);not null"`
+	Password string `gorm:"type:char(60);not null"`
 
 	// Timestamps
 	CreatedAt time.Time
@@ -59,13 +51,9 @@ type Organization struct {
 	Policy                 datatypes.JSON `gorm:"type:jsonb;default:'{}'"`
 	IsRegistrationComplete bool           `gorm:"default:false; not null"`
 
-	// Super Admins
-	// We add the Employee ID
-	// SuperAdmin []string
-
 	// Relationships
-	Employees []Employee `gorm:"foreignKey:OrganizationID"`
-	// Departments []Department `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Employees    []Employee                `gorm:"foreignKey:OrganizationID"`
+	BankAccounts []OrganizationBankAccount `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // TableName specifies the table name

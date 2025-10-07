@@ -5,6 +5,7 @@ import (
 	employeerepo "sharpnr-engine/core/repositories/employee_repo"
 	organizationrepositories "sharpnr-engine/core/repositories/organization_repo"
 	signupservice "sharpnr-engine/core/services/signup_service"
+	"sharpnr-engine/pkg/jwtpack"
 	"sharpnr-engine/shared/middlewares"
 
 	"github.com/gin-gonic/gin"
@@ -22,7 +23,8 @@ func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 	//Register
 	v1.POST("/register", newSignupController.RegisterOrg)
 	//Need Middleware
-	v1.POST("/otp-verify", middlewares.OrgRegOtpVerificationMiddleware(), newSignupController.VerifyRegistrationOTP)
+
+	v1.POST("/otp-verify", middlewares.RequireTokenType(jwtpack.TokenTypeVerifyOTP), newSignupController.VerifyRegistrationOTP)
 	v1.POST("/complete-register")
 
 	// Here we will gonna implement the login

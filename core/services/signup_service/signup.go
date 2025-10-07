@@ -6,6 +6,7 @@ import (
 	"fmt"
 	dto "sharpnr-engine/core/dtos"
 	"sharpnr-engine/core/models"
+	"sharpnr-engine/pkg/jwtpack"
 	"sharpnr-engine/shared/mailer"
 	"sharpnr-engine/shared/utils"
 	"strings"
@@ -34,11 +35,6 @@ func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org
 			return nil, "", fmt.Errorf("failed to send otp email: %w", err)
 		}
 
-		token, err := utils.GenerateOTPToken(orgEmail)
-		if err != nil {
-			return nil, "", err
-		}
-
 		// Save otp token in redis
 		update := &models.TempOrgRegistrationData{
 			Email:   orgEmail,
@@ -52,7 +48,6 @@ func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org
 		}
 
 		return &dto.Org_Signup_RESPONSE_DTO{
-			Token: token,
 			Email: orgEmail,
 		}, "", nil
 	}
@@ -72,26 +67,30 @@ func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org
 		return nil, "", fmt.Errorf("failed to send otp email: %w", err)
 	}
 
+	hashPassword, err := utils.HashPassword(req.Password)
+	if err != nil {
+		return nil, "", fmt.Errorf("error in hashing password %w", err)
+	}
+
 	tempOrg := &models.TempOrgRegistrationData{
 		Name:     req.Name,
 		Email:    orgEmail,
 		Phone:    orgPhone,
 		OrgType:  req.ORG_TYPE,
-		Password: req.Password,
+		Password: hashPassword,
 		OTP:      otpToken,
-	}
-
-	token, err := utils.GenerateOTPToken(orgEmail)
-	if err != nil {
-		return nil, "", err
 	}
 
 	if err := s.orgRepo.CreateOrgInRedisDB(ctx, tempOrg); err != nil {
 		return nil, "", fmt.Errorf("failed to create temp org in redis: %w", err)
 	}
 
+	token, err := jwtpack.GenerateJwtToken(req.Email, jwtpack.TokenTypeVerifyOTP, "", string(req.ORG_TYPE))
+	if err != nil {
+		return nil, "", err
+	}
+
 	return &dto.Org_Signup_RESPONSE_DTO{
-		Token: token,
 		Email: orgEmail,
-	}, "", nil
+	}, token, nil
 }

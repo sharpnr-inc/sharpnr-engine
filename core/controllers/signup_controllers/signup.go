@@ -38,7 +38,7 @@ func (c *SignUpController) RegisterOrg(ctx *gin.Context) {
 	}
 
 	// Step 2: Call Signup Service
-	res, _, err := c.service.InitiateOrgRegistration(ctx, req)
+	res, token, err := c.service.InitiateOrgRegistration(ctx, req)
 	if err != nil {
 		ctx.JSON(http.StatusOK, dto.Response[any]{
 			StatusCode: 500,
@@ -49,6 +49,7 @@ func (c *SignUpController) RegisterOrg(ctx *gin.Context) {
 			},
 			Data:      nil,
 			Timestamp: time.Now(),
+			Token:     "",
 		})
 		return
 	}
@@ -58,9 +59,11 @@ func (c *SignUpController) RegisterOrg(ctx *gin.Context) {
 		StatusCode: 200,
 		Message:    "OTP sent to email",
 		Error: dto.ErrorResponse{
+			Message: "",
 			IsError: false,
 		},
 		Data:      res, // your DTO response
 		Timestamp: time.Now(),
+		Token:     token,
 	})
 }

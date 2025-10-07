@@ -22,15 +22,19 @@ type Employee struct {
 
 	SkipLevelMangerID string
 
-	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
-	// Organization   Organization `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-
-	DepartmentID *string `gorm:"type:uuid;index"` // Changed to pointer to allow NULL
+	OrganizationID uuid.UUID    `gorm:"type:uuid;not null;index"`
+	Organization   Organization `gorm:"foreignKey:OrganizationID"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
-	Role      constants.EmployeeRoles
+	DeletedAt gorm.DeletedAt          `gorm:"index"`
+	Role      constants.EmployeeRoles `gorm:"type:varchar(50);not null"`
+
+	IsEmailVerified  bool
+	Address          string
+	EmergencyContact string
+	IsIDVerfied      string
+	Salary           string
 }
 
 // TableName specifies the table name

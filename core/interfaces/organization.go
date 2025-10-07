@@ -18,7 +18,7 @@ type OrganizationSignUpService interface {
 	InitiateOrgRegistration(ctx context.Context, req dto.Org_Signup_REQUEST_DTO) (*dto.Org_Signup_RESPONSE_DTO, string, error)
 
 	// VerifyOrgRegistration verifies the OTP/token sent to the organization
-	VerifyOrgRegistration(ctx context.Context, token, code string) (*dto.Org_Verify_Otp_RESPONSE_DTO, bool, error)
+	VerifyOrgRegistration(ctx context.Context, email, code string) (*dto.Org_Verify_Otp_RESPONSE_DTO, bool, string, error)
 
 	// Optional: CompleteOrgRegistration finalizes the registration
 	CompleteOrgRegistration(token string) error

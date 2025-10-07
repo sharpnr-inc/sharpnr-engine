@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"sharpnr-engine/core/constants"
 	dto "sharpnr-engine/core/dtos"
+	"sharpnr-engine/shared/middlewares"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -39,8 +40,10 @@ func (c *SignUpController) VerifyRegistrationOTP(ctx *gin.Context) {
 		return
 	}
 
+	email := ctx.GetString(middlewares.EmailContextKey)
+
 	// Step 2: Verify OTP via service
-	res, ok, err := c.service.VerifyOrgRegistration(ctx, req.Token, req.OTP)
+	res, ok, token, err := c.service.VerifyOrgRegistration(ctx, email, req.OTP)
 	if err != nil {
 		ctx.JSON(http.StatusOK, dto.Response[any]{
 			StatusCode: http.StatusBadRequest,
@@ -51,6 +54,7 @@ func (c *SignUpController) VerifyRegistrationOTP(ctx *gin.Context) {
 			},
 			Data:      nil,
 			Timestamp: time.Now(),
+			Token:     "",
 		})
 		return
 	}
@@ -65,6 +69,7 @@ func (c *SignUpController) VerifyRegistrationOTP(ctx *gin.Context) {
 			},
 			Data:      nil,
 			Timestamp: time.Now(),
+			Token:     "",
 		})
 		return
 	}
@@ -78,5 +83,6 @@ func (c *SignUpController) VerifyRegistrationOTP(ctx *gin.Context) {
 		},
 		Data:      res,
 		Timestamp: time.Now(),
+		Token:     token,
 	})
 }

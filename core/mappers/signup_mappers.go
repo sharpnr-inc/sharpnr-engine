@@ -3,6 +3,7 @@ package mappers
 import (
 	dto "sharpnr-engine/core/dtos"
 	"sharpnr-engine/core/models"
+	"strings"
 )
 
 // FromSignUpREQToModel maps an Org_Signup_REQUEST_DTO to a TempOrgRegistrationData model.
@@ -17,9 +18,9 @@ import (
 //   - An error if mapping fails (currently always nil, but can be extended for validation).
 func FromSignUpREQ_ToModel(req dto.Org_Signup_REQUEST_DTO) (*models.TempOrgRegistrationData, error) {
 	return &models.TempOrgRegistrationData{
-		Name:     req.Name,
-		Email:    req.Email,
-		Phone:    req.Mobile,
+		Name:     strings.TrimSpace(req.Name),
+		Email:    strings.TrimSpace(req.Email),
+		Phone:    strings.TrimSpace(req.Mobile),
 		OrgType:  req.ORG_TYPE,
 		Password: req.Password,
 	}, nil
@@ -41,7 +42,6 @@ func FromSignUpREQ_ToModel(req dto.Org_Signup_REQUEST_DTO) (*models.TempOrgRegis
 func FromSignUp_RES_ToDTO(temp_org *models.TempOrgRegistrationData, token, message string) (dto.Org_Signup_RESPONSE_DTO, error) {
 	return dto.Org_Signup_RESPONSE_DTO{
 		Email: temp_org.Email,
-		Token: token,
 	}, nil
 }
 
@@ -61,7 +61,6 @@ func FromVerifyOtpRES_ToDTO(org *models.Organization, token string) dto.Org_Veri
 		Name:       org.Name,
 		Email:      org.RootEmail,
 		Sharpnr_Id: org.SharpnrID,
-		Token:      token,
 		ORG_TYPE:   org.OrgOprationType,
 	}
 }

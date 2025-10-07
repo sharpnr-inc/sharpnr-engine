@@ -13,4 +13,5 @@ type Response[T any] struct {
 	Error      ErrorResponse `json:"error"`
 	Data       *T            `json:"data"` // <-- pointer here
 	Timestamp  time.Time     `json:"timestamp"`
+	Token      string        `json:"token"`
 }

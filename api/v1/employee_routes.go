@@ -5,7 +5,6 @@ import (
 	employeerepo "sharpnr-engine/core/repositories/employee_repo"
 	organizationrepositories "sharpnr-engine/core/repositories/organization_repo"
 	employeeservice "sharpnr-engine/core/services/employee_service"
-	"sharpnr-engine/shared/middlewares"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -18,6 +17,6 @@ func EmployeeRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 	newEmployeeService := employeeservice.EmployeeService(newOrgRepo, newEmployeeRepo)
 	newEmployeeController := employeecontrollers.EmployeeController(newEmployeeService)
 
-	v1.POST("/emp/add", middlewares.OrgRegOtpVerificationMiddleware(), newEmployeeController.AddEmployeeInOrg)
+	v1.POST("/emp/add", newEmployeeController.AddEmployeeInOrg)
 	v1.GET("/emp/dashboard")
 }
