@@ -54,23 +54,8 @@ func (s *signupService) VerifyOrgRegistration(ctx context.Context, email, code s
 	if err := s.orgRepo.CreateOrgInMainDB(ctx, org); err != nil {
 		return nil, false, "", fmt.Errorf("failed to save organization in main DB: %w", err)
 	}
-	// defaultSuperAdmin := &models.Employee{
-	// 	ID:             uuid.New(),
-	// 	FirstName:      "DEFAULT_ADMIN",
-	// 	NickName:       "__",
-	// 	LastName:       "__",
-	// 	PhoneNumber:    tempOrg.Phone,
-	// 	OrganizationID: org.ID,
-	// }
 
-	// admin, err := s.empRepo.CreateEmployee(ctx, defaultSuperAdmin)
-	// if err != nil {
-	// 	return nil, false, "", fmt.Errorf("error creating a super Admin %w", err)
-	// }
-
-	// fmt.Printf("Super Admin created with ID: %s\n", admin.ID)
-
-	newToken, err := jwtpack.GenerateJwtToken(org.RootEmail, jwtpack.TokenTypeVerifyOTP, org.ID.String(), string(org.OrgOprationType))
+	newToken, err := jwtpack.GenerateJwtToken(org.RootEmail, jwtpack.TokenTypeVerifyOTP, org.SharpnrID, string(org.OrgOprationType))
 	if err != nil {
 		return nil, false, "", fmt.Errorf("failed to create Auth Token %w", err)
 	}

@@ -13,4 +13,6 @@ func UtilsRoutes(rg *gin.RouterGroup) {
 	utils.GET("/org-types", coreutilitiesapi.GetOrgTypes)
 	utils.GET("/org-reg-types", coreutilitiesapi.GetBusinessRegistrationType)
 	utils.GET("/employee-role-types", coreutilitiesapi.GetEmployeeRolesTypes)
+	utils.GET("/get-allstate", coreutilitiesapi.GetAllStateInIndia)
+	utils.GET("/get-cities/:state", coreutilitiesapi.GetCitiesByState)
 }

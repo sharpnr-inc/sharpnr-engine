@@ -48,10 +48,57 @@ type Org_Verify_Otp_RESPONSE_DTO struct {
 	ORG_TYPE constants.OrgType `json:"org_type" example:"HOTEL"`
 }
 
-type Org_Complete_Regesistration_DTO struct {
+// RegistrationDetails contains information about GST, CIN, and registration status.
+type RegistrationDetails struct {
+	IsRegister bool   `json:"is_register"`          // true if already registered
+	GSTNumber  string `json:"gst_number,omitempty"` // GST number, optional
+	CINNumber  string `json:"cin_number,omitempty"` // CIN number, optional
+}
+
+// AddressDetails contains the organization's address information.
+type AddressDetails struct {
+	City        string `json:"city"`                   // City name
+	State       string `json:"state"`                  // State name
+	Pincode     string `json:"pincode"`                // Postal code
+	AddressLine string `json:"address_line,omitempty"` // Street address, optional
+	Landmark    string `json:"landmark,omitempty"`     // Optional landmark
+}
+
+// BankDetails represents one bank account of the organization.
+type BankDetails struct {
+	BankName      string `json:"bank_name"`              // Bank name
+	AccountNumber string `json:"account_number"`         // Account number
+	IFSCCode      string `json:"ifsc_code"`              // IFSC code
+	BranchName    string `json:"branch_name,omitempty"`  // Optional branch name
+	IsPrimary     bool   `json:"is_primary"`             // Primary account
+	IsSecondary   bool   `json:"is_secondary,omitempty"` // Optional secondary flag
+}
+
+// OrgOwnerDetails represents an owner or stakeholder of the organization.
+type OrgOwnerDetails struct {
+	OwnerName  string `json:"owner_name"`            // Full name of owner
+	OwnerEmail string `json:"owner_email,omitempty"` // Optional email
+	OwnerPhone string `json:"owner_phone,omitempty"` // Optional phone number
+}
+
+type SuperAdminDetails struct {
+	Name string
+}
+
+// Org_Complete_Regesistration_REQ_DTO is the request payload for completing organization registration.
+type Org_Complete_Regesistration_REQ_DTO struct {
+	Registration RegistrationDetails `json:"registration_details"`
+	Address      AddressDetails      `json:"address_details"`
+	BankDetails  []BankDetails       `json:"bank_details,omitempty"`  // Optional if no bank accounts yet
+	OwnerDetails []OrgOwnerDetails   `json:"owner_details,omitempty"` // Optional if no owners yet
+	SuperAdmin   SuperAdminDetails   `json:"super_admin_details"`
+}
+
+type Org_Complete_Regesistration_RESPONSE_DTO struct {
 	IsRegistered           string `json:"is_registered"`
 	Address                string
 	BankDetails            string
 	OwnerDetails           string
 	OrgRegistrationDetails string
+	Navigate               string
 }

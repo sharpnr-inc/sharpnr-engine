@@ -25,7 +25,7 @@ func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 	//Need Middleware
 
 	v1.POST("/otp-verify", middlewares.RequireTokenType(jwtpack.TokenTypeVerifyOTP), newSignupController.VerifyRegistrationOTP)
-	v1.POST("/complete-register")
+	v1.POST("/complete-register", middlewares.RequireTokenType(jwtpack.TokenTypeCompleteRegistration), newSignupController.CompleteRegistration)
 
 	// Here we will gonna implement the login
 	v1.POST("/login")
