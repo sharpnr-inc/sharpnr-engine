@@ -76,6 +76,8 @@ func (s *signupService) CompleteOrgRegistration(
 		return nil, "", fmt.Errorf("failed to create super admin: %w", fault)
 	}
 
+	// policy, err := policyengine.CreateDefaultPolicy(existingOrg)
+
 	authToken, err := jwtpack.GenerateJwtToken(existingOrg.RootEmail, jwtpack.TokenTypeAuth, existingOrg.SharpnrID, string(existingOrg.OrgOprationType))
 	if err != nil {
 		return nil, "", err

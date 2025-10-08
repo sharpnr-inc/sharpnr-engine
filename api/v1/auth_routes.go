@@ -1,9 +1,11 @@
 package v1
 
 import (
+	authcontrollers "sharpnr-engine/core/controllers/auth_controllers"
 	signupcontrollers "sharpnr-engine/core/controllers/signup_controllers"
 	employeerepo "sharpnr-engine/core/repositories/employee_repo"
 	organizationrepositories "sharpnr-engine/core/repositories/organization_repo"
+	authservice "sharpnr-engine/core/services/auth_service"
 	signupservice "sharpnr-engine/core/services/signup_service"
 	"sharpnr-engine/pkg/jwtpack"
 	"sharpnr-engine/shared/middlewares"
@@ -20,6 +22,9 @@ func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 	newSignupService := signupservice.NewSignupService(newOrgRepo, newEmployeeRepo)
 	newSignupController := signupcontrollers.NewSignUpController(newSignupService)
 
+	newAuthService := authservice.NewAuthService(newOrgRepo, newEmployeeRepo)
+	newAuthController := authcontrollers.NewAuthController(newAuthService)
+
 	//Register
 	v1.POST("/register", newSignupController.RegisterOrg)
 	//Need Middleware
@@ -28,8 +33,8 @@ func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 	v1.POST("/complete-register", middlewares.RequireTokenType(jwtpack.TokenTypeCompleteRegistration), newSignupController.CompleteRegistration)
 
 	// Here we will gonna implement the login
-	v1.POST("/login")
+	v1.POST("/login", newAuthController.Login)
 
-	v1.POST("/reset-password")
+	v1.POST("/reset-password", newAuthController.ResetPassword)
 
 }
