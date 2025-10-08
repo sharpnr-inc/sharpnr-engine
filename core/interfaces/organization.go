@@ -59,4 +59,9 @@ type OrganizationRepository interface {
 	GetOrgUUID_By_SharpnrID(sharpnrID string) (uuid.UUID, error)
 
 	UpdateOrg(ctx context.Context, org *models.Organization) error
+
+	CreateBankAccounts(ctx context.Context, orgID uuid.UUID, accounts []models.OrganizationBankAccount) error
+	GetBankAccountsByOrgID(ctx context.Context, orgID uuid.UUID) ([]models.OrganizationBankAccount, error)
+	GetPrimaryBankAccount(ctx context.Context, orgID uuid.UUID) (*models.OrganizationBankAccount, error)
+	UpdateBankAccounts(ctx context.Context, orgID uuid.UUID, accounts []models.OrganizationBankAccount) error
 }

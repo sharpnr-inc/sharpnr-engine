@@ -64,3 +64,21 @@ func FromVerifyOtpRES_ToDTO(org *models.Organization, token string) dto.Org_Veri
 		ORG_TYPE:   org.OrgOprationType,
 	}
 }
+
+// func FromCompleteOrgDtoToModel(req dto.Org_Complete_Regesistration_REQ_DTO) (*models.Organization, []models.OrganizationBankAccount, error) {
+// 	org := &models.Organization{
+// 		Address: req.Address.AddressLine,
+// 		State:   req.Address.State,
+// 		City:    req.Address.City,
+// 		Pincode: req.Address.Pincode,
+// 	}
+
+// 	orgBankAccounts := make([]models.OrganizationBankAccount, len(req.BankDetails))
+// 	for i, b := range req.BankDetails{
+// 		orgBankAccounts[i] = models.OrganizationBankAccount{
+
+// 		}
+// 	}
+
+// return org, orgBankAccounts,
+// }

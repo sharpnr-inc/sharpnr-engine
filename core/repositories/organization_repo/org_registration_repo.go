@@ -168,3 +168,42 @@ func (r *organizationRepository) UpdateOrg(ctx context.Context, org *models.Orga
 
 	return nil
 }
+
+func (r *organizationRepository) CreateBankAccounts(ctx context.Context, orgID uuid.UUID, accounts []models.OrganizationBankAccount) error {
+	return r.db.WithContext(ctx).Create(&accounts).Error
+}
+
+func (r *organizationRepository) GetBankAccountsByOrgID(ctx context.Context, orgID uuid.UUID) ([]models.OrganizationBankAccount, error) {
+	var accounts []models.OrganizationBankAccount
+	if err := r.db.WithContext(ctx).Where("organization_id = ?", orgID).Find(&accounts).Error; err != nil {
+		return nil, err
+	}
+	return accounts, nil
+}
+
+func (r *organizationRepository) GetPrimaryBankAccount(ctx context.Context, orgID uuid.UUID) (*models.OrganizationBankAccount, error) {
+	var account models.OrganizationBankAccount
+	if err := r.db.WithContext(ctx).Where("organization_id = ? AND is_primary = ?", orgID, true).First(&account).Error; err != nil {
+		return nil, err
+	}
+	return &account, nil
+}
+
+func (r *organizationRepository) UpdateBankAccounts(ctx context.Context, orgID uuid.UUID, accounts []models.OrganizationBankAccount) error {
+	// Transaction to prevent orphan data
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// Delete old accounts
+		if err := tx.Where("organization_id = ?", orgID).Delete(&models.OrganizationBankAccount{}).Error; err != nil {
+			return err
+		}
+
+		// Insert new accounts
+		for i := range accounts {
+			accounts[i].OrganizationID = orgID
+			if accounts[i].ID == uuid.Nil {
+				accounts[i].ID = uuid.New()
+			}
+		}
+		return tx.Create(&accounts).Error
+	})
+}

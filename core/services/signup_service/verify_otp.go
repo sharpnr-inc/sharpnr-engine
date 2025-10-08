@@ -49,6 +49,7 @@ func (s *signupService) VerifyOrgRegistration(ctx context.Context, email, code s
 		Password:               tempOrg.Password,
 		OrgOprationType:        tempOrg.OrgType,
 		IsRegistrationComplete: false,
+		Is_RootEmailVerified:   true,
 	}
 
 	if err := s.orgRepo.CreateOrgInMainDB(ctx, org); err != nil {

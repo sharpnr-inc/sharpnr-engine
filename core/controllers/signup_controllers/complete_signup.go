@@ -48,19 +48,14 @@ func (s *SignUpController) CompleteRegistration(ctx *gin.Context) {
 	}
 
 	// Success response
-	successRes := dto.Response[map[string]any]{
+	successRes := dto.Response[dto.Org_Complete_Regesistration_RESPONSE_DTO]{
 		StatusCode: http.StatusOK,
 		Message:    "Organization registration completed successfully",
 		Error: dto.ErrorResponse{
 			Message: "",
 			IsError: false,
 		},
-		Data: &map[string]any{
-			"org_root_email": orgRootEmail,
-			"org_sharpnr_id": orgSharpnrID,
-			"status":         "completed",
-			"data":           resData,
-		},
+		Data:      resData,
 		Token:     token,
 		Timestamp: time.Now(),
 	}

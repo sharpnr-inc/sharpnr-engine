@@ -95,10 +95,4 @@ type Org_Complete_Regesistration_REQ_DTO struct {
 }
 
 type Org_Complete_Regesistration_RESPONSE_DTO struct {
-	IsRegistered           string `json:"is_registered"`
-	Address                string
-	BankDetails            string
-	OwnerDetails           string
-	OrgRegistrationDetails string
-	Navigate               string
 }
