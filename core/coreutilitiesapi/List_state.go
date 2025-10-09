@@ -3,87 +3,109 @@ package coreutilitiesapi
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-// replace with your own API key from data.gov.in
-const apiKey = "579b464db66ec23bdd0000019cbce1e7cc0a473d74bceded45f67343"
-
-// API endpoint from Data.gov.in (Town Directory dataset)
-const baseURL = "https://api.data.gov.in/resource/97878f8a-97c3-4b52-b4bd-a40c530d0fe6"
-
-type TownRecord struct {
-	StateName string `json:"state_name"`
-	TownName  string `json:"town_name"`
-	District  string `json:"district_name"`
+var httpClient = &http.Client{
+	Timeout: 10 * time.Second,
 }
 
-type ApiResponse struct {
-	Records []TownRecord `json:"records"`
-}
+// makeRequest performs HTTP request to CSC API
+func makeRequest(endpoint string) ([]byte, error) {
+	apiKey := os.Getenv("CITY_STATE_API_KEY")
+	baseURL := os.Getenv("CITY_STATE_BASE_URL")
 
-// GET /utils/get-allstate
-func GetAllStateInIndia(c *gin.Context) {
-	url := fmt.Sprintf("%s?api-key=%s&format=json&limit=10000", baseURL, apiKey)
+	if apiKey == "" || baseURL == "" {
+		return nil, fmt.Errorf("CSC_API_KEY or CSC_BASE_URL not set in environment")
+	}
 
-	resp, err := http.Get(url)
+	url := strings.TrimRight(baseURL, "/") + "/" + strings.TrimLeft(endpoint, "/")
+
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data"})
-		return
+		return nil, err
+	}
+
+	req.Header.Set("X-CSCAPI-KEY", apiKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		return nil, err
 	}
 	defer resp.Body.Close()
 
-	var data ApiResponse
-	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("API error: %s", string(body))
+	}
+
+	return body, nil
+}
+
+// Gin Handlers
+
+func GetCountriesHandler(c *gin.Context) {
+	body, err := makeRequest("/countries")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var result interface{}
+	if err := json.Unmarshal(body, &result); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse response"})
 		return
 	}
 
-	stateSet := make(map[string]bool)
-	for _, record := range data.Records {
-		stateSet[record.StateName] = true
-	}
-
-	states := make([]string, 0, len(stateSet))
-	for state := range stateSet {
-		states = append(states, state)
-	}
-
-	c.JSON(http.StatusOK, gin.H{"states": states})
+	c.JSON(http.StatusOK, gin.H{"data": result})
 }
 
-// GET /utils/get-cities/:state
-func GetCitiesByState(c *gin.Context) {
-	state := c.Param("state")
-	url := fmt.Sprintf("%s?api-key=%s&format=json&limit=10000", baseURL, apiKey)
+func GetStatesHandler(c *gin.Context) {
+	countryCode := c.Param("countryCode")
 
-	resp, err := http.Get(url)
+	endpoint := fmt.Sprintf("/countries/%s/states", countryCode)
+	body, err := makeRequest(endpoint)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	defer resp.Body.Close()
 
-	var data ApiResponse
-	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+	var result interface{}
+	if err := json.Unmarshal(body, &result); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse response"})
 		return
 	}
 
-	var cities []string
-	for _, record := range data.Records {
-		if strings.EqualFold(record.StateName, state) {
-			cities = append(cities, record.TownName)
-		}
-	}
+	c.JSON(http.StatusOK, gin.H{"data": result})
+}
 
-	if len(cities) == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "No cities found for this state"})
+func GetCitiesHandler(c *gin.Context) {
+	countryCode := c.Param("countryCode")
+	stateCode := c.Param("stateCode")
+
+	endpoint := fmt.Sprintf("/countries/%s/states/%s/cities", countryCode, stateCode)
+	body, err := makeRequest(endpoint)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"state": state, "cities": cities})
+	var result interface{}
+	if err := json.Unmarshal(body, &result); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse response"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": result})
 }

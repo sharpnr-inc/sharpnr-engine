@@ -56,7 +56,7 @@ func (s *signupService) VerifyOrgRegistration(ctx context.Context, email, code s
 		return nil, false, "", fmt.Errorf("failed to save organization in main DB: %w", err)
 	}
 
-	newToken, err := jwtpack.GenerateJwtToken(org.RootEmail, jwtpack.TokenTypeVerifyOTP, org.SharpnrID, string(org.OrgOprationType))
+	newToken, err := jwtpack.GenerateJwtToken(org.RootEmail, jwtpack.TokenTypeCompleteRegistration, org.SharpnrID, string(org.OrgOprationType))
 	if err != nil {
 		return nil, false, "", fmt.Errorf("failed to create Auth Token %w", err)
 	}
