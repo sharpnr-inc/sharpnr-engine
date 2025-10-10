@@ -64,4 +64,5 @@ type OrganizationRepository interface {
 	GetBankAccountsByOrgID(ctx context.Context, orgID uuid.UUID) ([]models.OrganizationBankAccount, error)
 	GetPrimaryBankAccount(ctx context.Context, orgID uuid.UUID) (*models.OrganizationBankAccount, error)
 	UpdateBankAccounts(ctx context.Context, orgID uuid.UUID, accounts []models.OrganizationBankAccount) error
+	GetOrg(ctx context.Context, org uuid.UUID) (*models.Organization, error)
 }

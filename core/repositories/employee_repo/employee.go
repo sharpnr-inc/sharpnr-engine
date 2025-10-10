@@ -38,10 +38,10 @@ func (r *employeeRepository) FindEmployeeById(ctx context.Context, orgID, empID 
 }
 
 // FindByEmail retrieves an employee by organization ID and email
-func (r *employeeRepository) FindByEmail(ctx context.Context, orgID uuid.UUID, email string) (*models.Employee, bool, error) {
+func (r *employeeRepository) FindByEmail(ctx context.Context, email string) (*models.Employee, bool, error) {
 	var emp models.Employee
 	err := r.db.WithContext(ctx).
-		Where("email = ? AND organization_id = ?", email, orgID).
+		Where("email = ? ", email).
 		First(&emp).Error
 
 	if err != nil {

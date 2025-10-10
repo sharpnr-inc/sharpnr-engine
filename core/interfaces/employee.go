@@ -39,7 +39,7 @@ type EmployeeRepository interface {
 	// FindByEmail retrieves an employee by organization ID and email address.
 	// Returns the employee (if found), a boolean indicating existence,
 	// and an error if the query fails.
-	FindByEmail(ctx context.Context, orgID uuid.UUID, email string) (*models.Employee, bool, error)
+	FindByEmail(ctx context.Context, email string) (*models.Employee, bool, error)
 
 	// ListEmployees retrieves all employees for a given organization.
 	// Returns a slice of employees and an error if the query fails.

@@ -207,3 +207,20 @@ func (r *organizationRepository) UpdateBankAccounts(ctx context.Context, orgID u
 		return tx.Create(&accounts).Error
 	})
 }
+
+// GetOrg retrieves an organization by its UUID.
+func (r *organizationRepository) GetOrg(ctx context.Context, orgID uuid.UUID) (*models.Organization, error) {
+	var organization models.Organization
+	err := r.db.WithContext(ctx).
+		Where("id = ?", orgID).
+		First(&organization).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("failed to fetch organization: %w", err)
+	}
+
+	return &organization, nil
+}
