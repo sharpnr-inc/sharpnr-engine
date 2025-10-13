@@ -37,4 +37,6 @@ func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 
 	v1.POST("/reset-password", newAuthController.ResetPassword)
 
+	v1.GET("/signup/status", newSignupController.SignupStatus)
+
 }

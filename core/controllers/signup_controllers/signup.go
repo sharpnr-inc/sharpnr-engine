@@ -49,10 +49,20 @@ func (c *SignUpController) RegisterOrg(ctx *gin.Context) {
 			},
 			Data:      nil,
 			Timestamp: time.Now(),
-			Token:     "",
 		})
 		return
 	}
+
+	ctx.SetSameSite(http.SameSiteLaxMode) // or None if cross-site
+	ctx.SetCookie(
+		constants.TOKEN_KEY_REGISTRATION,
+		token,
+		constants.TOKEN_DURATION_SHORT,
+		"/",
+		"",    // current domain
+		false, // secure false for HTTP
+		true,  // httpOnly
+	)
 
 	// Step 3: Return success response
 	ctx.JSON(http.StatusOK, dto.Response[dto.Org_Signup_RESPONSE_DTO]{
@@ -64,6 +74,5 @@ func (c *SignUpController) RegisterOrg(ctx *gin.Context) {
 		},
 		Data:      res, // your DTO response
 		Timestamp: time.Now(),
-		Token:     token,
 	})
 }

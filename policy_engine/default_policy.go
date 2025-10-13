@@ -12,9 +12,15 @@ type Metadata struct {
 	// Modules   []interface{} `json:"MODULES"` // mixed: string + object
 }
 
+type EmployeeAcess struct {
+	EmplployeeID string
+	Privilages   string
+}
+
 type Policy struct {
-	SuperAdmins []string `json:"SUPER_ADMINS"`
-	OrgOwners   []string `json:"ORG_OWNERS"`
+	SuperAdmins     []string `json:"SUPER_ADMINS"`
+	OrgOwners       []string `json:"ORG_OWNERS"`
+	EMPLOYEE_ACCESS []EmployeeAcess
 }
 
 type OrgDefaultPolicy struct {
@@ -40,7 +46,6 @@ const (
 	PermissionRead   Permission = "READ"
 	PermissionWrite  Permission = "WRITE"
 	PermissionDelete Permission = "DELETE"
-	PermissionManage Permission = "MANAGE"
 )
 
 func CreatePolicyFromTemplate() {

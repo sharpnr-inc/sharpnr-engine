@@ -15,8 +15,6 @@ func GetOrgTypes(c *gin.Context) {
 		constants.Hotel,
 		constants.Retail,
 		constants.Salon,
-		constants.Club,
-		constants.Restaurant,
 	}
 
 	// ✅ Wrap orgTypes inside a map for "ORG_TYPE"

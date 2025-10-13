@@ -57,6 +57,7 @@ type RegistrationDetails struct {
 
 // AddressDetails contains the organization's address information.
 type AddressDetails struct {
+	Country     string `json:"country"`
 	City        string `json:"city"`                   // City name
 	State       string `json:"state"`                  // State name
 	Pincode     string `json:"pincode"`                // Postal code
@@ -89,9 +90,8 @@ type SuperAdminDetails struct {
 type Org_Complete_Regesistration_REQ_DTO struct {
 	Registration RegistrationDetails `json:"registration_details"`
 	Address      AddressDetails      `json:"address_details"`
-	BankDetails  []BankDetails       `json:"bank_details,omitempty"`  // Optional if no bank accounts yet
+	Is_owner     bool                `json:"is_owner"`
 	OwnerDetails []OrgOwnerDetails   `json:"owner_details,omitempty"` // Optional if no owners yet
-	SuperAdmin   SuperAdminDetails   `json:"super_admin_details"`
 }
 
 type Org_Complete_Regesistration_RESPONSE_DTO struct {

@@ -74,7 +74,29 @@ func (c *SignUpController) VerifyRegistrationOTP(ctx *gin.Context) {
 		return
 	}
 
-	// Step 3: Success response
+	ctx.SetSameSite(http.SameSiteLaxMode)
+	ctx.SetCookie(
+		constants.TOKEN_KEY_VERIFY_OTP, // new cookie key
+		token,                          // your JWT
+		constants.TOKEN_DURATION_SHORT, // expiry time
+		"/",
+		"",    // domain
+		false, // secure false for dev
+		true,  // httpOnly
+	)
+
+	// Step 3: Remove old cookie (if exists)
+	ctx.SetCookie(
+		constants.TOKEN_KEY_REGISTRATION,
+		"",
+		-1, // negative maxAge deletes the cookie
+		"/",
+		"",
+		false, // secure false for dev (change to true in prod)
+		true,  // httpOnly
+	)
+
+	// Step 5: Success response
 	ctx.JSON(http.StatusOK, dto.Response[dto.Org_Verify_Otp_RESPONSE_DTO]{
 		StatusCode: http.StatusOK,
 		Message:    "OTP verified successfully",
@@ -83,6 +105,6 @@ func (c *SignUpController) VerifyRegistrationOTP(ctx *gin.Context) {
 		},
 		Data:      res,
 		Timestamp: time.Now(),
-		Token:     token,
+		// Token:     token, // optional, mainly for frontend debugging
 	})
 }

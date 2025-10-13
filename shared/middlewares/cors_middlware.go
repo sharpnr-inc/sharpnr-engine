@@ -13,11 +13,11 @@ func CORSMiddleWare() gin.HandlerFunc {
 	var allowedOrigins []string
 	if env == "prodcution" {
 		allowedOrigins = []string{
-			"some",
-			"thing",
+			"http://localhost:5173",
+			"http://192.168.1.33:5173",
 		}
 	} else {
-		allowedOrigins = []string{"*"}
+		allowedOrigins = []string{"http://localhost:5173", "http://192.168.1.33:5173"}
 	}
 
 	corsConfig := cors.Config{
