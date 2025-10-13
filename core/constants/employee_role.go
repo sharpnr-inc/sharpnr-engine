@@ -11,10 +11,3 @@ const (
 	Manager     EmployeeRoles = "MANAGER"
 	Employee    EmployeeRoles = "EMPLOYEE"
 )
-
-type EmployeePermissions string
-
-const (
-	READ_ACCESS  EmployeePermissions = "READ_ACCESS"
-	WRITE_ACCESS EmployeePermissions = "WRITE_ACCESS"
-)
