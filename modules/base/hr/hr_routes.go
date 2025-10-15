@@ -2,14 +2,21 @@
 package hr
 
 import (
+	sharphrcontrollers "sharpnr-engine/modules/base/hr/sharphrControllers"
+	sharphrrepository "sharpnr-engine/modules/base/hr/sharphr_repository"
+	sharphrservice "sharpnr-engine/modules/base/hr/sharphr_service"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 func RegisterHRRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
+	newEmployeeRepo := sharphrrepository.NewSharpHREmployeeRepo(db)
+	newEmployeeService := sharphrservice.NewSharpHREmployeeService(newEmployeeRepo)
+	newEmployeeController := sharphrcontrollers.NewSharpHrEmployeeController(newEmployeeService)
 
 	v1.GET("/sharphr/employee/list-employee")
-	v1.POST("/sharphr/employee/add-employee")
+	v1.POST("/sharphr/employee/add-employee", newEmployeeController.AddEmployeeInOrg)
 	v1.POST("/sharphr/employee/check-employee-exist")
 	v1.GET("/sharphr/employee/dashboard")
 	v1.POST("/sharphr/employee/edit-details")

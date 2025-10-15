@@ -9,4 +9,5 @@ type SharpHrEmployeeRepository interface {
 }
 
 type SharpHrEmployeeService interface {
+	AddEmployeeInOrg()
 }

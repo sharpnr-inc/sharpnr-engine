@@ -1,5 +1,6 @@
 package sharphrservice
 
-func (r *sharpHrService) CreateEmployee() {
-
+// AddEmployeeInOrg implements sharphrinterface.SharpHrEmployeeService.
+func (r *sharpHrService) AddEmployeeInOrg() {
+	panic("unimplemented")
 }
