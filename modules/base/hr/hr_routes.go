@@ -17,9 +17,10 @@ func RegisterHRRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	newEmployeeService := sharphrservice.NewSharpHREmployeeService(newEmployeeRepo)
 	newEmployeeController := sharphrcontrollers.NewSharpHrEmployeeController(newEmployeeService)
 
-	v1.GET("/sharphr/employee/list-employee", middlewares.RequireTokenType(jwtpack.TokenTypeAuth), newEmployeeController.ListAllEmployee)
-	v1.POST("/sharphr/employee/add-employee", middlewares.RequireTokenType(jwtpack.TokenTypeAuth), newEmployeeController.AddEmployee)
+	v1.GET("/sharphr/employee/list-employee", middlewares.RequireTokenType(jwtpack.TokenTypeAuth), middlewares.SetOrgUUID(), newEmployeeController.ListAllEmployee)
+	v1.POST("/sharphr/employee/add-employee", middlewares.RequireTokenType(jwtpack.TokenTypeAuth), middlewares.SetOrgUUID(), newEmployeeController.AddEmployee)
 	v1.POST("/sharphr/employee/check-employee-exist", middlewares.RequireTokenType(jwtpack.TokenTypeAuth), middlewares.SetOrgUUID(), newEmployeeController.EmployeeExists)
 	v1.GET("/sharphr/employee/dashboard")
 	v1.POST("/sharphr/employee/edit-details")
+	v1.GET("/sharphr/employee/get-employee/:employeeId", middlewares.RequireTokenType(jwtpack.TokenTypeAuth), middlewares.SetOrgUUID(), newEmployeeController.GetEmployeeDetails)
 }
