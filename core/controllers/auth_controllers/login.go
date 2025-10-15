@@ -2,6 +2,7 @@ package authcontrollers
 
 import (
 	"net/http"
+	"sharpnr-engine/core/constants"
 	dto "sharpnr-engine/core/dtos"
 	"time"
 
@@ -43,6 +44,17 @@ func (s *AuthController) Login(ctx *gin.Context) {
 		return
 	}
 
+	ctx.SetSameSite(http.SameSiteLaxMode)
+	ctx.SetCookie(
+		constants.TOKEN_KEY_AUTHENTICATED,
+		token,
+		constants.TOKEN_DURATION_LONG,
+		"/",
+		"",
+		false,
+		true,
+	)
+
 	ctx.JSON(http.StatusOK, dto.Response[dto.LoginResponseDTO]{
 		StatusCode: 200,
 		Message:    "Successfully Logged in",
@@ -52,7 +64,6 @@ func (s *AuthController) Login(ctx *gin.Context) {
 		},
 		Data:      res,
 		Timestamp: time.Now(),
-		Token:     token,
 	})
 
 }
