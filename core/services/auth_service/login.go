@@ -41,8 +41,8 @@ func (r *loginService) LoginToAccount(ctx *gin.Context, req dto.LoginRequestDTO)
 		EmployeeID:    usr.ID,
 		EmployeeEmail: usr.Email,
 	}
-
-	newToken, err := jwtpack.GenerateJwtToken(resp.EmployeeEmail, jwtpack.TokenTypeAuth, resp.OrgId, resp.OrgType)
+	empIdStr := resp.EmployeeID.String()
+	newToken, err := jwtpack.GenerateJwtToken(resp.EmployeeEmail, jwtpack.TokenTypeAuth, resp.OrgId, resp.OrgType, &empIdStr)
 	if err != nil {
 		return nil, "", err
 	}

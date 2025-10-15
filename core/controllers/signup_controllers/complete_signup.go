@@ -2,6 +2,7 @@ package signupcontrollers
 
 import (
 	"net/http"
+	"sharpnr-engine/core/constants"
 	dto "sharpnr-engine/core/dtos"
 	"sharpnr-engine/shared/middlewares"
 	"time"
@@ -47,6 +48,27 @@ func (s *SignUpController) CompleteRegistration(ctx *gin.Context) {
 		return
 	}
 
+	ctx.SetSameSite(http.SameSiteLaxMode)
+	ctx.SetCookie(
+		constants.TOKEN_KEY_AUTHENTICATED,
+		token,
+		constants.TOKEN_DURATION_LONG,
+		"/",
+		"",
+		false,
+		true,
+	)
+
+	ctx.SetCookie(
+		constants.TOKEN_KEY_VERIFY_OTP,
+		"",
+		-1,
+		"/",
+		"",
+		false,
+		true,
+	)
+
 	// Success response
 	successRes := dto.Response[dto.Org_Complete_Regesistration_RESPONSE_DTO]{
 		StatusCode: http.StatusOK,
@@ -56,7 +78,6 @@ func (s *SignUpController) CompleteRegistration(ctx *gin.Context) {
 			IsError: false,
 		},
 		Data:      resData,
-		Token:     token,
 		Timestamp: time.Now(),
 	}
 

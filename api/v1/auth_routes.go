@@ -8,6 +8,7 @@ import (
 	authservice "sharpnr-engine/core/services/auth_service"
 	signupservice "sharpnr-engine/core/services/signup_service"
 	"sharpnr-engine/pkg/jwtpack"
+	policyengine "sharpnr-engine/policy_engine"
 	"sharpnr-engine/shared/middlewares"
 
 	"github.com/gin-gonic/gin"
@@ -17,9 +18,10 @@ import (
 
 // These Are the Auth routes for the authentication registration
 func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
+	newPolicyEngineRepo := policyengine.NewOrgPolicyRepo(db)
 	newEmployeeRepo := employeerepo.NewEmployeeRepo(db)
 	newOrgRepo := organizationrepositories.NewOrganizationRepo(db, redis)
-	newSignupService := signupservice.NewSignupService(newOrgRepo, newEmployeeRepo)
+	newSignupService := signupservice.NewSignupService(newOrgRepo, newEmployeeRepo, newPolicyEngineRepo)
 	newSignupController := signupcontrollers.NewSignUpController(newSignupService)
 
 	newAuthService := authservice.NewAuthService(newOrgRepo, newEmployeeRepo)
@@ -38,5 +40,9 @@ func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 	v1.POST("/reset-password", newAuthController.ResetPassword)
 
 	v1.GET("/signup/status", newSignupController.SignupStatus)
+
+	v1.GET("/sse/policy/:employeeId", middlewares.RequireTokenType(jwtpack.TokenTypeAuth),
+		policyengine.SSEEmployeeMiddleware(),
+		policyengine.PolicySSEHandler(newPolicyEngineRepo))
 
 }

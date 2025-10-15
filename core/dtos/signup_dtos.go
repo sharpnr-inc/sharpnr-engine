@@ -1,6 +1,10 @@
 package dto
 
-import "sharpnr-engine/core/constants"
+import (
+	"sharpnr-engine/core/constants"
+
+	"github.com/google/uuid"
+)
 
 // Org_Signup_REQUEST_DTO represents the data required to create or register an organization.
 type Org_Signup_REQUEST_DTO struct {
@@ -95,4 +99,9 @@ type Org_Complete_Regesistration_REQ_DTO struct {
 }
 
 type Org_Complete_Regesistration_RESPONSE_DTO struct {
+	OrgID        string    `json:"org_id"`
+	OrgName      string    `json:"org_name"`
+	EmployeeID   uuid.UUID `json:"employee_Id"`
+	EmployeeName string    `json:"employee_name"`
+	EmployeeRole string    `json:"employee_role"`
 }

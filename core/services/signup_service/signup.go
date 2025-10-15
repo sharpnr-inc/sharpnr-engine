@@ -85,7 +85,7 @@ func (s *signupService) InitiateOrgRegistration(ctx context.Context, req dto.Org
 		return nil, "", fmt.Errorf("failed to create temp org in redis: %w", err)
 	}
 
-	token, err := jwtpack.GenerateJwtToken(req.Email, jwtpack.TokenTypeVerifyOTP, "", string(req.ORG_TYPE))
+	token, err := jwtpack.GenerateJwtToken(req.Email, jwtpack.TokenTypeVerifyOTP, "", string(req.ORG_TYPE), nil)
 	if err != nil {
 		return nil, "", err
 	}

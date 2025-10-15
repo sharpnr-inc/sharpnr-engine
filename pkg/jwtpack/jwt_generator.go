@@ -23,7 +23,7 @@ func loadJWTSecret() []byte {
 }
 
 // GenerateJwtToken creates a JWT for a given email and token type
-func GenerateJwtToken(email string, tokenType string, orgID string, orgType string) (string, error) {
+func GenerateJwtToken(email string, tokenType string, orgID string, orgType string, empId *string) (string, error) {
 	claims := Claims{
 		UserDetail: &UserDetail{
 			OrgDetail: &OrgDetail{
@@ -42,6 +42,11 @@ func GenerateJwtToken(email string, tokenType string, orgID string, orgType stri
 			Subject:   email,
 			Audience:  jwt.ClaimStrings{JWTAudience},
 		},
+	}
+
+	// if empId provided, attach it to user detail
+	if empId != nil {
+		claims.UserDetail.ID = *empId
 	}
 
 	// Customize expiry based on token type

@@ -4,7 +4,7 @@ package constants
 type OrgType string
 
 const (
-	Hotel  OrgType = "HOTEL"
+	Hotel  OrgType = "HOSPITALITY"
 	Retail OrgType = "RETAIL"
 	Salon  OrgType = "SALON"
 )

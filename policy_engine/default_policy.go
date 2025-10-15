@@ -12,20 +12,36 @@ type Metadata struct {
 	// Modules   []interface{} `json:"MODULES"` // mixed: string + object
 }
 
-type EmployeeAcess struct {
-	EmplployeeID string
-	Privilages   string
+type Privilages struct {
+}
+
+type EmployeeAccess struct {
+	EmployeeID string             `json:"EmployeeID"`
+	Privileges EmployeePrivileges `json:"Privilages"`
+}
+
+type EmployeePrivileges struct {
+	SharpAccounting *ModulePrivileges `json:"SharpAccounting,omitempty"`
+	SharpHR         *ModulePrivileges `json:"SharpHR,omitempty"`
+	SharpHotel      *ModulePrivileges `json:"SharpHotel,omitempty"`
+}
+
+type ModulePrivileges struct {
+	Access        string   `json:"Access"`
+	Transactions  []string `json:"transactions,omitempty"`
+	Invoice       []string `json:"invoice,omitempty"`
+	BalanceSheets []string `json:"balanceSheets,omitempty"`
 }
 
 type Policy struct {
 	SuperAdmins     []string `json:"SUPER_ADMINS"`
 	OrgOwners       []string `json:"ORG_OWNERS"`
-	EMPLOYEE_ACCESS []EmployeeAcess
+	EMPLOYEE_ACCESS []EmployeeAccess
 }
 
 type OrgDefaultPolicy struct {
-	Metadata Metadata `json:"__METADATA__"`
-	Policy   Policy   `json:"ORG_POLICY"`
+	Policy   Policy   `json:"Policy"`   // 👈 matches CreateOrgDefaultPolicy
+	Metadata Metadata `json:"Metadata"` // 👈 matches CreateOrgDefaultPolicy
 }
 
 // Role types
@@ -48,6 +64,14 @@ const (
 	PermissionDelete Permission = "DELETE"
 )
 
-func CreatePolicyFromTemplate() {
+// EmployeePolicy is the structure you want to return
+type EmployeePolicy struct {
+	EmployeeID string                 `json:"EmployeeID"`
+	Privilages map[string]interface{} `json:"Privilages"`
+}
 
+type OrgPolicy struct {
+	OrgOwners      []string         `json:"ORG_OWNERS"`
+	SuperAdmins    []string         `json:"SUPER_ADMINS"`
+	EmployeeAccess []EmployeeAccess `json:"EMPLOYEE_ACCESS"`
 }
