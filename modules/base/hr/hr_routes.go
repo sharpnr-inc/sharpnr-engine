@@ -7,5 +7,10 @@ import (
 )
 
 func RegisterHRRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
-	v1.GET("/hr/list-employee")
+
+	v1.GET("/sharphr/employee/list-employee")
+	v1.POST("/sharphr/employee/add-employee")
+	v1.POST("/sharphr/employee/check-employee-exist")
+	v1.GET("/sharphr/employee/dashboard")
+	v1.POST("/sharphr/employee/edit-details")
 }
