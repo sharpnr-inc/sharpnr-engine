@@ -19,7 +19,7 @@ func RegisterHRRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 
 	v1.GET("/sharphr/employee/list-employee", middlewares.RequireTokenType(jwtpack.TokenTypeAuth), newEmployeeController.ListAllEmployee)
 	v1.POST("/sharphr/employee/add-employee", middlewares.RequireTokenType(jwtpack.TokenTypeAuth), newEmployeeController.AddEmployee)
-	v1.POST("/sharphr/employee/check-employee-exist")
+	v1.POST("/sharphr/employee/check-employee-exist", middlewares.RequireTokenType(jwtpack.TokenTypeAuth), middlewares.SetOrgUUID(), newEmployeeController.EmployeeExists)
 	v1.GET("/sharphr/employee/dashboard")
 	v1.POST("/sharphr/employee/edit-details")
 }

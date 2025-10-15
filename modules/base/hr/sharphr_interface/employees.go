@@ -1,5 +1,7 @@
 package sharphrinterface
 
+import sharphrdtos "sharpnr-engine/modules/base/hr/sharphr_dtos"
+
 type SharpHrEmployeeRepository interface {
 	FindEmployeeByEmail()
 
@@ -9,9 +11,11 @@ type SharpHrEmployeeRepository interface {
 }
 
 type SharpHrEmployeeService interface {
-	AddEmployeeInOrg()
+	AddEmployeeInOrg() error
 
-	GetEmployeeDetailById()
+	GetEmployeeDetailById() error
 
-	ListAllEmployeeInOrg()
+	ListAllEmployeeInOrg() error
+
+	GetEmployeeDetailByEmail(sharpId, query_email string, org_uuid any) (*sharphrdtos.CheckIfEmployeeExist_RESPONSE_DTO, error)
 }
