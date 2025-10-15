@@ -6,6 +6,7 @@ import (
 	sharphrrepository "sharpnr-engine/modules/base/hr/sharphr_repository"
 	sharphrservice "sharpnr-engine/modules/base/hr/sharphr_service"
 	"sharpnr-engine/pkg/jwtpack"
+	policyengine "sharpnr-engine/policy_engine"
 	"sharpnr-engine/shared/middlewares"
 
 	"github.com/gin-gonic/gin"
@@ -14,7 +15,8 @@ import (
 
 func RegisterHRRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	newEmployeeRepo := sharphrrepository.NewSharpHREmployeeRepo(db)
-	newEmployeeService := sharphrservice.NewSharpHREmployeeService(newEmployeeRepo)
+	newPolicyRepo := policyengine.NewOrgPolicyRepo(db)
+	newEmployeeService := sharphrservice.NewSharpHREmployeeService(newEmployeeRepo, newPolicyRepo)
 	newEmployeeController := sharphrcontrollers.NewSharpHrEmployeeController(newEmployeeService)
 
 	v1.GET("/sharphr/employee/list-employee", middlewares.RequireTokenType(jwtpack.TokenTypeAuth), middlewares.SetOrgUUID(), newEmployeeController.ListAllEmployee)
