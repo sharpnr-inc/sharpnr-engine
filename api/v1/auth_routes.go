@@ -36,6 +36,7 @@ func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 
 	// Here we will gonna implement the login
 	v1.POST("/login", newAuthController.Login)
+	v1.GET("/check-cookies", newAuthController.CheckCookies)
 
 	v1.POST("/reset-password", newAuthController.ResetPassword)
 
