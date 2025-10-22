@@ -7,6 +7,7 @@ import (
 	dto "sharpnr-engine/core/dtos"
 	"sharpnr-engine/core/models"
 	"sharpnr-engine/pkg/jwtpack"
+	sharpnruimaker "sharpnr-engine/sharpnr_ui_maker"
 	"time"
 
 	"github.com/google/uuid"
@@ -17,6 +18,15 @@ func (s *signupService) CompleteOrgRegistration(
 	req dto.Org_Complete_Regesistration_REQ_DTO,
 	org_email, org_sharpnr_id string,
 ) (*dto.Org_Complete_Regesistration_RESPONSE_DTO, string, error) {
+
+	// So fist of all
+	// Here we will Find OrgUUId from the Cookie from gin context
+	// and then we extract the Address Details and Registration Details From DTO
+	// save it In Main DB
+
+	// Step 2
+	// TODO
+	// Need to
 
 	existingOrg, found, err := s.orgRepo.FindOrgBySharpnrID(ctx, org_sharpnr_id)
 	if err != nil {
@@ -74,6 +84,15 @@ func (s *signupService) CompleteOrgRegistration(
 	if err != nil {
 		return nil, "", nil
 	}
+
+	// So here while creating Policy we need to create the UI Shape
+
+	uishape, err := sharpnruimaker.CreateAppUIShape(existingOrg.ID.String(), "ksksk")
+	if err != nil {
+		fmt.Println("failed to create policy:", err)
+	}
+
+	fmt.Print(uishape)
 
 	if err := s.policyRepo.CreatePolicyOfOrg(ctx, existingOrg.ID.String(), existingOrg.SharpnrID, DefaultSuperAdmin.ID.String()); err != nil {
 		fmt.Println("Failed to create policy:", err)

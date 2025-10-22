@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	dto "sharpnr-engine/core/dtos"
+	"sharpnr-engine/middlewares"
 	sharphrdtos "sharpnr-engine/modules/base/hr/sharphr_dtos"
-	"sharpnr-engine/shared/middlewares"
 	"time"
 
 	"github.com/gin-gonic/gin"

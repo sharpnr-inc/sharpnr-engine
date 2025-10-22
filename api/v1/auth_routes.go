@@ -7,9 +7,9 @@ import (
 	organizationrepositories "sharpnr-engine/core/repositories/organization_repo"
 	authservice "sharpnr-engine/core/services/auth_service"
 	signupservice "sharpnr-engine/core/services/signup_service"
+	"sharpnr-engine/middlewares"
 	"sharpnr-engine/pkg/jwtpack"
 	policyengine "sharpnr-engine/policy_engine"
-	"sharpnr-engine/shared/middlewares"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"sharpnr-engine/shared/middlewares"
+	"sharpnr-engine/middlewares"
 
 	"github.com/gin-gonic/gin"
 )

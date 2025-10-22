@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"sharpnr-engine/core/constants"
 	dto "sharpnr-engine/core/dtos"
-	"sharpnr-engine/shared/middlewares"
+	"sharpnr-engine/middlewares"
 	"time"
 
 	"github.com/gin-gonic/gin"

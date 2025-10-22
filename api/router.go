@@ -2,7 +2,7 @@ package api
 
 import (
 	v1 "sharpnr-engine/api/v1"
-	"sharpnr-engine/shared/middlewares"
+	"sharpnr-engine/middlewares"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"

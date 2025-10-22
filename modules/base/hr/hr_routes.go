@@ -2,12 +2,12 @@
 package hr
 
 import (
+	"sharpnr-engine/middlewares"
 	sharphrcontrollers "sharpnr-engine/modules/base/hr/sharphrControllers"
 	sharphrrepository "sharpnr-engine/modules/base/hr/sharphr_repository"
 	sharphrservice "sharpnr-engine/modules/base/hr/sharphr_service"
 	"sharpnr-engine/pkg/jwtpack"
 	policyengine "sharpnr-engine/policy_engine"
-	"sharpnr-engine/shared/middlewares"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
