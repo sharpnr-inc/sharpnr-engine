@@ -1,4 +1,4 @@
-package hotel
+package hospitality
 
 import (
 	"net/http"
