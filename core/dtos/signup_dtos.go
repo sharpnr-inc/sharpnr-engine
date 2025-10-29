@@ -90,6 +90,9 @@ type SuperAdminDetails struct {
 	Name string
 }
 
+type OrgConfig struct {
+}
+
 // Org_Complete_Regesistration_REQ_DTO is the request payload for completing organization registration.
 type Org_Complete_Regesistration_REQ_DTO struct {
 	Registration RegistrationDetails `json:"registration_details"`

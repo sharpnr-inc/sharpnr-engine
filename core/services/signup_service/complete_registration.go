@@ -7,7 +7,7 @@ import (
 	dto "sharpnr-engine/core/dtos"
 	"sharpnr-engine/core/models"
 	"sharpnr-engine/pkg/jwtpack"
-	sharpnruimaker "sharpnr-engine/sharpnr_ui_maker"
+	sharpnr_ui_renderer "sharpnr-engine/sharpnr_ui_renderer"
 	"time"
 
 	"github.com/google/uuid"
@@ -87,7 +87,7 @@ func (s *signupService) CompleteOrgRegistration(
 
 	// So here while creating Policy we need to create the UI Shape
 
-	uishape, err := sharpnruimaker.CreateAppUIShape(existingOrg.ID.String(), "ksksk")
+	uishape, err := sharpnr_ui_renderer.CreateAppUIShape(existingOrg.ID.String(), "ksksk")
 	if err != nil {
 		fmt.Println("failed to create policy:", err)
 	}
