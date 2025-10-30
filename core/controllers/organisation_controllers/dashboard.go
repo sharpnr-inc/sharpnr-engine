@@ -2,6 +2,6 @@ package orgcontrollers
 
 import "github.com/gin-gonic/gin"
 
-func (c *OrganisationController) GetOrgRootDashBoard(ctx *gin.Context) {
+func (c *OrganizationController) GetOrgRootDashBoard(ctx *gin.Context) {
 
 }

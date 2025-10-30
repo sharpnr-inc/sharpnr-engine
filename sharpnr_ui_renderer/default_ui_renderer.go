@@ -26,8 +26,8 @@ type MainMenuRenderTree map[string]Module
 
 // UIRendererTree represents the root structure for the UI renderer tree.
 type UIRendererTree struct {
-	OrganisationID     string             `json:"organisation_id"`
+	OrganizationID     string             `json:"organization_id"`
 	UIRendererTreeID   string             `json:"ui_renderer_tree_id"`
-	OrganisationType   string             `json:"orgnisation_business_type"`
+	OrganizationType   string             `json:"organization_business_type"`
 	MainMenuRenderTree MainMenuRenderTree `json:"main_menu_render_tree"`
 }

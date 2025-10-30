@@ -5,11 +5,11 @@ import (
 	"gorm.io/datatypes"
 )
 
-type OrganisationPolicy struct {
+type OrganizationPolicy struct {
 	ID             uuid.UUID
-	OrganisationID uuid.UUID
+	OrganizationID uuid.UUID
 	Policy         datatypes.JSON `gorm:"type:jsonb;default:'{}'"`
 	CreatedAt      string
 	UpdatedAt      string
-	Organization   Organization `gorm:"foreignKey:OrganisationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Organization   Organization `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 }

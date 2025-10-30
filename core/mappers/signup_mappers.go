@@ -61,11 +61,11 @@ func FromVerifyOtpRES_ToDTO(org *models.Organization, token string) dto.Org_Veri
 		Name:       org.Name,
 		Email:      org.RootEmail,
 		Sharpnr_Id: org.SharpnrID,
-		ORG_TYPE:   org.OrgOprationType,
+		ORG_TYPE:   org.OrgOperationType,
 	}
 }
 
-// func FromCompleteOrgDtoToModel(req dto.Org_Complete_Regesistration_REQ_DTO) (*models.Organization, []models.OrganizationBankAccount, error) {
+// func FromCompleteOrgDtoToModel(req dto.Org_Complete_Registration_REQ_DTO) (*models.Organization, []models.OrganizationBankAccount, error) {
 // 	org := &models.Organization{
 // 		Address: req.Address.AddressLine,
 // 		State:   req.Address.State,

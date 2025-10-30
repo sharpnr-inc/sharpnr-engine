@@ -60,9 +60,9 @@ func CreateOrgDefaultPolicy(ctx context.Context, db *gorm.DB, orgID, sharpnr_id,
 	}
 
 	// 3️⃣ Save in DB
-	model := models.OrganisationPolicy{
+	model := models.OrganizationPolicy{
 		ID:             uuid.New(),
-		OrganisationID: orgUUID,
+		OrganizationID: orgUUID,
 		Policy:         policyJSON,
 		CreatedAt:      time.Now().Format(time.RFC3339),
 		UpdatedAt:      time.Now().Format(time.RFC3339),

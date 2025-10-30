@@ -12,12 +12,12 @@ type Metadata struct {
 	// Modules   []interface{} `json:"MODULES"` // mixed: string + object
 }
 
-type Privilages struct {
+type Privileges struct {
 }
 
 type EmployeeAccess struct {
 	EmployeeID string             `json:"EmployeeID"`
-	Privileges EmployeePrivileges `json:"Privilages"`
+	Privileges EmployeePrivileges `json:"Privileges"`
 }
 
 type EmployeePrivileges struct {
@@ -67,7 +67,7 @@ const (
 // EmployeePolicy is the structure you want to return
 type EmployeePolicy struct {
 	EmployeeID string                 `json:"EmployeeID"`
-	Privilages map[string]interface{} `json:"Privilages"`
+	Privileges map[string]interface{} `json:"Privileges"`
 }
 
 type OrgPolicy struct {

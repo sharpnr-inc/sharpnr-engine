@@ -11,14 +11,14 @@ package orgcontrollers
 
 import "sharpnr-engine/core/interfaces"
 
-// OrganisationController is responsible for handling requests related to
+// OrganizationController is responsible for handling requests related to
 // organization registration and management. It delegates the core business
 // logic to the OrgRegistrationService.
-type OrganisationController struct {
+type OrganizationController struct {
 	service interfaces.OrganizationSignUpService
 }
 
-// RegisterOrgController creates a new OrganisationController instance.
+// RegisterOrgController creates a new OrganizationController instance.
 //
 // This function is part of the dependency injection setup. Instead of
 // instantiating dependencies directly inside the controller, the service
@@ -30,6 +30,6 @@ type OrganisationController struct {
 //
 //	service := services.NewOrgRegistrationService(repo)
 //	controller := orgcontrollers.RegisterOrgController(service)
-func RegisterOrgController(service interfaces.OrganizationSignUpService) *OrganisationController {
-	return &OrganisationController{service: service}
+func RegisterOrgController(service interfaces.OrganizationSignUpService) *OrganizationController {
+	return &OrganizationController{service: service}
 }

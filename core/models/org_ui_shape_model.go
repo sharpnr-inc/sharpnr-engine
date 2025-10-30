@@ -4,6 +4,6 @@ import "gorm.io/datatypes"
 
 type OrgUIShape struct {
 	ID             string
-	OrganisationId string
+	OrganizationId string
 	UI_Shape       datatypes.JSON
 }

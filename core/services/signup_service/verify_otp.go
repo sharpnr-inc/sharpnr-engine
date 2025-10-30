@@ -20,7 +20,7 @@ func (s *signupService) VerifyOrgRegistration(ctx context.Context, email, code s
 	fmt.Println("Finding Data for the %w", email)
 	tempOrg, err := s.orgRepo.GetOrgFromRedisDB(ctx, email)
 	if err != nil {
-		return nil, false, "", fmt.Errorf("failef to fetch org data: %w", err)
+		return nil, false, "", fmt.Errorf("failed to fetch org data: %w", err)
 	}
 
 	if tempOrg == nil {
@@ -47,7 +47,7 @@ func (s *signupService) VerifyOrgRegistration(ctx context.Context, email, code s
 		RootEmail:              tempOrg.Email,
 		MasterPhoneNumber:      tempOrg.Phone,
 		Password:               tempOrg.Password,
-		OrgOprationType:        tempOrg.OrgType,
+		OrgOperationType:       tempOrg.OrgType,
 		IsRegistrationComplete: false,
 		Is_RootEmailVerified:   true,
 	}
@@ -56,7 +56,7 @@ func (s *signupService) VerifyOrgRegistration(ctx context.Context, email, code s
 		return nil, false, "", fmt.Errorf("failed to save organization in main DB: %w", err)
 	}
 
-	newToken, err := jwtpack.GenerateJwtToken(org.RootEmail, jwtpack.TokenTypeCompleteRegistration, org.SharpnrID, string(org.OrgOprationType), nil)
+	newToken, err := jwtpack.GenerateJwtToken(org.RootEmail, jwtpack.TokenTypeCompleteRegistration, org.SharpnrID, string(org.OrgOperationType), nil)
 	if err != nil {
 		return nil, false, "", fmt.Errorf("failed to create Auth Token %w", err)
 	}
@@ -66,7 +66,7 @@ func (s *signupService) VerifyOrgRegistration(ctx context.Context, email, code s
 		Name:       org.Name,
 		Sharpnr_Id: org.SharpnrID,
 		Email:      org.RootEmail,
-		ORG_TYPE:   org.OrgOprationType,
+		ORG_TYPE:   org.OrgOperationType,
 	}
 
 	return res, true, newToken, nil

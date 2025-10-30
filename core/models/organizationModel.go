@@ -11,11 +11,11 @@ import (
 
 // This is Master Model For the Organisation
 type Organization struct {
-	ID              uuid.UUID         `gorm:"not null;primaryKey"`
-	Name            string            `gorm:"size:100;not null"`
-	SharpnrID       string            `gorm:"not null;unique"`
-	OrgOprationType constants.OrgType `gorm:"type:varchar(20);not null"`
-	OrgDescription  string            `gorm:"type:text"`
+	ID               uuid.UUID         `gorm:"not null;primaryKey"`
+	Name             string            `gorm:"size:100;not null"`
+	SharpnrID        string            `gorm:"not null;unique"`
+	OrgOperationType constants.OrgType `gorm:"type:varchar(20);not null"`
+	OrgDescription   string            `gorm:"type:text"`
 
 	// Address fields
 	Address string `gorm:"type:varchar(255);not null"`

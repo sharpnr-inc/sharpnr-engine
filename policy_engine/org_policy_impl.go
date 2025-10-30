@@ -11,30 +11,30 @@ import (
 	"gorm.io/gorm"
 )
 
-type organisationPolicyRepository struct {
+type organizationPolicyRepository struct {
 	db *gorm.DB
 }
 
-func NewOrgPolicyRepo(db *gorm.DB) *organisationPolicyRepository {
-	return &organisationPolicyRepository{
+func NewOrgPolicyRepo(db *gorm.DB) *organizationPolicyRepository {
+	return &organizationPolicyRepository{
 		db: database.DB,
 	}
 }
 
 // CreatePolicyOfOrg implements policyengine.PolicyRepository.
-func (o *organisationPolicyRepository) CreatePolicyOfOrg(ctx context.Context, orgId, sharpnr_id, employeeId string) error {
+func (o *organizationPolicyRepository) CreatePolicyOfOrg(ctx context.Context, orgId, sharpnr_id, employeeId string) error {
 	// ✅ Just delegate to the utils
 	return CreateOrgDefaultPolicy(ctx, o.db, orgId, sharpnr_id, employeeId)
 }
 
 // GetOrgPolicyByPolicyId implements policyengine.PolicyRepository.
-func (o *organisationPolicyRepository) GetOrgPolicyByPolicyId() {
+func (o *organizationPolicyRepository) GetOrgPolicyByPolicyId() {
 	panic("unimplemented")
 }
 
-// GetEmployeePolicyByEmployeeId fetches the policy JSON and unmarshals it
-func (o *organisationPolicyRepository) GetEmployeePolicyByEmployeeId(employeeID string) (*EmployeePolicy, error) {
-	var orgPolicy models.OrganisationPolicy
+// GetEmployeePolicyByEmployeeId fetches the policy JSON and unmarshal it
+func (o *organizationPolicyRepository) GetEmployeePolicyByEmployeeId(employeeID string) (*EmployeePolicy, error) {
+	var orgPolicy models.OrganizationPolicy
 
 	query := `
         (
@@ -46,7 +46,7 @@ func (o *organisationPolicyRepository) GetEmployeePolicyByEmployeeId(employeeID 
 	jsonCondition := fmt.Sprintf(`[{"EmployeeID": "%s"}]`, employeeID)
 
 	err := o.db.
-		Model(&models.OrganisationPolicy{}).
+		Model(&models.OrganizationPolicy{}).
 		Where(query, jsonCondition, employeeID, employeeID).
 		Order("id").
 		Limit(1).
@@ -61,7 +61,7 @@ func (o *organisationPolicyRepository) GetEmployeePolicyByEmployeeId(employeeID 
 	// Unmarshal the full JSON into OrgDefaultPolicy (your defined struct)
 	var orgDefault OrgDefaultPolicy
 	if err := json.Unmarshal(orgPolicy.Policy, &orgDefault); err != nil {
-		return nil, fmt.Errorf("error unmarshalling policy json: %w", err)
+		return nil, fmt.Errorf("error unmarshaling policy json: %w", err)
 	}
 
 	// Extract the employee’s policy
@@ -70,7 +70,7 @@ func (o *organisationPolicyRepository) GetEmployeePolicyByEmployeeId(employeeID 
 		if emp.EmployeeID == employeeID {
 			empPolicy = &EmployeePolicy{
 				EmployeeID: emp.EmployeeID,
-				Privilages: map[string]interface{}{
+				Privileges: map[string]interface{}{
 					"SharpAccounting": emp.Privileges.SharpAccounting,
 					"SharpHR":         emp.Privileges.SharpHR,
 					"SharpHotel":      emp.Privileges.SharpHotel,
@@ -101,7 +101,7 @@ func (o *organisationPolicyRepository) GetEmployeePolicyByEmployeeId(employeeID 
 		if role != "" {
 			empPolicy = &EmployeePolicy{
 				EmployeeID: employeeID,
-				Privilages: map[string]interface{}{
+				Privileges: map[string]interface{}{
 					"Role": role,
 				},
 			}
@@ -115,10 +115,10 @@ func (o *organisationPolicyRepository) GetEmployeePolicyByEmployeeId(employeeID 
 	return empPolicy, nil
 }
 
-func (r *organisationPolicyRepository) GetEmployeePolicy(sharpnrID string, employeeID string) (*EmployeeAccess, error) {
-	var policy models.OrganisationPolicy
+func (r *organizationPolicyRepository) GetEmployeePolicy(sharpnrID string, employeeID string) (*EmployeeAccess, error) {
+	var policy models.OrganizationPolicy
 
-	// 1️⃣ Query JSON metadata by SharpNRID
+	// 1️⃣ Query JSON metadata by SharpnrID
 	if err := r.db.
 		Where("policy -> 'Metadata' ->> 'SHARPNR_ID' = ?", sharpnrID).
 		First(&policy).Error; err != nil {

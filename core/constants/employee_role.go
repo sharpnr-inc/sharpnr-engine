@@ -1,6 +1,6 @@
 package constants
 
-// This is ENUMS for the Employee Roles in the Organisations
+// This is ENUMS for the Employee Roles in the Organizations
 
 type EmployeeRoles string
 

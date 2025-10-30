@@ -10,7 +10,7 @@ import (
 // SignupService handles organization signup logic
 type signupService struct {
 	orgRepo interfaces.OrganizationRepository // interface, not concrete struct
-	// This is Employee Repo for the creation of employee during the signup of Organisation
+	// This is Employee Repo for the creation of employee during the signup of Organization
 	empRepo interfaces.EmployeeRepository
 
 	policyRepo policyengine.PolicyRepository

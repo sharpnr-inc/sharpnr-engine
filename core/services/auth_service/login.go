@@ -37,7 +37,7 @@ func (r *loginService) LoginToAccount(ctx *gin.Context, req dto.LoginRequestDTO)
 
 	resp := dto.LoginResponseDTO{
 		OrgId:         usrOrg.SharpnrID,
-		OrgType:       string(usrOrg.OrgOprationType),
+		OrgType:       string(usrOrg.OrgOperationType),
 		EmployeeID:    usr.ID,
 		EmployeeEmail: usr.Email,
 	}

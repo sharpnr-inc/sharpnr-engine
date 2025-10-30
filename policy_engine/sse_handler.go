@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PolicySSEHandler(policyRepo *organisationPolicyRepository) gin.HandlerFunc {
+func PolicySSEHandler(policyRepo *organizationPolicyRepository) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		employeeID := c.Param("employeeId")
 

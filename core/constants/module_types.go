@@ -3,9 +3,9 @@ package constants
 type BaseModule string
 
 const (
-	SHARPNR_ACCOUNTING     BaseModule = "SHARPNR_ACCOUNTING"
-	SHARPNR_HUMAN_RESOUCES BaseModule = "SHARPNR_HR"
-	SHARPNR_MARKETING      BaseModule = "SHARPNR_MARKETING"
+	SHARPNR_ACCOUNTING      BaseModule = "SHARPNR_ACCOUNTING"
+	SHARPNR_HUMAN_RESOURCES BaseModule = "SHARPNR_HR"
+	SHARPNR_MARKETING       BaseModule = "SHARPNR_MARKETING"
 )
 
 type HospitalityModule string

@@ -33,7 +33,7 @@ type Employee struct {
 	IsEmailVerified  bool
 	Address          string
 	EmergencyContact string
-	IsIDVerfied      string
+	IsIDVerified     string
 	Salary           string
 }
 
