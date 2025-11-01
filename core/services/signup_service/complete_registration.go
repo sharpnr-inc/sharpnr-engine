@@ -16,18 +16,9 @@ import (
 
 func (s *signupService) CompleteOrgRegistration(
 	ctx context.Context,
-	req dto.Org_Complete_Regesistration_REQ_DTO,
+	req dto.Org_Complete_Registration_REQ_DTO,
 	org_email, org_sharpnr_id string,
-) (*dto.Org_Complete_Regesistration_RESPONSE_DTO, string, error) {
-
-	// So fist of all
-	// Here we will Find OrgUUId from the Cookie from gin context
-	// and then we extract the Address Details and Registration Details From DTO
-	// save it In Main DB
-
-	// Step 2
-	// TODO
-	// Need to
+) (*dto.Org_Complete_Registration_RESPONSE_DTO, string, error) {
 
 	existingOrg, found, err := s.orgRepo.FindOrgBySharpnrID(ctx, org_sharpnr_id)
 	if err != nil {
@@ -41,17 +32,7 @@ func (s *signupService) CompleteOrgRegistration(
 	existingOrg.City = req.Address.City
 	existingOrg.State = req.Address.State
 	existingOrg.Pincode = req.Address.Pincode
-	existingOrg.Country = req.Address.Country // or you can pass it via DTO if dynamic
-	existingOrg.ISRegistered = req.Registration.IsRegister
-
-	if req.Registration.IsRegister {
-		existingOrg.GstNumber = &req.Registration.GSTNumber
-		existingOrg.CinNumber = &req.Registration.CINNumber
-	} else {
-		na := "N/A"
-		existingOrg.GstNumber = &na
-		existingOrg.CinNumber = &na
-	}
+	existingOrg.Country = req.Address.Country
 
 	existingOrg.IsRegistrationComplete = true
 
@@ -95,7 +76,7 @@ func (s *signupService) CompleteOrgRegistration(
 		return nil, "", err
 	}
 
-	return &dto.Org_Complete_Regesistration_RESPONSE_DTO{
+	return &dto.Org_Complete_Registration_RESPONSE_DTO{
 		OrgID:        existingOrg.SharpnrID,
 		OrgName:      existingOrg.Name,
 		EmployeeID:   DefaultSuperAdmin.ID,

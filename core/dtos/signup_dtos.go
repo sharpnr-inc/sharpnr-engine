@@ -86,22 +86,16 @@ type OrgOwnerDetails struct {
 	OwnerPhone string `json:"owner_phone,omitempty"` // Optional phone number
 }
 
-type SuperAdminDetails struct {
-	Name string
+// Org_Complete_Registration_REQ_DTO is the request payload for completing organization registration.
+type Org_Complete_Registration_REQ_DTO struct {
+	Address      AddressDetails    `json:"address_details"`
+	Is_owner     bool              `json:"is_owner"`
+	OwnerDetails []OrgOwnerDetails `json:"owner_details,omitempty"`
+	OrgSubModule []string          `json:"org_submodule_config"`
 }
 
-type OrgConfig struct {
-}
-
-// Org_Complete_Regesistration_REQ_DTO is the request payload for completing organization registration.
-type Org_Complete_Regesistration_REQ_DTO struct {
-	Registration RegistrationDetails `json:"registration_details"`
-	Address      AddressDetails      `json:"address_details"`
-	Is_owner     bool                `json:"is_owner"`
-	OwnerDetails []OrgOwnerDetails   `json:"owner_details,omitempty"` // Optional if no owners yet
-}
-
-type Org_Complete_Regesistration_RESPONSE_DTO struct {
+type Org_Complete_Registration_RESPONSE_DTO struct {
+	// this is Org that we send To Our client is SharpId
 	OrgID        string    `json:"org_id"`
 	OrgName      string    `json:"org_name"`
 	EmployeeID   uuid.UUID `json:"employee_Id"`

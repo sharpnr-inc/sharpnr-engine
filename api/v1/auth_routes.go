@@ -42,6 +42,8 @@ func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 
 	v1.GET("/signup/status", newSignupController.SignupStatus)
 
+	v1.GET("/get-org-render-tree", newAuthController.GetOrgUIRenderer)
+
 	v1.GET("/sse/policy/:employeeId", middlewares.RequireTokenType(jwtpack.TokenTypeAuth),
 		policyengine.SSEEmployeeMiddleware(),
 		policyengine.PolicySSEHandler(newPolicyEngineRepo))

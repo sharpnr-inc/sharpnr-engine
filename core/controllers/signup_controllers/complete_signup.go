@@ -11,7 +11,7 @@ import (
 )
 
 func (s *SignUpController) CompleteRegistration(ctx *gin.Context) {
-	var req dto.Org_Complete_Regesistration_REQ_DTO
+	var req dto.Org_Complete_Registration_REQ_DTO
 
 	// Bind and validate input
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -70,7 +70,7 @@ func (s *SignUpController) CompleteRegistration(ctx *gin.Context) {
 	)
 
 	// Success response
-	successRes := dto.Response[dto.Org_Complete_Regesistration_RESPONSE_DTO]{
+	successRes := dto.Response[dto.Org_Complete_Registration_RESPONSE_DTO]{
 		StatusCode: http.StatusOK,
 		Message:    "Organization registration completed successfully",
 		Error: dto.ErrorResponse{
