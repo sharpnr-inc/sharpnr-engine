@@ -40,6 +40,11 @@ func (s *signupService) CompleteOrgRegistration(
 		role = constants.Org_Owners
 	}
 
+	ui_render, err := s.uiRenderRepo.CreateOrgUIRenderer(ctx, existingOrg.ID, req.OrgSubModule, existingOrg.OrgOperationType)
+	if err != nil {
+		fmt.Println(ui_render)
+	}
+
 	defemp := &models.Employee{
 		ID:              uuid.New(),
 		FirstName:       "__Default__Name",

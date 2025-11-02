@@ -11,13 +11,13 @@ func CORSMiddleWare() gin.HandlerFunc {
 	env := os.Getenv("APP_ENV")
 
 	var allowedOrigins []string
-	if env == "prodcution" {
+	if env == "production" {
 		allowedOrigins = []string{
 			"http://localhost:5173",
-			"http://192.168.1.35:5173",
+			"http://192.168.1.36:5173",
 		}
 	} else {
-		allowedOrigins = []string{"http://localhost:5173", "http://192.168.1.35:5173"}
+		allowedOrigins = []string{"http://localhost:5173", "http://192.168.1.36:5173"}
 	}
 
 	corsConfig := cors.Config{
