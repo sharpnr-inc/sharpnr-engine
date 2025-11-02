@@ -1,1 +1,1 @@
-package hospitalityrepo
+package hotelrepo
