@@ -42,6 +42,7 @@ func MigrateDB(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&models.Organization{}, // Parent of everything
 		&models.OrganizationPolicy{},
+		&models.OrgUIRendererTree{},
 		&models.OrganizationBankAccount{},
 		&models.Employee{}, // Belongs to Department + Organization
 		&accountingmodels.AccountingBills{},

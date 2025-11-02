@@ -10,6 +10,7 @@ import (
 	"sharpnr-engine/middlewares"
 	"sharpnr-engine/pkg/jwtpack"
 	policyengine "sharpnr-engine/policy_engine"
+	sharpnruirenderer "sharpnr-engine/sharpnr_ui_renderer"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -19,9 +20,10 @@ import (
 // These Are the Auth routes for the authentication registration
 func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 	newPolicyEngineRepo := policyengine.NewOrgPolicyRepo(db)
+	newUIRendererRepo := sharpnruirenderer.NewOrgUIRendererRepo(db)
 	newEmployeeRepo := employeerepo.NewEmployeeRepo(db)
 	newOrgRepo := organizationrepositories.NewOrganizationRepo(db, redis)
-	newSignupService := signupservice.NewSignupService(newOrgRepo, newEmployeeRepo, newPolicyEngineRepo)
+	newSignupService := signupservice.NewSignupService(newOrgRepo, newEmployeeRepo, newPolicyEngineRepo, newUIRendererRepo)
 	newSignupController := signupcontrollers.NewSignUpController(newSignupService)
 
 	newAuthService := authservice.NewAuthService(newOrgRepo, newEmployeeRepo)

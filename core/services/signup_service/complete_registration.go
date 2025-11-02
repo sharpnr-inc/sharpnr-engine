@@ -27,15 +27,12 @@ func (s *signupService) CompleteOrgRegistration(
 	if !found {
 		return nil, "", fmt.Errorf("organization not found with ID: %s", org_sharpnr_id)
 	}
-
 	existingOrg.Address = req.Address.AddressLine
 	existingOrg.City = req.Address.City
 	existingOrg.State = req.Address.State
 	existingOrg.Pincode = req.Address.Pincode
 	existingOrg.Country = req.Address.Country
-
 	existingOrg.IsRegistrationComplete = true
-
 	existingOrg.UpdatedAt = time.Now()
 
 	role := constants.Super_Admin
