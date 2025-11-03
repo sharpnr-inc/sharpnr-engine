@@ -15,6 +15,7 @@ func (s *AuthController) GetOrgUIRenderer(ctx *gin.Context) {
 		"ui_renderer_tree_id":       "",
 		"orgnisation_business_type": "hospitality",
 		"main_menu_render_tree": map[string]any{
+
 			"sharp_hospitality": map[string]any{
 				"has_access": true,
 				"sub_module_section": map[string]any{

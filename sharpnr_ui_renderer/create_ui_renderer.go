@@ -9,6 +9,5 @@ import (
 )
 
 func (o *orgUIRendererRepository) CreateOrgUIRenderer(ctx context.Context, orgId uuid.UUID, orgConfig []string, orgType constants.OrgType) (datatypes.JSON, error) {
-
-	panic("unimplemented")
+	panic("sss")
 }

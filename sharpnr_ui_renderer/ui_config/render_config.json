@@ -12,7 +12,7 @@
         }
       },
       "bar": {
-        "has_access": true,
+        "has_access": false,
         "sub_section_access": {
           "menu": true,
           "orders": true,

@@ -15,11 +15,6 @@ func (h *hotelRepository) CreateFloor() {
 	panic("unimplemented")
 }
 
-// CreateRoom implements HotelRepository.
-func (h *hotelRepository) CreateRoom() {
-	panic("unimplemented")
-}
-
 // EditRoom implements HotelRepository.
 func (h *hotelRepository) EditRoom() {
 	panic("unimplemented")

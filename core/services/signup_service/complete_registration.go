@@ -20,6 +20,7 @@ func (s *signupService) CompleteOrgRegistration(
 	org_email, org_sharpnr_id string,
 ) (*dto.Org_Complete_Registration_RESPONSE_DTO, string, error) {
 
+	fmt.Println(req.OrgSubModule)
 	existingOrg, found, err := s.orgRepo.FindOrgBySharpnrID(ctx, org_sharpnr_id)
 	if err != nil {
 		return nil, "", err

@@ -68,7 +68,7 @@ func (r *organizationRepository) GetOrgFromRedisDB(ctx context.Context, email st
 	data, err := r.redis.Get(ctx, key).Result()
 	if err != nil {
 		if err == redis.Nil {
-			return nil, fmt.Errorf("no organisation found for email: %s", email)
+			return nil, fmt.Errorf("no organization found for email: %s", email)
 		}
 		return nil, err
 	}
