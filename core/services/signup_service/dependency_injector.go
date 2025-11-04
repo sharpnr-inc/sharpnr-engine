@@ -4,6 +4,7 @@ import (
 	"sharpnr-engine/core/interfaces"
 	barrepo "sharpnr-engine/modules/hospitality/bar/repo"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
+	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
 	"sharpnr-engine/modules/hospitality/restaurant/restaurantrepo"
 	policyengine "sharpnr-engine/policy_engine"
 	sharpnruirenderer "sharpnr-engine/sharpnr_ui_renderer"
@@ -26,15 +27,19 @@ type signupService struct {
 	barRepo barrepo.BarRepository
 
 	restaurantRepo restaurantrepo.RestaurantRepository
+
+	kitchenRepo kitchenrepo.KitchenRepository
 }
 
-func NewSignupService(repo interfaces.OrganizationRepository, emprepo interfaces.EmployeeRepository, policyrepo policyengine.PolicyRepository, uiRenderRepo sharpnruirenderer.UIRendererRepository, hotelRepo hotelrepo.HotelRepository, barRepo barrepo.BarRepository, restaurantRepo restaurantrepo.RestaurantRepository) *signupService {
+func NewSignupService(repo interfaces.OrganizationRepository, emprepo interfaces.EmployeeRepository, policyrepo policyengine.PolicyRepository, uiRenderRepo sharpnruirenderer.UIRendererRepository, hotelRepo hotelrepo.HotelRepository, barRepo barrepo.BarRepository, restaurantRepo restaurantrepo.RestaurantRepository, kitchenRepo kitchenrepo.KitchenRepository) *signupService {
 	return &signupService{
-		orgRepo:      repo,
-		empRepo:      emprepo,
-		policyRepo:   policyrepo,
-		uiRenderRepo: uiRenderRepo,
-		hotelRepo:    hotelRepo,
-		barRepo:      barRepo,
+		orgRepo:        repo,
+		empRepo:        emprepo,
+		policyRepo:     policyrepo,
+		uiRenderRepo:   uiRenderRepo,
+		hotelRepo:      hotelRepo,
+		barRepo:        barRepo,
+		restaurantRepo: restaurantRepo,
+		kitchenRepo:    kitchenRepo,
 	}
 }
