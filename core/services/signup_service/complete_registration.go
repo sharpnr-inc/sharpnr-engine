@@ -6,6 +6,7 @@ import (
 	"sharpnr-engine/core/constants"
 	dto "sharpnr-engine/core/dtos"
 	"sharpnr-engine/core/models"
+	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/pkg/jwtpack"
 
 	// sharpnr_ui_renderer "sharpnr-engine/sharpnr_ui_renderer"
@@ -44,6 +45,38 @@ func (s *signupService) CompleteOrgRegistration(
 	ui_render, err := s.uiRenderRepo.CreateOrgUIRenderer(ctx, existingOrg.ID, req.OrgSubModule, existingOrg.OrgOperationType)
 	if err != nil {
 		fmt.Println(ui_render)
+	}
+
+	// Here Based on the Combination We have to create the Hotel Bar and Restaurant
+	// Here we create a Switch Statement
+
+	/*
+		key := ""
+		for i, v := range orgConfig {
+			if i > 0 {
+				key += "_"
+			}
+			key += v
+		}
+
+		fmt.Println("Combination key:", key)
+	*/
+
+	ht := &hospitalitymodels.Hotel{
+		ID:             uuid.New(),
+		OrganizationID: existingOrg.ID,
+		Organization:   *existingOrg,
+		Name:           "__DEFAULT__HOTEL__NAME__",
+		NumberOfFloors: 0,
+		NumberOfRooms:  0,
+		Floors:         nil,
+	}
+
+	// s.CreateHotel()
+
+	hoteldata, err := s.hotelRepo.CreateHotel(ctx, ht)
+	if err != nil {
+		fmt.Println(hoteldata)
 	}
 
 	defemp := &models.Employee{

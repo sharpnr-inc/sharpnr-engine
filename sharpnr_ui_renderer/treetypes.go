@@ -13,9 +13,9 @@ type UIRendererTree struct {
 
 // ---- Main Menu Render Tree ----
 type MainMenuRenderTree struct {
-	SharpHospitality SharpHospitalityModule `json:"sharp_hospitality"`
-	SharpAccounting  SharpAccountingTree    `json:"sharp_accounting"`
-	SharpHR          SharpHRTree            `json:"sharp_hr"`
-	SharpMarketing   SharpMarketingTree     `json:"sharp_marketing"`
-	Employee         EmployeeTree           `json:"employee"`
+	SharpHospitality SharpHospitalityTree `json:"sharp_hospitality"`
+	SharpAccounting  SharpAccountingTree  `json:"sharp_accounting"`
+	SharpHR          SharpHRTree          `json:"sharp_hr"`
+	SharpMarketing   SharpMarketingTree   `json:"sharp_marketing"`
+	Employee         EmployeeTree         `json:"employee"`
 }

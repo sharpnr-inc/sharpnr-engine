@@ -1,10 +1,14 @@
 package hospitalitymodels
 
-import "sharpnr-engine/core/models"
+import (
+	"sharpnr-engine/core/models"
+
+	"github.com/google/uuid"
+)
 
 type Hotel struct {
-	ID             string              `gorm:"type:uuid;primaryKey"`
-	OrganizationID string              `gorm:"type:uuid;not null"`
+	ID             uuid.UUID           `gorm:"primaryKey"`
+	OrganizationID uuid.UUID           `gorm:"not null"`
 	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
 
 	Name           string `gorm:"size:100"`
