@@ -1,8 +1,6 @@
 package hotelrepo
 
 import (
-	"sharpnr-engine/shared/database"
-
 	"gorm.io/gorm"
 )
 
@@ -27,6 +25,6 @@ func (h *hotelRepository) GetRoomDetails() {
 
 func NewHotelRepository(db *gorm.DB) *hotelRepository {
 	return &hotelRepository{
-		db: database.DB,
+		db: db,
 	}
 }

@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"sharpnr-engine/core/models"
-	"sharpnr-engine/shared/database"
 
 	"gorm.io/gorm"
 )
@@ -17,7 +16,7 @@ type organizationPolicyRepository struct {
 
 func NewOrgPolicyRepo(db *gorm.DB) *organizationPolicyRepository {
 	return &organizationPolicyRepository{
-		db: database.DB,
+		db: db,
 	}
 }
 

@@ -2,6 +2,7 @@ package signupservice
 
 import (
 	"sharpnr-engine/core/interfaces"
+	barrepo "sharpnr-engine/modules/hospitality/bar/repo"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
 	policyengine "sharpnr-engine/policy_engine"
 	sharpnruirenderer "sharpnr-engine/sharpnr_ui_renderer"
@@ -20,14 +21,17 @@ type signupService struct {
 	uiRenderRepo sharpnruirenderer.UIRendererRepository
 
 	hotelRepo hotelrepo.HotelRepository
+
+	barRepo barrepo.BarRepository
 }
 
-func NewSignupService(repo interfaces.OrganizationRepository, emprepo interfaces.EmployeeRepository, policyrepo policyengine.PolicyRepository, uiRenderRepo sharpnruirenderer.UIRendererRepository, hotelRepo hotelrepo.HotelRepository) *signupService {
+func NewSignupService(repo interfaces.OrganizationRepository, emprepo interfaces.EmployeeRepository, policyrepo policyengine.PolicyRepository, uiRenderRepo sharpnruirenderer.UIRendererRepository, hotelRepo hotelrepo.HotelRepository, barRepo barrepo.BarRepository) *signupService {
 	return &signupService{
 		orgRepo:      repo,
 		empRepo:      emprepo,
 		policyRepo:   policyrepo,
 		uiRenderRepo: uiRenderRepo,
 		hotelRepo:    hotelRepo,
+		barRepo:      barRepo,
 	}
 }

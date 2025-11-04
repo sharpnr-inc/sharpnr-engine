@@ -1,4 +1,5 @@
-package bar
+package barrepo
 
 type BarRepository interface {
+	CreateBar()
 }

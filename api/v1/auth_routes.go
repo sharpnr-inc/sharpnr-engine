@@ -8,6 +8,7 @@ import (
 	authservice "sharpnr-engine/core/services/auth_service"
 	signupservice "sharpnr-engine/core/services/signup_service"
 	"sharpnr-engine/middlewares"
+	barrepo "sharpnr-engine/modules/hospitality/bar/repo"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
 
 	"sharpnr-engine/pkg/jwtpack"
@@ -24,11 +25,12 @@ func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 	newPolicyEngineRepo := policyengine.NewOrgPolicyRepo(db)
 
 	newHotelRepo := hotelrepo.NewHotelRepository(db)
+	newBarRepo := barrepo.NewBarRepository(db)
 
 	newUIRendererRepo := sharpnruirenderer.NewOrgUIRendererRepo(db)
 	newEmployeeRepo := employeerepo.NewEmployeeRepo(db)
 	newOrgRepo := organizationrepositories.NewOrganizationRepo(db, redis)
-	newSignupService := signupservice.NewSignupService(newOrgRepo, newEmployeeRepo, newPolicyEngineRepo, newUIRendererRepo, newHotelRepo)
+	newSignupService := signupservice.NewSignupService(newOrgRepo, newEmployeeRepo, newPolicyEngineRepo, newUIRendererRepo, newHotelRepo, newBarRepo)
 	newSignupController := signupcontrollers.NewSignUpController(newSignupService)
 
 	newAuthService := authservice.NewAuthService(newOrgRepo, newEmployeeRepo)
