@@ -6,8 +6,9 @@ import (
 	"sharpnr-engine/core/constants"
 	dto "sharpnr-engine/core/dtos"
 	"sharpnr-engine/core/models"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/pkg/jwtpack"
+	"sort"
+	"strings"
 
 	// sharpnr_ui_renderer "sharpnr-engine/sharpnr_ui_renderer"
 	"time"
@@ -47,36 +48,33 @@ func (s *signupService) CompleteOrgRegistration(
 		fmt.Println(ui_render)
 	}
 
-	// Here Based on the Combination We have to create the Hotel Bar and Restaurant
-	// Here we create a Switch Statement
+	// ✅ Sort and generate key for module combination
+	modules := req.OrgSubModule
+	sort.Strings(modules) // Alphabetical sort ensures consistent key
+	key := strings.Join(modules, "_")
+	fmt.Println("🔑 Combination key:", key)
 
-	/*
-		key := ""
-		for i, v := range orgConfig {
-			if i > 0 {
-				key += "_"
-			}
-			key += v
-		}
+	// ✅ Create module structures based on combination
+	switch key {
+	case "BAR":
+		s.CreateBar(ctx, existingOrg)
+	case "HOTEL":
+		s.CreateHotel(ctx, existingOrg)
+	case "RESTAURANT":
+		s.CreateRestaurant(ctx, existingOrg)
 
-		fmt.Println("Combination key:", key)
-	*/
+	case "BAR_HOTEL":
+		s.CreateHotelBar(ctx, existingOrg)
+	case "BAR_RESTAURANT":
+		s.CreateBarRestaurant(ctx, existingOrg)
+	case "HOTEL_RESTAURANT":
+		s.CreateHotelRestaurant(ctx, existingOrg)
 
-	ht := &hospitalitymodels.Hotel{
-		ID:             uuid.New(),
-		OrganizationID: existingOrg.ID,
-		Organization:   *existingOrg,
-		Name:           "__DEFAULT__HOTEL__NAME__",
-		NumberOfFloors: 0,
-		NumberOfRooms:  0,
-		Floors:         nil,
-	}
+	case "BAR_HOTEL_RESTAURANT":
+		s.CreateBarHotelRestaurant(ctx, existingOrg)
 
-	// s.CreateHotel()
-
-	hoteldata, err := s.hotelRepo.CreateHotel(ctx, ht)
-	if err != nil {
-		fmt.Println(hoteldata)
+	default:
+		fmt.Println("⚠️ Unknown module combination:", key)
 	}
 
 	defemp := &models.Employee{

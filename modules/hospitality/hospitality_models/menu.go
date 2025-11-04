@@ -2,6 +2,8 @@ package hospitalitymodels
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 // -------------------------------
@@ -9,7 +11,7 @@ import (
 // -------------------------------
 
 type MenuCategory struct {
-	ID           string     `gorm:"type:uuid;primaryKey"`
+	ID           uuid.UUID  `gorm:"primaryKey"`
 	RestaurantID string     `gorm:"type:uuid;not null"`
 	Restaurant   Restaurant `gorm:"foreignKey:RestaurantID;constraint:OnDelete:CASCADE;"`
 

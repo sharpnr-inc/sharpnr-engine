@@ -4,12 +4,14 @@ import (
 	"time"
 
 	"sharpnr-engine/core/models"
+
+	"github.com/google/uuid"
 )
 
 type Bar struct {
-	ID             string              `gorm:"type:uuid;primaryKey" json:"id"`
+	ID             uuid.UUID           `gorm:"primaryKey"`
 	Name           string              `gorm:"size:100;not null" json:"name"`
-	OrganizationID string              `gorm:"type:uuid;not null" json:"organization_id"`
+	OrganizationID uuid.UUID           `gorm:"not null" json:"organization_id"`
 	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;" json:"organization"`
 
 	OpeningTime time.Time `json:"opening_time"`
