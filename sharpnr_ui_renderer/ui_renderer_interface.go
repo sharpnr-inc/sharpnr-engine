@@ -2,14 +2,11 @@ package sharpnruirenderer
 
 import (
 	"context"
-	"sharpnr-engine/core/constants"
-
-	"github.com/google/uuid"
-	"gorm.io/datatypes"
+	"sharpnr-engine/core/models"
 )
 
 type UIRendererRepository interface {
-	CreateOrgUIRenderer(ctx context.Context, orgId uuid.UUID, orgConfig []string, orgType constants.OrgType) (datatypes.JSON, error)
+	CreateOrgUIRenderer(ctx context.Context, renderer *models.OrgUIRendererTree) error
 	GetOrgUIRenderer()
 	UpdateOrgUIRenderer()
 }

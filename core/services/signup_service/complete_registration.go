@@ -46,9 +46,9 @@ func (s *signupService) CompleteOrgRegistration(
 	}
 
 	// -------------------- Step 4: Create UI Renderer --------------------
-	if _, err := s.uiRenderRepo.CreateOrgUIRenderer(ctx, existingOrg.ID, req.OrgSubModule, existingOrg.OrgOperationType); err != nil {
-		fmt.Printf("⚠️ Failed to create UI renderer for org %s: %v\n", existingOrg.ID, err)
-	}
+	// if _, err := s.uiRenderRepo.CreateOrgUIRenderer(ctx, existingOrg.ID, req.OrgSubModule, existingOrg.OrgOperationType); err != nil {
+	// 	fmt.Printf("⚠️ Failed to create UI renderer for org %s: %v\n", existingOrg.ID, err)
+	// }
 
 	// -------------------- Step 5: Setup Module(s) --------------------
 	modules := req.OrgSubModule
