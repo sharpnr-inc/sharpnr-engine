@@ -51,6 +51,8 @@ func MigrateDB(db *gorm.DB) error {
 		&hospitalitymodels.HotelFloor{},
 		&hospitalitymodels.Room{},
 		&hospitalitymodels.Bar{},
+		&hospitalitymodels.Restaurant{},
+		&hospitalitymodels.Kitchen{},
 		&accountingmodels.AccountingBills{},
 	)
 }

@@ -52,7 +52,71 @@ func BarRendererFactory(ctx context.Context, orgId uuid.UUID, orgType constants.
 							Inventory: true,
 						},
 					},
+
+					Services: ServicesModule{
+						HasAccess:            false,
+						ServiceSectionAccess: ServicesSectionAccess{},
+					},
+
+					Inventory: InventoryModule{
+						HasAccess: true,
+						InventorySectionAccess: InventorySectionAccess{
+							BarInventory:        true,
+							HotelInventory:      true,
+							RestaurantInventory: true,
+							KitchenInventory:    true,
+							GeneralInventory:    true,
+						},
+					},
+
+					Housekeeping: HouseKeepingModule{
+						HasAccess:                 false,
+						HouseKeepingSectionAccess: HouseKeepingSectionAccess{},
+					},
+
+					Setting: SettingsModule{
+						HasAccess: true,
+						SettingsSectionAccess: SettingsSectionAccess{
+							General:           true,
+							Notifications:     true,
+							Users:             true,
+							Payments:          true,
+							RoomConfiguration: true,
+						},
+					},
 				},
+			},
+
+			SharpAccounting: SharpAccountingTree{
+				HasAccess: true,
+				SharpAccountingModule: SharpAccountingModule{
+					Transactions: TransactionsModule{
+						HasAccess: true,
+					},
+					Expenses: ExpensesModule{
+						HasAccess: true,
+					},
+					Invoices: InvoicesModule{
+						HasAccess: true,
+					},
+					Ledger: LedgerModule{
+						HasAccess: true,
+					},
+
+					Customers: CustomersModule{
+						HasAccess: true,
+					},
+					SuppliersAndVendors: SuppliersAndVendorsModule{
+						HasAccess: true,
+					},
+					Reports: ReportsModule{
+						HasAccess: true,
+					},
+				},
+			},
+
+			SharpHR: SharpHRTree{
+				HasAccess: true,
 			},
 		},
 	}
@@ -64,3 +128,17 @@ func BarRendererFactory(ctx context.Context, orgId uuid.UUID, orgType constants.
 
 	return datatypes.JSON(data), nil
 }
+
+// case --> Case two
+func HotelRendererFactory()
+
+// case --> case three
+func RestaurantRendererFactory()
+
+func BarHotelRendererFactory()
+
+func BarRestaurantFactory()
+
+func HotelRestaurantFactory()
+
+func BarHotelRestaurantFactory()

@@ -6,9 +6,9 @@ import (
 )
 
 type HotelRepository interface {
-	CreateHotel(ctx context.Context, hotel *hospitalitymodels.Hotel) (*hospitalitymodels.Hotel, error)
+	CreateHotel(ctx context.Context, hotel *hospitalitymodels.Hotel) error
 
-	CreateRoom(ctx context.Context, room *hospitalitymodels.Room) (*hospitalitymodels.Room, error)
+	CreateRoom(ctx context.Context, room *hospitalitymodels.Room) error
 	GetRoomDetails()
 	EditRoom()
 	CreateFloor()

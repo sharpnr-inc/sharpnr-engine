@@ -6,11 +6,10 @@ import (
 	"sharpnr-engine/core/constants"
 	dto "sharpnr-engine/core/dtos"
 	"sharpnr-engine/core/models"
+	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/pkg/jwtpack"
 	"sort"
 	"strings"
-
-	// sharpnr_ui_renderer "sharpnr-engine/sharpnr_ui_renderer"
 	"time"
 
 	"github.com/google/uuid"
@@ -19,17 +18,19 @@ import (
 func (s *signupService) CompleteOrgRegistration(
 	ctx context.Context,
 	req dto.Org_Complete_Registration_REQ_DTO,
-	org_email, org_sharpnr_id string,
+	orgEmail, orgSharpnrID string,
 ) (*dto.Org_Complete_Registration_RESPONSE_DTO, string, error) {
 
-	fmt.Println(req.OrgSubModule)
-	existingOrg, found, err := s.orgRepo.FindOrgBySharpnrID(ctx, org_sharpnr_id)
+	// -------------------- Step 1: Find Organization --------------------
+	existingOrg, found, err := s.orgRepo.FindOrgBySharpnrID(ctx, orgSharpnrID)
 	if err != nil {
-		return nil, "", err
+		return nil, "", fmt.Errorf("failed to fetch organization: %w", err)
 	}
 	if !found {
-		return nil, "", fmt.Errorf("organization not found with ID: %s", org_sharpnr_id)
+		return nil, "", fmt.Errorf("organization not found with ID: %s", orgSharpnrID)
 	}
+
+	// -------------------- Step 2: Update Org Info --------------------
 	existingOrg.Address = req.Address.AddressLine
 	existingOrg.City = req.Address.City
 	existingOrg.State = req.Address.State
@@ -38,50 +39,76 @@ func (s *signupService) CompleteOrgRegistration(
 	existingOrg.IsRegistrationComplete = true
 	existingOrg.UpdatedAt = time.Now()
 
+	// -------------------- Step 3: Determine Role --------------------
 	role := constants.Super_Admin
 	if req.Is_owner {
 		role = constants.Org_Owners
 	}
 
-	ui_render, err := s.uiRenderRepo.CreateOrgUIRenderer(ctx, existingOrg.ID, req.OrgSubModule, existingOrg.OrgOperationType)
-	if err != nil {
-		fmt.Println(ui_render)
+	// -------------------- Step 4: Create UI Renderer --------------------
+	if _, err := s.uiRenderRepo.CreateOrgUIRenderer(ctx, existingOrg.ID, req.OrgSubModule, existingOrg.OrgOperationType); err != nil {
+		fmt.Printf("⚠️ Failed to create UI renderer for org %s: %v\n", existingOrg.ID, err)
 	}
 
-	// ✅ Sort and generate key for module combination
+	// -------------------- Step 5: Setup Module(s) --------------------
 	modules := req.OrgSubModule
-	sort.Strings(modules) // Alphabetical sort ensures consistent key
+	sort.Strings(modules) // Ensure consistent order for key
 	key := strings.Join(modules, "_")
-	fmt.Println("🔑 Combination key:", key)
+	fmt.Printf("🔑 Module combination key: %s\n", key)
 
-	// ✅ Create module structures based on combination
 	switch key {
 	case "BAR":
-		s.CreateBar(ctx, existingOrg)
+		if err := s.SetUpBar(ctx, existingOrg); err != nil {
+			return nil, "", fmt.Errorf("failed to set up BAR module: %w", err)
+		}
 	case "HOTEL":
-		s.CreateHotel(ctx, existingOrg)
+		if err := s.SetUpHotel(ctx, existingOrg); err != nil {
+			return nil, "", fmt.Errorf("failed to set up HOTEL module: %w", err)
+		}
 	case "RESTAURANT":
-		s.CreateRestaurant(ctx, existingOrg)
-
+		if err := s.SetUpRestaurant(ctx, existingOrg); err != nil {
+			return nil, "", fmt.Errorf("failed to set up RESTAURANT module: %w", err)
+		}
 	case "BAR_HOTEL":
-		s.CreateHotelBar(ctx, existingOrg)
+		if err := s.SetUpHotelBar(ctx, existingOrg); err != nil {
+			return nil, "", fmt.Errorf("failed to set up BAR_HOTEL modules: %w", err)
+		}
 	case "BAR_RESTAURANT":
-		s.CreateBarRestaurant(ctx, existingOrg)
+		if err := s.SetUpBarRestaurant(ctx, existingOrg); err != nil {
+			return nil, "", fmt.Errorf("failed to set up BAR_RESTAURANT modules: %w", err)
+		}
 	case "HOTEL_RESTAURANT":
-		s.CreateHotelRestaurant(ctx, existingOrg)
-
+		if err := s.SetUpHotelRestaurant(ctx, existingOrg); err != nil {
+			return nil, "", fmt.Errorf("failed to set up HOTEL_RESTAURANT modules: %w", err)
+		}
 	case "BAR_HOTEL_RESTAURANT":
-		s.CreateBarHotelRestaurant(ctx, existingOrg)
-
+		if err := s.SetUpBarHotelRestaurant(ctx, existingOrg); err != nil {
+			return nil, "", fmt.Errorf("failed to set up BAR_HOTEL_RESTAURANT modules: %w", err)
+		}
 	default:
-		fmt.Println("⚠️ Unknown module combination:", key)
+		fmt.Printf("⚠️ Unknown module combination: %s\n", key)
 	}
 
-	defemp := &models.Employee{
+	defaultKitchen := &hospitalitymodels.Kitchen{
+		ID:             uuid.New(),
+		OrganizationID: existingOrg.ID,
+		Organization:   *existingOrg,
+	}
+	if err := s.kitchenRepo.CreateKitchen(ctx, defaultKitchen); err != nil {
+		return nil, "", fmt.Errorf("failed to create kitchen: %w", err)
+	}
+
+	// -------------------- Step 6: Update Org in DB --------------------
+	if err := s.orgRepo.UpdateOrg(ctx, existingOrg); err != nil {
+		return nil, "", fmt.Errorf("failed to update organization details: %w", err)
+	}
+
+	// -------------------- Step 7: Create Default Employee --------------------
+	defEmp := &models.Employee{
 		ID:              uuid.New(),
 		FirstName:       "__Default__Name",
 		LastName:        "__Default__Last__Name",
-		Email:           org_email,
+		Email:           orgEmail,
 		OrganizationID:  existingOrg.ID,
 		Organization:    *existingOrg,
 		CreatedAt:       time.Now(),
@@ -90,31 +117,38 @@ func (s *signupService) CompleteOrgRegistration(
 		IsEmailVerified: true,
 	}
 
-	empIdStr := defemp.ID.String()
-
-	if err := s.orgRepo.UpdateOrg(ctx, existingOrg); err != nil {
-		return nil, "", fmt.Errorf("failed to update organization details: %w", err)
-	}
-
-	DefaultSuperAdmin, err := s.empRepo.CreateEmployee(ctx, defemp)
+	createdEmp, err := s.empRepo.CreateEmployee(ctx, defEmp)
 	if err != nil {
-		return nil, "", nil
+		return nil, "", fmt.Errorf("failed to create default employee: %w", err)
 	}
 
-	if err := s.policyRepo.CreatePolicyOfOrg(ctx, existingOrg.ID.String(), existingOrg.SharpnrID, DefaultSuperAdmin.ID.String()); err != nil {
-		fmt.Println("Failed to create policy:", err)
+	// -------------------- Step 8: Create Org Policy --------------------
+	if err := s.policyRepo.CreatePolicyOfOrg(ctx, existingOrg.ID.String(), existingOrg.SharpnrID, createdEmp.ID.String()); err != nil {
+		fmt.Printf("⚠️ Failed to create policy for org %s: %v\n", existingOrg.ID, err)
 	}
 
-	authToken, err := jwtpack.GenerateJwtToken(existingOrg.RootEmail, jwtpack.TokenTypeAuth, existingOrg.SharpnrID, string(existingOrg.OrgOperationType), &empIdStr)
+	// -------------------- Step 9: Generate Auth Token --------------------
+	empIDStr := createdEmp.ID.String()
+	authToken, err := jwtpack.GenerateJwtToken(
+		existingOrg.RootEmail,
+		jwtpack.TokenTypeAuth,
+		existingOrg.SharpnrID,
+		string(existingOrg.OrgOperationType),
+		&empIDStr,
+	)
 	if err != nil {
-		return nil, "", err
+		return nil, "", fmt.Errorf("failed to generate auth token: %w", err)
 	}
 
-	return &dto.Org_Complete_Registration_RESPONSE_DTO{
+	// -------------------- Step 10: Build and Return Response --------------------
+	response := &dto.Org_Complete_Registration_RESPONSE_DTO{
 		OrgID:        existingOrg.SharpnrID,
 		OrgName:      existingOrg.Name,
-		EmployeeID:   DefaultSuperAdmin.ID,
-		EmployeeName: DefaultSuperAdmin.FirstName,
-		EmployeeRole: string(DefaultSuperAdmin.Role),
-	}, authToken, nil
+		EmployeeID:   createdEmp.ID,
+		EmployeeName: createdEmp.FirstName,
+		EmployeeRole: string(createdEmp.Role),
+	}
+
+	fmt.Printf("✅ Organization registration completed for: %s (%s)\n", existingOrg.Name, existingOrg.SharpnrID)
+	return response, authToken, nil
 }
