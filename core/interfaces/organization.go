@@ -4,25 +4,65 @@ import (
 	"context"
 	dto "sharpnr-engine/core/dtos"
 	"sharpnr-engine/core/models"
+
+	"github.com/google/uuid"
 )
 
-// This is Interface for the Registering the Organization
-// This will have 4 funcs
-type OrgRegistrationService interface {
-	//Fisrt Step to Initialising the Registration Process
-	InitiateOrgRegistration(ctx context.Context, req dto.OrgInitialRegistration_Request_Dto) (*dto.OrgInitialRegistration_Response_Dto, string, error)
-	VerifyOrgRegistration(token, code string) (bool, error)
-	// CompleteOrgRegistration(token string) (*dto.OrgRegistrationComplete_Response_Dto, error)
+//////////////////////////
+// ORGANIZATION REGISTRATION
+//////////////////////////
+
+// OrgRegistrationService defines methods for registering an organization
+type OrganizationSignUpService interface {
+	// InitiateOrgRegistration is the first step to start the registration process
+	InitiateOrgRegistration(ctx context.Context, req dto.Org_Signup_REQUEST_DTO) (*dto.Org_Signup_RESPONSE_DTO, string, error)
+
+	// VerifyOrgRegistration verifies the OTP/token sent to the organization
+	VerifyOrgRegistration(ctx context.Context, email, code string) (*dto.Org_Verify_Otp_RESPONSE_DTO, bool, string, error)
+
+	// Optional: CompleteOrgRegistration finalizes the registration
+	CompleteOrgRegistration(ctx context.Context, req dto.Org_Complete_Registration_REQ_DTO, org_root_email, org_sharpnr_id string) (*dto.Org_Complete_Registration_RESPONSE_DTO, string, error)
 }
 
-type IOrgRegistrationRepository interface {
-	CreateOrgInMainDB(ctx context.Context, tempOrg *models.TempOrgRegistrationData) error
+// OrganizationRepository defines methods for organization signup & lookup.
+type OrganizationRepository interface {
+	// -----------------------------
+	// Redis / Temporary Signup Data
+	// -----------------------------
+
+	// EmailOrPhoneExistsInRedis checks if email or phone exists in Redis.
+	EmailOrPhoneExistsInRedis(ctx context.Context, email, phone string) (bool, error)
+
+	// CreateOrgInRedisDB saves temporary org registration data in Redis (OTP, etc.).
 	CreateOrgInRedisDB(ctx context.Context, tempOrg *models.TempOrgRegistrationData) error
 
-	EmailOrPhoneExistsInRedis(ctx context.Context, email string, phone string) (bool, error)
+	// GetOrgFromRedisDB retrieves temporary org registration data by email.
+	GetOrgFromRedisDB(ctx context.Context, email string) (*models.TempOrgRegistrationData, error)
 
-	EmailOrPhoneExistsInMainDB(ctx context.Context, email string, phone string) (bool, error)
-}
+	// DeleteOrgFromRedisDB removes temporary org registration data after successful OTP verification.
+	DeleteOrgFromRedisDB(ctx context.Context, email string) error
 
-type IOrgLogin interface {
+	// -----------------------------
+	// Main DB / Permanent Org Data
+	// -----------------------------
+
+	// EmailOrPhoneExistsInMainDB checks if email or phone exists in the main database.
+	EmailOrPhoneExistsInMainDB(ctx context.Context, email, phone string) (bool, error)
+
+	// CreateOrgInMainDB saves the organization permanently in the main database.
+	CreateOrgInMainDB(ctx context.Context, org *models.Organization) error
+
+	// FindBySharpnrOrgID checks if an organization exists by SharpnrOrgID.
+	FindOrgBySharpnrID(ctx context.Context, id string) (*models.Organization, bool, error)
+
+	// GetOrgUUID_By_SharpnrID retrieves the UUID of the organization by SharpnrOrgID.
+	GetOrgUUID_By_SharpnrID(sharpnrID string) (uuid.UUID, error)
+
+	UpdateOrg(ctx context.Context, org *models.Organization) error
+
+	CreateBankAccounts(ctx context.Context, orgID uuid.UUID, accounts []models.OrganizationBankAccount) error
+	GetBankAccountsByOrgID(ctx context.Context, orgID uuid.UUID) ([]models.OrganizationBankAccount, error)
+	GetPrimaryBankAccount(ctx context.Context, orgID uuid.UUID) (*models.OrganizationBankAccount, error)
+	UpdateBankAccounts(ctx context.Context, orgID uuid.UUID, accounts []models.OrganizationBankAccount) error
+	GetOrg(ctx context.Context, org uuid.UUID) (*models.Organization, error)
 }

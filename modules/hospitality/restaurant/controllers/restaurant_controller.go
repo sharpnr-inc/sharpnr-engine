@@ -1,0 +1,3 @@
+package restaurantcontrollers
+
+func somestuff() {}

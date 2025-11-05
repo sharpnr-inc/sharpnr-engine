@@ -9,19 +9,24 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "http://sharpnr.com/terms/",
+        "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",
+            "url": "http://www.sharpnr.com/support",
             "email": "support@sharpnr.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
         },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/organization/login": {
+        "/otp-verify": {
             "post": {
-                "description": "Logs in an organization and returns JWT",
+                "description": "Verifies the OTP sent to the organization's email during signup.",
                 "consumes": [
                     "application/json"
                 ],
@@ -29,30 +34,36 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Organization"
+                    "Org SignUp"
                 ],
-                "summary": "Login for organization root",
+                "summary": "Verify OTP for organization registration",
                 "parameters": [
                     {
-                        "description": "Login Credentials",
-                        "name": "login",
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "OTP verification payload",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.LoginRequest"
+                            "$ref": "#/definitions/dto.Org_Verify_Otp_REQUEST_DTO"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "OTP verified successfully",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/dto.Org_Verify_Otp_RESPONSE_DTO"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid request payload or verification failed",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -61,7 +72,7 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Unauthorized",
+                        "description": "Invalid OTP or token expired",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -72,9 +83,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/organization/register": {
+        "/register": {
             "post": {
-                "description": "This is Registration for the Organisation",
+                "description": "Registers a new organization",
                 "consumes": [
                     "application/json"
                 ],
@@ -82,17 +93,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Organization"
+                    "Org SignUp"
                 ],
-                "summary": "Register for organization Registration",
+                "summary": "Create a new organization",
                 "parameters": [
                     {
-                        "description": "Login Credentials",
-                        "name": "login",
+                        "description": "Organization signup data",
+                        "name": "input",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.OrganisationRegisterDTO"
+                            "$ref": "#/definitions/dto.Org_Signup_REQUEST_DTO"
                         }
                     }
                 ],
@@ -100,21 +111,11 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/dto.Org_Signup_RESPONSE_DTO"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -127,82 +128,123 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.LoginRequest": {
-            "type": "object",
-            "required": [
-                "email",
-                "password"
+        "constants.OrgType": {
+            "type": "string",
+            "enum": [
+                "HOTEL",
+                "RETAIL",
+                "SALON",
+                "CLUB",
+                "RESTAURANT"
             ],
+            "x-enum-varnames": [
+                "Hotel",
+                "Retail",
+                "Salon",
+                "Club",
+                "Restaurant"
+            ]
+        },
+        "dto.Org_Signup_REQUEST_DTO": {
+            "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "description": "Email address of the organization for contact and login purposes.",
+                    "type": "string",
+                    "example": "hotel@example.com"
+                },
+                "mobile": {
+                    "description": "Mobile number of the organization or primary contact person.",
+                    "type": "string",
+                    "example": "+911234567890"
+                },
+                "name": {
+                    "description": "Name of the organization.",
+                    "type": "string",
+                    "example": "Sharpnr Hotel"
+                },
+                "org_type": {
+                    "description": "ORG_TYPE specifies the type of organization.\nUses the OrgType constant defined in the constants package.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.OrgType"
+                        }
+                    ],
+                    "example": "HOTEL"
                 },
                 "password": {
-                    "type": "string"
+                    "description": "Password for the organization login.",
+                    "type": "string",
+                    "example": "supersecure"
                 }
             }
         },
-        "dto.OrganisationRegisterDTO": {
+        "dto.Org_Signup_RESPONSE_DTO": {
             "type": "object",
-            "required": [
-                "adminName",
-                "bankAccNumber",
-                "email",
-                "name",
-                "organizationID",
-                "password",
-                "phone"
-            ],
             "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "adminName": {
-                    "type": "string"
-                },
-                "bankAccNumber": {
-                    "type": "string"
-                },
-                "bankBranchName": {
-                    "type": "string"
-                },
-                "banker": {
-                    "type": "string"
-                },
-                "cinNumber": {
-                    "type": "string"
-                },
                 "email": {
-                    "type": "string"
+                    "description": "Email of the organization.",
+                    "type": "string",
+                    "example": "hotel@example.com"
                 },
-                "gstNumber": {
-                    "type": "string"
+                "message": {
+                    "description": "Message provides additional information about the signup operation.",
+                    "type": "string",
+                    "example": "OTP sent successfully"
                 },
-                "ifscCode": {
-                    "type": "string"
+                "token": {
+                    "description": "Token is the authentication token issued for the newly created organization.",
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                }
+            }
+        },
+        "dto.Org_Verify_Otp_REQUEST_DTO": {
+            "type": "object",
+            "properties": {
+                "otp": {
+                    "description": "OTP is the one-time password sent to the organization's email or mobile.",
+                    "type": "string",
+                    "example": "123456"
                 },
-                "isPhysicalVerified": {
-                    "description": "optional, pointer so omitted if nil",
-                    "type": "boolean"
-                },
-                "isRegistered": {
-                    "type": "boolean"
+                "token": {
+                    "description": "Token is the temporary token associated with the OTP verification process.",
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                }
+            }
+        },
+        "dto.Org_Verify_Otp_RESPONSE_DTO": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "description": "Email of the organization.",
+                    "type": "string",
+                    "example": "hotel@example.com"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "organizationID": {
-                    "type": "string"
-                },
-                "organizationRegType": {
-                    "type": "string"
-                },
-                "password": {
+                    "description": "Name of the organization.",
                     "type": "string",
-                    "minLength": 6
+                    "example": "Sharpnr Hotel"
                 },
-                "phone": {
-                    "type": "integer"
+                "org_type": {
+                    "description": "ORG_TYPE specifies the type of the organization.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.OrgType"
+                        }
+                    ],
+                    "example": "HOTEL"
+                },
+                "sharpnr_id": {
+                    "description": "Sharpnr_Id is the unique identifier assigned to the organization.",
+                    "type": "string",
+                    "example": "SHRabc123def456"
+                },
+                "token": {
+                    "description": "Token is the authentication token issued after successful OTP verification.",
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 }
             }
         }
@@ -212,11 +254,11 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "192.168.1.35:8080",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
-	Title:            "SharpNR API",
-	Description:      "Backend APIs for SharpNR system.",
+	Title:            "Sharpnr Engine APIs",
+	Description:      "Sharpnr Engine API Documentation",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

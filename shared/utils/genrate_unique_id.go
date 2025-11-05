@@ -2,6 +2,7 @@
 package utils
 
 import (
+	"context"
 	"crypto/rand"
 	"fmt"
 	"math/big"
@@ -25,7 +26,7 @@ func generateRandomString(length int) (string, error) {
 	return sb.String(), nil
 }
 
-func GenerateUniqueSharpnrOrgID(repo interfaces.CoreOrganizationRepository) (string, error) {
+func GenerateUniqueSharpnrOrgID(ctx context.Context, repo interfaces.OrganizationRepository) (string, error) {
 	for {
 		randomPart, err := generateRandomString(13)
 		if err != nil {
@@ -34,7 +35,7 @@ func GenerateUniqueSharpnrOrgID(repo interfaces.CoreOrganizationRepository) (str
 		id := fmt.Sprintf("SHR%s", randomPart)
 
 		// Check if it already exists
-		exists, err := repo.FindBySharpnrOrgID(id)
+		_, exists, err := repo.FindOrgBySharpnrID(ctx, id)
 		if err != nil {
 			return "", err
 		}

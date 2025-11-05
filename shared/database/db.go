@@ -7,6 +7,7 @@ import (
 
 	"sharpnr-engine/core/models"
 	accountingmodels "sharpnr-engine/modules/base/accounting/accounting_models"
+	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -40,13 +41,18 @@ func ConnectDB() *gorm.DB {
 // This Function will Create Database
 func MigrateDB(db *gorm.DB) error {
 	return db.AutoMigrate(
-		&models.Organization{}, // Parent of everything
-		&models.Department{},   // Belongs to Organization
-		&models.Employee{},     // Belongs to Department + Organization
-		&models.Product{},      // Belongs to Organization
-		&models.Service{},      // Belongs to Organization
-		&models.Operations{},   // Belongs to Department + Organization
-		&models.Terminal{},     // Belongs to Organization + has many-to-many with Employee & Operations
+
+		&models.Organization{},
+		&models.OrganizationPolicy{},
+		&models.OrgUIRendererTree{},
+		&models.OrganizationBankAccount{},
+		&models.Employee{},
+		&hospitalitymodels.Hotel{},
+		&hospitalitymodels.HotelFloor{},
+		&hospitalitymodels.Room{},
+		&hospitalitymodels.Bar{},
+		&hospitalitymodels.Restaurant{},
+		&hospitalitymodels.Kitchen{},
 		&accountingmodels.AccountingBills{},
 	)
 }
