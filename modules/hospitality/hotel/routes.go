@@ -1,7 +1,7 @@
 package hotel
 
 import (
-	hotelcontrollers "sharpnr-engine/modules/hospitality/hotel/controllers"
+	hotelcontrollers "sharpnr-engine/modules/hospitality/hotel/hotel_controllers"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
 	hotelservices "sharpnr-engine/modules/hospitality/hotel/services"
 
@@ -18,7 +18,11 @@ func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB) {
 
 	hotel_routes.GET("/get-all-rooms")
 	hotel_routes.POST("/create-rooms", newHotelController.CreateRoom)
-	hotel_routes.POST("/book-room")
-	hotel_routes.GET("/get-hotel")
+	hotel_routes.POST("/create-floor", newHotelController.CreateFloorInHotel)
+	hotel_routes.POST("/book-room/:roomId")
+	hotel_routes.GET("/get-hotel", newHotelController.GetHotel)
+	hotel_routes.GET("/overview", newHotelController.GetHotelOverview)
+	hotel_routes.GET("/bookings", newHotelController.GetHotelsBookings)
+	hotel_routes.GET("/request", newHotelController.GetRequestInHotels)
 
 }

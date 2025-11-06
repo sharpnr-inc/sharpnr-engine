@@ -24,9 +24,9 @@ func AuthMiddleware() gin.HandlerFunc {
 		if authHeader == "" {
 			res := dto.Response[any]{
 				StatusCode: http.StatusUnauthorized,
-				Message:    "Authorisation Header is required",
+				Message:    "Authorization Header is required",
 				Error: dto.ErrorResponse{
-					Message: "Authorisation Failed",
+					Message: "Authorization Failed",
 					IsError: true,
 				},
 				Data:      nil,

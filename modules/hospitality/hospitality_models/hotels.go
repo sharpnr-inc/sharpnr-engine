@@ -2,6 +2,7 @@ package hospitalitymodels
 
 import (
 	"sharpnr-engine/core/models"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -16,14 +17,24 @@ type Hotel struct {
 	NumberOfRooms  int    `gorm:"default:0"`
 
 	Floors []HotelFloor `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE;"`
+
+	// Flags
+	IsConfigured       bool `json:"is_configured"`
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
+	DisplayName        string
+	GstinNumber        string
+	FssaiLicenseNumber string
 }
 
 type HotelFloor struct {
-	ID          string `gorm:"type:uuid;primaryKey"`
-	HotelID     string `gorm:"type:uuid;not null"`
-	Hotel       Hotel  `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE;"`
-	FloorNumber int    `gorm:"not null"`
-	Rooms       []Room `gorm:"foreignKey:FloorID;constraint:OnDelete:CASCADE;"`
+	ID             string `gorm:"type:uuid;primaryKey"`
+	FloorName      string
+	HotelID        string    `gorm:"type:uuid;not null"`
+	Hotel          Hotel     `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE;"`
+	FloorNumber    int       `gorm:"not null"`
+	Rooms          []Room    `gorm:"foreignKey:FloorID;constraint:OnDelete:CASCADE;"`
+	OrganizationID uuid.UUID `gorm:"not null"`
 }
 
 type Room struct {
