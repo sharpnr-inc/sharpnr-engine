@@ -1,23 +1,39 @@
 package hospitalitymodels
 
 import (
+	"sharpnr-engine/core/models"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+type MenuGroup struct {
+	ID             uuid.UUID           `gorm:"type:uuid;primaryKey"`
+	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
+	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
+
+	Name        string `gorm:"size:100;not null"` // e.g., "Breakfast Menu", "Bar Menu"
+	Description string `gorm:"size:255"`
+
+	Categories []MenuCategory `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE;"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
 
 // -------------------------------
 // 1️⃣ MENU CATEGORY
 // -------------------------------
 
 type MenuCategory struct {
-	ID           uuid.UUID  `gorm:"primaryKey"`
-	RestaurantID string     `gorm:"type:uuid;not null"`
-	Restaurant   Restaurant `gorm:"foreignKey:RestaurantID;constraint:OnDelete:CASCADE;"`
-
-	Name        string     `gorm:"size:100;not null"`
-	Description string     `gorm:"size:255"`
-	MenuItems   []MenuItem `gorm:"foreignKey:CategoryID;constraint:OnDelete:CASCADE;"`
+	ID             uuid.UUID  `gorm:"primaryKey"`
+	RestaurantID   string     `gorm:"type:uuid;not null"`
+	Restaurant     Restaurant `gorm:"foreignKey:RestaurantID;constraint:OnDelete:CASCADE;"`
+	OrganizationId uuid.UUID
+	Organization   models.Organization
+	Name           string     `gorm:"size:100;not null"`
+	Description    string     `gorm:"size:255"`
+	MenuItems      []MenuItem `gorm:"foreignKey:CategoryID;constraint:OnDelete:CASCADE;"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -28,9 +44,11 @@ type MenuCategory struct {
 // -------------------------------
 
 type MenuItem struct {
-	ID         string       `gorm:"type:uuid;primaryKey"`
-	CategoryID string       `gorm:"type:uuid;not null"`
-	Category   MenuCategory `gorm:"foreignKey:CategoryID;constraint:OnDelete:CASCADE;"`
+	ID             string       `gorm:"type:uuid;primaryKey"`
+	CategoryID     string       `gorm:"type:uuid;not null"`
+	Category       MenuCategory `gorm:"foreignKey:CategoryID;constraint:OnDelete:CASCADE;"`
+	OrganizationId uuid.UUID
+	Organization   models.Organization
 
 	Name        string  `gorm:"size:100;not null"`
 	Description string  `gorm:"size:255"`
@@ -43,6 +61,10 @@ type MenuItem struct {
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
+
+	// 👇 NEW: Kitchen Reference
+	KitchenID *uuid.UUID `gorm:"type:uuid"`
+	Kitchen   *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;"`
 }
 
 // -------------------------------
