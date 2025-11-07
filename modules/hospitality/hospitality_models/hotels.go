@@ -2,6 +2,7 @@ package hospitalitymodels
 
 import (
 	"sharpnr-engine/core/models"
+	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	"time"
 
 	"github.com/google/uuid"
@@ -44,6 +45,9 @@ type Room struct {
 	HotelID        string              `gorm:"type:uuid;not null"`
 	OrganizationID string              `gorm:"type:uuid;not null"`
 	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
+	Price          int
+	Description    string
+	Status         hospitalityconstants.RoomStatus `gorm:"type:varchar(50);not null;default:'DISABLED'"`
 
 	RoomName  string `gorm:"size:100;not null"`
 	BedSize   string `gorm:"size:50"`

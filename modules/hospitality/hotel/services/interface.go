@@ -8,7 +8,7 @@ import (
 )
 
 type HotelService interface {
-	CreateRoomInHotel(ctx context.Context, req hospitalitydtos.CreateAndAddRoomInHotel_REQ) error
+	CreateRoomInHotel(ctx context.Context, orgID uuid.UUID, req hospitalitydtos.CreateRoomInFloor_REQ) (*hospitalitydtos.CreateRoomInFloor_RES, error)
 
 	CreateFloor(ctx context.Context, orgID uuid.UUID, req hospitalitydtos.CreateFloorInHotel_REQ) (*hospitalitydtos.CreateFloorInHotel_RESPONSE, error)
 

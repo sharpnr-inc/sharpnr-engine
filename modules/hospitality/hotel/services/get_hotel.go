@@ -25,11 +25,24 @@ func (r *hotelService) GetHotelDetails(ctx context.Context, orgId uuid.UUID) (*h
 	}
 
 	for _, f := range hotel.Floors {
-		response.Floors = append(response.Floors, hospitalitydtos.FloorResponse{
+		floorRes := hospitalitydtos.FloorResponse{
 			FloorID:     f.ID,
 			FloorNumber: f.FloorNumber,
 			FloorName:   f.FloorName,
-		})
+		}
+
+		// ✅ Add rooms for this floor
+		for _, room := range f.Rooms {
+			floorRes.Rooms = append(floorRes.Rooms, hospitalitydtos.RoomResponse{
+				RoomID:      room.ID,
+				RoomName:    room.RoomName,
+				RoomPrice:   room.Price, // Add if you have room price field in model
+				Description: room.Amenities,
+				Status:      string(room.Status),
+			})
+		}
+
+		response.Floors = append(response.Floors, floorRes)
 	}
 
 	return response, nil

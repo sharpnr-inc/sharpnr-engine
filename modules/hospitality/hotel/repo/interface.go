@@ -33,4 +33,6 @@ type HotelRepository interface {
 	GetRoomByID(ctx context.Context, roomID uuid.UUID) (*hospitalitymodels.Room, error)
 	UpdateRoom(ctx context.Context, room *hospitalitymodels.Room) error
 	DeleteRoom(ctx context.Context, roomID uuid.UUID) error
+
+	GetFloorByID(ctx context.Context, id string) (*hospitalitymodels.HotelFloor, error)
 }
