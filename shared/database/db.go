@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"sharpnr-engine/core/models"
-	accountingmodels "sharpnr-engine/modules/accounting/accounting_models"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 
 	"gorm.io/driver/postgres"
@@ -62,6 +61,5 @@ func MigrateDB(db *gorm.DB) error {
 		&hospitalitymodels.HospitalityOrder{},
 		&hospitalitymodels.HospitalityOrderItem{},
 		&hospitalitymodels.HospitalityOrderAddon{},
-		&accountingmodels.AccountingBills{},
 	)
 }
