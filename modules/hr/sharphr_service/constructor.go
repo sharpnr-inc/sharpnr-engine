@@ -1,7 +1,7 @@
 package sharphrservice
 
 import (
-	sharphrinterface "sharpnr-engine/modules/base/hr/sharphr_interface"
+	sharphrinterface "sharpnr-engine/modules/hr/sharphr_interface"
 	policyengine "sharpnr-engine/policy_engine"
 )
 

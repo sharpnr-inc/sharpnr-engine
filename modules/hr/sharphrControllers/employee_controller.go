@@ -5,7 +5,7 @@ import (
 	"net/http"
 	dto "sharpnr-engine/core/dtos"
 	"sharpnr-engine/middlewares"
-	sharphrdtos "sharpnr-engine/modules/base/hr/sharphr_dtos"
+	sharphrdtos "sharpnr-engine/modules/hr/sharphr_dtos"
 	"time"
 
 	"github.com/gin-gonic/gin"

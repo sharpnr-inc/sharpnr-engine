@@ -3,9 +3,9 @@ package hr
 
 import (
 	"sharpnr-engine/middlewares"
-	sharphrcontrollers "sharpnr-engine/modules/base/hr/sharphrControllers"
-	sharphrrepository "sharpnr-engine/modules/base/hr/sharphr_repository"
-	sharphrservice "sharpnr-engine/modules/base/hr/sharphr_service"
+	sharphrcontrollers "sharpnr-engine/modules/hr/sharphrControllers"
+	sharphrrepository "sharpnr-engine/modules/hr/sharphr_repository"
+	sharphrservice "sharpnr-engine/modules/hr/sharphr_service"
 	"sharpnr-engine/pkg/jwtpack"
 	policyengine "sharpnr-engine/policy_engine"
 

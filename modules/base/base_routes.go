@@ -1,8 +1,8 @@
 package base
 
 import (
-	"sharpnr-engine/modules/base/accounting"
-	"sharpnr-engine/modules/base/hr"
+	"sharpnr-engine/modules/accounting"
+	"sharpnr-engine/modules/hr"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

@@ -1,6 +1,6 @@
 package sharphrservice
 
-import sharphrdtos "sharpnr-engine/modules/base/hr/sharphr_dtos"
+import sharphrdtos "sharpnr-engine/modules/hr/sharphr_dtos"
 
 // AddEmployeeInOrg implements sharphrinterface.SharpHrEmployeeService.
 func (r *sharpHrService) AddEmployeeInOrg() error {

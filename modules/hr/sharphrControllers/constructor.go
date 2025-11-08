@@ -1,6 +1,6 @@
 package sharphrcontrollers
 
-import sharphrinterface "sharpnr-engine/modules/base/hr/sharphr_interface"
+import sharphrinterface "sharpnr-engine/modules/hr/sharphr_interface"
 
 type sharpHrControllers struct {
 	service sharphrinterface.SharpHrEmployeeService

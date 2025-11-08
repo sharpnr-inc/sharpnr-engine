@@ -1,6 +1,6 @@
 package sharphrinterface
 
-import sharphrdtos "sharpnr-engine/modules/base/hr/sharphr_dtos"
+import sharphrdtos "sharpnr-engine/modules/hr/sharphr_dtos"
 
 type SharpHrEmployeeRepository interface {
 	FindEmployeeByEmail()
