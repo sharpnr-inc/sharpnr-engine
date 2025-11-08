@@ -13,4 +13,6 @@ type BarRepository interface {
 	GetBar(ctx context.Context, barId uuid.UUID, orgId uuid.UUID) (*hospitalitymodels.Bar, error)
 
 	GetBarByOrgId(ctx context.Context, orgId uuid.UUID) (*hospitalitymodels.Bar, error)
+
+	CreateTable()
 }

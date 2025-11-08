@@ -20,3 +20,9 @@ type GetBarDetails_RESPONSE struct {
 	Floors  []BarFloorResponse `json:"floors"`
 	Tables  []BarTablesResponse
 }
+
+type CreateTableInBar_RESPONSE struct {
+	BarId  string
+	Floors []BarFloorResponse `json:"floors"`
+	Tables []BarTablesResponse
+}
