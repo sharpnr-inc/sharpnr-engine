@@ -26,6 +26,10 @@ type Hotel struct {
 	DisplayName        string
 	GstinNumber        string
 	FssaiLicenseNumber string
+
+	IsKitchen bool       `gorm:"default:true" json:"is_kitchen"`
+	KitchenID *uuid.UUID `gorm:"type:uuid" json:"kitchen_id"`
+	Kitchen   *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;" json:"kitchen"`
 }
 
 type HotelFloor struct {

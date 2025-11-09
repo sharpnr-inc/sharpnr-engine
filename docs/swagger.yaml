@@ -2,18 +2,21 @@ basePath: /api/v1
 definitions:
   constants.OrgType:
     enum:
-    - HOTEL
+    - HOSPITALITY
     - RETAIL
     - SALON
-    - CLUB
-    - RESTAURANT
     type: string
     x-enum-varnames:
     - Hotel
     - Retail
     - Salon
-    - Club
-    - Restaurant
+  dto.ErrorResponse:
+    properties:
+      isError:
+        type: boolean
+      message:
+        type: string
+    type: object
   dto.Org_Signup_REQUEST_DTO:
     properties:
       email:
@@ -46,15 +49,6 @@ definitions:
         description: Email of the organization.
         example: hotel@example.com
         type: string
-      message:
-        description: Message provides additional information about the signup operation.
-        example: OTP sent successfully
-        type: string
-      token:
-        description: Token is the authentication token issued for the newly created
-          organization.
-        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-        type: string
     type: object
   dto.Org_Verify_Otp_REQUEST_DTO:
     properties:
@@ -63,11 +57,6 @@ definitions:
           or mobile.
         example: "123456"
         type: string
-      token:
-        description: Token is the temporary token associated with the OTP verification
-          process.
-        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-        type: string
     type: object
   dto.Org_Verify_Otp_RESPONSE_DTO:
     properties:
@@ -75,7 +64,7 @@ definitions:
         description: Email of the organization.
         example: hotel@example.com
         type: string
-      name:
+      org_name:
         description: Name of the organization.
         example: Sharpnr Hotel
         type: string
@@ -88,10 +77,39 @@ definitions:
         description: Sharpnr_Id is the unique identifier assigned to the organization.
         example: SHRabc123def456
         type: string
+    type: object
+  dto.Response-any:
+    properties:
+      data:
+        description: <-- pointer here
+      error:
+        $ref: '#/definitions/dto.ErrorResponse'
+      message:
+        type: string
+      statusCode:
+        type: integer
+      timestamp:
+        type: string
       token:
-        description: Token is the authentication token issued after successful OTP
-          verification.
-        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        description: ✅ Optional field
+        type: string
+    type: object
+  dto.Response-dto_Org_Verify_Otp_RESPONSE_DTO:
+    properties:
+      data:
+        allOf:
+        - $ref: '#/definitions/dto.Org_Verify_Otp_RESPONSE_DTO'
+        description: <-- pointer here
+      error:
+        $ref: '#/definitions/dto.ErrorResponse'
+      message:
+        type: string
+      statusCode:
+        type: integer
+      timestamp:
+        type: string
+      token:
+        description: ✅ Optional field
         type: string
     type: object
 host: 192.168.1.35:8080
@@ -108,6 +126,49 @@ info:
   title: Sharpnr Engine APIs
   version: "1.0"
 paths:
+  /hospitality/bar:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves bar information linked to the authenticated organization
+        UUID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Bar details retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid organization UUID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Organization UUID missing
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: No bar found for this organization
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Failed to fetch bar details
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get bar details for the current organization
+      tags:
+      - Hospitality - Bar
   /otp-verify:
     post:
       consumes:
@@ -129,21 +190,17 @@ paths:
       - application/json
       responses:
         "200":
-          description: OTP verified successfully
+          description: OK
           schema:
-            $ref: '#/definitions/dto.Org_Verify_Otp_RESPONSE_DTO'
+            $ref: '#/definitions/dto.Response-dto_Org_Verify_Otp_RESPONSE_DTO'
         "400":
-          description: Invalid request payload or verification failed
+          description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.Response-any'
         "401":
-          description: Invalid OTP or token expired
+          description: Unauthorized
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.Response-any'
       summary: Verify OTP for organization registration
       tags:
       - Org SignUp

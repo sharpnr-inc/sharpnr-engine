@@ -1,9 +1,174 @@
 package menurepo
 
-import "gorm.io/gorm"
+import (
+	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
 
 type menuRepo struct {
 	db *gorm.DB
+}
+
+// CreateAddon implements MenuRepository.
+func (m *menuRepo) CreateAddon(addon *hospitalitymodels.Addon) error {
+	panic("unimplemented")
+}
+
+// CreateAddonGroup implements MenuRepository.
+func (m *menuRepo) CreateAddonGroup(group *hospitalitymodels.AddonGroup) error {
+	panic("unimplemented")
+}
+
+// CreateCategory implements MenuRepository.
+func (m *menuRepo) CreateCategory(category *hospitalitymodels.MenuCategory) error {
+	panic("unimplemented")
+}
+
+// CreateMenuGroup implements MenuRepository.
+func (m *menuRepo) CreateMenuGroup(group *hospitalitymodels.MenuGroup) error {
+	panic("unimplemented")
+}
+
+// CreateMenuItem implements MenuRepository.
+func (m *menuRepo) CreateMenuItem(item *hospitalitymodels.MenuItem) error {
+	panic("unimplemented")
+}
+
+// CreateSubCategory implements MenuRepository.
+func (m *menuRepo) CreateSubCategory(subCat *hospitalitymodels.MenuSubCategory) error {
+	panic("unimplemented")
+}
+
+// CreateVariant implements MenuRepository.
+func (m *menuRepo) CreateVariant(variant *hospitalitymodels.MenuVariant) error {
+	panic("unimplemented")
+}
+
+// DeleteAddon implements MenuRepository.
+func (m *menuRepo) DeleteAddon(id uuid.UUID) error {
+	panic("unimplemented")
+}
+
+// DeleteAddonGroup implements MenuRepository.
+func (m *menuRepo) DeleteAddonGroup(id uuid.UUID) error {
+	panic("unimplemented")
+}
+
+// DeleteCategory implements MenuRepository.
+func (m *menuRepo) DeleteCategory(id uuid.UUID) error {
+	panic("unimplemented")
+}
+
+// DeleteMenuGroup implements MenuRepository.
+func (m *menuRepo) DeleteMenuGroup(id uuid.UUID) error {
+	panic("unimplemented")
+}
+
+// DeleteMenuItem implements MenuRepository.
+func (m *menuRepo) DeleteMenuItem(id uuid.UUID) error {
+	panic("unimplemented")
+}
+
+// DeleteSubCategory implements MenuRepository.
+func (m *menuRepo) DeleteSubCategory(id uuid.UUID) error {
+	panic("unimplemented")
+}
+
+// DeleteVariant implements MenuRepository.
+func (m *menuRepo) DeleteVariant(id uuid.UUID) error {
+	panic("unimplemented")
+}
+
+// GetAddonGroupsByItem implements MenuRepository.
+func (m *menuRepo) GetAddonGroupsByItem(itemID uuid.UUID) ([]hospitalitymodels.AddonGroup, error) {
+	panic("unimplemented")
+}
+
+// GetAddonsByGroup implements MenuRepository.
+func (m *menuRepo) GetAddonsByGroup(groupID uuid.UUID) ([]hospitalitymodels.Addon, error) {
+	panic("unimplemented")
+}
+
+// GetAllMenuGroups implements MenuRepository.
+func (m *menuRepo) GetAllMenuGroups(orgID uuid.UUID) ([]hospitalitymodels.MenuGroup, error) {
+	panic("unimplemented")
+}
+
+// GetCategoriesByGroup implements MenuRepository.
+func (m *menuRepo) GetCategoriesByGroup(groupID uuid.UUID) ([]hospitalitymodels.MenuCategory, error) {
+	panic("unimplemented")
+}
+
+// GetCategoryByID implements MenuRepository.
+func (m *menuRepo) GetCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuCategory, error) {
+	panic("unimplemented")
+}
+
+// GetItemsBySubCategory implements MenuRepository.
+func (m *menuRepo) GetItemsBySubCategory(subCatID uuid.UUID) ([]hospitalitymodels.MenuItem, error) {
+	panic("unimplemented")
+}
+
+// GetMenuGroupByID implements MenuRepository.
+func (m *menuRepo) GetMenuGroupByID(id uuid.UUID) (*hospitalitymodels.MenuGroup, error) {
+	panic("unimplemented")
+}
+
+// GetMenuItemByID implements MenuRepository.
+func (m *menuRepo) GetMenuItemByID(id uuid.UUID) (*hospitalitymodels.MenuItem, error) {
+	panic("unimplemented")
+}
+
+// GetSubCategoriesByCategory implements MenuRepository.
+func (m *menuRepo) GetSubCategoriesByCategory(categoryID uuid.UUID) ([]hospitalitymodels.MenuSubCategory, error) {
+	panic("unimplemented")
+}
+
+// GetSubCategoryByID implements MenuRepository.
+func (m *menuRepo) GetSubCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuSubCategory, error) {
+	panic("unimplemented")
+}
+
+// GetVariantsByItem implements MenuRepository.
+func (m *menuRepo) GetVariantsByItem(itemID uuid.UUID) ([]hospitalitymodels.MenuVariant, error) {
+	panic("unimplemented")
+}
+
+// UpdateAddon implements MenuRepository.
+func (m *menuRepo) UpdateAddon(addon *hospitalitymodels.Addon) error {
+	panic("unimplemented")
+}
+
+// UpdateAddonGroup implements MenuRepository.
+func (m *menuRepo) UpdateAddonGroup(group *hospitalitymodels.AddonGroup) error {
+	panic("unimplemented")
+}
+
+// UpdateCategory implements MenuRepository.
+func (m *menuRepo) UpdateCategory(category *hospitalitymodels.MenuCategory) error {
+	panic("unimplemented")
+}
+
+// UpdateMenuGroup implements MenuRepository.
+func (m *menuRepo) UpdateMenuGroup(group *hospitalitymodels.MenuGroup) error {
+	panic("unimplemented")
+}
+
+// UpdateMenuItem implements MenuRepository.
+func (m *menuRepo) UpdateMenuItem(item *hospitalitymodels.MenuItem) error {
+	panic("unimplemented")
+}
+
+// UpdateSubCategory implements MenuRepository.
+func (m *menuRepo) UpdateSubCategory(subCat *hospitalitymodels.MenuSubCategory) error {
+	panic("unimplemented")
+}
+
+// UpdateVariant implements MenuRepository.
+func (m *menuRepo) UpdateVariant(variant *hospitalitymodels.MenuVariant) error {
+	panic("unimplemented")
 }
 
 func NewHospitalityMenuRepository(db *gorm.DB) *menuRepo {

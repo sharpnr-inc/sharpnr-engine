@@ -26,6 +26,10 @@ type Bar struct {
 	// Tables directly under bar (for single-floor bars)
 	Tables []BarTable `gorm:"foreignKey:BarID;constraint:OnDelete:CASCADE;" json:"tables"`
 
+	IsKitchen bool       `gorm:"default:true" json:"is_kitchen"`
+	KitchenID *uuid.UUID `gorm:"type:uuid" json:"kitchen_id"`
+	Kitchen   *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;" json:"kitchen"`
+
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -68,4 +72,51 @@ type BarTable struct {
 
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// -------------------------------------------
+// 1️⃣ BarTicket (BOT)
+// -------------------------------------------
+type BarTicket struct {
+	ID             uuid.UUID           `gorm:"type:uuid;primaryKey"`
+	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
+	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
+
+	BarID uuid.UUID `gorm:"type:uuid;not null"`
+	Bar   Bar       `gorm:"foreignKey:BarID;constraint:OnDelete:CASCADE;"`
+
+	OrderID uuid.UUID        `gorm:"type:uuid;not null"`
+	Order   HospitalityOrder `gorm:"foreignKey:OrderID;constraint:OnDelete:CASCADE;"`
+
+	Status   string `gorm:"size:20;default:'PENDING'"` // PENDING, MIXING, SERVED, CANCELLED
+	TicketNo string `gorm:"size:50;uniqueIndex"`
+
+	Items []BarTicketItem `gorm:"foreignKey:TicketID;constraint:OnDelete:CASCADE;"`
+
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	CompletedAt *time.Time
+}
+
+// -------------------------------------------
+// 2️⃣ BarTicketItem (BOT Line Item)
+// -------------------------------------------
+type BarTicketItem struct {
+	ID       uuid.UUID `gorm:"type:uuid;primaryKey"`
+	TicketID uuid.UUID `gorm:"type:uuid;not null"`
+	Ticket   BarTicket `gorm:"foreignKey:TicketID;constraint:OnDelete:CASCADE;"`
+
+	OrderItemID uuid.UUID            `gorm:"type:uuid;not null"`
+	OrderItem   HospitalityOrderItem `gorm:"foreignKey:OrderItemID;constraint:OnDelete:CASCADE;"`
+
+	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
+	MenuItem   MenuItem  `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
+
+	Quantity  int    `gorm:"not null"`
+	Status    string `gorm:"size:20;default:'PENDING'"` // PENDING, MIXING, READY
+	IsPrinted bool   `gorm:"default:false"`
+	Remarks   string `gorm:"size:255"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

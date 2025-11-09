@@ -7,6 +7,19 @@ import (
 	"github.com/google/uuid"
 )
 
+// GetBar godoc
+// @Summary Get bar details for the current organization
+// @Description Retrieves bar information linked to the authenticated organization UUID.
+// @Tags Hospitality - Bar
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} map[string]interface{} "Bar details retrieved successfully"
+// @Failure 400 {object} map[string]string "Invalid organization UUID format"
+// @Failure 401 {object} map[string]string "Organization UUID missing"
+// @Failure 404 {object} map[string]string "No bar found for this organization"
+// @Failure 500 {object} map[string]string "Failed to fetch bar details"
+// @Router /hospitality/bar [get]
 func (c *barController) GetBar(ctx *gin.Context) {
 
 	orgUUID, exists := ctx.Get("OrgUUID")
@@ -43,5 +56,4 @@ func (c *barController) GetBar(ctx *gin.Context) {
 		"message": "bar details retrieved successfully",
 		"data":    res,
 	})
-
 }

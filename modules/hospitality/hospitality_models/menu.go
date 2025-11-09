@@ -95,6 +95,8 @@ type MenuItem struct {
 	KitchenID *uuid.UUID `gorm:"type:uuid"`
 	Kitchen   *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;"`
 
+	ServedBy string `gorm:"size:50;default:'KITCHEN'" json:"served_by"`
+
 	IsActive  bool `gorm:"default:true"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
