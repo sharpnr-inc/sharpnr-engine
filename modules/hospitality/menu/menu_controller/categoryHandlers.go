@@ -9,8 +9,17 @@ import (
 	"github.com/google/uuid"
 )
 
+// CreateCategoryInMenu godoc
+// @Summary Create Category In Menu
+// @Description Create Category linked to the authenticated organization UUID.
+// @Tags Hospitality / Menu
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} map[string]interface{} "Category created successfully"
+// @Failure 400 {object} map[string]string "Invalid organization UUID format"
+// @Router /hospitality-menu/categories [post]
 func (c *menuController) CreateCategoryInMenu(ctx *gin.Context) {
-
 }
 
 func (c *menuController) GetAllCategoryInMenu(ctx *gin.Context) {

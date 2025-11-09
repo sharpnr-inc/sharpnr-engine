@@ -126,6 +126,71 @@ info:
   title: Sharpnr Engine APIs
   version: "1.0"
 paths:
+  /hospitality-menu/categories:
+    get:
+      consumes:
+      - application/json
+      description: Create Category in linked to the authenticated organization UUID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Bar details retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid organization UUID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Organization UUID missing
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: No bar found for this organization
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Failed to fetch bar details
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Create Category In Menu
+      tags:
+      - Hospitality / Menu
+    post:
+      consumes:
+      - application/json
+      description: Create Category linked to the authenticated organization UUID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid organization UUID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Create Category In Menu
+      tags:
+      - Hospitality / Menu
   /hospitality/bar:
     get:
       consumes:
