@@ -2,7 +2,7 @@ package models
 
 import "sharpnr-engine/core/constants"
 
-// This is the Model or Struct for The Organisation.
+// This is the Model or Struct for The Organization.
 // We save the Org Data in the Redis Temporary until user Verify it OTP
 // Only Then we will push Data in the Main DB
 
