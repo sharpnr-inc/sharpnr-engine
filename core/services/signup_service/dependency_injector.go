@@ -28,10 +28,10 @@ type signupService struct {
 
 	restaurantRepo restaurantrepo.RestaurantRepository
 
-	kitchenRepo kitchenrepo.KitchenRepository
+	kitchenRepo kitchenrepo.KitchenRepositoryInterface
 }
 
-func NewSignupService(repo interfaces.OrganizationRepository, emprepo interfaces.EmployeeRepository, policyrepo policyengine.PolicyRepository, uiRenderRepo sharpnruirenderer.UIRendererRepository, hotelRepo hotelrepo.HotelRepository, barRepo barrepo.BarRepository, restaurantRepo restaurantrepo.RestaurantRepository, kitchenRepo kitchenrepo.KitchenRepository) *signupService {
+func NewSignupService(repo interfaces.OrganizationRepository, emprepo interfaces.EmployeeRepository, policyrepo policyengine.PolicyRepository, uiRenderRepo sharpnruirenderer.UIRendererRepository, hotelRepo hotelrepo.HotelRepository, barRepo barrepo.BarRepository, restaurantRepo restaurantrepo.RestaurantRepository, kitchenRepo kitchenrepo.KitchenRepositoryInterface) *signupService {
 	return &signupService{
 		orgRepo:        repo,
 		empRepo:        emprepo,
