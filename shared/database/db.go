@@ -29,7 +29,7 @@ func ConnectDB() *gorm.DB {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("Failed to connect to DB: %v", err)
+		log.Fatalf("❌ Failed to connect to DB: %v", err)
 	}
 
 	DB = db
@@ -37,16 +37,23 @@ func ConnectDB() *gorm.DB {
 	return DB
 }
 
-// Run migration to create tables
-// This Function will Create Database
+// -------------------------------
+// 🧱 Run Migration to Create Tables
+// -------------------------------
 func MigrateDB(db *gorm.DB) error {
 	return db.AutoMigrate(
-
+		// -------------------------------
+		// 🌐 CORE MODELS
+		// -------------------------------
 		&models.Organization{},
 		&models.OrganizationPolicy{},
 		&models.OrgUIRendererTree{},
 		&models.OrganizationBankAccount{},
 		&models.Employee{},
+
+		// -------------------------------
+		// 🏨 HOSPITALITY MODELS
+		// -------------------------------
 		&hospitalitymodels.Hotel{},
 		&hospitalitymodels.HotelFloor{},
 		&hospitalitymodels.Room{},
@@ -62,6 +69,19 @@ func MigrateDB(db *gorm.DB) error {
 		&hospitalitymodels.HospitalityOrder{},
 		&hospitalitymodels.HospitalityOrderItem{},
 		&hospitalitymodels.HospitalityOrderAddon{},
+
+		// ✅ MENU SYSTEM
+		&hospitalitymodels.MenuGroup{},
+		&hospitalitymodels.MenuCategory{},
+		&hospitalitymodels.MenuSubCategory{},
+		&hospitalitymodels.MenuItem{},
+		&hospitalitymodels.MenuVariant{},
+		&hospitalitymodels.AddonGroup{},
+		&hospitalitymodels.Addon{},
+
+		// -------------------------------
+		// 💰 ACCOUNTING MODELS
+		// -------------------------------
 		&accounting_models.AccountingBook{},
 		&accounting_models.Account{},
 		&accounting_models.AccountGroup{},
