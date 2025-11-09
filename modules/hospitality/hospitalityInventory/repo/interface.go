@@ -1,4 +1,4 @@
 package inventoryrepo
 
-type InventoryRepository interface {
+type InventoryRepositoryInterface interface {
 }

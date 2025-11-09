@@ -1,4 +1,4 @@
 package inventoryservices
 
-type InventoryServices interface {
+type InventoryServicesInterface interface {
 }

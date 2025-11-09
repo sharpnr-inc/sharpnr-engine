@@ -3,6 +3,8 @@ package hospitality
 import (
 	"sharpnr-engine/middlewares"
 	"sharpnr-engine/modules/hospitality/bar"
+	"sharpnr-engine/modules/hospitality/concierge"
+	hospitalityinventory "sharpnr-engine/modules/hospitality/hospitalityInventory"
 	"sharpnr-engine/modules/hospitality/hotel"
 	"sharpnr-engine/modules/hospitality/kitchen"
 	hospitalitymenu "sharpnr-engine/modules/hospitality/menu"
@@ -27,5 +29,7 @@ func RegisterHotelModuleRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	restaurant.RestaurantRoutes(sharpHospitality, db)
 	bar.BarRoutes(sharpHospitality, db)
 	hospitalitymenu.MenuRoutes(sharpHospitality, db)
+	hospitalityinventory.HospitalityRoutes(sharpHospitality, db)
+	concierge.ConciergeRoutes(sharpHospitality, db)
 
 }
