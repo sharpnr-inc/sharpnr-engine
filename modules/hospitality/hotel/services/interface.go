@@ -14,3 +14,7 @@ type HotelService interface {
 
 	GetHotelDetails(ctx context.Context, orgId uuid.UUID) (*hospitalitydtos.GetHotel_RESPONSE, error)
 }
+
+type HotelBookingServiceInterface interface {
+	// This is will implement the booking services
+}

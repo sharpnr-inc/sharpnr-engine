@@ -12,6 +12,7 @@ import (
 func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	newHotelRepo := hotelrepo.NewHotelRepository(db)
 	newHotelService := hotelservices.NewHotelService(newHotelRepo)
+
 	newHotelController := hotelcontrollers.NewHotelController(newHotelService)
 
 	hotel_routes := v1.Group("/hotel")
