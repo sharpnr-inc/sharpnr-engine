@@ -8,6 +8,7 @@ import (
 	"sharpnr-engine/core/models"
 	"sharpnr-engine/modules/accounting/accounting_models"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	sharphr_models "sharpnr-engine/modules/hr/hrModels"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -49,7 +50,7 @@ func MigrateDB(db *gorm.DB) error {
 		&models.OrganizationPolicy{},
 		&models.OrgUIRendererTree{},
 		&models.OrganizationBankAccount{},
-		&models.Employee{},
+		&sharphr_models.Employee{},
 
 		// -------------------------------
 		// 🏨 HOSPITALITY MODELS
@@ -102,5 +103,8 @@ func MigrateDB(db *gorm.DB) error {
 		&accounting_models.BalanceSheetSummary{},
 		&accounting_models.AccountingSetting{},
 		&accounting_models.AuditLog{},
+
+		// HR
+
 	)
 }

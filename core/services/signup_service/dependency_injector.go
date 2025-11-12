@@ -17,7 +17,6 @@ import (
 type signupService struct {
 	orgRepo interfaces.OrganizationRepository // interface, not concrete struct
 	// This is Employee Repo for the creation of employee during the signup of Organization
-	empRepo interfaces.EmployeeRepository
 
 	hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface
 
@@ -34,10 +33,9 @@ type signupService struct {
 	kitchenRepo kitchenrepo.KitchenRepositoryInterface
 }
 
-func NewSignupService(repo interfaces.OrganizationRepository, emprepo interfaces.EmployeeRepository, hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface, policyrepo policyengine.PolicyRepository, uiRenderRepo sharpnruirenderer.UIRendererRepository, hotelRepo hotelrepo.HotelRepository, barRepo barrepo.BarRepository, restaurantRepo restaurantrepo.RestaurantRepository, kitchenRepo kitchenrepo.KitchenRepositoryInterface) *signupService {
+func NewSignupService(repo interfaces.OrganizationRepository, hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface, policyrepo policyengine.PolicyRepository, uiRenderRepo sharpnruirenderer.UIRendererRepository, hotelRepo hotelrepo.HotelRepository, barRepo barrepo.BarRepository, restaurantRepo restaurantrepo.RestaurantRepository, kitchenRepo kitchenrepo.KitchenRepositoryInterface) *signupService {
 	return &signupService{
 		orgRepo:        repo,
-		empRepo:        emprepo,
 		hrEmpRepo:      hrEmpRepo,
 		policyRepo:     policyrepo,
 		uiRenderRepo:   uiRenderRepo,

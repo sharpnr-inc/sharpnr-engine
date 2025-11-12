@@ -7,14 +7,12 @@ import (
 
 type loginService struct {
 	orgRepo   interfaces.OrganizationRepository
-	empRepo   interfaces.EmployeeRepository
 	hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface
 }
 
-func NewAuthService(orgrepo interfaces.OrganizationRepository, emprepo interfaces.EmployeeRepository, hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface) *loginService {
+func NewAuthService(orgrepo interfaces.OrganizationRepository, hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface) *loginService {
 	return &loginService{
 		orgRepo:   orgrepo,
-		empRepo:   emprepo,
 		hrEmpRepo: hrEmpRepo,
 	}
 }
