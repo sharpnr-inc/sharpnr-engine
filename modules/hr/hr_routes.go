@@ -7,5 +7,10 @@ import (
 )
 
 func RegisterHRRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
+	hrRoutes := v1.Group("/sharp-hr/")
+
+	hrRoutes.POST("/employee/add-employee")
+	hrRoutes.GET("/employee/get")
+	hrRoutes.GET("/employee/get/:employeeId")
 
 }

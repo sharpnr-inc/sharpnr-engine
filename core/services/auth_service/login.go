@@ -13,7 +13,7 @@ func (r *loginService) LoginToAccount(ctx *gin.Context, req dto.LoginRequestDTO)
 	if req.Email == "" || req.Password == "" {
 		return nil, "", fmt.Errorf("email and password are required")
 	}
-	usr, found, err := r.empRepo.FindByEmail(ctx, req.Email)
+	usr, found, err := r.hrEmpRepo.FindByEmail(ctx, req.Email)
 	if err != nil {
 		return nil, "", fmt.Errorf("failed to find employee: %w", err)
 	}

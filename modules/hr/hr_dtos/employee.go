@@ -1,6 +1,10 @@
 package sharphrdtos
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type CheckIfEmployeeExist_REQ_DTO struct {
 	EmployeeEmail string `json:"employee_email"`
@@ -38,4 +42,19 @@ type GetEmployeeDetails_RESPONSE_DTO struct {
 	IsActive     bool      `json:"is_active"`
 	CreatedAt    time.Time `json:"created_at"`
 	LastModified time.Time `json:"last_modified"`
+}
+
+type CreateEmployeeInOrganization_RequestDTO struct {
+	Name           string `json:"name" binding:"required"`
+	Email          string `json:"email" binding:"required,email"`
+	Password       string `json:"password" binding:"required,min=6"`
+	OrganizationID string `json:"organizationId" binding:"required"`
+}
+
+type CreateEmployeeInOrganizationResponseDTO struct {
+	ID             uuid.UUID `json:"id"`
+	Name           string    `json:"name"`
+	Email          string    `json:"email"`
+	OrganizationID string    `json:"organizationId"`
+	CreatedAt      string    `json:"createdAt"`
 }

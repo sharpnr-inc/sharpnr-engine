@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sharpnr-engine/core/constants"
 	dto "sharpnr-engine/core/dtos"
-	"sharpnr-engine/core/models"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	sharphr_models "sharpnr-engine/modules/hr/hrModels"
 	"sharpnr-engine/pkg/jwtpack"
 	"sort"
 	"strings"
@@ -104,7 +104,7 @@ func (s *signupService) CompleteOrgRegistration(
 	}
 
 	// -------------------- Step 7: Create Default Employee --------------------
-	defEmp := &models.Employee{
+	defEmp := &sharphr_models.Employee{
 		ID:              uuid.New(),
 		FirstName:       "__Default__Name",
 		LastName:        "__Default__Last__Name",
@@ -117,7 +117,7 @@ func (s *signupService) CompleteOrgRegistration(
 		IsEmailVerified: true,
 	}
 
-	createdEmp, err := s.empRepo.CreateEmployee(ctx, defEmp)
+	createdEmp, err := s.hrEmpRepo.CreateEmployee(ctx, defEmp)
 	if err != nil {
 		return nil, "", fmt.Errorf("failed to create default employee: %w", err)
 	}
