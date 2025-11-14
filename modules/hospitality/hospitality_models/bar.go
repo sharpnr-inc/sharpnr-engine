@@ -32,6 +32,16 @@ type Bar struct {
 
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+
+	// ========== General + Legal + Display Details (Sync with ORG if enabled) ==========
+
+	IsShareLegalDetailsWithMainOrg bool `gorm:"default:false" json:"is_share_legal_details_with_main_org"`
+
+	DisplayName       string `gorm:"size:150" json:"display_name"`
+	LegalName         string `gorm:"size:150" json:"legal_name"`
+	RegisteredAddress string `gorm:"size:255" json:"registered_address"`
+	GSTNumber         string `gorm:"size:20" json:"gst_number"`
+	CINNumber         string `gorm:"size:20" json:"cin_number"`
 }
 
 // ---------------------------------------------

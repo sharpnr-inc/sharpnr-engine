@@ -10,5 +10,5 @@ import (
 type RestaurantRepository interface {
 	CreateRestaurant(ctx context.Context, res *hospitalitymodels.Restaurant) error
 
-	GetRestaurant(ctx context.Context, orgId uuid.UUID)
+	GetRestaurant(ctx context.Context, orgId uuid.UUID) (*hospitalitymodels.Restaurant, error)
 }

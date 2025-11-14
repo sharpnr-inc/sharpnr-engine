@@ -1,6 +1,10 @@
 package hospitalitydtos
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type BarTablesResponse struct {
 	TableName   string    `json:"table_name"`
@@ -25,4 +29,23 @@ type CreateTableInBar_RESPONSE struct {
 	BarId  string
 	Floors []BarFloorResponse `json:"floors"`
 	Tables []BarTablesResponse
+}
+
+type BAR_UpdateBarDetails_Request struct {
+	BarDisplayName string
+	BarLegalName   string
+	OpeningTime    time.Time
+	ClosingTime    time.Time
+}
+
+type BAR_UpdateBarDetails_Response struct {
+	BarID                          uuid.UUID
+	OrgId                          uuid.UUID
+	BarDisplayName                 string
+	BarLegalName                   string
+	OpeningTime                    time.Time
+	ClosingTime                    time.Time
+	IsKitchen                      bool
+	KitchenId                      uuid.UUID
+	IsShareLegalDetailsWithMainOrg bool
 }

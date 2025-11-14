@@ -22,4 +22,7 @@ func BarRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	barRoute.POST("/update-table")
 	barRoute.GET("/table/:tableId")
 	barRoute.POST("/start-table-session")
+
+	barRoute.POST("/update", newBarController.UpdateBarDetails)
+	barRoute.GET("/getBarConfigDetails", newBarController.GetBarDetailsConfig)
 }
