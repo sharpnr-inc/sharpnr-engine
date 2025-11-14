@@ -14,7 +14,7 @@ import (
 )
 
 // -----------------------------------------------------------------------------------------------------------------//
-func (r *organizationRepository) EmailOrPhoneExistsInRedis(ctx context.Context, email, phone string) (bool, error) {
+func (r *OrganizationRepository) EmailOrPhoneExistsInRedis(ctx context.Context, email, phone string) (bool, error) {
 	// Build keys with constants for better maintainability
 	const (
 		emailKeyPrefix = "init_reg:"
@@ -45,7 +45,7 @@ func (r *organizationRepository) EmailOrPhoneExistsInRedis(ctx context.Context, 
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *organizationRepository) CreateOrgInRedisDB(ctx context.Context, tempOrg *models.TempOrgRegistrationData) error {
+func (r *OrganizationRepository) CreateOrgInRedisDB(ctx context.Context, tempOrg *models.TempOrgRegistrationData) error {
 	key := fmt.Sprintf("init_reg:%s", tempOrg.Email)
 
 	// Serialize struct to JSON
@@ -60,7 +60,7 @@ func (r *organizationRepository) CreateOrgInRedisDB(ctx context.Context, tempOrg
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *organizationRepository) GetOrgFromRedisDB(ctx context.Context, email string) (*models.TempOrgRegistrationData, error) {
+func (r *OrganizationRepository) GetOrgFromRedisDB(ctx context.Context, email string) (*models.TempOrgRegistrationData, error) {
 	email = strings.TrimSpace(email)
 	key := fmt.Sprintf("init_reg:%s", email)
 	fmt.Println("Looking for Redis key:", key)
@@ -83,14 +83,14 @@ func (r *organizationRepository) GetOrgFromRedisDB(ctx context.Context, email st
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *organizationRepository) DeleteOrgFromRedisDB(ctx context.Context, email string) error {
+func (r *OrganizationRepository) DeleteOrgFromRedisDB(ctx context.Context, email string) error {
 	emailKey := fmt.Sprintf("init_reg:%s", email)
 	return r.redis.Del(ctx, emailKey).Err()
 }
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *organizationRepository) EmailOrPhoneExistsInMainDB(ctx context.Context, email string, phone string) (bool, error) {
+func (r *OrganizationRepository) EmailOrPhoneExistsInMainDB(ctx context.Context, email string, phone string) (bool, error) {
 	var count int64
 
 	// Check if any record exists with the given email or phone
@@ -107,7 +107,7 @@ func (r *organizationRepository) EmailOrPhoneExistsInMainDB(ctx context.Context,
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *organizationRepository) CreateOrgInMainDB(ctx context.Context, Org *models.Organization) error {
+func (r *OrganizationRepository) CreateOrgInMainDB(ctx context.Context, Org *models.Organization) error {
 	if err := r.db.WithContext(ctx).Create(Org).Error; err != nil {
 		return err
 	}
@@ -116,7 +116,7 @@ func (r *organizationRepository) CreateOrgInMainDB(ctx context.Context, Org *mod
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *organizationRepository) FindOrgBySharpnrID(ctx context.Context, id string) (*models.Organization, bool, error) {
+func (r *OrganizationRepository) FindOrgBySharpnrID(ctx context.Context, id string) (*models.Organization, bool, error) {
 	var org models.Organization
 
 	if err := r.db.WithContext(ctx).
@@ -137,7 +137,7 @@ func (r *organizationRepository) FindOrgBySharpnrID(ctx context.Context, id stri
 
 //-----------------------------------------------------------------------------------------------------------------//
 
-func (r *organizationRepository) GetOrgUUID_By_SharpnrID(sharpnr_id string) (uuid.UUID, error) {
+func (r *OrganizationRepository) GetOrgUUID_By_SharpnrID(sharpnr_id string) (uuid.UUID, error) {
 	// This is the function finding the orgId and return uuid
 	var org models.Organization
 	if err := r.db.Where("sharpnr_org_id = ?", sharpnr_id).First(&org).Error; err != nil {
@@ -147,7 +147,7 @@ func (r *organizationRepository) GetOrgUUID_By_SharpnrID(sharpnr_id string) (uui
 }
 
 // UpdateOrg updates an existing organization in the main database
-func (r *organizationRepository) UpdateOrg(ctx context.Context, org *models.Organization) error {
+func (r *OrganizationRepository) UpdateOrg(ctx context.Context, org *models.Organization) error {
 	if org == nil {
 		return fmt.Errorf("organization cannot be nil")
 	}
@@ -169,11 +169,11 @@ func (r *organizationRepository) UpdateOrg(ctx context.Context, org *models.Orga
 	return nil
 }
 
-func (r *organizationRepository) CreateBankAccounts(ctx context.Context, orgID uuid.UUID, accounts []models.OrganizationBankAccount) error {
+func (r *OrganizationRepository) CreateBankAccounts(ctx context.Context, orgID uuid.UUID, accounts []models.OrganizationBankAccount) error {
 	return r.db.WithContext(ctx).Create(&accounts).Error
 }
 
-func (r *organizationRepository) GetBankAccountsByOrgID(ctx context.Context, orgID uuid.UUID) ([]models.OrganizationBankAccount, error) {
+func (r *OrganizationRepository) GetBankAccountsByOrgID(ctx context.Context, orgID uuid.UUID) ([]models.OrganizationBankAccount, error) {
 	var accounts []models.OrganizationBankAccount
 	if err := r.db.WithContext(ctx).Where("organization_id = ?", orgID).Find(&accounts).Error; err != nil {
 		return nil, err
@@ -181,7 +181,7 @@ func (r *organizationRepository) GetBankAccountsByOrgID(ctx context.Context, org
 	return accounts, nil
 }
 
-func (r *organizationRepository) GetPrimaryBankAccount(ctx context.Context, orgID uuid.UUID) (*models.OrganizationBankAccount, error) {
+func (r *OrganizationRepository) GetPrimaryBankAccount(ctx context.Context, orgID uuid.UUID) (*models.OrganizationBankAccount, error) {
 	var account models.OrganizationBankAccount
 	if err := r.db.WithContext(ctx).Where("organization_id = ? AND is_primary = ?", orgID, true).First(&account).Error; err != nil {
 		return nil, err
@@ -189,7 +189,7 @@ func (r *organizationRepository) GetPrimaryBankAccount(ctx context.Context, orgI
 	return &account, nil
 }
 
-func (r *organizationRepository) UpdateBankAccounts(ctx context.Context, orgID uuid.UUID, accounts []models.OrganizationBankAccount) error {
+func (r *OrganizationRepository) UpdateBankAccounts(ctx context.Context, orgID uuid.UUID, accounts []models.OrganizationBankAccount) error {
 	// Transaction to prevent orphan data
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		// Delete old accounts
@@ -209,7 +209,7 @@ func (r *organizationRepository) UpdateBankAccounts(ctx context.Context, orgID u
 }
 
 // GetOrg retrieves an organization by its UUID.
-func (r *organizationRepository) GetOrg(ctx context.Context, orgID uuid.UUID) (*models.Organization, error) {
+func (r *OrganizationRepository) GetOrg(ctx context.Context, orgID uuid.UUID) (*models.Organization, error) {
 	var organization models.Organization
 	err := r.db.WithContext(ctx).
 		Where("id = ?", orgID).

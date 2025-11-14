@@ -6,11 +6,11 @@ import (
 )
 
 type loginService struct {
-	orgRepo   interfaces.OrganizationRepository
+	orgRepo   interfaces.OrganizationRepositoryInterface
 	hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface
 }
 
-func NewAuthService(orgrepo interfaces.OrganizationRepository, hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface) *loginService {
+func NewAuthService(orgrepo interfaces.OrganizationRepositoryInterface, hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface) *loginService {
 	return &loginService{
 		orgRepo:   orgrepo,
 		hrEmpRepo: hrEmpRepo,

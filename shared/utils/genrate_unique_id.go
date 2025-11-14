@@ -26,7 +26,7 @@ func generateRandomString(length int) (string, error) {
 	return sb.String(), nil
 }
 
-func GenerateUniqueSharpnrOrgID(ctx context.Context, repo interfaces.OrganizationRepository) (string, error) {
+func GenerateUniqueSharpnrOrgID(ctx context.Context, repo interfaces.OrganizationRepositoryInterface) (string, error) {
 	for {
 		randomPart, err := generateRandomString(13)
 		if err != nil {

@@ -8,7 +8,7 @@ import (
 // organizationRepository is the concrete implementation of the
 // OrganizationRepository interface. It provides methods to interact
 // with the organization's data in both the main database (Gorm) and Redis.
-type organizationRepository struct {
+type OrganizationRepository struct {
 	// redis client for temporary data storage, OTPs, etc.
 	redis *redis.Client
 
@@ -24,8 +24,8 @@ type organizationRepository struct {
 //
 // Returns:
 //   - Pointer to an initialized organizationRepository.
-func NewOrganizationRepo(db *gorm.DB, redis *redis.Client) *organizationRepository {
-	return &organizationRepository{
+func NewOrganizationRepo(db *gorm.DB, redis *redis.Client) *OrganizationRepository {
+	return &OrganizationRepository{
 		redis: redis,
 		db:    db,
 	}
