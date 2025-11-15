@@ -25,11 +25,20 @@ type Restaurant struct {
 	Floors []RestaurantFloor `gorm:"foreignKey:RestaurantID;constraint:OnDelete:CASCADE;" json:"floors"`
 	Tables []RestaurantTable `gorm:"foreignKey:RestaurantID;constraint:OnDelete:CASCADE;" json:"tables"` // Optional: direct access without floors
 
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	IsKitchen bool       `gorm:"default:true" json:"is_kitchen"`
-	KitchenID *uuid.UUID `gorm:"type:uuid" json:"kitchen_id"`
-	Kitchen   *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;" json:"kitchen"`
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
+	IsKitchen   bool       `gorm:"default:true" json:"is_kitchen"`
+	KitchenID   *uuid.UUID `gorm:"type:uuid" json:"kitchen_id"`
+	Kitchen     *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;" json:"kitchen"`
+	LegalName   string
+	DisplayName string
+	GSTNumber   string
+	FSSAINumber string
+
+	Address string
+	City    string
+	State   string
+	Pincode string
 }
 
 // ---------------------------

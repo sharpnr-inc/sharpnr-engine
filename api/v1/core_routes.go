@@ -4,6 +4,8 @@ import (
 	orchestratorcontroller "sharpnr-engine/core/controllers/orchestratorController"
 	organizationrepositories "sharpnr-engine/core/repositories/organization_repo"
 	orchestrator_org_service "sharpnr-engine/core/services/orchestratorOrg_service"
+	"sharpnr-engine/middlewares"
+	"sharpnr-engine/pkg/jwtpack"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -16,6 +18,7 @@ func CoreOrgRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 	newOrchestratorController := orchestratorcontroller.NewOrchestratorOrganizationController(newOrchestratorService)
 
 	coreOrg := v1.Group("/orchestrator/org/")
+	coreOrg.Use(middlewares.RequireTokenType(jwtpack.TokenTypeAuth), middlewares.SetOrgUUID())
 
 	coreOrg.GET("get-details", newOrchestratorController.GetDetails)
 	coreOrg.POST("update")

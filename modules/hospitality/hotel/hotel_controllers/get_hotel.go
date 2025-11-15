@@ -2,6 +2,9 @@ package hotelcontrollers
 
 import (
 	"net/http"
+	dto "sharpnr-engine/core/dtos"
+	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -23,10 +26,31 @@ func (s *HotelController) GetHotel(ctx *gin.Context) {
 	// ✅ Call service
 	res, err := s.hotelService.GetHotelDetails(ctx, orgID)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response := dto.Response[any]{
+			StatusCode: http.StatusOK,
+			Message:    "There was an Error Fetching Hotel Details",
+			Error: dto.ErrorResponse{
+				Message: err.Error(),
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
+		}
+		ctx.JSON(http.StatusInternalServerError, response)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, res)
+	response := dto.Response[*hospitalitydtos.GetHotel_RESPONSE]{
+		StatusCode: http.StatusOK,
+		Message:    "Hotel Fetched Successfully",
+		Error: dto.ErrorResponse{
+			Message: "",
+			IsError: false,
+		},
+		Data:      &res,
+		Timestamp: time.Now(),
+	}
+
+	ctx.JSON(http.StatusOK, response)
 
 }

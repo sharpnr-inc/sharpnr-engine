@@ -1,5 +1,7 @@
 package hospitalitydtos
 
+import "github.com/google/uuid"
+
 type RoomResponse struct {
 	RoomID      string `json:"room_id"`
 	RoomName    string `json:"room_name"`
@@ -15,9 +17,20 @@ type FloorResponse struct {
 }
 
 type GetHotel_RESPONSE struct {
-	HotelId   string          `json:"hotel_id"`
-	HotelName string          `json:"hotel_name"`
-	Floors    []FloorResponse `json:"floors"`
+	HotelId          string `json:"hotel_id"`
+	HotelName        string `json:"hotel_name"`
+	HotelDisplayName string
+	HotelLegalName   string
+	KitchenId        uuid.UUID
+	IsKitchen        bool
+	Address          string
+	City             string
+	State            string
+	Country          string
+	Pincode          string
+	HotelGstNumber   string
+	HotelFSSAINumber string
+	Floors           []FloorResponse `json:"floors"`
 }
 
 type CreateRoomInFloor_REQ struct {

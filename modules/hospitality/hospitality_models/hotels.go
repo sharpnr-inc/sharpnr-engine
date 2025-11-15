@@ -24,12 +24,19 @@ type Hotel struct {
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
 	DisplayName        string
+	LegalName          string
 	GstinNumber        string
 	FssaiLicenseNumber string
 
 	IsKitchen bool       `gorm:"default:true" json:"is_kitchen"`
 	KitchenID *uuid.UUID `gorm:"type:uuid" json:"kitchen_id"`
 	Kitchen   *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;" json:"kitchen"`
+
+	Address      string
+	City         string
+	State        string
+	Pincode      string
+	IsKitchenOnn bool
 }
 
 type HotelFloor struct {

@@ -20,8 +20,17 @@ func (r *hotelService) GetHotelDetails(ctx context.Context, orgId uuid.UUID) (*h
 
 	// Prepare DTO response
 	response := &hospitalitydtos.GetHotel_RESPONSE{
-		HotelId:   hotel.ID.String(),
-		HotelName: hotel.Name,
+		HotelId:          hotel.ID.String(),
+		HotelName:        hotel.Name,
+		HotelDisplayName: hotel.DisplayName,
+		HotelLegalName:   hotel.LegalName,
+		KitchenId:        *hotel.KitchenID,
+		IsKitchen:        hotel.IsKitchen,
+		Address:          hotel.Address,
+		City:             hotel.City,
+		State:            hotel.State,
+		HotelGstNumber:   hotel.GstinNumber,
+		HotelFSSAINumber: hotel.FssaiLicenseNumber,
 	}
 
 	for _, f := range hotel.Floors {

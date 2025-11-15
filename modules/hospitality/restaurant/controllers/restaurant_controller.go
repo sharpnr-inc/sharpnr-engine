@@ -37,6 +37,7 @@ func (c *restaurantController) GetRestaurantDetails(ctx *gin.Context) {
 			Timestamp: time.Now(),
 		}
 		ctx.JSON(http.StatusOK, response)
+		return
 	}
 
 	response := dto.Response[*hospitalitydtos.Restaurant_GetRestaurant_ResponseDTO]{
