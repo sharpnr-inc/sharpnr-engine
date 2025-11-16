@@ -19,6 +19,7 @@ type FloorResponse struct {
 type GetHotel_RESPONSE struct {
 	HotelId          string `json:"hotel_id"`
 	HotelName        string `json:"hotel_name"`
+	SharpId          string
 	HotelDisplayName string
 	HotelLegalName   string
 	KitchenId        uuid.UUID

@@ -8,7 +8,7 @@ import (
 )
 
 type menuService struct {
-	menuRepo menurepo.MenuRepository
+	menuRepo menurepo.MenuRepositoryInterface
 }
 
 // CreateAddon implements MenuService.
@@ -171,7 +171,7 @@ func (m *menuService) UpdateVariant(variant *hospitalitymodels.MenuVariant) erro
 	panic("unimplemented")
 }
 
-func NewHospitalityMenuService(menuRepo menurepo.MenuRepository) *menuService {
+func NewHospitalityMenuService(menuRepo menurepo.MenuRepositoryInterface) *menuService {
 	return &menuService{
 		menuRepo: menuRepo,
 	}

@@ -64,3 +64,12 @@ type Room struct {
 	BedSize   string `gorm:"size:50"`
 	Amenities string `gorm:"type:text"`
 }
+
+type HotelBooking struct {
+	Id             uuid.UUID
+	HotelId        uuid.UUID
+	GuestName      string
+	GuestMobile    string
+	RoomId         string
+	OrganizationId uuid.UUID
+}

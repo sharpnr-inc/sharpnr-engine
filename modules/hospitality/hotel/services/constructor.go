@@ -7,7 +7,7 @@ import (
 
 type hotelService struct {
 	hotelRepo hotelrepo.HotelRepository
-	menuRepo  menurepo.MenuRepository
+	menuRepo  menurepo.MenuRepositoryInterface
 }
 
 func NewHotelService(hotelRepo hotelrepo.HotelRepository) *hotelService {

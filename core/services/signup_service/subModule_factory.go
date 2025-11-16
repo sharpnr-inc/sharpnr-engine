@@ -97,6 +97,8 @@ func (s *signupService) SetUpBar(ctx context.Context, org *models.Organization, 
 
 	fmt.Printf("✅ Bar created successfully for org: %s\n", org.ID)
 	return nil
+
+	// So we need to Create A Default Menu Group here
 }
 
 // case --> RESTAURANT

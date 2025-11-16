@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type MenuRepository interface {
+type MenuRepositoryInterface interface {
 	// -------------------------------
 	// 🌐 MENU GROUPS
 	// -------------------------------
