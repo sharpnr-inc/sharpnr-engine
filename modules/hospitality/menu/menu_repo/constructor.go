@@ -81,11 +81,6 @@ func (m *menuRepo) GetAddonsByGroup(groupID uuid.UUID) ([]hospitalitymodels.Addo
 	panic("unimplemented")
 }
 
-// GetCategoriesByGroup implements MenuRepository.
-func (m *menuRepo) GetCategoriesByGroup(groupID uuid.UUID) ([]hospitalitymodels.MenuCategory, error) {
-	panic("unimplemented")
-}
-
 // GetCategoryByID implements MenuRepository.
 func (m *menuRepo) GetCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuCategory, error) {
 	panic("unimplemented")

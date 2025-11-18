@@ -78,7 +78,55 @@ func (c *menuController) GetAllCategoryInMenu(ctx *gin.Context) {
 }
 
 func (c *menuController) GetCategoriesByGroup(ctx *gin.Context) {
+	orgUUID, exists := ctx.Get("OrgUUID")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
+		return
+	}
 
+	orgID, ok := orgUUID.(uuid.UUID)
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
+		return
+	}
+
+	// Get MenuGroupId from params
+	groupIDStr := ctx.Param("id")
+	groupID, err := uuid.Parse(groupIDStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid group id"})
+		return
+	}
+
+	// Call service
+	result, err := c.menuService.GetCategoriesByGroup(ctx, orgID, groupID)
+	if err != nil {
+		res := dto.Response[any]{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Failed to fetch categories",
+			Error: dto.ErrorResponse{
+				Message: err.Error(),
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
+		}
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	res := dto.Response[[]hospitalitydtos.Menu_Category_RESPONSE]{
+		StatusCode: http.StatusOK,
+		Message:    "Categories fetched successfully",
+		Error: dto.ErrorResponse{
+			Message: "",
+			IsError: false,
+		},
+		Data:      &result,
+		Timestamp: time.Now(),
+	}
+
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (c *menuController) GetCategoryInMenuByID(ctx *gin.Context) {

@@ -81,11 +81,6 @@ func (m *menuService) GetAddonsByGroup(groupID uuid.UUID) ([]hospitalitymodels.A
 	panic("unimplemented")
 }
 
-// GetCategoriesByGroup implements MenuService.
-func (m *menuService) GetCategoriesByGroup(groupID uuid.UUID) ([]hospitalitymodels.MenuCategory, error) {
-	panic("unimplemented")
-}
-
 // GetCategoryByID implements MenuService.
 func (m *menuService) GetCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuCategory, error) {
 	panic("unimplemented")

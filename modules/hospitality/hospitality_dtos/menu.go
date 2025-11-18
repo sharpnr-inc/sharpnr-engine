@@ -50,3 +50,24 @@ type Menu_CreateSubCategoryINCategory_REQ struct {
 	SubCategoryName        string
 	SubCategoryDescription string
 }
+
+type Menu_Category_RESPONSE struct {
+	Id            uuid.UUID                   `json:"id"`
+	Name          string                      `json:"name"`
+	Description   string                      `json:"description"`
+	SubCategories []Menu_SubCategory_RESPONSE `json:"sub_categories"`
+}
+
+type Menu_SubCategory_RESPONSE struct {
+	Id          uuid.UUID            `json:"id"`
+	Name        string               `json:"name"`
+	Description string               `json:"description"`
+	MenuItems   []Menu_Item_RESPONSE `json:"menu_items"`
+}
+
+type Menu_Item_RESPONSE struct {
+	Id          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Price       float32   `json:"price"`
+}

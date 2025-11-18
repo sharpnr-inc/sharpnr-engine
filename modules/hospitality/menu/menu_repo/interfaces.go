@@ -21,7 +21,7 @@ type MenuRepositoryInterface interface {
 	// 🗂️ MENU CATEGORIES
 	// -------------------------------
 	CreateCategory(ctx context.Context, category *hospitalitymodels.MenuCategory) error
-	GetCategoriesByGroup(groupID uuid.UUID) ([]hospitalitymodels.MenuCategory, error)
+	GetCategoriesByGroup(ctx context.Context, groupID uuid.UUID) ([]hospitalitymodels.MenuCategory, error)
 	GetCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuCategory, error)
 	UpdateCategory(category *hospitalitymodels.MenuCategory) error
 	DeleteCategory(id uuid.UUID) error
