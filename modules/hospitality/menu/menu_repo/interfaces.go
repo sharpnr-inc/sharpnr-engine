@@ -22,14 +22,14 @@ type MenuRepositoryInterface interface {
 	// -------------------------------
 	CreateCategory(ctx context.Context, category *hospitalitymodels.MenuCategory) error
 	GetCategoriesByGroup(ctx context.Context, groupID uuid.UUID) ([]hospitalitymodels.MenuCategory, error)
-	GetCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuCategory, error)
+	GetCategoryByID(ctx context.Context, id uuid.UUID) (*hospitalitymodels.MenuCategory, error)
 	UpdateCategory(category *hospitalitymodels.MenuCategory) error
 	DeleteCategory(id uuid.UUID) error
 
 	// -------------------------------
 	// 📂 MENU SUBCATEGORIES
 	// -------------------------------
-	CreateSubCategory(subCat *hospitalitymodels.MenuSubCategory) error
+	CreateSubCategory(ctx context.Context, sub *hospitalitymodels.MenuSubCategory) error
 	GetSubCategoriesByCategory(categoryID uuid.UUID) ([]hospitalitymodels.MenuSubCategory, error)
 	GetSubCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuSubCategory, error)
 	UpdateSubCategory(subCat *hospitalitymodels.MenuSubCategory) error

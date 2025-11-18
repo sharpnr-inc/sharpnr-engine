@@ -28,3 +28,18 @@ func (m *menuRepo) GetCategoriesByGroup(ctx context.Context, groupID uuid.UUID) 
 
 	return categories, nil
 }
+
+// GetCategoryByID implements MenuRepository.
+func (m *menuRepo) GetCategoryByID(ctx context.Context, id uuid.UUID) (*hospitalitymodels.MenuCategory, error) {
+	var category hospitalitymodels.MenuCategory
+
+	err := m.db.WithContext(ctx).
+		Where("id = ?", id).
+		First(&category).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &category, nil
+}

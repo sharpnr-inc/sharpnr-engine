@@ -26,11 +26,6 @@ func (m *menuService) CreateMenuItem(item *hospitalitymodels.MenuItem) error {
 	panic("unimplemented")
 }
 
-// CreateSubCategory implements MenuService.
-func (m *menuService) CreateSubCategory(subCat *hospitalitymodels.MenuSubCategory) error {
-	panic("unimplemented")
-}
-
 // CreateVariant implements MenuService.
 func (m *menuService) CreateVariant(variant *hospitalitymodels.MenuVariant) error {
 	panic("unimplemented")

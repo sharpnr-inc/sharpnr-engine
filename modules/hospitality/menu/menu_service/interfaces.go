@@ -30,7 +30,11 @@ type MenuService interface {
 	// -------------------------------
 	// 📂 MENU SUBCATEGORIES
 	// -------------------------------
-	CreateSubCategory(subCat *hospitalitymodels.MenuSubCategory) error
+	CreateSubCategory(
+		ctx context.Context,
+		req *hospitalitydtos.Menu_CreateSubCategory_REQ,
+		orgID uuid.UUID,
+	) error
 	GetSubCategoriesByCategory(categoryID uuid.UUID) ([]hospitalitymodels.MenuSubCategory, error)
 	GetSubCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuSubCategory, error)
 	UpdateSubCategory(subCat *hospitalitymodels.MenuSubCategory) error

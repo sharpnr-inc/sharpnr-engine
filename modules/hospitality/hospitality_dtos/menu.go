@@ -71,3 +71,9 @@ type Menu_Item_RESPONSE struct {
 	Description string    `json:"description"`
 	Price       float32   `json:"price"`
 }
+
+type Menu_CreateSubCategory_REQ struct {
+	CategoryID      string `json:"category_id"`
+	SubCategoryName string `json:"sub_category_name"`
+	SubCategoryDesc string `json:"sub_category_description"`
+}
