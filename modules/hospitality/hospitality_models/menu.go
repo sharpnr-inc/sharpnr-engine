@@ -88,8 +88,8 @@ type MenuItem struct {
 	BasePrice   float64 `gorm:"not null"`
 	IsAvailable bool    `gorm:"default:true"`
 
-	Variants    []MenuVariant `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
-	AddonGroups []AddonGroup  `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
+	VariantGroups []MenuVariantGroup `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
+	AddonGroups   []AddonGroup       `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
 
 	// Optional Kitchen link
 	KitchenID *uuid.UUID `gorm:"type:uuid"`
@@ -102,18 +102,30 @@ type MenuItem struct {
 	UpdatedAt time.Time
 }
 
+type MenuVariantGroup struct {
+	ID            uuid.UUID     `gorm:"type:uuid;primaryKey"`
+	MenuItemID    uuid.UUID     `gorm:"type:uuid;not null"`
+	MenuItem      MenuItem      `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
+	Name          string        `gorm:"size:50;not null"` // e.g., "Size", "Crust", "Spice Level"
+	IsMultiSelect bool          `gorm:"default:false"`    // user can pick multiple? (e.g., toppings)
+	Variants      []MenuVariant `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE;"`
+	IsActive      bool          `gorm:"default:true"`
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+}
+
 // -------------------------------
 // 3️⃣ MENU VARIANT
 // -------------------------------
 type MenuVariant struct {
-	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
-	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
-	MenuItem   MenuItem  `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
-	Name       string    `gorm:"size:50;not null"`
-	Price      float64   `gorm:"not null"`
-	IsActive   bool      `gorm:"default:true"`
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	ID        uuid.UUID        `gorm:"type:uuid;primaryKey"`
+	GroupID   uuid.UUID        `gorm:"type:uuid;not null"`
+	Group     MenuVariantGroup `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE;"`
+	Name      string           `gorm:"size:50;not null"`
+	Price     float64          `gorm:"not null"`
+	IsActive  bool             `gorm:"default:true"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 // -------------------------------

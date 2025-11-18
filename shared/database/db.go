@@ -78,6 +78,7 @@ func MigrateDB(db *gorm.DB) error {
 		&hospitalitymodels.MenuSubCategory{},
 		&hospitalitymodels.MenuItem{},
 		&hospitalitymodels.MenuVariant{},
+		&hospitalitymodels.MenuVariantGroup{},
 		&hospitalitymodels.AddonGroup{},
 		&hospitalitymodels.Addon{},
 

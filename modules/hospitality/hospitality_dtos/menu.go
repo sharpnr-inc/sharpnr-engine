@@ -87,3 +87,7 @@ type Menu_CreateMenuItem_REQ struct {
 	BasePrice     float64 `json:"base_price"`
 	ServedBy      string  `json:"served_by"` // optional, default "KITCHEN"
 }
+
+type Menu_AddMenuItemVariant_REQ struct {
+	MenuItemId string
+}
