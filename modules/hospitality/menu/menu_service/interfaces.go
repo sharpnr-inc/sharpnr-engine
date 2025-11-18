@@ -1,6 +1,8 @@
 package menuservice
 
 import (
+	"context"
+	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 
 	"github.com/google/uuid"
@@ -10,8 +12,8 @@ type MenuService interface {
 	// -------------------------------
 	// 🌐 MENU GROUPS
 	// -------------------------------
-	CreateMenuGroup(group *hospitalitymodels.MenuGroup) error
-	GetAllMenuGroups(orgID uuid.UUID) ([]hospitalitymodels.MenuGroup, error)
+	CreateMenuGroup(ctx context.Context, group *hospitalitymodels.MenuGroup) error
+	GetAllMenuGroups(ctx context.Context, orgID uuid.UUID) ([]hospitalitydtos.Menu_GetAllMenuGroup_RESPONSE, error)
 	GetMenuGroupByID(id uuid.UUID) (*hospitalitymodels.MenuGroup, error)
 	UpdateMenuGroup(group *hospitalitymodels.MenuGroup) error
 	DeleteMenuGroup(id uuid.UUID) error

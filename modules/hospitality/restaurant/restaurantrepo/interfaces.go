@@ -11,4 +11,6 @@ type RestaurantRepository interface {
 	CreateRestaurant(ctx context.Context, res *hospitalitymodels.Restaurant) error
 
 	GetRestaurant(ctx context.Context, orgId uuid.UUID) (*hospitalitymodels.Restaurant, error)
+
+	UpdateRestaurant(ctx context.Context, restaurant *hospitalitymodels.Restaurant) error
 }

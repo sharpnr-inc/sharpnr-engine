@@ -1,6 +1,7 @@
 package menurepo
 
 import (
+	"context"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 
 	"github.com/google/uuid"
@@ -10,8 +11,8 @@ type MenuRepositoryInterface interface {
 	// -------------------------------
 	// 🌐 MENU GROUPS
 	// -------------------------------
-	CreateMenuGroup(group *hospitalitymodels.MenuGroup) error
-	GetAllMenuGroups(orgID uuid.UUID) ([]hospitalitymodels.MenuGroup, error)
+	CreateMenuGroup(ctx context.Context, group *hospitalitymodels.MenuGroup) error
+	GetAllMenuGroups(ctx context.Context, orgID uuid.UUID) ([]hospitalitymodels.MenuGroup, error)
 	GetMenuGroupByID(id uuid.UUID) (*hospitalitymodels.MenuGroup, error)
 	UpdateMenuGroup(group *hospitalitymodels.MenuGroup) error
 	DeleteMenuGroup(id uuid.UUID) error

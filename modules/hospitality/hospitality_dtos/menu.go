@@ -30,3 +30,14 @@ type Menu_AddSubCategoryInCategory_RES struct {
 	SubCategoryID   uuid.UUID
 	CategoryName    string
 }
+
+type Menu_GetAllMenuGroup_RESPONSE struct {
+	Id          uuid.UUID
+	Name        string
+	Type        string
+	Description string
+}
+
+// type Menu_GetAllMenuGroup_LIST_RESPONSE struct {
+// 	Menulist []Menu_GetAllMenuGroup_RESPONSE `json:"menu_list"`
+// }

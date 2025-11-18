@@ -18,4 +18,5 @@ func RestaurantRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 
 	resRoutes.GET("/add-table")
 	resRoutes.GET("/get-details", newRestaurantController.GetRestaurantDetails)
+	resRoutes.POST("/update", newRestaurantController.UpdateRestaurant)
 }

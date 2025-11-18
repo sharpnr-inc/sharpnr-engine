@@ -10,6 +10,7 @@ import (
 	barrepo "sharpnr-engine/modules/hospitality/bar/repo"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
 	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
+	menurepo "sharpnr-engine/modules/hospitality/menu/menu_repo"
 	"sharpnr-engine/modules/hospitality/restaurant/restaurantrepo"
 	hr_employee_repo "sharpnr-engine/modules/hr/employees/repo"
 
@@ -30,12 +31,13 @@ func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 	newBarRepo := barrepo.NewBarRepository(db)
 	newRestaurantRepo := restaurantrepo.NewRestaurantRepository(db)
 	newKitchenRepo := kitchenrepo.NewKitchenRepository(db)
+	newMenuRepo := menurepo.NewHospitalityMenuRepository(db)
 
 	newUIRendererRepo := sharpnruirenderer.NewOrgUIRendererRepo(db)
 	newHrEmployeeRepo := hr_employee_repo.NewHrEmployeeRepository(db)
 
 	newOrgRepo := organizationrepositories.NewOrganizationRepo(db, redis)
-	newSignupService := signupservice.NewSignupService(newOrgRepo, newHrEmployeeRepo, newPolicyEngineRepo, newUIRendererRepo, newHotelRepo, newBarRepo, newRestaurantRepo, newKitchenRepo)
+	newSignupService := signupservice.NewSignupService(newOrgRepo, newHrEmployeeRepo, newPolicyEngineRepo, newUIRendererRepo, newHotelRepo, newBarRepo, newRestaurantRepo, newKitchenRepo, newMenuRepo)
 	newSignupController := signupcontrollers.NewSignUpController(newSignupService)
 
 	newAuthService := authservice.NewAuthService(newOrgRepo, newHrEmployeeRepo)

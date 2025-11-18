@@ -34,11 +34,17 @@ type Restaurant struct {
 	DisplayName string
 	GSTNumber   string
 	FSSAINumber string
+	CINNumber   string
+
+	ContactEmail  string
+	ContactNumber string
+	Manager_name  string
 
 	Address string
 	City    string
 	State   string
 	Pincode string
+	Country string
 }
 
 // ---------------------------

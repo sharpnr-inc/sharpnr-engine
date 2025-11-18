@@ -79,3 +79,33 @@ type KitchenDTO struct {
 	ID   uuid.UUID `json:"id"`
 	Name string    `json:"name"`
 }
+
+// This is the struct fir the Updating the Restaurant
+type Restaurant_UpdateOrEdit_General_Details_REQ struct {
+	HotelId string `json:"hotel_id"`
+
+	// Names
+	HotelLegalName   string `json:"hotel_legal_name"`
+	HotelDisplayName string `json:"hotel_display_name"`
+
+	// Govt Registration Numbers
+	FSSAINumber string `json:"fssai_number"`
+	GSTNumber   string `json:"gst_number"`
+	CINNumber   string `json:"cin_number"`
+
+	// Address
+	AddressLine string `json:"address_line"`
+	City        string `json:"city"`
+	State       string `json:"state"`
+	Country     string `json:"country"`
+	Pincode     string `json:"pincode"`
+
+	// Contact
+	EmailAddress    string `json:"email_address"`
+	ContactNumber   string `json:"contact_number"`
+	SecondaryNumber string `json:"secondary_number"`
+
+	// Manager Details
+	ManagerName          string `json:"manager_name"`
+	ManagerContactNumber string `json:"manager_contact_number"`
+}

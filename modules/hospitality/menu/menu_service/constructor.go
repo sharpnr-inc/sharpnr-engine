@@ -26,11 +26,6 @@ func (m *menuService) CreateCategory(category *hospitalitymodels.MenuCategory) e
 	panic("unimplemented")
 }
 
-// CreateMenuGroup implements MenuService.
-func (m *menuService) CreateMenuGroup(group *hospitalitymodels.MenuGroup) error {
-	panic("unimplemented")
-}
-
 // CreateMenuItem implements MenuService.
 func (m *menuService) CreateMenuItem(item *hospitalitymodels.MenuItem) error {
 	panic("unimplemented")
@@ -88,11 +83,6 @@ func (m *menuService) GetAddonGroupsByItem(itemID uuid.UUID) ([]hospitalitymodel
 
 // GetAddonsByGroup implements MenuService.
 func (m *menuService) GetAddonsByGroup(groupID uuid.UUID) ([]hospitalitymodels.Addon, error) {
-	panic("unimplemented")
-}
-
-// GetAllMenuGroups implements MenuService.
-func (m *menuService) GetAllMenuGroups(orgID uuid.UUID) ([]hospitalitymodels.MenuGroup, error) {
 	panic("unimplemented")
 }
 

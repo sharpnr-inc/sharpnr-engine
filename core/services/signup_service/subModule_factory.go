@@ -340,6 +340,22 @@ func (s *signupService) SetUpBarHotelRestaurant(ctx context.Context, org *models
 		return fmt.Errorf("failed to create bar for org %s: %w", org.ID, err)
 	}
 
+	// ➕ Create BAR Default MenuGroup
+	barMenuGroup := &hospitalitymodels.MenuGroup{
+		ID:             uuid.New(),
+		OrganizationID: org.ID,
+		Name:           "Bar Menu",
+		Description:    "Default bar menu created during setup",
+		Categories:     nil,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+		Type:           "BAR",
+	}
+
+	if err := s.menuRepo.CreateMenuGroup(ctx, barMenuGroup); err != nil {
+		return fmt.Errorf("failed to create bar menu group: %w", err)
+	}
+
 	hotel := &hospitalitymodels.Hotel{
 		ID:             uuid.New(),
 		OrganizationID: org.ID,
@@ -353,6 +369,22 @@ func (s *signupService) SetUpBarHotelRestaurant(ctx context.Context, org *models
 	}
 	if err := s.hotelRepo.CreateHotel(ctx, hotel); err != nil {
 		return fmt.Errorf("failed to create hotel for org %s: %w", org.ID, err)
+	}
+
+	// ➕ Create HOTEL Default MenuGroup
+	hotelMenuGroup := &hospitalitymodels.MenuGroup{
+		ID:             uuid.New(),
+		OrganizationID: org.ID,
+		Name:           "Room Service Menu",
+		Description:    "Default hotel menu created during setup",
+		Categories:     nil,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+		Type:           "HOTEL",
+	}
+
+	if err := s.menuRepo.CreateMenuGroup(ctx, hotelMenuGroup); err != nil {
+		return fmt.Errorf("failed to create hotel menu group: %w", err)
 	}
 
 	defaultRestaurant := &hospitalitymodels.Restaurant{
@@ -370,6 +402,21 @@ func (s *signupService) SetUpBarHotelRestaurant(ctx context.Context, org *models
 	}
 	if err := s.restaurantRepo.CreateRestaurant(ctx, defaultRestaurant); err != nil {
 		return fmt.Errorf("failed to create restaurant for org %s: %w", org.ID, err)
+	}
+
+	restaurantMenuGroup := &hospitalitymodels.MenuGroup{
+		ID:             uuid.New(),
+		OrganizationID: org.ID,
+		Name:           "Restaurant Menu",
+		Description:    "Default restaurant menu created during setup",
+		Categories:     nil,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+		Type:           "RESTAURANT",
+	}
+
+	if err := s.menuRepo.CreateMenuGroup(ctx, restaurantMenuGroup); err != nil {
+		return fmt.Errorf("failed to create restaurant menu group: %w", err)
 	}
 
 	newRendererID := uuid.New()
