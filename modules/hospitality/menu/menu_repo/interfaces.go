@@ -31,14 +31,14 @@ type MenuRepositoryInterface interface {
 	// -------------------------------
 	CreateSubCategory(ctx context.Context, sub *hospitalitymodels.MenuSubCategory) error
 	GetSubCategoriesByCategory(categoryID uuid.UUID) ([]hospitalitymodels.MenuSubCategory, error)
-	GetSubCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuSubCategory, error)
+	GetSubCategoryByID(ctx context.Context, id uuid.UUID) (*hospitalitymodels.MenuSubCategory, error)
 	UpdateSubCategory(subCat *hospitalitymodels.MenuSubCategory) error
 	DeleteSubCategory(id uuid.UUID) error
 
 	// -------------------------------
 	// 🍽️ MENU ITEMS
 	// -------------------------------
-	CreateMenuItem(item *hospitalitymodels.MenuItem) error
+	CreateMenuItem(ctx context.Context, item *hospitalitymodels.MenuItem) error
 	GetItemsBySubCategory(subCatID uuid.UUID) ([]hospitalitymodels.MenuItem, error)
 	GetMenuItemByID(id uuid.UUID) (*hospitalitymodels.MenuItem, error)
 	UpdateMenuItem(item *hospitalitymodels.MenuItem) error

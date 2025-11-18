@@ -21,11 +21,6 @@ func (m *menuService) CreateAddonGroup(group *hospitalitymodels.AddonGroup) erro
 	panic("unimplemented")
 }
 
-// CreateMenuItem implements MenuService.
-func (m *menuService) CreateMenuItem(item *hospitalitymodels.MenuItem) error {
-	panic("unimplemented")
-}
-
 // CreateVariant implements MenuService.
 func (m *menuService) CreateVariant(variant *hospitalitymodels.MenuVariant) error {
 	panic("unimplemented")

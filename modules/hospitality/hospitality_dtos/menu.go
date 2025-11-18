@@ -77,3 +77,13 @@ type Menu_CreateSubCategory_REQ struct {
 	SubCategoryName string `json:"sub_category_name"`
 	SubCategoryDesc string `json:"sub_category_description"`
 }
+
+type Menu_CreateMenuItem_REQ struct {
+	CategoryID    string  `json:"category_id"`
+	SubCategoryID string  `json:"sub_category_id"`
+	Name          string  `json:"name"`
+	Description   string  `json:"description"`
+	IsVeg         bool    `json:"is_veg"`
+	BasePrice     float64 `json:"base_price"`
+	ServedBy      string  `json:"served_by"` // optional, default "KITCHEN"
+}

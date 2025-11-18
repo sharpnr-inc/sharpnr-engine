@@ -21,11 +21,6 @@ func (m *menuRepo) CreateAddonGroup(group *hospitalitymodels.AddonGroup) error {
 	panic("unimplemented")
 }
 
-// CreateMenuItem implements MenuRepository.
-func (m *menuRepo) CreateMenuItem(item *hospitalitymodels.MenuItem) error {
-	panic("unimplemented")
-}
-
 // CreateVariant implements MenuRepository.
 func (m *menuRepo) CreateVariant(variant *hospitalitymodels.MenuVariant) error {
 	panic("unimplemented")
@@ -88,11 +83,6 @@ func (m *menuRepo) GetMenuItemByID(id uuid.UUID) (*hospitalitymodels.MenuItem, e
 
 // GetSubCategoriesByCategory implements MenuRepository.
 func (m *menuRepo) GetSubCategoriesByCategory(categoryID uuid.UUID) ([]hospitalitymodels.MenuSubCategory, error) {
-	panic("unimplemented")
-}
-
-// GetSubCategoryByID implements MenuRepository.
-func (m *menuRepo) GetSubCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuSubCategory, error) {
 	panic("unimplemented")
 }
 

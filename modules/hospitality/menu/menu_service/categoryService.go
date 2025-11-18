@@ -82,7 +82,7 @@ func (s *menuService) GetCategoriesByGroup(ctx context.Context, orgID uuid.UUID,
 					Id:          item.ID,
 					Name:        item.Name,
 					Description: item.Description,
-					// Price:       item.Price,
+					Price:       float32(item.BasePrice),
 				})
 			}
 

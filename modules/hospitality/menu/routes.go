@@ -49,7 +49,7 @@ func MenuRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	// -------------------------------
 	// 🍽️ MENU ITEMS
 	// -------------------------------
-	menuRoutes.POST("/items", func(c *gin.Context) {})                  // Add Menu Item
+	menuRoutes.POST("/items", newMenuController.CreateMenuItem)         // Add Menu Item
 	menuRoutes.GET("/items", func(c *gin.Context) {})                   // Get All Items
 	menuRoutes.GET("/items/:id", func(c *gin.Context) {})               // Get Item by ID
 	menuRoutes.GET("/subcategories/:id/items", func(c *gin.Context) {}) // Get Items by SubCategory
