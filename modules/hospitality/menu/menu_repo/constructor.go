@@ -21,11 +21,6 @@ func (m *menuRepo) CreateAddonGroup(group *hospitalitymodels.AddonGroup) error {
 	panic("unimplemented")
 }
 
-// CreateCategory implements MenuRepository.
-func (m *menuRepo) CreateCategory(category *hospitalitymodels.MenuCategory) error {
-	panic("unimplemented")
-}
-
 // CreateMenuItem implements MenuRepository.
 func (m *menuRepo) CreateMenuItem(item *hospitalitymodels.MenuItem) error {
 	panic("unimplemented")

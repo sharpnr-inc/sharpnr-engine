@@ -13,14 +13,14 @@ type MenuRepositoryInterface interface {
 	// -------------------------------
 	CreateMenuGroup(ctx context.Context, group *hospitalitymodels.MenuGroup) error
 	GetAllMenuGroups(ctx context.Context, orgID uuid.UUID) ([]hospitalitymodels.MenuGroup, error)
-	GetMenuGroupByID(id uuid.UUID) (*hospitalitymodels.MenuGroup, error)
+	GetMenuGroupByID(ctx context.Context, groupID uuid.UUID) (*hospitalitymodels.MenuGroup, error)
 	UpdateMenuGroup(group *hospitalitymodels.MenuGroup) error
 	DeleteMenuGroup(id uuid.UUID) error
 
 	// -------------------------------
 	// 🗂️ MENU CATEGORIES
 	// -------------------------------
-	CreateCategory(category *hospitalitymodels.MenuCategory) error
+	CreateCategory(ctx context.Context, category *hospitalitymodels.MenuCategory) error
 	GetCategoriesByGroup(groupID uuid.UUID) ([]hospitalitymodels.MenuCategory, error)
 	GetCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuCategory, error)
 	UpdateCategory(category *hospitalitymodels.MenuCategory) error

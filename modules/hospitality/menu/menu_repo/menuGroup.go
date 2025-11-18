@@ -39,9 +39,17 @@ func (m *menuRepo) GetAllMenuGroups(ctx context.Context, orgID uuid.UUID) ([]hos
 	return groups, nil
 }
 
-// GetMenuGroupByID implements MenuRepository.
-func (m *menuRepo) GetMenuGroupByID(id uuid.UUID) (*hospitalitymodels.MenuGroup, error) {
-	panic("unimplemented")
+// Add helper to get MenuGroup for org validation
+func (m *menuRepo) GetMenuGroupByID(ctx context.Context, groupID uuid.UUID) (*hospitalitymodels.MenuGroup, error) {
+	var group hospitalitymodels.MenuGroup
+	err := m.db.WithContext(ctx).
+		Where("id = ?", groupID).
+		First(&group).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return &group, nil
 }
 
 // UpdateMenuGroup implements MenuRepository.

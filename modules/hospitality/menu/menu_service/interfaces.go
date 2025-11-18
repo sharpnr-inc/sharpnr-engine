@@ -21,7 +21,7 @@ type MenuService interface {
 	// -------------------------------
 	// 🗂️ MENU CATEGORIES
 	// -------------------------------
-	CreateCategory(category *hospitalitymodels.MenuCategory) error
+	CreateCategory(ctx context.Context, req *hospitalitydtos.Menu_CreateCategoryINMenuGroup_REQ, orgId uuid.UUID) error
 	GetCategoriesByGroup(groupID uuid.UUID) ([]hospitalitymodels.MenuCategory, error)
 	GetCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuCategory, error)
 	UpdateCategory(category *hospitalitymodels.MenuCategory) error

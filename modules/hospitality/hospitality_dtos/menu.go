@@ -38,6 +38,15 @@ type Menu_GetAllMenuGroup_RESPONSE struct {
 	Description string
 }
 
-// type Menu_GetAllMenuGroup_LIST_RESPONSE struct {
-// 	Menulist []Menu_GetAllMenuGroup_RESPONSE `json:"menu_list"`
-// }
+type Menu_CreateCategoryINMenuGroup_REQ struct {
+	MenuGroupId         string `json:"menu_group_id"`
+	CategoryName        string `json:"category_name"`
+	CategoryDescription string `json:"category_description"`
+}
+
+type Menu_CreateSubCategoryINCategory_REQ struct {
+	MenuGroupId            string
+	CategoryId             string
+	SubCategoryName        string
+	SubCategoryDescription string
+}

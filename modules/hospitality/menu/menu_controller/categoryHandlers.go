@@ -3,7 +3,10 @@ package menucontroller
 // This is Category Handlers
 import (
 	"net/http"
+	dto "sharpnr-engine/core/dtos"
+	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -20,6 +23,54 @@ import (
 // @Failure 400 {object} map[string]string "Invalid organization UUID format"
 // @Router /hospitality-menu/categories [post]
 func (c *menuController) CreateCategoryInMenu(ctx *gin.Context) {
+
+	orgUUID, exists := ctx.Get("OrgUUID")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
+		return
+	}
+
+	orgID, ok := orgUUID.(uuid.UUID)
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
+		return
+	}
+
+	var req hospitalitydtos.Menu_CreateCategoryINMenuGroup_REQ
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	// Call service
+	err := c.menuService.CreateCategory(ctx, &req, orgID)
+	if err != nil {
+		res := dto.Response[any]{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Failed to create category",
+			Error: dto.ErrorResponse{
+				Message: err.Error(),
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
+		}
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	// Success response
+	res := dto.Response[any]{
+		StatusCode: http.StatusOK,
+		Message:    "Category created successfully",
+		Error: dto.ErrorResponse{
+			Message: "",
+			IsError: false,
+		},
+		Data:      nil,
+		Timestamp: time.Now(),
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (c *menuController) GetAllCategoryInMenu(ctx *gin.Context) {
