@@ -11,3 +11,7 @@ func (r *barRepository) CreateBar(ctx context.Context, bar *hospitalitymodels.Ba
 	}
 	return nil
 }
+
+func (r *barRepository) CreateFloor(ctx context.Context, floor *hospitalitymodels.BarFloor) error {
+	return r.db.WithContext(ctx).Create(floor).Error
+}

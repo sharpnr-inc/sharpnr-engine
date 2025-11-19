@@ -57,10 +57,11 @@ type BAR_UpdateBarDetails_Response struct {
 	State                          string
 	Country                        string
 	Pincode                        string
+	Floors                         []BarFloorResponse  `json:"floors"`
+	Tables                         []BarTablesResponse `json:"tables"`
 }
 
-type BAR_FloorLayoutList struct {
-}
-
-type BAR_TablesLayout struct {
+type BAR_Add_Floor_Req struct {
+	BarId     uuid.UUID
+	FloorName string
 }

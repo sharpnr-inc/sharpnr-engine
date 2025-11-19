@@ -18,6 +18,7 @@ func BarRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	barRoute := v1.Group("/bar")
 
 	barRoute.GET("/get", newBarController.GetBar)
+	barRoute.POST("/add-floor", newBarController.AddFloorInBar)
 	barRoute.POST("/add-table")
 	barRoute.POST("/update-table")
 	barRoute.GET("/table/:tableId")
