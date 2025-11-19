@@ -47,10 +47,17 @@ type MenuRepositoryInterface interface {
 	// -------------------------------
 	// 🧩 VARIANTS
 	// -------------------------------
-	CreateVariant(variant *hospitalitymodels.MenuVariant) error
+	CreateVariant(ctx context.Context, variant *hospitalitymodels.MenuVariant) error
 	GetVariantsByItem(itemID uuid.UUID) ([]hospitalitymodels.MenuVariant, error)
 	UpdateVariant(variant *hospitalitymodels.MenuVariant) error
 	DeleteVariant(id uuid.UUID) error
+
+	// -------------------------------
+	// 🧩 VARIANTS GROUP
+	// -------------------------------
+	CreateVariantGroup(ctx context.Context, variant *hospitalitymodels.MenuVariantGroup) error
+
+	UpdateVariantGroup(ctx context.Context, variant *hospitalitymodels.MenuVariantGroup) error
 
 	// -------------------------------
 	// ➕ ADDON GROUPS

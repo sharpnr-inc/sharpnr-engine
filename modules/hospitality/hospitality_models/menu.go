@@ -103,8 +103,8 @@ type MenuItem struct {
 }
 
 type MenuVariantGroup struct {
-	ID            uuid.UUID     `gorm:"type:uuid;primaryKey"`
-	MenuItemID    uuid.UUID     `gorm:"type:uuid;not null"`
+	ID            uuid.UUID     `gorm:"primaryKey"`
+	MenuItemID    uuid.UUID     `gorm:"not null"`
 	MenuItem      MenuItem      `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
 	Name          string        `gorm:"size:50;not null"` // e.g., "Size", "Crust", "Spice Level"
 	IsMultiSelect bool          `gorm:"default:false"`    // user can pick multiple? (e.g., toppings)
@@ -118,14 +118,15 @@ type MenuVariantGroup struct {
 // 3️⃣ MENU VARIANT
 // -------------------------------
 type MenuVariant struct {
-	ID        uuid.UUID        `gorm:"type:uuid;primaryKey"`
-	GroupID   uuid.UUID        `gorm:"type:uuid;not null"`
-	Group     MenuVariantGroup `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE;"`
-	Name      string           `gorm:"size:50;not null"`
-	Price     float64          `gorm:"not null"`
-	IsActive  bool             `gorm:"default:true"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID         uuid.UUID        `gorm:"type:uuid;primaryKey"`
+	GroupID    uuid.UUID        `gorm:"type:uuid;not null"`
+	Group      MenuVariantGroup `gorm:"constraint:OnDelete:CASCADE;"`
+	MenuItemID uuid.UUID        `gorm:"type:uuid;not null"` // FIXED (was MenuItemId without gorm tag)
+	Name       string           `gorm:"size:50;not null"`
+	Price      float64          `gorm:"not null"`
+	IsActive   bool             `gorm:"default:true"`
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 // -------------------------------

@@ -1,6 +1,7 @@
 package menurepo
 
 import (
+	"context"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 
 	"github.com/google/uuid"
@@ -21,9 +22,8 @@ func (m *menuRepo) CreateAddonGroup(group *hospitalitymodels.AddonGroup) error {
 	panic("unimplemented")
 }
 
-// CreateVariant implements MenuRepository.
-func (m *menuRepo) CreateVariant(variant *hospitalitymodels.MenuVariant) error {
-	panic("unimplemented")
+func (r *menuRepo) CreateVariant(ctx context.Context, variant *hospitalitymodels.MenuVariant) error {
+	return r.db.WithContext(ctx).Create(&variant).Error
 }
 
 // DeleteAddon implements MenuRepository.

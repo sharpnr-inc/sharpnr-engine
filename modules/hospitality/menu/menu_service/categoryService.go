@@ -41,7 +41,11 @@ func (s *menuService) CreateCategory(ctx context.Context, req *hospitalitydtos.M
 	return nil
 }
 
-func (s *menuService) GetCategoriesByGroup(ctx context.Context, orgID uuid.UUID, groupID uuid.UUID) ([]hospitalitydtos.Menu_Category_RESPONSE, error) {
+func (s *menuService) GetCategoriesByGroup(
+	ctx context.Context,
+	orgID uuid.UUID,
+	groupID uuid.UUID,
+) ([]hospitalitydtos.Menu_Category_RESPONSE, error) {
 
 	// Validate the menu group exists and belongs to the same organization
 	group, err := s.menuRepo.GetMenuGroupByID(ctx, groupID)
@@ -58,32 +62,89 @@ func (s *menuService) GetCategoriesByGroup(ctx context.Context, orgID uuid.UUID,
 		return nil, err
 	}
 
-	// Map models → DTO
 	resp := make([]hospitalitydtos.Menu_Category_RESPONSE, 0)
 
 	for _, c := range categories {
+
 		cat := hospitalitydtos.Menu_Category_RESPONSE{
 			Id:          c.ID,
 			Name:        c.Name,
 			Description: c.Description,
 		}
 
-		// Subcategories
+		// SUBCATEGORIES
 		for _, sub := range c.SubCategories {
+
 			subDto := hospitalitydtos.Menu_SubCategory_RESPONSE{
 				Id:          sub.ID,
 				Name:        sub.Name,
 				Description: sub.Description,
 			}
 
-			// Menu Items
+			// MENU ITEMS
 			for _, item := range sub.MenuItems {
-				subDto.MenuItems = append(subDto.MenuItems, hospitalitydtos.Menu_Item_RESPONSE{
+
+				itemDto := hospitalitydtos.Menu_Item_RESPONSE{
 					Id:          item.ID,
 					Name:        item.Name,
 					Description: item.Description,
 					Price:       float32(item.BasePrice),
-				})
+				}
+
+				// ----------------------------------------
+				// VARIANT GROUPS
+				// ----------------------------------------
+				for _, vg := range item.VariantGroups {
+
+					vgDto := hospitalitydtos.Menu_VariantGroup_RESPONSE{
+						Id:            vg.ID,
+						Name:          vg.Name,
+						IsMultiSelect: vg.IsMultiSelect,
+					}
+
+					// VARIANTS
+					for _, v := range vg.Variants {
+						vgDto.Variants = append(
+							vgDto.Variants,
+							hospitalitydtos.Menu_Variant_RESPONSE{
+								Id:    v.ID,
+								Name:  v.Name,
+								Price: v.Price,
+							},
+						)
+					}
+
+					itemDto.VariantGroups = append(itemDto.VariantGroups, vgDto)
+				}
+
+				// ----------------------------------------
+				// ADDON GROUPS + ADDONS (YOUR DTO)
+				// ----------------------------------------
+				for _, ag := range item.AddonGroups {
+
+					// Map to Menu_AddGroupList DTO
+					addGroupDto := hospitalitydtos.Menu_AddGroupList{
+						ID:   ag.ID,
+						Name: ag.Name,
+					}
+
+					// Map AddOns
+					for _, ad := range ag.Addons {
+						addGroupDto.AddOns = append(
+							addGroupDto.AddOns,
+							hospitalitydtos.Menu_AddOns{
+								ID:    ad.ID,
+								Name:  ad.Name,
+								Price: ad.Price,
+							},
+						)
+					}
+
+					// Add to itemDto
+					itemDto.AddonGroups = append(itemDto.AddonGroups, addGroupDto)
+				}
+
+				subDto.MenuItems = append(subDto.MenuItems, itemDto)
 			}
 
 			cat.SubCategories = append(cat.SubCategories, subDto)

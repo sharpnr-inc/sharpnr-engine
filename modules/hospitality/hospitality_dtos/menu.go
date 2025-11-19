@@ -65,13 +65,6 @@ type Menu_SubCategory_RESPONSE struct {
 	MenuItems   []Menu_Item_RESPONSE `json:"menu_items"`
 }
 
-type Menu_Item_RESPONSE struct {
-	Id          uuid.UUID `json:"id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Price       float32   `json:"price"`
-}
-
 type Menu_CreateSubCategory_REQ struct {
 	CategoryID      string `json:"category_id"`
 	SubCategoryName string `json:"sub_category_name"`
@@ -88,6 +81,49 @@ type Menu_CreateMenuItem_REQ struct {
 	ServedBy      string  `json:"served_by"` // optional, default "KITCHEN"
 }
 
-type Menu_AddMenuItemVariant_REQ struct {
-	MenuItemId string
+type Menu_VariantGroup_RESPONSE struct {
+	Id            uuid.UUID               `json:"id"`
+	Name          string                  `json:"name"`
+	IsMultiSelect bool                    `json:"is_multi_select"`
+	Variants      []Menu_Variant_RESPONSE `json:"variants"`
+}
+
+//------------------------------------------------------------------------------//
+
+type Menu_Item_RESPONSE struct {
+	Id            uuid.UUID                    `json:"id"`
+	Name          string                       `json:"name"`
+	Description   string                       `json:"description"`
+	Price         float32                      `json:"price"`
+	VariantGroups []Menu_VariantGroup_RESPONSE `json:"variant_groups"`
+	AddonGroups   []Menu_AddGroupList          `json:"add_groups"`
+}
+
+type Menu_Variant_RESPONSE struct {
+	Id    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+	Price float64   `json:"price"`
+}
+
+type Menu_ADD_Variant_REQ struct {
+	Name  string  `json:"name"`
+	Price float64 `json:"price"`
+}
+
+type Menu_CreateVariantGroupAndVariant_REQ struct {
+	MenuItemID  uuid.UUID              `json:"menu_item_id"`
+	VariantName string                 `json:"variant_name"`
+	Variant     []Menu_ADD_Variant_REQ `json:"variant"`
+}
+
+type Menu_AddGroupList struct {
+	ID     uuid.UUID
+	Name   string
+	AddOns []Menu_AddOns
+}
+
+type Menu_AddOns struct {
+	ID    uuid.UUID
+	Name  string
+	Price float64
 }

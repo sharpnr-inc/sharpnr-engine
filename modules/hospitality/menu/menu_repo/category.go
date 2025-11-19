@@ -20,6 +20,10 @@ func (m *menuRepo) GetCategoriesByGroup(ctx context.Context, groupID uuid.UUID) 
 		Where("group_id = ?", groupID).
 		Preload("SubCategories").
 		Preload("SubCategories.MenuItems").
+		Preload("SubCategories.MenuItems.VariantGroups").
+		Preload("SubCategories.MenuItems.VariantGroups.Variants").
+		Preload("SubCategories.MenuItems.AddonGroups").
+		Preload("SubCategories.MenuItems.AddonGroups.Addons").
 		Find(&categories).Error
 
 	if err != nil {
