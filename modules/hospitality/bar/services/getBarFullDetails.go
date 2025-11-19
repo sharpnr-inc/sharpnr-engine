@@ -28,6 +28,15 @@ func (s *barServices) GetBarDetailsConfig(ctx context.Context, orgId uuid.UUID) 
 		IsKitchen:                      bar.IsKitchen,
 		KitchenId:                      *bar.KitchenID,
 		IsShareLegalDetailsWithMainOrg: bar.IsShareLegalDetailsWithMainOrg,
+		DisplayName:                    bar.DisplayName,
+		LegalName:                      bar.LegalName,
+		GstNumber:                      bar.GSTNumber,
+		IsMultifloor:                   bar.IsMultifloor,
+		AddressLine:                    bar.AddressLine,
+		City:                           bar.City,
+		State:                          bar.State,
+		Country:                        bar.Country,
+		Pincode:                        bar.Pincode,
 	}
 
 	return res, nil

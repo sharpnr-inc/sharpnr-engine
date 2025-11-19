@@ -42,6 +42,14 @@ type Bar struct {
 	RegisteredAddress string `gorm:"size:255" json:"registered_address"`
 	GSTNumber         string `gorm:"size:20" json:"gst_number"`
 	CINNumber         string `gorm:"size:20" json:"cin_number"`
+	FSSAINumber       string `gorm:"size:20" json:"fssai_number"`
+
+	IsMultifloor bool   `gorm:"default:false" json:"is_multifloor"`
+	AddressLine  string `gorm:"size:255" json:"address_line"`
+	City         string `gorm:"size:100" json:"city"`
+	State        string `gorm:"size:100" json:"state"`
+	Country      string `gorm:"size:100" json:"country"`
+	Pincode      string `gorm:"size:20" json:"pincode"`
 }
 
 // ---------------------------------------------

@@ -48,4 +48,19 @@ type BAR_UpdateBarDetails_Response struct {
 	IsKitchen                      bool
 	KitchenId                      uuid.UUID
 	IsShareLegalDetailsWithMainOrg bool
+	DisplayName                    string
+	LegalName                      string
+	GstNumber                      string
+	IsMultifloor                   bool
+	AddressLine                    string
+	City                           string
+	State                          string
+	Country                        string
+	Pincode                        string
+}
+
+type BAR_FloorLayoutList struct {
+}
+
+type BAR_TablesLayout struct {
 }
