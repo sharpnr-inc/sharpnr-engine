@@ -54,3 +54,43 @@ func (c *barController) GetBarDetailsConfig(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, response)
 }
+
+func (c *barController) Update(ctx *gin.Context) {
+
+	// Get OrgUUID from context
+	orgUUID, exists := ctx.Get("OrgUUID")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
+		return
+	}
+
+	orgID, ok := orgUUID.(uuid.UUID)
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
+		return
+	}
+
+	// Bind JSON
+	var req hospitalitydtos.BAR_BarUpdateReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// BarID is required
+	if *req.ID == uuid.Nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Bar ID is required"})
+		return
+	}
+
+	// Call service
+	err := c.barService.UpdateBar(ctx, orgID, req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Bar updated successfully",
+	})
+}

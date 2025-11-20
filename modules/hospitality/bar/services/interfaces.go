@@ -14,4 +14,6 @@ type BarServices interface {
 	CreateTablesInBar(ctx context.Context, orgId uuid.UUID, barId uuid.UUID, floorId uuid.UUID) (*hospitalitydtos.BarTablesResponse, error)
 	GetBarDetailsConfig(ctx context.Context, orgId uuid.UUID) (*hospitalitydtos.BAR_UpdateBarDetails_Response, error)
 	CreateFloor(ctx context.Context, orgId uuid.UUID, req hospitalitydtos.BAR_Add_Floor_Req) error
+
+	UpdateBar(ctx context.Context, orgId uuid.UUID, req hospitalitydtos.BAR_BarUpdateReq) error
 }

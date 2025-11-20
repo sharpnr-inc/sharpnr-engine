@@ -15,4 +15,6 @@ type BarRepository interface {
 	GetBarByOrgId(ctx context.Context, orgId uuid.UUID) (*hospitalitymodels.Bar, error)
 
 	CreateFloor(ctx context.Context, floor *hospitalitymodels.BarFloor) error
+
+	UpdateBarDetails(ctx context.Context, barID uuid.UUID, updates map[string]interface{}) error
 }

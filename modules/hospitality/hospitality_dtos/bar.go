@@ -65,3 +65,37 @@ type BAR_Add_Floor_Req struct {
 	BarId     uuid.UUID
 	FloorName string
 }
+
+type BAR_BarUpdateReq struct {
+	// Basic Details
+	ID                *uuid.UUID
+	Name              *string `json:"name"`
+	DisplayName       *string `json:"display_name"`
+	LegalName         *string `json:"legal_name"`
+	RegisteredAddress *string `json:"registered_address"`
+
+	// Organization (usually not updated, but kept for flexibility)
+	OrganizationID *uuid.UUID `json:"organization_id"`
+
+	// Operating Hours
+	OpeningTime *time.Time `json:"opening_time"`
+	ClosingTime *time.Time `json:"closing_time"`
+
+	// Kitchen Info
+	IsKitchen *bool      `json:"is_kitchen"`
+	KitchenID *uuid.UUID `json:"kitchen_id"`
+
+	// Legal Details
+	IsShareLegalDetailsWithMainOrg *bool   `json:"is_share_legal_details_with_main_org"`
+	GSTNumber                      *string `json:"gst_number"`
+	CINNumber                      *string `json:"cin_number"`
+	FSSAINumber                    *string `json:"fssai_number"`
+
+	// Location Details
+	IsMultifloor *bool   `json:"is_multifloor"`
+	AddressLine  *string `json:"address_line"`
+	City         *string `json:"city"`
+	State        *string `json:"state"`
+	Country      *string `json:"country"`
+	Pincode      *string `json:"pincode"`
+}
