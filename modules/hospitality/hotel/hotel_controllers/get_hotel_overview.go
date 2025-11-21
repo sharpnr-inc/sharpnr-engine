@@ -9,6 +9,9 @@ import (
 )
 
 func (s *HotelController) GetHotelOverview(ctx *gin.Context) {
+	/*
+		TODO We have have fetch the Data How many Room are avaialble
+	*/
 	data := dto.Response[any]{
 		StatusCode: 200,
 		Message:    "Fetched Data",

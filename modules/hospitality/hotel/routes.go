@@ -26,5 +26,7 @@ func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	hotel_routes.GET("/bookings", newHotelController.GetHotelsBookings)
 	hotel_routes.GET("/request", newHotelController.GetRequestInHotels)
 	hotel_routes.POST("/configure", newHotelController.ConfigureAndUpdate)
+	hotel_routes.GET("/frontdesk", newHotelController.GetHotelFrontDesk)
+	hotel_routes.GET("/room-status/:hotelId/:roomId/:status", newHotelController.UpdateRoomStatus)
 
 }

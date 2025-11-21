@@ -53,8 +53,8 @@ type Room struct {
 	ID             string              `gorm:"type:uuid;primaryKey"`
 	FloorID        string              `gorm:"type:uuid;not null"`
 	Floor          HotelFloor          `gorm:"foreignKey:FloorID;constraint:OnDelete:CASCADE;"`
-	HotelID        string              `gorm:"type:uuid;not null"`
-	OrganizationID string              `gorm:"type:uuid;not null"`
+	HotelID        uuid.UUID           `gorm:"type:uuid;not null"`
+	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
 	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
 	Price          int
 	Description    string
@@ -63,13 +63,48 @@ type Room struct {
 	RoomName  string `gorm:"size:100;not null"`
 	BedSize   string `gorm:"size:50"`
 	Amenities string `gorm:"type:text"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type HotelBooking struct {
-	Id             uuid.UUID
-	HotelId        uuid.UUID
-	GuestName      string
-	GuestMobile    string
-	RoomId         string
-	OrganizationId uuid.UUID
+	Id      uuid.UUID
+	HotelId uuid.UUID
+	RoomId  string
+	Room    Room
+	Guest   HotelGuests
+	Status  string `gorm:"size:20"` // reserved, checked_in, checked_out, cancelled
+	Order   HotelBookingOrder
+}
+
+type HotelBookingOrder struct {
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
+	BookingID uuid.UUID
+	OrderType string `gorm:"size:50"` // restaurant, room_service, bar, laundry, spa
+	Status    string `gorm:"size:20"` // pending, processing, completed, cancelled
+	Total     float64
+}
+
+type HotelBookingOrderItem struct {
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
+	BookingOrderID uuid.UUID
+	ItemName       string `gorm:"size:200"`
+	ItemId         uuid.UUID
+	Quantity       int     `gorm:"not null"`
+	Price          float64 `gorm:"not null"`
+	BookingOrder   HotelBookingOrder
+}
+
+type HotelService struct {
+	ID    uuid.UUID `gorm:"type:uuid;primaryKey"`
+	Name  string    `gorm:"size:100;not null"`
+	Type  string    `gorm:"size:50"` // spa, laundry, housekeeping
+	Price float64   `gorm:"not null"`
+}
+
+type HotelGuests struct {
+	ID     uuid.UUID
+	Name   string
+	Mobile string
+	Email  string
 }

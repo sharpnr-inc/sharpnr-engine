@@ -22,11 +22,6 @@ func (h *hotelRepository) GetFloorsByHotel(ctx context.Context, hotelID uuid.UUI
 	panic("unimplemented")
 }
 
-// GetRoomByID implements HotelRepository.
-func (h *hotelRepository) GetRoomByID(ctx context.Context, roomID uuid.UUID) (*hospitalitymodels.Room, error) {
-	panic("unimplemented")
-}
-
 // UpdateFloor implements HotelRepository.
 func (h *hotelRepository) UpdateFloor(ctx context.Context, floor *hospitalitymodels.HotelFloor) error {
 	panic("unimplemented")
@@ -34,11 +29,6 @@ func (h *hotelRepository) UpdateFloor(ctx context.Context, floor *hospitalitymod
 
 func (h *hotelRepository) UpdateHotel(ctx context.Context, hotel *hospitalitymodels.Hotel) error {
 	return h.db.WithContext(ctx).Save(hotel).Error
-}
-
-// UpdateRoom implements HotelRepository.
-func (h *hotelRepository) UpdateRoom(ctx context.Context, room *hospitalitymodels.Room) error {
-	panic("unimplemented")
 }
 
 func NewHotelRepository(db *gorm.DB) *hotelRepository {

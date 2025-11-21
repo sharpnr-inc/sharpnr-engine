@@ -31,7 +31,7 @@ type HotelRepository interface {
 	// ------------------------------------------------------------
 	CreateRoom(ctx context.Context, room *hospitalitymodels.Room) error
 	GetRoomByID(ctx context.Context, roomID uuid.UUID) (*hospitalitymodels.Room, error)
-	UpdateRoom(ctx context.Context, room *hospitalitymodels.Room) error
+	UpdateRoom(ctx context.Context, fields map[string]interface{}, roomId uuid.UUID) error
 	DeleteRoom(ctx context.Context, roomID uuid.UUID) error
 
 	GetFloorByID(ctx context.Context, id string) (*hospitalitymodels.HotelFloor, error)

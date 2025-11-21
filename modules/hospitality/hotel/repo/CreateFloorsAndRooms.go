@@ -37,6 +37,21 @@ func (h *hotelRepository) GetFloorByID(ctx context.Context, id string) (*hospita
 	return &floor, nil
 }
 
+// GetRoomByID implements HotelRepository.
+func (h *hotelRepository) GetRoomByID(ctx context.Context, roomID uuid.UUID) (*hospitalitymodels.Room, error) {
+	var room hospitalitymodels.Room
+
+	err := h.db.WithContext(ctx).
+		Where("id = ?", roomID).
+		First(&room).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &room, nil
+}
+
 // DeleteFloor implements HotelRepository.
 func (h *hotelRepository) DeleteFloor(ctx context.Context, floorID uuid.UUID) error {
 	panic("unimplemented")

@@ -58,3 +58,12 @@ type Hotel_UpdateOrConfigure_REQUEST struct {
 	HotelGstNumber   string `json:"hotel_gst_number"`
 	HotelFSSAINumber string `json:"hotel_fssai_number"`
 }
+
+// This is the Response Struct for the Hotel Booking Terminal
+// which will be used to booking and enquiry on Front desk
+type HotelBookingTerminal_Response struct {
+	Hotel_Id uuid.UUID
+	Org_Id   uuid.UUID
+	// Floor response is reused here for
+	Floors []FloorResponse
+}
