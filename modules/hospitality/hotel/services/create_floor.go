@@ -20,10 +20,15 @@ func (r *hotelService) CreateFloor(ctx context.Context, orgID uuid.UUID, req hos
 		return nil, errors.New("hotel not found")
 	}
 
+	hotelUUID, err := uuid.Parse(req.HotelId)
+	if err != nil {
+		return nil, errors.New("invalid hotel id")
+	}
+
 	// ✅ Create new floor
 	floor := hospitalitymodels.HotelFloor{
 		ID:             uuid.New(),
-		HotelID:        req.HotelId,
+		HotelID:        hotelUUID,
 		OrganizationID: orgID,
 		FloorNumber:    hotel.NumberOfFloors + 1, // auto increment floor number
 	}
