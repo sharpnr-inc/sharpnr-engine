@@ -14,12 +14,10 @@ TODO:->
 
 type HotelController struct {
 	hotelService hotelservices.HotelService
-	// hotelBookingService hotelservices.HotelBookingServiceInterface
 }
 
 func NewHotelController(s hotelservices.HotelService) *HotelController {
 	return &HotelController{
 		hotelService: s,
-		// hotelBookingService: hotelBookingService,
 	}
 }

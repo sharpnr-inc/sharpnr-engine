@@ -73,13 +73,14 @@ type HotelBookingTerminal_Response struct {
 }
 
 type Hotel_Room_booking_Req struct {
-	Hotel_Id           uuid.UUID
-	RoomId             uuid.UUID
-	CheckInnDate       time.Time
-	CheckoutDate       time.Time
-	BookingDate        time.Time
-	NumberOfGuest      int
-	CustomerUpiId      string
-	BillingInformation string
-	GuestDetails       string
+	Hotel_Id        uuid.UUID
+	RoomId          uuid.UUID
+	CheckInnDate    time.Time
+	CheckoutDate    time.Time
+	BookingDate     time.Time
+	NumberOfGuest   int
+	GuestEmailAddr  string
+	GuestName       string
+	GuestMobile     string
+	AdvancedPayment float64
 }

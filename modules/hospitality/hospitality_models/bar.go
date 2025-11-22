@@ -12,10 +12,10 @@ import (
 // 1️⃣ BAR
 // ---------------------------------------------
 type Bar struct {
-	ID             uuid.UUID           `gorm:"type:uuid;primaryKey" json:"id"`
-	Name           string              `gorm:"size:100;not null" json:"name"`
-	OrganizationID uuid.UUID           `gorm:"type:uuid;not null" json:"organization_id"`
-	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;" json:"organization"`
+	ID             uuid.UUID            `gorm:"type:uuid;primaryKey" json:"id"`
+	Name           string               `gorm:"size:100;not null" json:"name"`
+	OrganizationID uuid.UUID            `gorm:"type:uuid;not null" json:"organization_id"`
+	Organization   *models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;" json:"organization"`
 
 	OpeningTime time.Time `json:"opening_time"`
 	ClosingTime time.Time `json:"closing_time"`

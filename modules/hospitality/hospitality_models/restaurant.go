@@ -13,10 +13,10 @@ import (
 // ---------------------------
 
 type Restaurant struct {
-	ID             uuid.UUID           `gorm:"type:uuid;primaryKey" json:"id"`
-	Name           string              `gorm:"size:100;not null" json:"name"`
-	OrganizationID uuid.UUID           `gorm:"type:uuid;not null" json:"organization_id"`
-	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;" json:"organization"`
+	ID             uuid.UUID            `gorm:"type:uuid;primaryKey" json:"id"`
+	Name           string               `gorm:"size:100;not null" json:"name"`
+	OrganizationID uuid.UUID            `gorm:"type:uuid;not null" json:"organization_id"`
+	Organization   *models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;" json:"organization"`
 
 	IsPureVeg   bool      `gorm:"default:false" json:"is_pure_veg"`
 	OpeningTime time.Time `json:"opening_time"`

@@ -28,6 +28,8 @@ func ConnectDB() *gorm.DB {
 		dbHost, dbUser, dbPassword, dbName, dbPort,
 	)
 
+	// dsn := os.Getenv("DATABASE_URL")
+
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("❌ Failed to connect to DB: %v", err)
@@ -59,12 +61,26 @@ func MigrateDB(db *gorm.DB) error {
 		&hospitalitymodels.Hotel{},
 		&hospitalitymodels.HotelFloor{},
 		&hospitalitymodels.Room{},
+		&hospitalitymodels.HotelGuest{},
+		&hospitalitymodels.HotelRoomBooking{},
+		&hospitalitymodels.HotelBookingOrder{},
+		&hospitalitymodels.HotelBookingOrderItem{},
+		&hospitalitymodels.HotelService{},
+		&hospitalitymodels.HotelServiceItem{},
+		&hospitalitymodels.BookingCharge{},
+		&hospitalitymodels.BookingPayment{},
+
+		// Hospitality --> Bar
 		&hospitalitymodels.Bar{},
 		&hospitalitymodels.BarFloor{},
 		&hospitalitymodels.BarTable{},
+
+		// Hospitality --> Restaurant
 		&hospitalitymodels.Restaurant{},
 		&hospitalitymodels.RestaurantFloor{},
 		&hospitalitymodels.RestaurantTable{},
+
+		//Hospitality --> Kitchen
 		&hospitalitymodels.Kitchen{},
 		&hospitalitymodels.KitchenTicket{},
 		&hospitalitymodels.KitchenTicketItem{},

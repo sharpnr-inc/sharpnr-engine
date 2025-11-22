@@ -3,18 +3,19 @@ package hospitalitymodels
 import (
 	"time"
 
-	"github.com/google/uuid"
 	"sharpnr-engine/core/models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
+
+	"github.com/google/uuid"
 )
 
 // -----------------------------
 // Hotel
 // -----------------------------
 type Hotel struct {
-	ID             uuid.UUID           `gorm:"type:uuid;primaryKey"`
-	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
-	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
+	ID             uuid.UUID            `gorm:"type:uuid;primaryKey"`
+	OrganizationID uuid.UUID            `gorm:"type:uuid;not null"`
+	Organization   *models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
 
 	Name           string `gorm:"size:100"`
 	NumberOfFloors int    `gorm:"default:0"`
@@ -47,7 +48,7 @@ type HotelFloor struct {
 	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
 	FloorName      string
 	HotelID        uuid.UUID `gorm:"type:uuid;not null"`
-	Hotel          Hotel     `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE;"`
+	Hotel          *Hotel    `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE;"`
 	FloorNumber    int       `gorm:"not null"`
 	Rooms          []Room    `gorm:"foreignKey:FloorID;constraint:OnDelete:CASCADE;"`
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null"`
@@ -59,7 +60,7 @@ type HotelFloor struct {
 type Room struct {
 	ID             uuid.UUID           `gorm:"type:uuid;primaryKey"`
 	FloorID        uuid.UUID           `gorm:"type:uuid;not null"`
-	Floor          HotelFloor          `gorm:"foreignKey:FloorID;constraint:OnDelete:CASCADE;"`
+	Floor          *HotelFloor         `gorm:"foreignKey:FloorID;constraint:OnDelete:CASCADE;"`
 	HotelID        uuid.UUID           `gorm:"type:uuid;not null"`
 	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
 	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
@@ -83,13 +84,16 @@ type HotelRoomBooking struct {
 	ID      uuid.UUID `gorm:"type:uuid;primaryKey"`
 	HotelID uuid.UUID `gorm:"type:uuid;not null"`
 	RoomID  uuid.UUID `gorm:"type:uuid;not null"`
-	Room    Room      `gorm:"foreignKey:RoomID"`
+	Room    *Room     `gorm:"foreignKey:RoomID"`
 	Status  string    `gorm:"size:20"` // reserved, checked_in, checked_out, cancelled
 
 	// Guest Details
 	PrimaryGuestID uuid.UUID      `gorm:"type:uuid;not null"`
-	PrimaryGuest   HotelGuest     `gorm:"foreignKey:PrimaryGuestID"`
+	PrimaryGuest   *HotelGuest    `gorm:"foreignKey:PrimaryGuestID"`
 	Guests         []BookingGuest `gorm:"foreignKey:BookingID"`
+
+	Charges  []BookingCharge  `gorm:"foreignKey:BookingID"`
+	Payments []BookingPayment `gorm:"foreignKey:BookingID"`
 
 	// Orders & Services (One booking → many)
 	Orders   []HotelBookingOrder `gorm:"foreignKey:BookingID"`
@@ -97,6 +101,25 @@ type HotelRoomBooking struct {
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+type BookingCharge struct {
+	ID          uuid.UUID `gorm:"type:uuid;primaryKey"`
+	BookingID   uuid.UUID `gorm:"type:uuid;not null"`
+	ChargeType  string    `gorm:"size:50"` // room_rent, room_service, bar, laundry, spa, minibar
+	Description string    `gorm:"size:200"`
+	Amount      float64
+	CreatedAt   time.Time
+}
+
+type BookingPayment struct {
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
+	BookingID uuid.UUID `gorm:"type:uuid;not null"`
+	Amount    float64   `gorm:"not null"`
+	Mode      string    `gorm:"size:50"`  // cash, upi, card, room_charge
+	Status    string    `gorm:"size:20"`  // success, pending, failed
+	Reference string    `gorm:"size:100"` // UPI txn ID, Ref no.
+	CreatedAt time.Time
 }
 
 // -----------------------------

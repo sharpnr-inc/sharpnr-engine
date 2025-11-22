@@ -35,4 +35,14 @@ type HotelRepository interface {
 	DeleteRoom(ctx context.Context, roomID uuid.UUID) error
 
 	GetFloorByID(ctx context.Context, id string) (*hospitalitymodels.HotelFloor, error)
+
+	//-------------------------------------------------------------
+	//   Booking
+	// ------------------------------------------------------------
+
+	CreateRoomBooking(ctx context.Context, booking *hospitalitymodels.HotelRoomBooking) error
+	CreateOrAddBookingPayment(ctx context.Context, bookingPayment *hospitalitymodels.BookingPayment) error
+	CreatePrimaryGuest(ctx context.Context, guest *hospitalitymodels.HotelGuest) error
+	CreateCharges(ctx context.Context, charges *hospitalitymodels.BookingCharge) error
+	GetBookingDetailsByRoomId(ctx context.Context, roomId uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
 }

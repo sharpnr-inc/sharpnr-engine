@@ -6,8 +6,8 @@ import (
 	"github.com/google/uuid"
 )
 
-type ClientCredentials struct {
-	ID             uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
+type OrgPaymentGetawayCredentials struct {
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
 	OrgID          uuid.UUID `gorm:"type:uuid;index" json:"org_id"`
 	Provider       string    `gorm:"size:20;index" json:"provider"`
 	MerchantID     string    `gorm:"size:120" json:"merchant_id"`

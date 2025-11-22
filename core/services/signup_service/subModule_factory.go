@@ -328,13 +328,13 @@ func (s *signupService) SetUpBarHotelRestaurant(ctx context.Context, org *models
 		ID:             uuid.New(),
 		Name:           "__DEFAULT__BAR__NAME__",
 		OrganizationID: org.ID,
-
-		OpeningTime: time.Now(),
-		ClosingTime: time.Now(),
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
-		IsKitchen:   true,
-		KitchenID:   &kitchen.ID,
+		Organization:   org,
+		OpeningTime:    time.Now(),
+		ClosingTime:    time.Now(),
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+		IsKitchen:      true,
+		KitchenID:      &kitchen.ID,
 	}
 	if err := s.barRepo.CreateBar(ctx, defaultBar); err != nil {
 		return fmt.Errorf("failed to create bar for org %s: %w", org.ID, err)
@@ -360,7 +360,7 @@ func (s *signupService) SetUpBarHotelRestaurant(ctx context.Context, org *models
 		ID:             uuid.New(),
 		OrganizationID: org.ID,
 		Name:           "__DEFAULT__HOTEL__NAME__",
-
+		Organization:   org,
 		NumberOfFloors: 0,
 		NumberOfRooms:  0,
 		Floors:         nil,
@@ -391,14 +391,14 @@ func (s *signupService) SetUpBarHotelRestaurant(ctx context.Context, org *models
 		ID:             uuid.New(),
 		Name:           "__DEFAULT__RES__NAME__",
 		OrganizationID: org.ID,
-
-		IsPureVeg:   true,
-		OpeningTime: time.Now(),
-		ClosingTime: time.Now(),
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
-		IsKitchen:   true,
-		KitchenID:   &kitchen.ID,
+		Organization:   org,
+		IsPureVeg:      true,
+		OpeningTime:    time.Now(),
+		ClosingTime:    time.Now(),
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+		IsKitchen:      true,
+		KitchenID:      &kitchen.ID,
 	}
 	if err := s.restaurantRepo.CreateRestaurant(ctx, defaultRestaurant); err != nil {
 		return fmt.Errorf("failed to create restaurant for org %s: %w", org.ID, err)

@@ -3,6 +3,7 @@ package hotelservices
 import (
 	"context"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
+	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 
 	"github.com/google/uuid"
 )
@@ -15,8 +16,10 @@ type HotelService interface {
 	GetHotelDetails(ctx context.Context, orgId uuid.UUID) (*hospitalitydtos.GetHotel_RESPONSE, error)
 	GetFrontDeskTerminal(ctx context.Context, orgId uuid.UUID) (*hospitalitydtos.HotelBookingTerminal_Response, error)
 	UpdateRoomStatus(ctx context.Context, orgId, hotelId, roomId uuid.UUID, status string) error
-}
 
-type HotelBookingServiceInterface interface {
-	// This is will implement the booking services
+	// -----------------
+	// Bookings
+	// ------------------
+	CreateBookingForRoom(ctx context.Context, orgId uuid.UUID, req *hospitalitydtos.Hotel_Room_booking_Req) error
+	GetRoomBookingDetails(ctx context.Context, roomId, orgID uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
 }
