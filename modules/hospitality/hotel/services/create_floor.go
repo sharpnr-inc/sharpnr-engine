@@ -22,7 +22,7 @@ func (r *hotelService) CreateFloor(ctx context.Context, orgID uuid.UUID, req hos
 
 	// ✅ Create new floor
 	floor := hospitalitymodels.HotelFloor{
-		ID:             uuid.New().String(),
+		ID:             uuid.New(),
 		HotelID:        req.HotelId,
 		OrganizationID: orgID,
 		FloorNumber:    hotel.NumberOfFloors + 1, // auto increment floor number

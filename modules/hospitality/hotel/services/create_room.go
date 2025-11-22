@@ -24,7 +24,7 @@ func (h *hotelService) CreateRoomInHotel(ctx context.Context, orgID uuid.UUID, r
 
 	// ✅ Create room model
 	room := hospitalitymodels.Room{
-		ID:             uuid.New().String(),
+		ID:             uuid.New(),
 		FloorID:        floor.ID,
 		HotelID:        uuid.MustParse(floor.HotelID),
 		OrganizationID: orgID,

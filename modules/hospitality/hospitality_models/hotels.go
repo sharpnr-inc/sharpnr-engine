@@ -40,7 +40,7 @@ type Hotel struct {
 }
 
 type HotelFloor struct {
-	ID             string `gorm:"type:uuid;primaryKey"`
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
 	FloorName      string
 	HotelID        string    `gorm:"type:uuid;not null"`
 	Hotel          Hotel     `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE;"`
@@ -50,8 +50,8 @@ type HotelFloor struct {
 }
 
 type Room struct {
-	ID             string              `gorm:"type:uuid;primaryKey"`
-	FloorID        string              `gorm:"type:uuid;not null"`
+	ID             uuid.UUID           `gorm:"type:uuid;primaryKey"`
+	FloorID        uuid.UUID           `gorm:"type:uuid;not null"`
 	Floor          HotelFloor          `gorm:"foreignKey:FloorID;constraint:OnDelete:CASCADE;"`
 	HotelID        uuid.UUID           `gorm:"type:uuid;not null"`
 	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
@@ -67,16 +67,21 @@ type Room struct {
 	UpdatedAt time.Time
 }
 
-type HotelBooking struct {
-	Id      uuid.UUID
-	HotelId uuid.UUID
-	RoomId  string
-	Room    Room
-	Guest   HotelGuests
-	Status  string `gorm:"size:20"` // reserved, checked_in, checked_out, cancelled
-	Order   HotelBookingOrder
+type HotelRoomBooking struct {
+	Id                  uuid.UUID
+	HotelId             uuid.UUID
+	RoomId              string
+	Room                Room
+	Guest               HotelGuests
+	AdditionalGuestList string
+	Status              string `gorm:"size:20"` // reserved, checked_in, checked_out, cancelled
+	// These are Order List that user order from Kitchen
+	Order HotelBookingOrder
+	// These are Service List that user orders from the House Keeping or concierge like Laundry and Rental car
+	Services []string
 }
 
+// this is type for holding list of Orders
 type HotelBookingOrder struct {
 	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
 	BookingID uuid.UUID
@@ -96,15 +101,19 @@ type HotelBookingOrderItem struct {
 }
 
 type HotelService struct {
-	ID    uuid.UUID `gorm:"type:uuid;primaryKey"`
-	Name  string    `gorm:"size:100;not null"`
-	Type  string    `gorm:"size:50"` // spa, laundry, housekeeping
-	Price float64   `gorm:"not null"`
+	ServiceId uuid.UUID
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
+	Name      string    `gorm:"size:100;not null"`
+	Type      string    `gorm:"size:50"` // spa, laundry, housekeeping
+	Price     float64   `gorm:"not null"`
 }
 
 type HotelGuests struct {
-	ID     uuid.UUID
-	Name   string
-	Mobile string
-	Email  string
+	ID        uuid.UUID
+	Name      string
+	Mobile    string
+	Email     string
+	Gender    string
+	DOB       string
+	AadhaarId string
 }

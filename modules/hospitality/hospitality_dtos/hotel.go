@@ -1,16 +1,20 @@
 package hospitalitydtos
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type RoomResponse struct {
-	RoomID      string `json:"room_id"`
-	RoomName    string `json:"room_name"`
-	RoomPrice   int    `json:"room_price"`
-	Description string `json:"description"`
-	Status      string `json:"status"`
+	RoomID      uuid.UUID `json:"room_id"`
+	RoomName    string    `json:"room_name"`
+	RoomPrice   int       `json:"room_price"`
+	Description string    `json:"description"`
+	Status      string    `json:"status"`
 }
 type FloorResponse struct {
-	FloorID     string         `json:"floor_id"`
+	FloorID     uuid.UUID      `json:"floor_id"`
 	FloorNumber int            `json:"floor_number"`
 	FloorName   string         `json:"floor_name"`
 	Rooms       []RoomResponse `json:"rooms"`
@@ -66,4 +70,16 @@ type HotelBookingTerminal_Response struct {
 	Org_Id   uuid.UUID
 	// Floor response is reused here for
 	Floors []FloorResponse
+}
+
+type Hotel_Room_booking_Req struct {
+	Hotel_Id           uuid.UUID
+	RoomId             uuid.UUID
+	CheckInnDate       time.Time
+	CheckoutDate       time.Time
+	BookingDate        time.Time
+	NumberOfGuest      int
+	CustomerUpiId      string
+	BillingInformation string
+	GuestDetails       string
 }
