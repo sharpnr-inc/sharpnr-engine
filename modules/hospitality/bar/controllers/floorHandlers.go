@@ -2,38 +2,99 @@ package barcontrollers
 
 import (
 	"net/http"
+	dto "sharpnr-engine/core/dtos"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
 func (c *barController) AddFloorInBar(ctx *gin.Context) {
-	// Get OrgID
+
+	// 1️⃣ Get OrgUUID from middleware
 	orgUUID, exists := ctx.Get("OrgUUID")
 	if !exists {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "organization UUID missing"})
+		response := dto.Response[any]{
+			StatusCode: http.StatusUnauthorized,
+			Message:    "Organization UUID missing",
+			Error: dto.ErrorResponse{
+				Message: "OrgUUID not found in context",
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
+		}
+
+		ctx.JSON(http.StatusUnauthorized, response)
 		return
 	}
 
 	orgID, ok := orgUUID.(uuid.UUID)
 	if !ok {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid organization UUID format"})
+		response := dto.Response[any]{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Invalid organization UUID format",
+			Error: dto.ErrorResponse{
+				Message: "OrgUUID format mismatch",
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
+		}
+
+		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	// Bind Request body
+	// 2️⃣ Bind request body
 	var req hospitalitydtos.BAR_Add_Floor_Req
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		response := dto.Response[any]{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Invalid request payload",
+			Error: dto.ErrorResponse{
+				Message: err.Error(),
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
+		}
+
+		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	// Call Service
+	// 3️⃣ Call service
 	if err := c.barService.CreateFloor(ctx, orgID, req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		response := dto.Response[any]{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Failed to add floor",
+			Error: dto.ErrorResponse{
+				Message: err.Error(),
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
+		}
+
+		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "Floor added successfully"})
+	// 4️⃣ SUCCESS RESPONSE
+	response := dto.Response[any]{
+		StatusCode: http.StatusOK,
+		Message:    "Floor added successfully",
+		Error: dto.ErrorResponse{
+			Message: "",
+			IsError: false,
+		},
+		Data:      nil,
+		Timestamp: time.Now(),
+	}
+
+	ctx.JSON(http.StatusOK, response)
 }

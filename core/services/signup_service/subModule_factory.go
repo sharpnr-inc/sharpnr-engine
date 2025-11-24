@@ -339,6 +339,19 @@ func (s *signupService) SetUpBarHotelRestaurant(ctx context.Context, org *models
 	if err := s.barRepo.CreateBar(ctx, defaultBar); err != nil {
 		return fmt.Errorf("failed to create bar for org %s: %w", org.ID, err)
 	}
+	barFloor := &hospitalitymodels.BarFloor{
+		ID:             uuid.New(),
+		BarID:          defaultBar.ID,
+		OrganizationID: defaultBar.OrganizationID,
+		Organization:   org,
+		Bar:            defaultBar,
+		Name:           "Ground Floor",
+		FloorNumber:    0,
+	}
+
+	if err := s.barRepo.CreateFloor(ctx, barFloor); err != nil {
+		return fmt.Errorf("failed to create default floor")
+	}
 
 	// ➕ Create BAR Default MenuGroup
 	barMenuGroup := &hospitalitymodels.MenuGroup{

@@ -9,53 +9,44 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *barServices) GetBarDetails(ctx context.Context, orgId uuid.UUID) (*hospitalitydtos.GetBarDetails_RESPONSE, error) {
-	// 1️⃣ Fetch Bar for this Organization
+func (s *barServices) GetBarLayout(ctx context.Context, orgId uuid.UUID) (*hospitalitydtos.GetBarDetails_RESPONSE, error) {
 	bar, err := s.barRepo.GetBarByOrgId(ctx, orgId)
 	if err != nil {
 		return nil, err
 	}
 	if bar == nil {
-		return nil, errors.New("bar not found for this organization")
+		return nil, errors.New("bar not found")
 	}
 
 	response := &hospitalitydtos.GetBarDetails_RESPONSE{
 		BarId:   bar.ID.String(),
-		BarName: bar.Name,
-		Floors:  []hospitalitydtos.BarFloorResponse{},
-		Tables:  []hospitalitydtos.BarTablesResponse{},
+		BarName: bar.DisplayName,
 	}
 
-	// 2️⃣ Case A: Bar has Floors
-	if len(bar.Floors) > 0 {
-		for _, floor := range bar.Floors {
-			floorResponse := hospitalitydtos.BarFloorResponse{
-				FloorId:   floor.ID,
-				FloorName: floor.Name,
-				Tables:    []hospitalitydtos.BarTablesResponse{},
-			}
+	// --------------------------------
+	// ALWAYS LOAD FLOORS
+	// --------------------------------
+	floors := make([]hospitalitydtos.BarFloorResponse, 0, len(bar.Floors))
 
-			for _, table := range floor.Tables {
-				floorResponse.Tables = append(floorResponse.Tables, hospitalitydtos.BarTablesResponse{
-					TableId:     table.ID,
-					TableName:   table.Name,
-					TableStatus: table.Status,
-				})
-			}
-			response.Floors = append(response.Floors, floorResponse)
+	for _, floor := range bar.Floors {
+		floorRes := hospitalitydtos.BarFloorResponse{
+			FloorId:   floor.ID,
+			FloorName: floor.Name,
+			Tables:    make([]hospitalitydtos.BarTablesResponse, 0, len(floor.Tables)),
 		}
-	}
 
-	// 3️⃣ Case B: Bar has no Floors, Tables directly under Bar
-	if len(bar.Floors) == 0 && len(bar.Tables) > 0 {
-		for _, table := range bar.Tables {
-			response.Tables = append(response.Tables, hospitalitydtos.BarTablesResponse{
+		for _, table := range floor.Tables {
+			floorRes.Tables = append(floorRes.Tables, hospitalitydtos.BarTablesResponse{
 				TableId:     table.ID,
 				TableName:   table.Name,
 				TableStatus: table.Status,
 			})
 		}
+
+		floors = append(floors, floorRes)
 	}
+
+	response.Floors = floors
 
 	return response, nil
 }

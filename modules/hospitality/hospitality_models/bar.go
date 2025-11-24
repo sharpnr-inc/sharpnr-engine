@@ -23,9 +23,6 @@ type Bar struct {
 	// Optional: If bar has multiple floors (e.g., rooftop bar)
 	Floors []BarFloor `gorm:"foreignKey:BarID;constraint:OnDelete:CASCADE;" json:"floors"`
 
-	// Tables directly under bar (for single-floor bars)
-	Tables []BarTable `gorm:"foreignKey:BarID;constraint:OnDelete:CASCADE;" json:"tables"`
-
 	IsKitchen bool       `gorm:"default:true" json:"is_kitchen"`
 	KitchenID *uuid.UUID `gorm:"type:uuid" json:"kitchen_id"`
 	Kitchen   *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;" json:"kitchen"`
@@ -56,11 +53,11 @@ type Bar struct {
 // 2️⃣ BAR FLOOR (Optional Layer)
 // ---------------------------------------------
 type BarFloor struct {
-	ID             uuid.UUID           `gorm:"type:uuid;primaryKey" json:"id"`
-	BarID          uuid.UUID           `gorm:"type:uuid;not null" json:"bar_id"` // ✅ match type
-	Bar            Bar                 `gorm:"foreignKey:BarID;constraint:OnDelete:CASCADE;" json:"bar"`
-	OrganizationID uuid.UUID           `gorm:"type:uuid;not null" json:"organization_id"`
-	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;" json:"organization"`
+	ID             uuid.UUID            `gorm:"type:uuid;primaryKey" json:"id"`
+	BarID          uuid.UUID            `gorm:"type:uuid;not null" json:"bar_id"` // ✅ match type
+	Bar            *Bar                 `gorm:"foreignKey:BarID;constraint:OnDelete:CASCADE;" json:"bar"`
+	OrganizationID uuid.UUID            `gorm:"type:uuid;not null" json:"organization_id"`
+	Organization   *models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;" json:"organization"`
 
 	Name        string `gorm:"size:100;not null" json:"name"` // e.g., "Ground Floor", "Rooftop"
 	Description string `gorm:"size:255" json:"description"`
@@ -76,13 +73,9 @@ type BarFloor struct {
 // 3️⃣ BAR TABLE
 // ---------------------------------------------
 type BarTable struct {
-	ID    uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
-	BarID uuid.UUID `gorm:"type:uuid;not null" json:"bar_id"`
-	Bar   Bar       `gorm:"foreignKey:BarID;constraint:OnDelete:CASCADE;" json:"bar"`
-
-	// Optional Floor Relationship
-	FloorID *uuid.UUID `gorm:"type:uuid" json:"floor_id"`
-	Floor   *BarFloor  `gorm:"foreignKey:FloorID;constraint:OnDelete:SET NULL;" json:"floor"`
+	ID      uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+	FloorID uuid.UUID `gorm:"type:uuid" json:"floor_id"`
+	Floor   *BarFloor `gorm:"foreignKey:FloorID;constraint:OnDelete:SET NULL;" json:"floor"`
 
 	Name     string `gorm:"size:50;not null" json:"name"` // e.g., "B1", "VIP Table 1"
 	Capacity int    `gorm:"not null;default:4" json:"capacity"`
@@ -96,12 +89,12 @@ type BarTable struct {
 // 1️⃣ BarTicket (BOT)
 // -------------------------------------------
 type BarTicket struct {
-	ID             uuid.UUID           `gorm:"type:uuid;primaryKey"`
-	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
-	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
+	ID             uuid.UUID            `gorm:"type:uuid;primaryKey"`
+	OrganizationID uuid.UUID            `gorm:"type:uuid;not null"`
+	Organization   *models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
 
 	BarID uuid.UUID `gorm:"type:uuid;not null"`
-	Bar   Bar       `gorm:"foreignKey:BarID;constraint:OnDelete:CASCADE;"`
+	Bar   *Bar      `gorm:"foreignKey:BarID;constraint:OnDelete:CASCADE;"`
 
 	OrderID uuid.UUID        `gorm:"type:uuid;not null"`
 	Order   HospitalityOrder `gorm:"foreignKey:OrderID;constraint:OnDelete:CASCADE;"`

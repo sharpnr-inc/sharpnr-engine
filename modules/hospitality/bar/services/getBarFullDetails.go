@@ -18,25 +18,25 @@ func (s *barServices) GetBarDetailsConfig(ctx context.Context, orgId uuid.UUID) 
 		return nil, errors.New("bar not found in the DB")
 	}
 
-	tableRes := make([]hospitalitydtos.BarTablesResponse, 0)
+	// tableRes := make([]hospitalitydtos.BarTablesResponse, 0)
 
-	for _, t := range bar.Tables {
-		tableRes = append(tableRes, hospitalitydtos.BarTablesResponse{
-			TableName:   t.Name,
-			TableId:     t.ID,
-			TableStatus: t.Status,
-		})
-	}
+	// for _, t := range bar.Tables {
+	// 	tableRes = append(tableRes, hospitalitydtos.BarTablesResponse{
+	// 		TableName:   t.Name,
+	// 		TableId:     t.ID,
+	// 		TableStatus: t.Status,
+	// 	})
+	// }
 
-	flooresp := make([]hospitalitydtos.BarFloorResponse, 0)
+	// flooresp := make([]hospitalitydtos.BarFloorResponse, 0)
 
-	for _, bf := range bar.Floors {
-		flooresp = append(flooresp, hospitalitydtos.BarFloorResponse{
-			FloorId: bf.ID,
-			// FloorName: bf.FloorNumber,
-			Tables: tableRes,
-		})
-	}
+	// for _, bf := range bar.Floors {
+	// 	flooresp = append(flooresp, hospitalitydtos.BarFloorResponse{
+	// 		FloorId: bf.ID,
+	// 		// FloorName: bf.FloorNumber,
+	// 		Tables: tableRes,
+	// 	})
+	// }
 
 	res := &hospitalitydtos.BAR_UpdateBarDetails_Response{
 		BarDisplayName:                 bar.DisplayName,
@@ -50,6 +50,8 @@ func (s *barServices) GetBarDetailsConfig(ctx context.Context, orgId uuid.UUID) 
 		IsShareLegalDetailsWithMainOrg: bar.IsShareLegalDetailsWithMainOrg,
 		DisplayName:                    bar.DisplayName,
 		LegalName:                      bar.LegalName,
+		CinNumber:                      bar.CINNumber,
+		FssaiNumber:                    bar.FSSAINumber,
 		GstNumber:                      bar.GSTNumber,
 		IsMultifloor:                   bar.IsMultifloor,
 		AddressLine:                    bar.AddressLine,
@@ -57,8 +59,6 @@ func (s *barServices) GetBarDetailsConfig(ctx context.Context, orgId uuid.UUID) 
 		State:                          bar.State,
 		Country:                        bar.Country,
 		Pincode:                        bar.Pincode,
-		Floors:                         flooresp,
-		Tables:                         tableRes,
 	}
 
 	return res, nil

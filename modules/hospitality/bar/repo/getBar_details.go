@@ -19,7 +19,6 @@ func (r *barRepository) GetBarByOrgId(ctx context.Context, orgId uuid.UUID) (*ho
 
 	err := r.db.WithContext(ctx).
 		Preload("Floors.Tables").
-		Preload("Tables").
 		Where("organization_id = ?", orgId).
 		First(&bar).Error
 

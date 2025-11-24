@@ -2,29 +2,33 @@ package barcontrollers
 
 import (
 	"fmt"
+	"net/http"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // Update godoc
 // @Summary Update Bar Details
 // @Description
 // @Tags Hospitality - Bar
-func (c *barController) UpdateBarDetails(ctx *gin.Context) {
-	/*
-	   TODO Complete this Update Bar details controller
+func (c *barController) UpdateBarGenDetails(ctx *gin.Context) {
 
-	   *1 Create the DTO for REQ and RES
-	   *2 Create its Service to Update Bar Details
-	*/
+	orgUUID, exists := ctx.Get("OrgUUID")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "organization UUID missing"})
+		return
+	}
 
-	// Step 1 --> Get the Request Data//
-	var req hospitalitydtos.BAR_UpdateBarDetails_Request
-	fmt.Println(req)
+	orgID, ok := orgUUID.(uuid.UUID)
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid organization UUID format"})
+		return
+	}
+	var req hospitalitydtos.BAR_BarUpdateReq
 
-	// Step 2 --> find the Bar Based on the OrgId in the Params
-
-	// Step 3 -->
+	fmt.Println(&req)
+	fmt.Println(orgID)
 
 }

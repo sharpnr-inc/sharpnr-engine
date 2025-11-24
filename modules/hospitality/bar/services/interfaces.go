@@ -9,9 +9,9 @@ import (
 
 type BarServices interface {
 	InitializeDefaultBar()
-	GetBarDetails(ctx context.Context, orgId uuid.UUID) (*hospitalitydtos.GetBarDetails_RESPONSE, error)
+	GetBarLayout(ctx context.Context, orgId uuid.UUID) (*hospitalitydtos.GetBarDetails_RESPONSE, error)
 
-	CreateTablesInBar(ctx context.Context, orgId uuid.UUID, barId uuid.UUID, floorId uuid.UUID) (*hospitalitydtos.BarTablesResponse, error)
+	CreateTablesInBar(ctx context.Context, orgId uuid.UUID, req hospitalitydtos.Bar_CreateTablesInBar_Request) error
 	GetBarDetailsConfig(ctx context.Context, orgId uuid.UUID) (*hospitalitydtos.BAR_UpdateBarDetails_Response, error)
 	CreateFloor(ctx context.Context, orgId uuid.UUID, req hospitalitydtos.BAR_Add_Floor_Req) error
 

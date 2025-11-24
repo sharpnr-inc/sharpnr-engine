@@ -35,6 +35,7 @@ func (h *hotelRepository) GetHotelByOrgID(ctx context.Context, orgid uuid.UUID) 
 	var hotel hospitalitymodels.Hotel
 
 	err := h.db.WithContext(ctx).
+		Preload("Organization").
 		Preload("Floors.Rooms"). // ✅ Preload nested rooms
 		Where("organization_id = ?", orgid).
 		First(&hotel).Error
