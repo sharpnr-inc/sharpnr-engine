@@ -109,8 +109,8 @@ func (s *signupService) SetUpRestaurant(ctx context.Context, org *models.Organiz
 		OrganizationID: org.ID,
 
 		IsPureVeg:   true,
-		OpeningTime: time.Now(),
-		ClosingTime: time.Now(),
+		OpeningTime: "09:00",
+		ClosingTime: "21:00",
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		IsKitchen:   true,
@@ -231,8 +231,8 @@ func (s *signupService) SetUpHotelRestaurant(ctx context.Context, org *models.Or
 		Name:           "__DEFAULT__RES__NAME__",
 		OrganizationID: org.ID,
 		IsPureVeg:      true,
-		OpeningTime:    time.Now(),
-		ClosingTime:    time.Now(),
+		OpeningTime:    "09:00",
+		ClosingTime:    "21:00",
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),
 		IsKitchen:      true,
@@ -286,8 +286,8 @@ func (s *signupService) SetUpBarRestaurant(ctx context.Context, org *models.Orga
 		Name:           "__DEFAULT__RES__NAME__",
 		OrganizationID: org.ID,
 		IsPureVeg:      true,
-		OpeningTime:    time.Now(),
-		ClosingTime:    time.Now(),
+		OpeningTime:    "09:00",
+		ClosingTime:    "21:00",
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),
 		IsKitchen:      true,
@@ -406,8 +406,8 @@ func (s *signupService) SetUpBarHotelRestaurant(ctx context.Context, org *models
 		OrganizationID: org.ID,
 		Organization:   org,
 		IsPureVeg:      true,
-		OpeningTime:    time.Now(),
-		ClosingTime:    time.Now(),
+		OpeningTime:    "09:00",
+		ClosingTime:    "21:00",
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),
 		IsKitchen:      true,
@@ -415,6 +415,23 @@ func (s *signupService) SetUpBarHotelRestaurant(ctx context.Context, org *models
 	}
 	if err := s.restaurantRepo.CreateRestaurant(ctx, defaultRestaurant); err != nil {
 		return fmt.Errorf("failed to create restaurant for org %s: %w", org.ID, err)
+	}
+
+	defaultFloor := &hospitalitymodels.RestaurantFloor{
+		ID:             uuid.New(),
+		RestaurantID:   defaultRestaurant.ID,
+		Restaurant:     defaultRestaurant,
+		OrganizationID: org.ID,
+		Organization:   org,
+		Name:           "Ground Floor",
+		Description:    "Ground floor or Restaurant",
+		FloorNumber:    0,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+	}
+
+	if err := s.restaurantRepo.CreateOrAddFloorInRestaurant(ctx, defaultFloor); err != nil {
+		return fmt.Errorf("failed to create restaurant default floor")
 	}
 
 	restaurantMenuGroup := &hospitalitymodels.MenuGroup{

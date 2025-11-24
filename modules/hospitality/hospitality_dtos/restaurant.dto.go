@@ -11,15 +11,9 @@ type Restaurant_GetRestaurant_ResponseDTO struct {
 	Name           string    `json:"name"`
 	OrganizationID uuid.UUID `json:"organization_id"`
 
-	IsPureVeg   bool      `json:"is_pure_veg"`
-	OpeningTime time.Time `json:"opening_time"`
-	ClosingTime time.Time `json:"closing_time"`
-
-	// Floors + tables inside floors
-	Floors []RestaurantFloorDTO `json:"floors"`
-
-	// Direct table list (optional)
-	Tables []RestaurantTableDTO `json:"tables"`
+	IsPureVeg   bool   `json:"is_pure_veg"`
+	OpeningTime string `json:"opening_time"`
+	ClosingTime string `json:"closing_time"`
 
 	IsKitchen bool        `json:"is_kitchen"`
 	KitchenID *uuid.UUID  `json:"kitchen_id"`
@@ -28,11 +22,17 @@ type Restaurant_GetRestaurant_ResponseDTO struct {
 	LegalName   string `json:"legal_name"`
 	DisplayName string `json:"display_name"`
 	GSTNumber   string `json:"gst_number"`
+	CINNumber   string `json:"cin_number"`
 	FSSAINumber string `json:"fssai_number"`
+
+	ContactEmail  string `json:"contact_email"`
+	ContactNumber string `json:"contact_number"`
+	ManagerName   string `json:"manager_name"`
 
 	Address string `json:"address"`
 	City    string `json:"city"`
 	State   string `json:"state"`
+	Country string `json:"country"`
 	Pincode string `json:"pincode"`
 
 	CreatedAt time.Time `json:"created_at"`
@@ -82,11 +82,11 @@ type KitchenDTO struct {
 
 // This is the struct fir the Updating the Restaurant
 type Restaurant_UpdateOrEdit_General_Details_REQ struct {
-	HotelId string `json:"hotel_id"`
+	RestaurantId string `json:"restaurant_id"`
 
 	// Names
-	HotelLegalName   string `json:"hotel_legal_name"`
-	HotelDisplayName string `json:"hotel_display_name"`
+	RestaurantLegalName   string `json:"hotel_legal_name"`
+	RestaurantDisplayName string `json:"hotel_display_name"`
 
 	// Govt Registration Numbers
 	FSSAINumber string `json:"fssai_number"`
@@ -108,4 +108,20 @@ type Restaurant_UpdateOrEdit_General_Details_REQ struct {
 	// Manager Details
 	ManagerName          string `json:"manager_name"`
 	ManagerContactNumber string `json:"manager_contact_number"`
+}
+
+type Restaurant_GetRestaurantLayout_Response struct {
+	RestaurantId uuid.UUID            `json:"restaurant_id"`
+	Floor        []RestaurantFloorDTO `json:"floors"`
+}
+
+type Restaurant_CreateOrAddTables_Request struct {
+	RestaurantId uuid.UUID                      `json:"restaurant_id"`
+	FloorId      uuid.UUID                      `json:"floor_id"`
+	Tables       []Restaurant_TableCreatingList `json:"tables"`
+}
+
+type Restaurant_TableCreatingList struct {
+	TableName     string `json:"table_name"`
+	TableCapacity int    `json:"table_capacity"`
 }

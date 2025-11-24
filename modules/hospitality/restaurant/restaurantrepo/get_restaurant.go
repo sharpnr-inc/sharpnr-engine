@@ -7,11 +7,13 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *restaurantRepo) GetRestaurant(ctx context.Context, orgId uuid.UUID) (*hospitalitymodels.Restaurant, error) {
+func (r *restaurantRepo) GetRestaurantByOrgId(ctx context.Context, orgId uuid.UUID) (*hospitalitymodels.Restaurant, error) {
 	var restaurant hospitalitymodels.Restaurant
 
 	// Query: SELECT * FROM restaurants WHERE org_id = ?
 	err := r.db.WithContext(ctx).
+		Preload("Floors").
+		Preload("Floors.Tables").
 		Where("organization_id = ?", orgId).
 		First(&restaurant).Error
 
@@ -20,4 +22,22 @@ func (r *restaurantRepo) GetRestaurant(ctx context.Context, orgId uuid.UUID) (*h
 	}
 
 	return &restaurant, nil
+}
+
+func (r *restaurantRepo) GetRestaurantFloorById(
+	ctx context.Context,
+	floorId uuid.UUID,
+) (*hospitalitymodels.RestaurantFloor, error) {
+
+	var floor hospitalitymodels.RestaurantFloor
+
+	err := r.db.WithContext(ctx).
+		Where("id = ?", floorId).
+		First(&floor).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &floor, nil
 }

@@ -53,3 +53,26 @@ func (c *restaurantController) GetRestaurantDetails(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 
 }
+
+func (c *restaurantController) GetRestaurantLayout(ctx *gin.Context) {
+	// ✅ Get OrgUUID from context (set by middleware)
+	orgUUID, exists := ctx.Get("OrgUUID")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
+		return
+	}
+	orgID, ok := orgUUID.(uuid.UUID)
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
+		return
+	}
+
+	res, err := c.resSvc.GetRestaurantLayout(ctx, orgID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"err": "ee"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, res)
+
+}

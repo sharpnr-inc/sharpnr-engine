@@ -3,7 +3,9 @@ package barcontrollers
 import (
 	"fmt"
 	"net/http"
+	dto "sharpnr-engine/core/dtos"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -27,8 +29,23 @@ func (c *barController) UpdateBarGenDetails(ctx *gin.Context) {
 		return
 	}
 	var req hospitalitydtos.BAR_BarUpdateReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		response := dto.Response[any]{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Invalid request body",
+			Error: dto.ErrorResponse{
+				Message: err.Error(),
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
+		}
 
-	fmt.Println(&req)
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	fmt.Println(*req.FSSAINumber)
 	fmt.Println(orgID)
 
 }

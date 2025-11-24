@@ -9,14 +9,14 @@ import (
 
 func (r *restaurantService) UpdateRestaurantGeneralDetails(ctx context.Context, req hospitalitydtos.Restaurant_UpdateOrEdit_General_Details_REQ, orgId uuid.UUID) (bool, error) {
 	// Step 1: Fetch existing restaurant by orgId
-	restaurant, err := r.restaurantRepo.GetRestaurant(ctx, orgId)
+	restaurant, err := r.restaurantRepo.GetRestaurantByOrgId(ctx, orgId)
 	if err != nil {
 		return false, err
 	}
 
 	// Step 2: Map DTO → Model
-	restaurant.LegalName = req.HotelLegalName
-	restaurant.DisplayName = req.HotelDisplayName
+	restaurant.LegalName = req.RestaurantLegalName
+	restaurant.DisplayName = req.RestaurantDisplayName
 
 	restaurant.FSSAINumber = req.FSSAINumber
 	restaurant.GSTNumber = req.GSTNumber
@@ -30,7 +30,7 @@ func (r *restaurantService) UpdateRestaurantGeneralDetails(ctx context.Context, 
 
 	restaurant.ContactEmail = req.EmailAddress
 	restaurant.ContactNumber = req.ContactNumber
-	restaurant.Manager_name = req.ManagerName
+	restaurant.ManagerName = req.ManagerName
 
 	// Step 3: Save changes
 	err = r.restaurantRepo.UpdateRestaurant(ctx, restaurant)
