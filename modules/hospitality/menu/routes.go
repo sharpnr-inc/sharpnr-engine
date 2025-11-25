@@ -68,8 +68,8 @@ func MenuRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	// -------------------------------
 	// 🧀 ADDONS (e.g., "Extra Cheese", "Coke")
 	// -------------------------------
-	menuRoutes.POST("/addon-groups/:id/addons", func(c *gin.Context) {}) // Create Addon
-	menuRoutes.GET("/addon-groups/:id/addons", func(c *gin.Context) {})  // Get Addons by Group
-	menuRoutes.PUT("/addons/:id", func(c *gin.Context) {})               // Update Addon
-	menuRoutes.DELETE("/addons/:id", func(c *gin.Context) {})            // Delete Addon
+	menuRoutes.POST("/addons/add", newMenuController.CreateAddons) // Create Addon
+	menuRoutes.GET("/addons", func(c *gin.Context) {})             // Get Addons by Group
+	menuRoutes.PUT("/addons/:id", func(c *gin.Context) {})         // Update Addon
+	menuRoutes.DELETE("/addons/:id", func(c *gin.Context) {})      // Delete Addon
 }

@@ -40,7 +40,7 @@ type MenuRepositoryInterface interface {
 	// -------------------------------
 	CreateMenuItem(ctx context.Context, item *hospitalitymodels.MenuItem) error
 	GetItemsBySubCategory(subCatID uuid.UUID) ([]hospitalitymodels.MenuItem, error)
-	GetMenuItemByID(id uuid.UUID) (*hospitalitymodels.MenuItem, error)
+	GetMenuItemByID(ctx context.Context, id uuid.UUID) (*hospitalitymodels.MenuItem, error)
 	UpdateMenuItem(item *hospitalitymodels.MenuItem) error
 	DeleteMenuItem(id uuid.UUID) error
 
@@ -62,8 +62,7 @@ type MenuRepositoryInterface interface {
 	// -------------------------------
 	// 🧀 ADDONS
 	// -------------------------------
-	CreateAddon(addon *hospitalitymodels.Addon) error
-	GetAddonsByGroup(groupID uuid.UUID) ([]hospitalitymodels.Addon, error)
+	CreateAddon(ctx context.Context, addon *hospitalitymodels.Addon) error
 	UpdateAddon(addon *hospitalitymodels.Addon) error
 	DeleteAddon(id uuid.UUID) error
 }

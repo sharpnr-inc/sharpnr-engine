@@ -65,8 +65,7 @@ type MenuService interface {
 	// -------------------------------
 	// 🧀 ADDONS
 	// -------------------------------
-	CreateAddon(addon *hospitalitymodels.Addon) error
-	GetAddonsByGroup(groupID uuid.UUID) ([]hospitalitymodels.Addon, error)
-	UpdateAddon(addon *hospitalitymodels.Addon) error
-	DeleteAddon(id uuid.UUID) error
+	CreateAddForMenuItem(ctx context.Context, orgid uuid.UUID, req hospitalitydtos.Menu_CreateAddonsInMenu_REQUEST) error
+	UpdateAddonOfMenuItem(ctx context.Context, addon *hospitalitymodels.Addon) error
+	DeleteAddonOfMenuItem(ctx context.Context, id uuid.UUID) error
 }

@@ -134,3 +134,10 @@ type Menu_CreateVariantGroupAndVariant_REQ struct {
 	VariantName string                 `json:"variant_name"`
 	Variant     []Menu_ADD_Variant_REQ `json:"variant"`
 }
+
+type Menu_CreateAddonsInMenu_REQUEST struct {
+	MenuItemId uuid.UUID `json:"menu_item_id"`
+	Name       string    `json:"name"`
+	Price      int       `json:"price"`
+	IsVeg      bool      `json:"is_veg"`
+}

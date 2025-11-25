@@ -11,23 +11,8 @@ type menuService struct {
 	menuRepo menurepo.MenuRepositoryInterface
 }
 
-// CreateAddon implements MenuService.
-func (m *menuService) CreateAddon(addon *hospitalitymodels.Addon) error {
-	panic("unimplemented")
-}
-
 // CreateVariant implements MenuService.
 func (m *menuService) CreateVariant(variant *hospitalitymodels.MenuVariant) error {
-	panic("unimplemented")
-}
-
-// DeleteAddon implements MenuService.
-func (m *menuService) DeleteAddon(id uuid.UUID) error {
-	panic("unimplemented")
-}
-
-// DeleteAddonGroup implements MenuService.
-func (m *menuService) DeleteAddonGroup(id uuid.UUID) error {
 	panic("unimplemented")
 }
 
@@ -53,11 +38,6 @@ func (m *menuService) DeleteSubCategory(id uuid.UUID) error {
 
 // DeleteVariant implements MenuService.
 func (m *menuService) DeleteVariant(id uuid.UUID) error {
-	panic("unimplemented")
-}
-
-// GetAddonsByGroup implements MenuService.
-func (m *menuService) GetAddonsByGroup(groupID uuid.UUID) ([]hospitalitymodels.Addon, error) {
 	panic("unimplemented")
 }
 
@@ -93,11 +73,6 @@ func (m *menuService) GetSubCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuS
 
 // GetVariantsByItem implements MenuService.
 func (m *menuService) GetVariantsByItem(itemID uuid.UUID) ([]hospitalitymodels.MenuVariant, error) {
-	panic("unimplemented")
-}
-
-// UpdateAddon implements MenuService.
-func (m *menuService) UpdateAddon(addon *hospitalitymodels.Addon) error {
 	panic("unimplemented")
 }
 

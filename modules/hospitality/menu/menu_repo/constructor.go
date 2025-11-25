@@ -12,23 +12,8 @@ type menuRepo struct {
 	db *gorm.DB
 }
 
-// CreateAddon implements MenuRepository.
-func (m *menuRepo) CreateAddon(addon *hospitalitymodels.Addon) error {
-	panic("unimplemented")
-}
-
 func (r *menuRepo) CreateVariant(ctx context.Context, variant *hospitalitymodels.MenuVariant) error {
 	return r.db.WithContext(ctx).Create(&variant).Error
-}
-
-// DeleteAddon implements MenuRepository.
-func (m *menuRepo) DeleteAddon(id uuid.UUID) error {
-	panic("unimplemented")
-}
-
-// DeleteAddonGroup implements MenuRepository.
-func (m *menuRepo) DeleteAddonGroup(id uuid.UUID) error {
-	panic("unimplemented")
 }
 
 // DeleteCategory implements MenuRepository.
@@ -56,18 +41,8 @@ func (m *menuRepo) DeleteVariant(id uuid.UUID) error {
 	panic("unimplemented")
 }
 
-// GetAddonsByGroup implements MenuRepository.
-func (m *menuRepo) GetAddonsByGroup(groupID uuid.UUID) ([]hospitalitymodels.Addon, error) {
-	panic("unimplemented")
-}
-
 // GetItemsBySubCategory implements MenuRepository.
 func (m *menuRepo) GetItemsBySubCategory(subCatID uuid.UUID) ([]hospitalitymodels.MenuItem, error) {
-	panic("unimplemented")
-}
-
-// GetMenuItemByID implements MenuRepository.
-func (m *menuRepo) GetMenuItemByID(id uuid.UUID) (*hospitalitymodels.MenuItem, error) {
 	panic("unimplemented")
 }
 
@@ -78,11 +53,6 @@ func (m *menuRepo) GetSubCategoriesByCategory(categoryID uuid.UUID) ([]hospitali
 
 // GetVariantsByItem implements MenuRepository.
 func (m *menuRepo) GetVariantsByItem(itemID uuid.UUID) ([]hospitalitymodels.MenuVariant, error) {
-	panic("unimplemented")
-}
-
-// UpdateAddon implements MenuRepository.
-func (m *menuRepo) UpdateAddon(addon *hospitalitymodels.Addon) error {
 	panic("unimplemented")
 }
 
