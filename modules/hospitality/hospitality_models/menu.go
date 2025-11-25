@@ -96,6 +96,7 @@ type MenuItem struct {
 	Kitchen   *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;"`
 
 	ServedBy string `gorm:"size:50;default:'KITCHEN'" json:"served_by"`
+	Unit     string `gorm:"default:'plate'"`
 
 	IsActive  bool `gorm:"default:true"`
 	CreatedAt time.Time

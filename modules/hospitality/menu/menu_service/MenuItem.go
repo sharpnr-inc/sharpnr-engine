@@ -14,21 +14,21 @@ func (s *menuService) CreateMenuItem(
 	ctx context.Context,
 	req *hospitalitydtos.Menu_CreateMenuItem_REQ,
 	orgID uuid.UUID,
-) error {
+) (*hospitalitydtos.Menu_CreateMenuItem_RES, error) {
 
 	subID, err := uuid.Parse(req.SubCategoryID)
 	if err != nil {
-		return fmt.Errorf("invalid subcategory id: %w", err)
+		return nil, fmt.Errorf("invalid subcategory id: %w", err)
 	}
 
 	// Validate Subcategory exists + belongs to org
 	sub, err := s.menuRepo.GetSubCategoryByID(ctx, subID)
 	if err != nil {
-		return fmt.Errorf("subcategory not found: %w", err)
+		return nil, fmt.Errorf("subcategory not found: %w", err)
 	}
 
 	if sub.OrganizationID != orgID {
-		return fmt.Errorf("subcategory does not belong to your organization")
+		return nil, fmt.Errorf("subcategory does not belong to your organization")
 	}
 
 	item := &hospitalitymodels.MenuItem{
@@ -43,8 +43,19 @@ func (s *menuService) CreateMenuItem(
 	}
 
 	if err := s.menuRepo.CreateMenuItem(ctx, item); err != nil {
-		return fmt.Errorf("failed to create menu item: %w", err)
+		return nil, fmt.Errorf("failed to create menu item: %w", err)
 	}
 
-	return nil
+	res := hospitalitydtos.Menu_CreateMenuItem_RES{
+		ID:            item.ID.String(),
+		CategoryID:    item.ID.String(),
+		SubCategoryID: item.SubCategoryID.String(),
+		Name:          item.Name,
+		Description:   item.Description,
+		IsVeg:         item.IsVeg,
+		BasePrice:     item.BasePrice,
+		ServedBy:      item.ServedBy,
+	}
+
+	return &res, nil
 }

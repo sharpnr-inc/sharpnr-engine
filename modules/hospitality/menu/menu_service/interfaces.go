@@ -43,7 +43,7 @@ type MenuService interface {
 	// -------------------------------
 	// 🍽️ MENU ITEMS
 	// -------------------------------
-	CreateMenuItem(context.Context, *hospitalitydtos.Menu_CreateMenuItem_REQ, uuid.UUID) error
+	CreateMenuItem(context.Context, *hospitalitydtos.Menu_CreateMenuItem_REQ, uuid.UUID) (*hospitalitydtos.Menu_CreateMenuItem_RES, error)
 	GetItemsBySubCategory(subCatID uuid.UUID) ([]hospitalitymodels.MenuItem, error)
 	GetMenuItemByID(id uuid.UUID) (*hospitalitymodels.MenuItem, error)
 	UpdateMenuItem(item *hospitalitymodels.MenuItem) error

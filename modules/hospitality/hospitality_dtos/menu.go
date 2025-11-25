@@ -79,6 +79,19 @@ type Menu_CreateMenuItem_REQ struct {
 	IsVeg         bool    `json:"is_veg"`
 	BasePrice     float64 `json:"base_price"`
 	ServedBy      string  `json:"served_by"` // optional, default "KITCHEN"
+	Unit          string  `json:"unit"`
+}
+
+type Menu_CreateMenuItem_RES struct {
+	ID            string  `json:"menu_item_id"`
+	CategoryID    string  `json:"category_id"`
+	SubCategoryID string  `json:"sub_category_id"`
+	Name          string  `json:"name"`
+	Description   string  `json:"description"`
+	IsVeg         bool    `json:"is_veg"`
+	BasePrice     float64 `json:"base_price"`
+	ServedBy      string  `json:"served_by"` // optional, default "KITCHEN"
+	Unit          string  `json:"unit"`
 }
 
 type Menu_VariantGroup_RESPONSE struct {

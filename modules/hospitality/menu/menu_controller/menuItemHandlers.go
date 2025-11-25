@@ -44,7 +44,8 @@ func (c *menuController) CreateMenuItem(ctx *gin.Context) {
 		req.ServedBy = "KITCHEN"
 	}
 
-	if err := c.menuService.CreateMenuItem(ctx, &req, orgID); err != nil {
+	response, err := c.menuService.CreateMenuItem(ctx, &req, orgID)
+	if err != nil {
 		res := dto.Response[any]{
 			StatusCode: http.StatusBadRequest,
 			Message:    "Failed to create menu item",
@@ -58,14 +59,14 @@ func (c *menuController) CreateMenuItem(ctx *gin.Context) {
 		return
 	}
 
-	res := dto.Response[any]{
+	res := dto.Response[hospitalitydtos.Menu_CreateMenuItem_RES]{
 		StatusCode: http.StatusOK,
 		Message:    "Menu item created successfully",
 		Error: dto.ErrorResponse{
 			Message: "",
 			IsError: false,
 		},
-		Data:      nil,
+		Data:      response,
 		Timestamp: time.Now(),
 	}
 	ctx.JSON(http.StatusOK, res)
