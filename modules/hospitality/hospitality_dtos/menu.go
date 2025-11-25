@@ -109,7 +109,13 @@ type Menu_Item_RESPONSE struct {
 	Description   string                       `json:"description"`
 	Price         float32                      `json:"price"`
 	VariantGroups []Menu_VariantGroup_RESPONSE `json:"variant_groups"`
-	AddonGroups   []Menu_AddGroupList          `json:"add_groups"`
+	AddOns        []Menu_AddOns                `json:"add_ons"`
+}
+
+type Menu_AddOns struct {
+	ID    uuid.UUID
+	Name  string
+	Price float64
 }
 
 type Menu_Variant_RESPONSE struct {
@@ -127,16 +133,4 @@ type Menu_CreateVariantGroupAndVariant_REQ struct {
 	MenuItemID  uuid.UUID              `json:"menu_item_id"`
 	VariantName string                 `json:"variant_name"`
 	Variant     []Menu_ADD_Variant_REQ `json:"variant"`
-}
-
-type Menu_AddGroupList struct {
-	ID     uuid.UUID
-	Name   string
-	AddOns []Menu_AddOns
-}
-
-type Menu_AddOns struct {
-	ID    uuid.UUID
-	Name  string
-	Price float64
 }

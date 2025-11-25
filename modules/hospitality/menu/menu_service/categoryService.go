@@ -117,31 +117,14 @@ func (s *menuService) GetCategoriesByGroup(
 					itemDto.VariantGroups = append(itemDto.VariantGroups, vgDto)
 				}
 
-				// ----------------------------------------
-				// ADDON GROUPS + ADDONS (YOUR DTO)
-				// ----------------------------------------
-				for _, ag := range item.AddonGroups {
-
-					// Map to Menu_AddGroupList DTO
-					addGroupDto := hospitalitydtos.Menu_AddGroupList{
-						ID:   ag.ID,
-						Name: ag.Name,
+				for _, ads := range item.Addons {
+					adsDTO := hospitalitydtos.Menu_AddOns{
+						ID:    ads.ID,
+						Name:  ads.Name,
+						Price: ads.Price,
 					}
 
-					// Map AddOns
-					for _, ad := range ag.Addons {
-						addGroupDto.AddOns = append(
-							addGroupDto.AddOns,
-							hospitalitydtos.Menu_AddOns{
-								ID:    ad.ID,
-								Name:  ad.Name,
-								Price: ad.Price,
-							},
-						)
-					}
-
-					// Add to itemDto
-					itemDto.AddonGroups = append(itemDto.AddonGroups, addGroupDto)
+					itemDto.AddOns = append(itemDto.AddOns, adsDTO)
 				}
 
 				subDto.MenuItems = append(subDto.MenuItems, itemDto)

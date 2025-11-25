@@ -60,14 +60,6 @@ type MenuRepositoryInterface interface {
 	UpdateVariantGroup(ctx context.Context, variant *hospitalitymodels.MenuVariantGroup) error
 
 	// -------------------------------
-	// ➕ ADDON GROUPS
-	// -------------------------------
-	CreateAddonGroup(group *hospitalitymodels.AddonGroup) error
-	GetAddonGroupsByItem(itemID uuid.UUID) ([]hospitalitymodels.AddonGroup, error)
-	UpdateAddonGroup(group *hospitalitymodels.AddonGroup) error
-	DeleteAddonGroup(id uuid.UUID) error
-
-	// -------------------------------
 	// 🧀 ADDONS
 	// -------------------------------
 	CreateAddon(addon *hospitalitymodels.Addon) error

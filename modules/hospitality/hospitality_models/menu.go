@@ -89,7 +89,7 @@ type MenuItem struct {
 	IsAvailable bool    `gorm:"default:true"`
 
 	VariantGroups []MenuVariantGroup `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
-	AddonGroups   []AddonGroup       `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
+	Addons        []Addon            `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
 
 	// Optional Kitchen link
 	KitchenID *uuid.UUID `gorm:"type:uuid"`
@@ -131,31 +131,16 @@ type MenuVariant struct {
 }
 
 // -------------------------------
-// 4️⃣ ADDON GROUPS
-// -------------------------------
-type AddonGroup struct {
-	ID            uuid.UUID `gorm:"type:uuid;primaryKey"`
-	MenuItemID    uuid.UUID `gorm:"type:uuid;not null"`
-	MenuItem      MenuItem  `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
-	Name          string    `gorm:"size:50;not null"`
-	IsMultiSelect bool      `gorm:"default:false"`
-	Addons        []Addon   `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE;"`
-	IsActive      bool      `gorm:"default:true"`
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
-}
-
-// -------------------------------
 // 5️⃣ ADDONS
 // -------------------------------
 type Addon struct {
-	ID        uuid.UUID  `gorm:"type:uuid;primaryKey"`
-	GroupID   uuid.UUID  `gorm:"type:uuid;not null"`
-	Group     AddonGroup `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE;"`
-	Name      string     `gorm:"size:100;not null"`
-	Price     float64    `gorm:"not null"`
-	IsVeg     bool       `gorm:"default:true"`
-	IsActive  bool       `gorm:"default:true"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
+	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
+	MenuItem   MenuItem  `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
+	Name       string    `gorm:"size:100;not null"`
+	Price      float64   `gorm:"not null"`
+	IsVeg      bool      `gorm:"default:true"`
+	IsActive   bool      `gorm:"default:true"`
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }

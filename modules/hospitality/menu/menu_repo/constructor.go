@@ -17,11 +17,6 @@ func (m *menuRepo) CreateAddon(addon *hospitalitymodels.Addon) error {
 	panic("unimplemented")
 }
 
-// CreateAddonGroup implements MenuRepository.
-func (m *menuRepo) CreateAddonGroup(group *hospitalitymodels.AddonGroup) error {
-	panic("unimplemented")
-}
-
 func (r *menuRepo) CreateVariant(ctx context.Context, variant *hospitalitymodels.MenuVariant) error {
 	return r.db.WithContext(ctx).Create(&variant).Error
 }
@@ -61,11 +56,6 @@ func (m *menuRepo) DeleteVariant(id uuid.UUID) error {
 	panic("unimplemented")
 }
 
-// GetAddonGroupsByItem implements MenuRepository.
-func (m *menuRepo) GetAddonGroupsByItem(itemID uuid.UUID) ([]hospitalitymodels.AddonGroup, error) {
-	panic("unimplemented")
-}
-
 // GetAddonsByGroup implements MenuRepository.
 func (m *menuRepo) GetAddonsByGroup(groupID uuid.UUID) ([]hospitalitymodels.Addon, error) {
 	panic("unimplemented")
@@ -93,11 +83,6 @@ func (m *menuRepo) GetVariantsByItem(itemID uuid.UUID) ([]hospitalitymodels.Menu
 
 // UpdateAddon implements MenuRepository.
 func (m *menuRepo) UpdateAddon(addon *hospitalitymodels.Addon) error {
-	panic("unimplemented")
-}
-
-// UpdateAddonGroup implements MenuRepository.
-func (m *menuRepo) UpdateAddonGroup(group *hospitalitymodels.AddonGroup) error {
 	panic("unimplemented")
 }
 

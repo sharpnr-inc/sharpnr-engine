@@ -61,13 +61,6 @@ type MenuService interface {
 	// 🧩 VARIANTS GROUP
 	// -------------------------------
 	CreateVariantGroup(ctx context.Context, menuItemId uuid.UUID, req *hospitalitydtos.Menu_CreateVariantGroupAndVariant_REQ) error
-	// -------------------------------
-	// ➕ ADDON GROUPS
-	// -------------------------------
-	CreateAddonGroup(group *hospitalitymodels.AddonGroup) error
-	GetAddonGroupsByItem(itemID uuid.UUID) ([]hospitalitymodels.AddonGroup, error)
-	UpdateAddonGroup(group *hospitalitymodels.AddonGroup) error
-	DeleteAddonGroup(id uuid.UUID) error
 
 	// -------------------------------
 	// 🧀 ADDONS
