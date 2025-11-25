@@ -34,7 +34,7 @@ func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB) {
 
 	houseKeeping := hotel_routes.Group("/houseKeeping")
 	{
-		houseKeeping.GET("/request")
+		houseKeeping.GET("/requests")
 		houseKeeping.POST("")
 	}
 
