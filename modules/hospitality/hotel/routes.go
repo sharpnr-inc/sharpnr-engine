@@ -4,6 +4,7 @@ import (
 	hotelcontrollers "sharpnr-engine/modules/hospitality/hotel/hotel_controllers"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
 	hotelservices "sharpnr-engine/modules/hospitality/hotel/services"
+	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -11,7 +12,9 @@ import (
 
 func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	newHotelRepo := hotelrepo.NewHotelRepository(db)
-	newHotelService := hotelservices.NewHotelService(newHotelRepo)
+
+	newKitchenRepo := kitchenrepo.NewKitchenRepository(db)
+	newHotelService := hotelservices.NewHotelService(newHotelRepo, newKitchenRepo)
 
 	newHotelController := hotelcontrollers.NewHotelController(newHotelService)
 

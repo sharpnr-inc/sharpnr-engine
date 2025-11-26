@@ -12,7 +12,11 @@ import (
 )
 
 // CreateRoomInHotel implements HotelService.
-func (h *hotelService) CreateRoomInHotel(ctx context.Context, orgID uuid.UUID, req hospitalitydtos.CreateRoomInFloor_REQ) (*hospitalitydtos.CreateRoomInFloor_RES, error) {
+func (h *hotelService) CreateRoomInHotel(
+	ctx context.Context,
+	orgID uuid.UUID,
+	req hospitalitydtos.CreateRoomInFloor_REQ) (*hospitalitydtos.CreateRoomInFloor_RES, error) {
+
 	// ✅ Verify floor exists
 	floor, err := h.hotelRepo.GetFloorByID(ctx, req.FloorId)
 	if err != nil {
@@ -47,6 +51,10 @@ func (h *hotelService) CreateRoomInHotel(ctx context.Context, orgID uuid.UUID, r
 
 	return res, nil
 }
+
+/*************************************
+ * Function for Updating Room status *
+ *************************************/
 
 func (r *hotelService) UpdateRoomStatus(
 	ctx context.Context,
