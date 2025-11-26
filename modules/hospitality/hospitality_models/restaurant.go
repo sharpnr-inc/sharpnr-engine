@@ -90,5 +90,39 @@ type RestaurantTable struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-type RestaurantTableOrders struct {
+type RestaurantTableBookingSession struct {
+	ID                            uuid.UUID
+	RestaurantTableID             uuid.UUID
+	HospitalityCustomerAndGuestID string
+	Orders                        []RestaurantTableOrder
+
+	// Meta
+	From_time string
+	To_time   string
+	CreatedAt string
+	UpdatedAt string
+
+	// For Billings
+	SubTotal    string
+	GSTAndTaxes string
+	Total       string
+
+	RestaurantInvoiceID uuid.UUID
+}
+
+type RestaurantTableOrder struct {
+	ID                uuid.UUID
+	MenuItemId        uuid.UUID
+	VariantID         uuid.UUID
+	AddonID           uuid.UUID
+	Quantity          int
+	Notes             string
+	RestaurantTableID uuid.UUID
+}
+
+type RestaurantInvoice struct {
+	ID                              uuid.UUID
+	RestaurantTableBookingSessionID uuid.UUID
+	CustomerID                      uuid.UUID
+	PaymentId                       uuid.UUID
 }

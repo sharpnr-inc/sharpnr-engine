@@ -57,6 +57,9 @@ type HotelFloor struct {
 // -----------------------------
 // Rooms
 // -----------------------------
+
+// TODO: Create a Separate table for Room Price, gor price history tracking and Dynamic pricing
+
 type Room struct {
 	ID             uuid.UUID           `gorm:"type:uuid;primaryKey"`
 	FloorID        uuid.UUID           `gorm:"type:uuid;not null"`
@@ -104,12 +107,15 @@ type HotelRoomBooking struct {
 }
 
 type BookingCharge struct {
-	ID          uuid.UUID `gorm:"type:uuid;primaryKey"`
-	BookingID   uuid.UUID `gorm:"type:uuid;not null"`
-	ChargeType  string    `gorm:"size:50"` // room_rent, room_service, bar, laundry, spa, minibar
-	Description string    `gorm:"size:200"`
-	Amount      float64
-	CreatedAt   time.Time
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+	// TODO Name change :->  HotelRoomBookingID (Table+Column)
+	BookingID        uuid.UUID `gorm:"type:uuid;not null"` // Foreign Key Will
+	ChargeType       string    `gorm:"size:50"`            // room_rent, room_service, bar, laundry, spa, minibar
+	Description      string    `gorm:"size:200"`
+	Amount           float64
+	CreatedAt        time.Time
+	BookingPaymentID uuid.UUID
+	PaymentStatus    string
 }
 
 type BookingPayment struct {

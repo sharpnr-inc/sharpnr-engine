@@ -8,7 +8,6 @@ import (
 )
 
 type RestaurantService interface {
-	InitializeRestaurant()
 	GetRestaurantDetails(ctx context.Context, orgId uuid.UUID) (*hospitalitydtos.Restaurant_GetRestaurant_ResponseDTO, error)
 	UpdateRestaurantGeneralDetails(ctx context.Context, req hospitalitydtos.Restaurant_UpdateOrEdit_General_Details_REQ, orgId uuid.UUID) (bool, error)
 

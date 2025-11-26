@@ -18,26 +18,6 @@ func (s *barServices) GetBarDetailsConfig(ctx context.Context, orgId uuid.UUID) 
 		return nil, errors.New("bar not found in the DB")
 	}
 
-	// tableRes := make([]hospitalitydtos.BarTablesResponse, 0)
-
-	// for _, t := range bar.Tables {
-	// 	tableRes = append(tableRes, hospitalitydtos.BarTablesResponse{
-	// 		TableName:   t.Name,
-	// 		TableId:     t.ID,
-	// 		TableStatus: t.Status,
-	// 	})
-	// }
-
-	// flooresp := make([]hospitalitydtos.BarFloorResponse, 0)
-
-	// for _, bf := range bar.Floors {
-	// 	flooresp = append(flooresp, hospitalitydtos.BarFloorResponse{
-	// 		FloorId: bf.ID,
-	// 		// FloorName: bf.FloorNumber,
-	// 		Tables: tableRes,
-	// 	})
-	// }
-
 	res := &hospitalitydtos.BAR_UpdateBarDetails_Response{
 		BarDisplayName:                 bar.DisplayName,
 		BarLegalName:                   bar.LegalName,

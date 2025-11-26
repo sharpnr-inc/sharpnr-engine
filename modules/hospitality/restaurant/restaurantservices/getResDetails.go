@@ -108,7 +108,3 @@ func (s *restaurantService) GetRestaurantLayout(ctx context.Context, orgid uuid.
 
 	return &res, nil
 }
-
-func (s *restaurantService) InitializeRestaurant() {
-
-}

@@ -40,8 +40,7 @@ type KitchenTicket struct {
 	KitchenID uuid.UUID `gorm:"type:uuid;not null"`
 	Kitchen   Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:CASCADE;"`
 
-	OrderID uuid.UUID        `gorm:"type:uuid;not null"`
-	Order   HospitalityOrder `gorm:"foreignKey:OrderID;constraint:OnDelete:CASCADE;"`
+	OrderID uuid.UUID `gorm:"type:uuid;not null"`
 
 	Status   string `gorm:"size:20;default:'PENDING'"` // PENDING, IN_PROGRESS, COMPLETED, CANCELLED
 	TicketNo string `gorm:"size:50;uniqueIndex"`       // KOT number (auto-generated)

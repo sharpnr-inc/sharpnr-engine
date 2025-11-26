@@ -8,7 +8,6 @@ import (
 )
 
 type BarServices interface {
-	InitializeDefaultBar()
 	GetBarLayout(ctx context.Context, orgId uuid.UUID) (*hospitalitydtos.GetBarDetails_RESPONSE, error)
 
 	CreateTablesInBar(ctx context.Context, orgId uuid.UUID, req hospitalitydtos.Bar_CreateTablesInBar_Request) error
