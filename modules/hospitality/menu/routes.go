@@ -60,10 +60,10 @@ func MenuRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	// -------------------------------
 	// 🧩 VARIANTS (Half, Full, etc.)
 	// -------------------------------
-	menuRoutes.POST("/items/variants", newMenuController.AddVariantInMenuItem) // Add Variant
-	menuRoutes.GET("/items/:id/variants", func(c *gin.Context) {})             // Get Variants for Item
-	menuRoutes.PUT("/variants/:id", func(c *gin.Context) {})                   // Update Variant
-	menuRoutes.DELETE("/variants/:id", func(c *gin.Context) {})                // Delete Variant
+	menuRoutes.POST("/items/variants", newMenuController.AddVariantInMenuItem)    // Add Variant
+	menuRoutes.GET("/items/:id/variants", newMenuController.GetVariantOfMenuItem) // Get Variants for Item
+	menuRoutes.PUT("/variants/:id", func(c *gin.Context) {})                      // Update Variant
+	menuRoutes.DELETE("/variants/:id", func(c *gin.Context) {})                   // Delete Variant
 
 	// -------------------------------
 	// 🧀 ADDONS (e.g., "Extra Cheese", "Coke")

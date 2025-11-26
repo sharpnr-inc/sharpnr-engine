@@ -12,7 +12,7 @@ import (
 func (c *restaurantController) CreateOrAddFloor(ctx *gin.Context) {}
 
 func (c *restaurantController) CreateOrAddTables(ctx *gin.Context) {
-	fmt.Println("---- CONTROLLER HIT ----")
+
 	// ✅ Get OrgUUID from context (set by middleware)
 	orgUUID, exists := ctx.Get("OrgUUID")
 	if !exists {
@@ -26,17 +26,12 @@ func (c *restaurantController) CreateOrAddTables(ctx *gin.Context) {
 	}
 	fmt.Println(orgID)
 
-	fmt.Println("---- CONTROLLER HIT ----")
-
 	var req hospitalitydtos.Restaurant_CreateOrAddTables_Request
 
-	fmt.Println(&req)
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
 		return
 	}
-
-	fmt.Println(req)
 
 	if err := c.resSvc.CreateOrAddTable(ctx, orgID, req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -46,3 +41,5 @@ func (c *restaurantController) CreateOrAddTables(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"success": "awesome"})
 
 }
+
+func (c *restaurantController) EditTablesDetailsOfRestaurant(ctx *gin.Context) {}

@@ -82,32 +82,20 @@ type KitchenDTO struct {
 
 // This is the struct fir the Updating the Restaurant
 type Restaurant_UpdateOrEdit_General_Details_REQ struct {
-	RestaurantId string `json:"restaurant_id"`
-
-	// Names
-	RestaurantLegalName   string `json:"hotel_legal_name"`
-	RestaurantDisplayName string `json:"hotel_display_name"`
-
-	// Govt Registration Numbers
-	FSSAINumber string `json:"fssai_number"`
-	GSTNumber   string `json:"gst_number"`
-	CINNumber   string `json:"cin_number"`
-
-	// Address
-	AddressLine string `json:"address_line"`
-	City        string `json:"city"`
-	State       string `json:"state"`
-	Country     string `json:"country"`
-	Pincode     string `json:"pincode"`
-
-	// Contact
-	EmailAddress    string `json:"email_address"`
-	ContactNumber   string `json:"contact_number"`
-	SecondaryNumber string `json:"secondary_number"`
-
-	// Manager Details
-	ManagerName          string `json:"manager_name"`
-	ManagerContactNumber string `json:"manager_contact_number"`
+	RestaurantId          string  `json:"restaurant_id" binding:"required"`
+	RestaurantLegalName   *string `json:"restaurant_legal_name,omitempty"`
+	RestaurantDisplayName *string `json:"restaurant_display_name,omitempty"`
+	FSSAINumber           *string `json:"fssai_number,omitempty"`
+	GSTNumber             *string `json:"gst_number,omitempty"`
+	CINNumber             *string `json:"cin_number,omitempty"`
+	AddressLine           *string `json:"address_line,omitempty"`
+	City                  *string `json:"city,omitempty"`
+	State                 *string `json:"state,omitempty"`
+	Country               *string `json:"country,omitempty"`
+	Pincode               *string `json:"pincode,omitempty"`
+	EmailAddress          *string `json:"email_address,omitempty"`
+	ContactNumber         *string `json:"contact_number,omitempty"`
+	ManagerName           *string `json:"manager_name,omitempty"`
 }
 
 type Restaurant_GetRestaurantLayout_Response struct {

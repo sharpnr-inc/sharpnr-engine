@@ -9,25 +9,24 @@ import (
 )
 
 func (c *restaurantController) UpdateRestaurant(ctx *gin.Context) {
-	/*
-		   TODO Add Req DTO we Already have Response DTO
-		//    *1 Add REQ DTO
-		   *2 Add Repo Method and Service
-	*/
-
-	// ✅ Get OrgUUID from context (set by middleware)
+	// Step 1: Get OrgUUID from context (set by middleware)
 	orgUUID, exists := ctx.Get("OrgUUID")
 	if !exists {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
-		return
-	}
-	orgID, ok := orgUUID.(uuid.UUID)
-	if !ok {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Organization UUID missing",
+		})
 		return
 	}
 
-	// 2️⃣ Bind JSON request body
+	orgID, ok := orgUUID.(uuid.UUID)
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid organization UUID format",
+		})
+		return
+	}
+
+	// Step 2: Bind and validate JSON request body
 	var req hospitalitydtos.Restaurant_UpdateOrEdit_General_Details_REQ
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -38,14 +37,28 @@ func (c *restaurantController) UpdateRestaurant(ctx *gin.Context) {
 		return
 	}
 
-	// Optional: Ensure the HotelId in the payload matches OrgID (if required)
-	// if req.HotelId != orgID.String() {
-	// 	ctx.JSON(http.StatusBadRequest, gin.H{"error": "Hotel ID mismatch"})
-	// 	return
-	// }
+	// Step 3: Validate that at least one field is being updated
+	if req.RestaurantLegalName == nil &&
+		req.RestaurantDisplayName == nil &&
+		req.FSSAINumber == nil &&
+		req.GSTNumber == nil &&
+		req.CINNumber == nil &&
+		req.AddressLine == nil &&
+		req.City == nil &&
+		req.State == nil &&
+		req.Country == nil &&
+		req.Pincode == nil &&
+		req.EmailAddress == nil &&
+		req.ContactNumber == nil &&
+		req.ManagerName == nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "No fields to update",
+		})
+		return
+	}
 
-	// 3️⃣ Call service method
-	okRes, err := c.resSvc.UpdateRestaurantGeneralDetails(ctx, req, orgID)
+	// Step 4: Call service method
+	success, err := c.resSvc.UpdateRestaurantGeneralDetails(ctx, req, orgID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error":   "Failed to update restaurant details",
@@ -54,10 +67,9 @@ func (c *restaurantController) UpdateRestaurant(ctx *gin.Context) {
 		return
 	}
 
-	// 4️⃣ Return success response
+	// Step 5: Return success response
 	ctx.JSON(http.StatusOK, gin.H{
-		"success": okRes,
+		"success": success,
 		"message": "Restaurant details updated successfully",
 	})
-
 }

@@ -2,6 +2,7 @@ package menuservice
 
 import (
 	"context"
+	"errors"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 
@@ -45,4 +46,51 @@ func (s *menuService) CreateVariantGroup(
 	}
 
 	return nil
+}
+
+func (m *menuService) GetVariantGroupByMenuId(
+	ctx context.Context,
+	orgid, menuItemId uuid.UUID,
+) ([]hospitalitydtos.Menu_VariantGroup_RESPONSE, error) {
+
+	// Validate org
+	menuItem, err := m.menuRepo.GetMenuItemByID(ctx, menuItemId)
+	if err != nil {
+		return nil, err
+	}
+
+	if menuItem.OrganizationID != orgid {
+		return nil, errors.New("organization mismatch")
+	}
+
+	// Fetch all groups
+	groups, err := m.menuRepo.GetVariantGroupsByMenuItemID(ctx, menuItemId)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create response list
+	resp := make([]hospitalitydtos.Menu_VariantGroup_RESPONSE, 0)
+
+	for _, g := range groups {
+		grpDto := hospitalitydtos.Menu_VariantGroup_RESPONSE{
+			Id:            g.ID,
+			Name:          g.Name,
+			IsMultiSelect: g.IsMultiSelect,
+			Variants:      []hospitalitydtos.Menu_Variant_RESPONSE{},
+		}
+
+		// Add variants
+		for _, v := range g.Variants {
+			grpDto.Variants = append(grpDto.Variants, hospitalitydtos.Menu_Variant_RESPONSE{
+				Id:    v.ID,
+				Name:  v.Name,
+				Price: v.Price,
+			})
+		}
+
+		resp = append(resp, grpDto)
+	}
+
+	return resp, nil
 }

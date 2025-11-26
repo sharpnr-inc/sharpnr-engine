@@ -71,11 +71,6 @@ func (m *menuService) GetSubCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuS
 	panic("unimplemented")
 }
 
-// GetVariantsByItem implements MenuService.
-func (m *menuService) GetVariantsByItem(itemID uuid.UUID) ([]hospitalitymodels.MenuVariant, error) {
-	panic("unimplemented")
-}
-
 // UpdateCategory implements MenuService.
 func (m *menuService) UpdateCategory(category *hospitalitymodels.MenuCategory) error {
 	panic("unimplemented")

@@ -56,7 +56,7 @@ type MenuRepositoryInterface interface {
 	// 🧩 VARIANTS GROUP
 	// -------------------------------
 	CreateVariantGroup(ctx context.Context, variant *hospitalitymodels.MenuVariantGroup) error
-
+	GetVariantGroupsByMenuItemID(ctx context.Context, menuId uuid.UUID) ([]hospitalitymodels.MenuVariantGroup, error)
 	UpdateVariantGroup(ctx context.Context, variant *hospitalitymodels.MenuVariantGroup) error
 
 	// -------------------------------

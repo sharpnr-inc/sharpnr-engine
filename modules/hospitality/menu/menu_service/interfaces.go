@@ -53,7 +53,7 @@ type MenuService interface {
 	// 🧩 VARIANTS
 	// -------------------------------
 	CreateVariant(variant *hospitalitymodels.MenuVariant) error
-	GetVariantsByItem(itemID uuid.UUID) ([]hospitalitymodels.MenuVariant, error)
+	GetVariantsByItem(ctx context.Context, itemID uuid.UUID) ([]hospitalitymodels.MenuVariant, error)
 	UpdateVariant(variant *hospitalitymodels.MenuVariant) error
 	DeleteVariant(id uuid.UUID) error
 
@@ -61,6 +61,7 @@ type MenuService interface {
 	// 🧩 VARIANTS GROUP
 	// -------------------------------
 	CreateVariantGroup(ctx context.Context, menuItemId uuid.UUID, req *hospitalitydtos.Menu_CreateVariantGroupAndVariant_REQ) error
+	GetVariantGroupByMenuId(ctx context.Context, orgid, menuItemId uuid.UUID) ([]hospitalitydtos.Menu_VariantGroup_RESPONSE, error)
 
 	// -------------------------------
 	// 🧀 ADDONS
