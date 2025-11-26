@@ -86,16 +86,6 @@ func (s *barServices) UpdateBar(
 		updates["closing_time"] = *req.ClosingTime
 	}
 
-	if req.IsKitchen != nil {
-		updates["is_kitchen"] = *req.IsKitchen
-	}
-	if req.KitchenID != nil {
-		updates["kitchen_id"] = *req.KitchenID
-	}
-
-	if req.IsShareLegalDetailsWithMainOrg != nil {
-		updates["is_share_legal_details_with_main_org"] = *req.IsShareLegalDetailsWithMainOrg
-	}
 	if req.GSTNumber != nil {
 		updates["gst_number"] = *req.GSTNumber
 	}

@@ -78,7 +78,7 @@ func (c *barController) Update(ctx *gin.Context) {
 	}
 
 	// BarID is required
-	if *req.ID == uuid.Nil {
+	if req.ID == uuid.Nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Bar ID is required"})
 		return
 	}

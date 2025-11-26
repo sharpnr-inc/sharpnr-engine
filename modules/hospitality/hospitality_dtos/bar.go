@@ -73,28 +73,20 @@ type Bar_Table struct {
 
 type BAR_BarUpdateReq struct {
 	// Basic Details
-	ID                *uuid.UUID
-	Name              *string `json:"name"`
-	DisplayName       *string `json:"display_name"`
-	LegalName         *string `json:"legal_name"`
-	RegisteredAddress *string `json:"registered_address"`
-
-	// Organization (usually not updated, but kept for flexibility)
-	OrganizationID *uuid.UUID `json:"organization_id"`
+	ID                uuid.UUID `json:"bar_id"`
+	Name              *string   `json:"name"`
+	DisplayName       *string   `json:"display_name"`
+	LegalName         *string   `json:"legal_name"`
+	RegisteredAddress *string   `json:"registered_address"`
 
 	// Operating Hours
 	OpeningTime *time.Time `json:"opening_time"`
 	ClosingTime *time.Time `json:"closing_time"`
 
-	// Kitchen Info
-	IsKitchen *bool      `json:"is_kitchen"`
-	KitchenID *uuid.UUID `json:"kitchen_id"`
-
 	// Legal Details
-	IsShareLegalDetailsWithMainOrg *bool   `json:"is_share_legal_details_with_main_org"`
-	GSTNumber                      *string `json:"gst_number"`
-	CINNumber                      *string `json:"cin_number"`
-	FSSAINumber                    *string `json:"fssai_number"`
+	GSTNumber   *string `json:"gst_number"`
+	CINNumber   *string `json:"cin_number"`
+	FSSAINumber *string `json:"fssai_number"`
 
 	// Location Details
 	IsMultifloor *bool   `json:"is_multifloor"`
