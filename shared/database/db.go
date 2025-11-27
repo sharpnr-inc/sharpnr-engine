@@ -79,14 +79,20 @@ func MigrateDB(db *gorm.DB) error {
 		&hospitalitymodels.Restaurant{},
 		&hospitalitymodels.RestaurantFloor{},
 		&hospitalitymodels.RestaurantTable{},
+		&hospitalitymodels.RestaurantTableBookingSession{},
+		&hospitalitymodels.RestaurantTableOrder{},
 
 		//Hospitality --> Kitchen
 		&hospitalitymodels.Kitchen{},
 		&hospitalitymodels.KitchenTicket{},
 		&hospitalitymodels.KitchenTicketItem{},
+
+		// TODO :- These table Needs to be Deleted Because Each every
+		// Ordering System have different application
 		&hospitalitymodels.HospitalityOrder{},
 		&hospitalitymodels.HospitalityOrderItem{},
 		&hospitalitymodels.HospitalityOrderAddon{},
+		//---------------------------------------------------
 
 		// ✅ MENU SYSTEM
 		&hospitalitymodels.MenuGroup{},
@@ -96,6 +102,10 @@ func MigrateDB(db *gorm.DB) error {
 		&hospitalitymodels.MenuVariant{},
 		&hospitalitymodels.MenuVariantGroup{},
 		&hospitalitymodels.Addon{},
+
+		// -------------------------------
+		// 💰 Hospitality Customer & Guest MODELS
+		// -------------------------------
 
 		// -------------------------------
 		// 💰 ACCOUNTING MODELS

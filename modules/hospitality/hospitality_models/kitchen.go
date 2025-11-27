@@ -57,15 +57,14 @@ type KitchenTicket struct {
 // -------------------------------------------
 // Each line in a KOT corresponds to an OrderItem
 type KitchenTicketItem struct {
-	ID       uuid.UUID     `gorm:"type:uuid;primaryKey"`
-	TicketID uuid.UUID     `gorm:"type:uuid;not null"`
-	Ticket   KitchenTicket `gorm:"foreignKey:TicketID;constraint:OnDelete:CASCADE;"`
+	ID              uuid.UUID     `gorm:"type:uuid;primaryKey"`
+	KitchenTicketID uuid.UUID     `gorm:"type:uuid;not null"`
+	Ticket          KitchenTicket `gorm:"foreignKey:TicketID;constraint:OnDelete:CASCADE;"`
 
 	OrderItemID uuid.UUID            `gorm:"type:uuid;not null"`
 	OrderItem   HospitalityOrderItem `gorm:"foreignKey:OrderItemID;constraint:OnDelete:CASCADE;"`
 
 	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
-	MenuItem   MenuItem  `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
 
 	Quantity  int    `gorm:"not null"`
 	Status    string `gorm:"size:20;default:'PENDING'"` // PENDING, COOKING, READY

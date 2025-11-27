@@ -33,7 +33,7 @@ func RestaurantRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	sessionRoutes := resRoutes.Group("/session")
 	{
 		sessionRoutes.POST("/create", newRestaurantController.CreateSession)
-		sessionRoutes.GET("/")
+		sessionRoutes.GET("/addItem/:id", newRestaurantController.AddOrdersInSession)
 
 	}
 }

@@ -113,3 +113,19 @@ type Restaurant_TableCreatingList struct {
 	TableName     string `json:"table_name"`
 	TableCapacity int    `json:"table_capacity"`
 }
+
+//------------------------------------------------------------------------------------------------------------------------//
+
+/****************************************************************
+ * These are the DTOs for the Orders and Session of Restaurants *
+****************************************************************/
+
+// This is Struct For Creating the Table Session in the
+// Restaurant for the table
+// Note --> for Now We Only need TableId and If CustomerId is there we can accept it without the Order items Array or Slice
+type Hospitality_Restaurant_CreateSession_REQUEST struct {
+	TableId      uuid.UUID
+	RestaurantId *uuid.UUID
+	CustomerId   *uuid.UUID
+	OrderItem    *[]string
+}

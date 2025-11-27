@@ -91,33 +91,85 @@ type RestaurantTable struct {
 }
 
 type RestaurantTableBookingSession struct {
-	ID                            uuid.UUID
-	RestaurantTableID             uuid.UUID
-	HospitalityCustomerAndGuestID string
-	Orders                        []RestaurantTableOrder
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	// Meta
-	From_time string
-	To_time   string
-	CreatedAt string
-	UpdatedAt string
+	// -----------------------------------------------------
+	// 🔗 Table Reference (Required)
+	// -----------------------------------------------------
+	RestaurantTableID uuid.UUID       `gorm:"type:uuid;not null"`
+	RestaurantTable   RestaurantTable `gorm:"foreignKey:RestaurantTableID;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
 
-	// For Billings
-	SubTotal    string
-	GSTAndTaxes string
-	Total       string
+	// -----------------------------------------------------
+	// 🔗 Customer (Optional until closing the session)
+	// -----------------------------------------------------
+	HospitalityCustomerAndGuestID *uuid.UUID                   `gorm:"type:uuid"`
+	CustomerAndGuest              *HospitalityCustomerAndGuest `gorm:"foreignKey:HospitalityCustomerAndGuestID"`
 
-	RestaurantInvoiceID uuid.UUID
+	// -----------------------------------------------------
+	// 🔗 Orders for the session
+	// -----------------------------------------------------
+	Orders []RestaurantTableOrder `gorm:"foreignKey:RestaurantTableBookingSessionID"`
+
+	// -----------------------------------------------------
+	// 🕒 Session Timing
+	// -----------------------------------------------------
+	FromTime time.Time  `gorm:"type:timestamp;not null"` // When session started
+	ToTime   *time.Time `gorm:"type:timestamp"`          // When closed (null until closing)
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+
+	// -----------------------------------------------------
+	// 💰 Billing Fields
+	// -----------------------------------------------------
+	SubTotal    float64 `gorm:"type:numeric(10,2);default:0"`
+	GSTAndTaxes float64 `gorm:"type:numeric(10,2);default:0"`
+	Total       float64 `gorm:"type:numeric(10,2);default:0"`
+
+	// -----------------------------------------------------
+	// 🧾 Invoice (Optional, Added After Billing)
+	// -----------------------------------------------------
+	RestaurantInvoiceID *uuid.UUID `gorm:"type:uuid"`
 }
 
 type RestaurantTableOrder struct {
-	ID                uuid.UUID
-	MenuItemId        uuid.UUID
-	VariantID         uuid.UUID
-	AddonID           uuid.UUID
-	Quantity          int
-	Notes             string
-	RestaurantTableID uuid.UUID
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	// -----------------------------------------------------
+	// 🔗 Menu Item (Required)
+	// -----------------------------------------------------
+	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
+	MenuItem   MenuItem  `gorm:"foreignKey:MenuItemID"`
+
+	// -----------------------------------------------------
+	// 🔗 Variant (Optional - because not all menu items have variants)
+	// -----------------------------------------------------
+	VariantID *uuid.UUID   `gorm:"type:uuid"`
+	Variant   *MenuVariant `gorm:"foreignKey:VariantID"`
+
+	// -----------------------------------------------------
+	// 🔗 Addons (Optional)
+	// -----------------------------------------------------
+	AddonID *uuid.UUID `gorm:"type:uuid"`
+	Addon   *Addon     `gorm:"foreignKey:AddonID"`
+
+	// -----------------------------------------------------
+	// 🔢 Quantity & Notes
+	// -----------------------------------------------------
+	Quantity int    `gorm:"not null;default:1"`
+	Notes    string `gorm:"type:text"`
+
+	// -----------------------------------------------------
+	// 🔗 Link to Table Booking Session
+	// -----------------------------------------------------
+	RestaurantTableBookingSessionID uuid.UUID                     `gorm:"type:uuid;not null"`
+	BookingSession                  RestaurantTableBookingSession `gorm:"foreignKey:RestaurantTableBookingSessionID"`
+
+	// -----------------------------------------------------
+	// 🔗 Table (for history, not mandatory if session links)
+	// -----------------------------------------------------
+	RestaurantTableID uuid.UUID       `gorm:"type:uuid;not null"`
+	RestaurantTable   RestaurantTable `gorm:"foreignKey:RestaurantTableID"`
 }
 
 type RestaurantInvoice struct {
