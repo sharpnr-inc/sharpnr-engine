@@ -1,4 +1,4 @@
-package paymentgateway
+package payment
 
 import (
 	"github.com/gin-gonic/gin"

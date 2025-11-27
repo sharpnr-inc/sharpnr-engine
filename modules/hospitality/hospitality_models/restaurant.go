@@ -171,10 +171,3 @@ type RestaurantTableOrder struct {
 	RestaurantTableID uuid.UUID       `gorm:"type:uuid;not null"`
 	RestaurantTable   RestaurantTable `gorm:"foreignKey:RestaurantTableID"`
 }
-
-type RestaurantInvoice struct {
-	ID                              uuid.UUID
-	RestaurantTableBookingSessionID uuid.UUID
-	CustomerID                      uuid.UUID
-	PaymentId                       uuid.UUID
-}
