@@ -70,3 +70,38 @@ func (d *restaurantRepo) GetBookingSessionByTableId(
 
 	return &session, nil
 }
+
+func (d *restaurantRepo) GetBookingSessionById(
+	ctx context.Context,
+	sessionId uuid.UUID,
+) (*hospitalitymodels.RestaurantTableBookingSession, error) {
+
+	var session hospitalitymodels.RestaurantTableBookingSession
+
+	err := d.db.WithContext(ctx).
+		Preload("RestaurantTable").
+		Preload("CustomerAndGuest").
+		Preload("Orders").
+		Where("id = ? AND to_time IS NULL", sessionId).
+		First(&session).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil // no active session yet
+		}
+		return nil, err
+	}
+
+	return &session, nil
+}
+
+func (d *restaurantRepo) CreateRestaurantTableOrder(
+	ctx context.Context,
+	resOrder *hospitalitymodels.RestaurantTableOrder) (*hospitalitymodels.RestaurantTableOrder, error) {
+	// Create the order row
+	if err := d.db.WithContext(ctx).Create(resOrder).Error; err != nil {
+		return nil, err
+	}
+
+	return resOrder, nil
+}

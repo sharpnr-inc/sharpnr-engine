@@ -76,7 +76,7 @@ type RestaurantService interface {
 	// Adds a new item/order to an existing table session
 	AddItemInBookingSession(
 		ctx context.Context,
-		sessionId uuid.UUID,
+		orgId, sessionId uuid.UUID,
 		request hospitalitydtos.Hospitality_Restaurant_AddOrderItemINTheSession_Request,
 	) error
 }

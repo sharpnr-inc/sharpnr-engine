@@ -56,6 +56,8 @@ func (c *restaurantController) AddOrdersInSession(ctx *gin.Context) {
 		return
 	}
 
+	fmt.Println(orgID)
+
 	sessionIdParam := ctx.Param("id")
 	if sessionIdParam == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -79,12 +81,12 @@ func (c *restaurantController) AddOrdersInSession(ctx *gin.Context) {
 	}
 
 	// it need sessionId and ReqBody
-	if err := c.resSvc.AddItemInBookingSession(ctx, sessionID, req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "oooo"})
+	if err := c.resSvc.AddItemInBookingSession(ctx, orgID, sessionID, req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
-	fmt.Println(sessionID)
-	fmt.Println(orgID)
+	ctx.JSON(http.StatusCreated, gin.H{"success": "success"})
 }
 
 func (c *restaurantController) CreateInvoiceForSession(ctx *gin.Context) {}

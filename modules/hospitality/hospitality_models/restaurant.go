@@ -170,4 +170,7 @@ type RestaurantTableOrder struct {
 	// -----------------------------------------------------
 	RestaurantTableID uuid.UUID       `gorm:"type:uuid;not null"`
 	RestaurantTable   RestaurantTable `gorm:"foreignKey:RestaurantTableID"`
+
+	KitchenTicketID     *uuid.UUID `gorm:"type:uuid"`
+	KitchenTicketItemID *uuid.UUID `gorm:"type:uuid"`
 }

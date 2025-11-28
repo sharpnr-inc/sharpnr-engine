@@ -3,6 +3,8 @@ package kitchenrepo
 import (
 	"context"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+
+	"github.com/google/uuid"
 )
 
 type KitchenRepositoryInterface interface {
@@ -10,7 +12,11 @@ type KitchenRepositoryInterface interface {
 	// this function used in the Org factory to create default Kitchen
 	CreateKitchen(ctx context.Context, kitchen *hospitalitymodels.Kitchen) error
 
-	GetOrders() ([]interface{}, error)
+	GetKitchenByOrgId(ctx context.Context, orgId uuid.UUID) (*hospitalitymodels.Kitchen, error)
 
-	UpdateOrder(orderID string, status string) error
+	// Kitchen Tickets
+	CreateKitchenTicketDBTx(ctx context.Context, ticket *hospitalitymodels.KitchenTicket) (*hospitalitymodels.KitchenTicket, error)
+	GetKitchenTicketByIdDBTx(ctx context.Context, ticketId uuid.UUID) (*hospitalitymodels.KitchenTicket, error)
+
+	CreateKitchenTicketItemDBTx(ctx context.Context, item *hospitalitymodels.KitchenTicketItem) (*hospitalitymodels.KitchenTicketItem, error)
 }

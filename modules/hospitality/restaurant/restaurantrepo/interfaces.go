@@ -47,4 +47,20 @@ type RestaurantRepository interface {
 		ctx context.Context,
 		tableId uuid.UUID,
 	) (*hospitalitymodels.RestaurantTableBookingSession, error)
+
+	GetBookingSessionById(
+		ctx context.Context,
+		sessionId uuid.UUID,
+	) (*hospitalitymodels.RestaurantTableBookingSession, error)
+
+	CreateRestaurantTableOrder(ctx context.Context, resOrder *hospitalitymodels.RestaurantTableOrder) (*hospitalitymodels.RestaurantTableOrder, error)
+
+	UpdateRestaurantOrderItemKotReference(
+		ctx context.Context,
+		orderItemID uuid.UUID,
+		ticketID uuid.UUID,
+		ticketItemID uuid.UUID,
+	) error
+
+	WithTransaction(ctx context.Context, fn func(tx RestaurantRepository) error) error
 }

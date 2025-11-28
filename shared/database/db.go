@@ -74,6 +74,9 @@ func MigrateDB(db *gorm.DB) error {
 		&hospitalitymodels.Bar{},
 		&hospitalitymodels.BarFloor{},
 		&hospitalitymodels.BarTable{},
+		// Bar-orders
+		&hospitalitymodels.BarTableSession{},
+		&hospitalitymodels.BarTablesSessionOrder{},
 
 		// Hospitality --> Restaurant
 		&hospitalitymodels.Restaurant{},

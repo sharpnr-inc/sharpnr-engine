@@ -6,6 +6,7 @@ import (
 	kitchencontrollers "sharpnr-engine/modules/hospitality/kitchen/kitchenControllers"
 	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
 	kitchenservices "sharpnr-engine/modules/hospitality/kitchen/kitchenServices"
+	menurepo "sharpnr-engine/modules/hospitality/menu/menu_repo"
 	"sharpnr-engine/modules/hospitality/restaurant/restaurantrepo"
 
 	"github.com/gin-gonic/gin"
@@ -19,8 +20,9 @@ func KitchenRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	newRestaurantRepo := restaurantrepo.NewRestaurantRepository(db)
 	newBarRepo := barrepo.NewBarRepository(db)
 	newHotelRepo := hotelrepo.NewHotelRepository(db)
+	newMenuRepo := menurepo.NewHospitalityMenuRepository(db)
 
-	newKitchenService := kitchenservices.NewKitchenService(newKitchenRepo, newRestaurantRepo, newBarRepo, newHotelRepo)
+	newKitchenService := kitchenservices.NewKitchenService(newKitchenRepo, newRestaurantRepo, newBarRepo, newHotelRepo, newMenuRepo)
 	newKitchenController := kitchencontrollers.NewKitchenController(newKitchenService)
 
 	kitchenRoutes := v1.Group("/kitchen")
