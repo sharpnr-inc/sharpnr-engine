@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+
+	"github.com/google/uuid"
 )
 
 func (r *restaurantRepo) UpdateRestaurant(ctx context.Context, restaurant *hospitalitymodels.Restaurant) error {
@@ -39,4 +41,12 @@ func (r *restaurantRepo) UpdateRestaurant(ctx context.Context, restaurant *hospi
 	}
 
 	return nil
+}
+
+func (r *restaurantRepo) UpdateTable(ctx context.Context, tableId uuid.UUID, updates map[string]any) error {
+	return r.db.WithContext(ctx).
+		Model(&hospitalitymodels.RestaurantTable{}).
+		Where("id = ?", tableId).
+		Updates(updates).
+		Error
 }

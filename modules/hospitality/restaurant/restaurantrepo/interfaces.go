@@ -24,4 +24,27 @@ type RestaurantRepository interface {
 		ctx context.Context,
 		floorId uuid.UUID,
 	) (*hospitalitymodels.RestaurantFloor, error)
+
+	/*********************
+	 * Tables Operations *
+	 *********************/
+
+	// GetTableOfRestaurantByRestaurantId()
+	GetTableById(ctx context.Context, tableId uuid.UUID) (*hospitalitymodels.RestaurantTable, error)
+	// GetAllTablesInFloors()
+	UpdateTable(ctx context.Context, tableId uuid.UUID, updates map[string]any) error
+	// GetTableBookingSessionByID()
+
+	/*********************
+	 * Order Operations *
+	*********************/
+
+	CreateRes_TableSession(ctx context.Context, session *hospitalitymodels.RestaurantTableBookingSession) error
+
+	CreateOrderInTableSession(ctx context.Context, tableOrder *hospitalitymodels.RestaurantTableOrder) error
+
+	GetBookingSessionByTableId(
+		ctx context.Context,
+		tableId uuid.UUID,
+	) (*hospitalitymodels.RestaurantTableBookingSession, error)
 }

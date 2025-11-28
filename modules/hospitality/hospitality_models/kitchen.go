@@ -42,10 +42,10 @@ type KitchenTicket struct {
 
 	OrderID uuid.UUID `gorm:"type:uuid;not null"`
 
-	Status   string `gorm:"size:20;default:'PENDING'"` // PENDING, IN_PROGRESS, COMPLETED, CANCELLED
-	TicketNo string `gorm:"size:50;uniqueIndex"`       // KOT number (auto-generated)
+	Status   string `gorm:"size:20;default:'PENDING'"`
+	TicketNo string `gorm:"size:50;uniqueIndex"`
 
-	Items []KitchenTicketItem `gorm:"foreignKey:TicketID;constraint:OnDelete:CASCADE;"`
+	Items []KitchenTicketItem `gorm:"foreignKey:KitchenTicketID;constraint:OnDelete:CASCADE;"`
 
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -59,7 +59,7 @@ type KitchenTicket struct {
 type KitchenTicketItem struct {
 	ID              uuid.UUID     `gorm:"type:uuid;primaryKey"`
 	KitchenTicketID uuid.UUID     `gorm:"type:uuid;not null"`
-	Ticket          KitchenTicket `gorm:"foreignKey:TicketID;constraint:OnDelete:CASCADE;"`
+	Ticket          KitchenTicket `gorm:"foreignKey:KitchenTicketID;constraint:OnDelete:CASCADE;"`
 
 	OrderItemID uuid.UUID            `gorm:"type:uuid;not null"`
 	OrderItem   HospitalityOrderItem `gorm:"foreignKey:OrderItemID;constraint:OnDelete:CASCADE;"`
@@ -67,9 +67,9 @@ type KitchenTicketItem struct {
 	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
 
 	Quantity  int    `gorm:"not null"`
-	Status    string `gorm:"size:20;default:'PENDING'"` // PENDING, COOKING, READY
+	Status    string `gorm:"size:20;default:'PENDING'"`
 	Remarks   string `gorm:"size:255"`
-	IsPrinted bool   `gorm:"default:false"` // for physical KOT print tracking
+	IsPrinted bool   `gorm:"default:false"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

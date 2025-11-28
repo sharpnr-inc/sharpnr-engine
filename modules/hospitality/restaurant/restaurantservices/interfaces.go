@@ -14,4 +14,10 @@ type RestaurantService interface {
 	CreateOrAddTable(ctx context.Context, orgid uuid.UUID, req hospitalitydtos.Restaurant_CreateOrAddTables_Request) error
 	CreateFloor(ctx context.Context)
 	GetRestaurantLayout(ctx context.Context, orgid uuid.UUID) (*hospitalitydtos.Restaurant_GetRestaurantLayout_Response, error)
+
+	CreateTableBookingSession(
+		ctx context.Context, orgId uuid.UUID,
+		request hospitalitydtos.Hospitality_Restaurant_CreateSession_REQUEST) error
+
+	GetResTableBookingSessionByTableId(ctx context.Context, orgId, tableId uuid.UUID) (hospitalitydtos.Hospitality_Restaurant_GetBookingSession_Response, error)
 }

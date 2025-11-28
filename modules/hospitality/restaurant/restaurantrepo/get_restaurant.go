@@ -41,3 +41,15 @@ func (r *restaurantRepo) GetRestaurantFloorById(
 
 	return &floor, nil
 }
+
+func (d *restaurantRepo) GetTableById(ctx context.Context, tableId uuid.UUID) (*hospitalitymodels.RestaurantTable, error) {
+
+	var table hospitalitymodels.RestaurantTable
+
+	err := d.db.WithContext(ctx).First(&table, "id = ?", tableId).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &table, nil
+}
