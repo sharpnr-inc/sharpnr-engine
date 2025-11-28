@@ -61,8 +61,8 @@ type KitchenTicketItem struct {
 	KitchenTicketID uuid.UUID     `gorm:"type:uuid;not null"`
 	Ticket          KitchenTicket `gorm:"foreignKey:KitchenTicketID;constraint:OnDelete:CASCADE;"`
 
-	OrderItemID uuid.UUID            `gorm:"type:uuid;not null"`
-	OrderItem   HospitalityOrderItem `gorm:"foreignKey:OrderItemID;constraint:OnDelete:CASCADE;"`
+	OrderItemID uuid.UUID `gorm:"type:uuid;not null"`
+	OrderType   string    `gorm:"size:20;not null"`
 
 	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
 

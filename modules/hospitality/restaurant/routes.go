@@ -34,7 +34,8 @@ func RestaurantRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	{
 		sessionRoutes.POST("/create", newRestaurantController.CreateSession)
 		sessionRoutes.GET("/getbyTable/:id", newRestaurantController.GetBookingSessionById)
-		sessionRoutes.GET("/addItem/:id", newRestaurantController.AddOrdersInSession)
+		// id is sessionId
+		sessionRoutes.POST("/addItem/:id", newRestaurantController.AddOrdersInSession)
 
 	}
 }

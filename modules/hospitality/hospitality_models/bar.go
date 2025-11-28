@@ -85,49 +85,46 @@ type BarTable struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// -------------------------------------------
-// 1️⃣ BarTicket (BOT)
-// -------------------------------------------
-type BarTicket struct {
-	ID             uuid.UUID            `gorm:"type:uuid;primaryKey"`
-	OrganizationID uuid.UUID            `gorm:"type:uuid;not null"`
-	Organization   *models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
+type BarTableSession struct {
+	ID         uuid.UUID
+	BarTableId uuid.UUID
+	BarTable   *BarTable
+	BarID      uuid.UUID
+	Bar        *Bar
 
-	BarID uuid.UUID `gorm:"type:uuid;not null"`
-	Bar   *Bar      `gorm:"foreignKey:BarID;constraint:OnDelete:CASCADE;"`
+	HospitalityCustomerAndGuestID *uuid.UUID                   `gorm:"type:uuid"`
+	CustomerAndGuest              *HospitalityCustomerAndGuest `gorm:"foreignKey:HospitalityCustomerAndGuestID"`
 
-	OrderID uuid.UUID        `gorm:"type:uuid;not null"`
-	Order   HospitalityOrder `gorm:"foreignKey:OrderID;constraint:OnDelete:CASCADE;"`
+	FromTime time.Time  `gorm:"type:timestamp;not null"` // When session started
+	ToTime   *time.Time `gorm:"type:timestamp"`          // When closed (null until closing)
 
-	Status   string `gorm:"size:20;default:'PENDING'"` // PENDING, MIXING, SERVED, CANCELLED
-	TicketNo string `gorm:"size:50;uniqueIndex"`
+	OrderItems []BarTablesSessionOrder
 
-	Items []BarTicketItem `gorm:"foreignKey:TicketID;constraint:OnDelete:CASCADE;"`
-
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	CompletedAt *time.Time
+	SubTotal    float64 `gorm:"type:numeric(10,2);default:0"`
+	GSTAndTaxes float64 `gorm:"type:numeric(10,2);default:0"`
+	Total       float64 `gorm:"type:numeric(10,2);default:0"`
 }
 
-// -------------------------------------------
-// 2️⃣ BarTicketItem (BOT Line Item)
-// -------------------------------------------
-type BarTicketItem struct {
-	ID       uuid.UUID `gorm:"type:uuid;primaryKey"`
-	TicketID uuid.UUID `gorm:"type:uuid;not null"`
-	Ticket   BarTicket `gorm:"foreignKey:TicketID;constraint:OnDelete:CASCADE;"`
-
-	OrderItemID uuid.UUID            `gorm:"type:uuid;not null"`
-	OrderItem   HospitalityOrderItem `gorm:"foreignKey:OrderItemID;constraint:OnDelete:CASCADE;"`
+type BarTablesSessionOrder struct {
+	ID                uuid.UUID
+	BarTableSessionId uuid.UUID
+	BarTableSession   *BarTableSession
 
 	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
-	MenuItem   MenuItem  `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
+	MenuItem   MenuItem  `gorm:"foreignKey:MenuItemID"`
 
-	Quantity  int    `gorm:"not null"`
-	Status    string `gorm:"size:20;default:'PENDING'"` // PENDING, MIXING, READY
-	IsPrinted bool   `gorm:"default:false"`
-	Remarks   string `gorm:"size:255"`
+	// -----------------------------------------------------
+	// 🔗 Variant (Optional - because not all menu items have variants)
+	// -----------------------------------------------------
+	VariantID *uuid.UUID   `gorm:"type:uuid"`
+	Variant   *MenuVariant `gorm:"foreignKey:VariantID"`
 
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	// -----------------------------------------------------
+	// 🔗 Addons (Optional)
+	// -----------------------------------------------------
+	AddonID *uuid.UUID `gorm:"type:uuid"`
+	Addon   *Addon     `gorm:"foreignKey:AddonID"`
+
+	Quantity int    `gorm:"not null;default:1"`
+	Notes    string `gorm:"type:text"`
 }

@@ -45,17 +45,6 @@ func (c *restaurantController) CreateSession(ctx *gin.Context) {
 
 func (c *restaurantController) AddOrdersInSession(ctx *gin.Context) {
 
-	/*
-		So we will need the SessionId and request body for the Order
-		MenuItemId and its VariantId and Addons
-		We should take the sessionId in the params
-		body might have the
-		OrgId based on that we can Fetch the Kitchen
-		After that Create the KOT
-		Give the MenuItemId and give SessionId as ref
-	*/
-
-	// ✅ Get OrgUUID from context (set by middleware)
 	orgUUID, exists := ctx.Get("OrgUUID")
 	if !exists {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
@@ -67,6 +56,34 @@ func (c *restaurantController) AddOrdersInSession(ctx *gin.Context) {
 		return
 	}
 
+	sessionIdParam := ctx.Param("id")
+	if sessionIdParam == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Table ID not provided",
+		})
+		return
+	}
+
+	sessionID, err := uuid.Parse(sessionIdParam)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid session ID format",
+		})
+		return
+	}
+
+	var req hospitalitydtos.Hospitality_Restaurant_AddOrderItemINTheSession_Request
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{"error": "errorss"})
+		return
+	}
+
+	// it need sessionId and ReqBody
+	if err := c.resSvc.AddItemInBookingSession(ctx, sessionID, req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "oooo"})
+	}
+
+	fmt.Println(sessionID)
 	fmt.Println(orgID)
 }
 

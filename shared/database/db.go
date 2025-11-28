@@ -87,11 +87,6 @@ func MigrateDB(db *gorm.DB) error {
 		&hospitalitymodels.KitchenTicket{},
 		&hospitalitymodels.KitchenTicketItem{},
 
-		// TODO :- These table Needs to be Deleted Because Each every
-		// Ordering System have different application
-		&hospitalitymodels.HospitalityOrder{},
-		&hospitalitymodels.HospitalityOrderItem{},
-		&hospitalitymodels.HospitalityOrderAddon{},
 		//---------------------------------------------------
 
 		// ✅ MENU SYSTEM

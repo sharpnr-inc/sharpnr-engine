@@ -82,7 +82,10 @@ func (s *restaurantService) CreateTableBookingSession(
 	return nil
 }
 
-func (s *restaurantService) AddItemInBookingSession(ctx context.Context, request any) error {
+func (s *restaurantService) AddItemInBookingSession(
+	ctx context.Context,
+	sessionId uuid.UUID,
+	request hospitalitydtos.Hospitality_Restaurant_AddOrderItemINTheSession_Request) error {
 	panic("unimplemented")
 }
 

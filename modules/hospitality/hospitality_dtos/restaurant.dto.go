@@ -134,3 +134,16 @@ type Hospitality_Restaurant_CreateSession_REQUEST struct {
 type Hospitality_Restaurant_GetBookingSession_Response struct {
 	Session *hospitalitymodels.RestaurantTableBookingSession `json:"session"`
 }
+
+type Hospitality_Restaurant_AddOrderItemINTheSession_Request struct {
+	TableId string
+	Order   []OrderRequest
+}
+
+type OrderRequest struct {
+	MenuItemId uuid.UUID
+	VariantId  *uuid.UUID
+	AddonOnId  *uuid.UUID
+	Quantity   int
+	Notes      string
+}
