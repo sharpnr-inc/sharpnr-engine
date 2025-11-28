@@ -19,4 +19,9 @@ type KitchenRepositoryInterface interface {
 	GetKitchenTicketByIdDBTx(ctx context.Context, ticketId uuid.UUID) (*hospitalitymodels.KitchenTicket, error)
 
 	CreateKitchenTicketItemDBTx(ctx context.Context, item *hospitalitymodels.KitchenTicketItem) (*hospitalitymodels.KitchenTicketItem, error)
+
+	GetNextTicketNumber(
+		ctx context.Context,
+		kitchenId uuid.UUID,
+	) (string, error)
 }

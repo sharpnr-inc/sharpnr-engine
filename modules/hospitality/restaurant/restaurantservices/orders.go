@@ -139,6 +139,11 @@ func (s *restaurantService) AddItemInBookingSession(
 		// STEP 3: Create Kitchen Ticket
 		// ------------------------------------------------------------
 
+		ticketNo, err := s.kitchenRepo.GetNextTicketNumber(ctx, kitchen.ID)
+		if err != nil {
+			return err
+		}
+
 		kitchenTicket := hospitalitymodels.KitchenTicket{
 			ID:             uuid.New(),
 			OrganizationID: orgId,
@@ -146,7 +151,7 @@ func (s *restaurantService) AddItemInBookingSession(
 			Kitchen:        *kitchen,
 			OrderID:        sessionId,
 			Status:         "PENDING",
-			TicketNo:       "KOT-101",
+			TicketNo:       ticketNo,
 		}
 
 		savedTicket, err := s.kitchenRepo.CreateKitchenTicketDBTx(ctx, &kitchenTicket)

@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	"strconv"
+	"strings"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -40,4 +42,42 @@ func (d *kitchenRepository) GetKitchenByOrgId(
 	}
 
 	return &kitchen, nil
+}
+
+func (r *kitchenRepository) GetNextTicketNumber(
+	ctx context.Context,
+	kitchenId uuid.UUID,
+) (string, error) {
+
+	var lastTicketNo string
+
+	// Note: SELECT ... FOR UPDATE is safe even without tx because:
+	// - PostgreSQL still locks the matched rows during this query
+	// - Prevents 2 concurrent reads returning the same lastTicket
+	err := r.db.WithContext(ctx).
+		Raw(`
+            SELECT ticket_no
+            FROM kitchen_tickets
+            WHERE kitchen_id = ?
+            ORDER BY created_at DESC
+            LIMIT 1
+            FOR UPDATE
+        `, kitchenId).
+		Scan(&lastTicketNo).Error
+
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return "", err
+	}
+
+	// No ticket yet
+	if lastTicketNo == "" {
+		return "KOT-101", nil
+	}
+
+	parts := strings.Split(lastTicketNo, "-")
+	lastNum, _ := strconv.Atoi(parts[1])
+
+	nextNum := lastNum + 1
+
+	return fmt.Sprintf("KOT-%d", nextNum), nil
 }
