@@ -133,3 +133,37 @@ func (c *restaurantController) GetBookingSessionById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"res": session})
 
 }
+
+func (c *restaurantController) GetOrderStatus(ctx *gin.Context) {
+	orgUUID, exists := ctx.Get("OrgUUID")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
+		return
+	}
+	orgID, ok := orgUUID.(uuid.UUID)
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
+		return
+	}
+
+	kitchenTicketIdParams := ctx.Param("id")
+	if kitchenTicketIdParams == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Id not provided"})
+		return
+	}
+
+	kitchenTicketId, err := uuid.Parse(kitchenTicketIdParams)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "KitchenId is in wrong Format"})
+		return
+	}
+
+	// res, err := c.resSvc.GetOrderStatus(ctx, orgID, kitchenTicketId)
+	// if err != nil {
+
+	// }
+
+	fmt.Println(kitchenTicketId)
+	fmt.Println(orgID)
+
+}

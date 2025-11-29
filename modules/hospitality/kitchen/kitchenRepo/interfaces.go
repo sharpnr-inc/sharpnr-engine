@@ -24,4 +24,6 @@ type KitchenRepositoryInterface interface {
 		ctx context.Context,
 		kitchenId uuid.UUID,
 	) (string, error)
+
+	GetKitchenTickets(ctx context.Context, kitchenId uuid.UUID) ([]hospitalitymodels.KitchenTicket, error)
 }

@@ -51,3 +51,27 @@ func (d *kitchenRepository) GetKitchenTicketByIdDBTx(ctx context.Context, ticket
 
 	return &ticket, nil
 }
+
+//------------------------------------------------------------------------------------------------------------//
+
+func (d *kitchenRepository) GetKitchenTickets(
+	ctx context.Context,
+	kitchenId uuid.UUID,
+) ([]hospitalitymodels.KitchenTicket, error) {
+
+	var tickets []hospitalitymodels.KitchenTicket
+
+	err := d.db.WithContext(ctx).
+		Preload("Items").
+		Preload("Kitchen").
+		Preload("Organization").
+		Where("kitchen_id = ?", kitchenId).
+		Order("created_at DESC").
+		Find(&tickets).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return tickets, nil
+}

@@ -216,3 +216,7 @@ func (s *restaurantService) GetResTableBookingSessionByTableId(
 		Session: session,
 	}, nil
 }
+
+func (s *restaurantService) GetOrderStatus(ctx context.Context, orgId, kitchenTicketId uuid.UUID) (interface{}, error) {
+	return nil, nil
+}

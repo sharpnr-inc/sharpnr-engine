@@ -79,4 +79,6 @@ type RestaurantService interface {
 		orgId, sessionId uuid.UUID,
 		request hospitalitydtos.Hospitality_Restaurant_AddOrderItemINTheSession_Request,
 	) error
+
+	GetOrderStatus(ctx context.Context, orgId, kitchenTicketId uuid.UUID) (interface{}, error)
 }

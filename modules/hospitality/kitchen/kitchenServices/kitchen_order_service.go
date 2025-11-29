@@ -1,24 +1,36 @@
 package kitchenservices
 
-import "fmt"
+import (
+	"context"
+	"fmt"
 
-func (s *kitchenService) GetOrders() ([]interface{}, error) {
-	// TODO: Replace with actual query to HospitalityOrder/KitchenTicket tables
-	orders := []interface{}{
-		map[string]interface{}{
-			"order_id":   "1",
-			"item":       "Paneer Butter Masala",
-			"status":     "PENDING",
-			"kitchen_id": "default",
-		},
-		map[string]interface{}{
-			"order_id":   "2",
-			"item":       "Fried Rice",
-			"status":     "IN_PROGRESS",
-			"kitchen_id": "default",
-		},
+	"github.com/google/uuid"
+)
+
+func (s *kitchenService) GetOrdersList(
+	ctx context.Context,
+	orgId uuid.UUID,
+) ([]interface{}, error) {
+
+	// 1. Get Kitchen by Org
+	kitchen, err := s.kitchenRepo.GetKitchenByOrgId(ctx, orgId)
+	if err != nil {
+		return nil, err
 	}
-	return orders, nil
+
+	// 2. Get Tickets for the Kitchen
+	tickets, err := s.kitchenRepo.GetKitchenTickets(ctx, kitchen.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	// 3. Convert []KitchenTicket → []interface{}
+	var response []interface{}
+	for _, t := range tickets {
+		response = append(response, t)
+	}
+
+	return response, nil
 }
 
 func (s *kitchenService) UpdateOrder(orderID string, status string) error {
