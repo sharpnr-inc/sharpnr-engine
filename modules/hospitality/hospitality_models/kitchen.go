@@ -45,7 +45,8 @@ type KitchenTicket struct {
 	Status   string `gorm:"size:20;default:'PENDING'"`
 	TicketNo string `gorm:"size:50;uniqueIndex"`
 
-	Items []KitchenTicketItem `gorm:"foreignKey:KitchenTicketID;constraint:OnDelete:CASCADE;"`
+	Items                           []KitchenTicketItem `gorm:"foreignKey:KitchenTicketID;constraint:OnDelete:CASCADE;"`
+	RestaurantTableBookingSessionID *uuid.UUID          `gorm:"type:uuid"`
 
 	CreatedAt   time.Time
 	UpdatedAt   time.Time

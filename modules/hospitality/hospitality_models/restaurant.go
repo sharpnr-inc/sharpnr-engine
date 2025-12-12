@@ -108,6 +108,7 @@ type RestaurantTableBookingSession struct {
 	// -----------------------------------------------------
 	// 🔗 Orders for the session
 	// -----------------------------------------------------
+	KOTs []KitchenTicket `gorm:"foreignKey:RestaurantTableBookingSessionID"`
 
 	// -----------------------------------------------------
 	// 🕒 Session Timing
