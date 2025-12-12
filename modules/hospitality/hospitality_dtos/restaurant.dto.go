@@ -143,7 +143,12 @@ type Hospitality_Restaurant_AddOrderItemINTheSession_Request struct {
 type OrderRequest struct {
 	MenuItemId uuid.UUID
 	VariantId  *uuid.UUID
-	AddonOnId  *uuid.UUID
+	AddonOnId  *[]AddOns
 	Quantity   int
 	Notes      string
+}
+
+type AddOns struct {
+	AddOnId  uuid.UUID
+	Quantity int
 }

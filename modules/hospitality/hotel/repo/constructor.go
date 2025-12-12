@@ -12,6 +12,10 @@ type hotelRepository struct {
 	db *gorm.DB
 }
 
+type hotelHouseKeepingRepository struct {
+	db *gorm.DB
+}
+
 // GetAllRoomInFloor implements HotelRepository.
 func (h *hotelRepository) GetAllRoomInFloor() {
 	panic("unimplemented")
@@ -33,6 +37,12 @@ func (h *hotelRepository) UpdateHotel(ctx context.Context, hotel *hospitalitymod
 
 func NewHotelRepository(db *gorm.DB) *hotelRepository {
 	return &hotelRepository{
+		db: db,
+	}
+}
+
+func NewHotelHouseKeepingRepository(db *gorm.DB) *hotelHouseKeepingRepository {
+	return &hotelHouseKeepingRepository{
 		db: db,
 	}
 }

@@ -7,14 +7,17 @@ import (
 
 type hotelService struct {
 	hotelRepo   hotelrepo.HotelRepository
+	houseKeRepo hotelrepo.HotelHouseKeepingRepositoryInterface
 	kitchenRepo kitchenrepo.KitchenRepositoryInterface
 }
 
 func NewHotelService(
 	hotelRepo hotelrepo.HotelRepository,
+	houseKeRepo hotelrepo.HotelHouseKeepingRepositoryInterface,
 	kitchenRepo kitchenrepo.KitchenRepositoryInterface) *hotelService {
 	return &hotelService{
 		hotelRepo:   hotelRepo,
+		houseKeRepo: houseKeRepo,
 		kitchenRepo: kitchenRepo,
 	}
 }

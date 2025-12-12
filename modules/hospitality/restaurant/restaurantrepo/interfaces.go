@@ -41,8 +41,6 @@ type RestaurantRepository interface {
 
 	CreateRes_TableSession(ctx context.Context, session *hospitalitymodels.RestaurantTableBookingSession) error
 
-	CreateOrderInTableSession(ctx context.Context, tableOrder *hospitalitymodels.RestaurantTableOrder) error
-
 	GetBookingSessionByTableId(
 		ctx context.Context,
 		tableId uuid.UUID,
@@ -53,8 +51,6 @@ type RestaurantRepository interface {
 		sessionId uuid.UUID,
 	) (*hospitalitymodels.RestaurantTableBookingSession, error)
 
-	CreateRestaurantTableOrder(ctx context.Context, resOrder *hospitalitymodels.RestaurantTableOrder) (*hospitalitymodels.RestaurantTableOrder, error)
-
 	UpdateRestaurantOrderItemKotReference(
 		ctx context.Context,
 		orderItemID uuid.UUID,
@@ -62,5 +58,5 @@ type RestaurantRepository interface {
 		ticketItemID uuid.UUID,
 	) error
 
-	WithTransaction(ctx context.Context, fn func(tx RestaurantRepository) error) error
+	// WithTransaction(ctx context.Context, fn func(tx RestaurantRepository) error) error
 }

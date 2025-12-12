@@ -46,3 +46,8 @@ type HotelRepository interface {
 	CreateCharges(ctx context.Context, charges *hospitalitymodels.BookingCharge) error
 	GetBookingDetailsByRoomId(ctx context.Context, roomId uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
 }
+
+type HotelHouseKeepingRepositoryInterface interface {
+
+	// TODO :- This need To Implemented
+}

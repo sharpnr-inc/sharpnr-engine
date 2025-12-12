@@ -33,20 +33,6 @@ func (d *restaurantRepo) CreateRes_TableSession(ctx context.Context, session *ho
 	return nil
 }
 
-func (d *restaurantRepo) CreateOrderInTableSession(ctx context.Context, tableOrder *hospitalitymodels.RestaurantTableOrder) error {
-	// generate UUID if empty
-	if tableOrder.ID == uuid.Nil {
-		tableOrder.ID = uuid.New()
-	}
-
-	// insert table order
-	if err := d.db.WithContext(ctx).Create(tableOrder).Error; err != nil {
-		return fmt.Errorf("repo: failed to create table order: %w", err)
-	}
-
-	return nil
-}
-
 func (d *restaurantRepo) GetBookingSessionByTableId(
 	ctx context.Context,
 	tableId uuid.UUID,
@@ -93,15 +79,4 @@ func (d *restaurantRepo) GetBookingSessionById(
 	}
 
 	return &session, nil
-}
-
-func (d *restaurantRepo) CreateRestaurantTableOrder(
-	ctx context.Context,
-	resOrder *hospitalitymodels.RestaurantTableOrder) (*hospitalitymodels.RestaurantTableOrder, error) {
-	// Create the order row
-	if err := d.db.WithContext(ctx).Create(resOrder).Error; err != nil {
-		return nil, err
-	}
-
-	return resOrder, nil
 }

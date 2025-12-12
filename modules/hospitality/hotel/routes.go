@@ -14,7 +14,8 @@ func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	newHotelRepo := hotelrepo.NewHotelRepository(db)
 
 	newKitchenRepo := kitchenrepo.NewKitchenRepository(db)
-	newHotelService := hotelservices.NewHotelService(newHotelRepo, newKitchenRepo)
+	newHouseKeepingRepo := hotelrepo.NewHotelHouseKeepingRepository(db)
+	newHotelService := hotelservices.NewHotelService(newHotelRepo, newHouseKeepingRepo, newKitchenRepo)
 
 	newHotelController := hotelcontrollers.NewHotelController(newHotelService)
 

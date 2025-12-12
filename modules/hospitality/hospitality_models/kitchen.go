@@ -71,6 +71,8 @@ type KitchenTicketItem struct {
 	Remarks   string `gorm:"size:255"`
 	IsPrinted bool   `gorm:"default:false"`
 
+	OrderedFrom string
+
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

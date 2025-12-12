@@ -50,29 +50,3 @@ func (r *restaurantRepo) UpdateTable(ctx context.Context, tableId uuid.UUID, upd
 		Updates(updates).
 		Error
 }
-
-func (d *restaurantRepo) UpdateRestaurantOrderItemKotReference(
-	ctx context.Context,
-	orderItemID uuid.UUID,
-	ticketID uuid.UUID,
-	ticketItemID uuid.UUID,
-) error {
-
-	// We only update specific fields, nothing else.
-	updateData := map[string]interface{}{
-		"kitchen_ticket_id":      ticketID,
-		"kitchen_ticket_item_id": ticketItemID,
-	}
-
-	// Update the matching row
-	if err := d.db.WithContext(ctx).
-		Model(&hospitalitymodels.RestaurantTableOrder{}).
-		Where("id = ?", orderItemID).
-		Updates(updateData).
-		Error; err != nil {
-
-		return err
-	}
-
-	return nil
-}

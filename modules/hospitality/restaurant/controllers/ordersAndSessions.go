@@ -3,7 +3,9 @@ package restaurantcontrollers
 import (
 	"fmt"
 	"net/http"
+	dto "sharpnr-engine/core/dtos"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -76,17 +78,47 @@ func (c *restaurantController) AddOrdersInSession(ctx *gin.Context) {
 
 	var req hospitalitydtos.Hospitality_Restaurant_AddOrderItemINTheSession_Request
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{"error": "errorss"})
+		res := dto.Response[any]{
+			StatusCode: http.StatusOK,
+			Message:    "Error Creating the Order",
+			Error: dto.ErrorResponse{
+				Message: err.Error(),
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
+		}
+		ctx.JSON(http.StatusOK, res)
 		return
 	}
 
 	// it need sessionId and ReqBody
 	if err := c.resSvc.AddItemInBookingSession(ctx, orgID, sessionID, req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		response := dto.Response[any]{
+			StatusCode: http.StatusOK,
+			Message:    "There was an Error",
+			Error: dto.ErrorResponse{
+				Message: err.Error(),
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
+		}
+		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"success": "success"})
+	response := dto.Response[any]{
+		StatusCode: http.StatusOK,
+		Message:    "Order Sent to Kitchen successfully",
+		Error: dto.ErrorResponse{
+			Message: "",
+			IsError: false,
+		},
+		Data:      nil,
+		Timestamp: time.Now(),
+	}
+	ctx.JSON(http.StatusCreated, response)
 }
 
 func (c *restaurantController) CreateInvoiceForSession(ctx *gin.Context) {}

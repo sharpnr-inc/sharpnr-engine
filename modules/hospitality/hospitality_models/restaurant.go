@@ -91,86 +91,42 @@ type RestaurantTable struct {
 }
 
 type RestaurantTableBookingSession struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+	ID uuid.UUID `gorm:"type:uuid;primaryKey" json:"id,omitempty"`
 
 	// -----------------------------------------------------
 	// 🔗 Table Reference (Required)
 	// -----------------------------------------------------
-	RestaurantTableID uuid.UUID       `gorm:"type:uuid;not null"`
-	RestaurantTable   RestaurantTable `gorm:"foreignKey:RestaurantTableID;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	RestaurantTableID uuid.UUID       `gorm:"type:uuid;not null" json:"restaurant_table_id,omitempty"`
+	RestaurantTable   RestaurantTable `gorm:"foreignKey:RestaurantTableID;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT" json:"restaurant_table,omitempty"`
 
 	// -----------------------------------------------------
 	// 🔗 Customer (Optional until closing the session)
 	// -----------------------------------------------------
-	HospitalityCustomerAndGuestID *uuid.UUID                   `gorm:"type:uuid"`
-	CustomerAndGuest              *HospitalityCustomerAndGuest `gorm:"foreignKey:HospitalityCustomerAndGuestID"`
+	HospitalityCustomerAndGuestID *uuid.UUID                   `gorm:"type:uuid" json:"hospitality_customer_and_guest_id,omitempty"`
+	CustomerAndGuest              *HospitalityCustomerAndGuest `gorm:"foreignKey:HospitalityCustomerAndGuestID" json:"customer_and_guest,omitempty"`
 
 	// -----------------------------------------------------
 	// 🔗 Orders for the session
 	// -----------------------------------------------------
-	Orders []RestaurantTableOrder `gorm:"foreignKey:RestaurantTableBookingSessionID"`
 
 	// -----------------------------------------------------
 	// 🕒 Session Timing
 	// -----------------------------------------------------
-	FromTime time.Time  `gorm:"type:timestamp;not null"` // When session started
-	ToTime   *time.Time `gorm:"type:timestamp"`          // When closed (null until closing)
+	FromTime time.Time  `gorm:"type:timestamp;not null" json:"from_time,omitempty"` // When session started
+	ToTime   *time.Time `gorm:"type:timestamp" json:"to_time,omitempty"`            // When closed (null until closing)
 
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 
 	// -----------------------------------------------------
 	// 💰 Billing Fields
 	// -----------------------------------------------------
-	SubTotal    float64 `gorm:"type:numeric(10,2);default:0"`
-	GSTAndTaxes float64 `gorm:"type:numeric(10,2);default:0"`
-	Total       float64 `gorm:"type:numeric(10,2);default:0"`
+	SubTotal    float64 `gorm:"type:numeric(10,2);default:0" json:"sub_total,omitempty"`
+	GSTAndTaxes float64 `gorm:"type:numeric(10,2);default:0" json:"gst_and_taxes,omitempty"`
+	Total       float64 `gorm:"type:numeric(10,2);default:0" json:"total,omitempty"`
 
 	// -----------------------------------------------------
 	// 🧾 Invoice (Optional, Added After Billing)
 	// -----------------------------------------------------
-	RestaurantInvoiceID *uuid.UUID `gorm:"type:uuid"`
-}
-
-type RestaurantTableOrder struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	// -----------------------------------------------------
-	// 🔗 Menu Item (Required)
-	// -----------------------------------------------------
-	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
-	MenuItem   MenuItem  `gorm:"foreignKey:MenuItemID"`
-
-	// -----------------------------------------------------
-	// 🔗 Variant (Optional - because not all menu items have variants)
-	// -----------------------------------------------------
-	VariantID *uuid.UUID   `gorm:"type:uuid"`
-	Variant   *MenuVariant `gorm:"foreignKey:VariantID"`
-
-	// -----------------------------------------------------
-	// 🔗 Addons (Optional)
-	// -----------------------------------------------------
-	AddonID *uuid.UUID `gorm:"type:uuid"`
-	Addon   *Addon     `gorm:"foreignKey:AddonID"`
-
-	// -----------------------------------------------------
-	// 🔢 Quantity & Notes
-	// -----------------------------------------------------
-	Quantity int    `gorm:"not null;default:1"`
-	Notes    string `gorm:"type:text"`
-
-	// -----------------------------------------------------
-	// 🔗 Link to Table Booking Session
-	// -----------------------------------------------------
-	RestaurantTableBookingSessionID uuid.UUID                     `gorm:"type:uuid;not null"`
-	BookingSession                  RestaurantTableBookingSession `gorm:"foreignKey:RestaurantTableBookingSessionID"`
-
-	// -----------------------------------------------------
-	// 🔗 Table (for history, not mandatory if session links)
-	// -----------------------------------------------------
-	RestaurantTableID uuid.UUID       `gorm:"type:uuid;not null"`
-	RestaurantTable   RestaurantTable `gorm:"foreignKey:RestaurantTableID"`
-
-	KitchenTicketID     *uuid.UUID `gorm:"type:uuid"`
-	KitchenTicketItemID *uuid.UUID `gorm:"type:uuid"`
+	RestaurantInvoiceID *uuid.UUID `gorm:"type:uuid" json:"restaurant_invoice_id,omitempty"`
 }

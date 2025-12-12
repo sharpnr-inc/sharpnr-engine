@@ -83,7 +83,6 @@ func MigrateDB(db *gorm.DB) error {
 		&hospitalitymodels.RestaurantFloor{},
 		&hospitalitymodels.RestaurantTable{},
 		&hospitalitymodels.RestaurantTableBookingSession{},
-		&hospitalitymodels.RestaurantTableOrder{},
 
 		//Hospitality --> Kitchen
 		&hospitalitymodels.Kitchen{},
