@@ -43,7 +43,7 @@ func (d *restaurantRepo) GetBookingSessionByTableId(
 	err := d.db.WithContext(ctx).
 		Preload("RestaurantTable").
 		Preload("CustomerAndGuest").
-		Preload("Orders").
+		Preload("KOTs").
 		Where("restaurant_table_id = ? AND to_time IS NULL", tableId).
 		First(&session).Error
 
@@ -65,9 +65,8 @@ func (d *restaurantRepo) GetBookingSessionById(
 	var session hospitalitymodels.RestaurantTableBookingSession
 
 	err := d.db.WithContext(ctx).
-		Preload("RestaurantTable").
 		Preload("CustomerAndGuest").
-		Preload("Orders").
+		Preload("KOTs").
 		Where("id = ? AND to_time IS NULL", sessionId).
 		First(&session).Error
 

@@ -40,8 +40,6 @@ type KitchenTicket struct {
 	KitchenID uuid.UUID `gorm:"type:uuid;not null"`
 	Kitchen   Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:CASCADE;"`
 
-	OrderID uuid.UUID `gorm:"type:uuid;not null"`
-
 	Status   string `gorm:"size:20;default:'PENDING'"`
 	TicketNo string `gorm:"size:50;uniqueIndex"`
 
@@ -62,18 +60,26 @@ type KitchenTicketItem struct {
 	KitchenTicketID uuid.UUID     `gorm:"type:uuid;not null"`
 	Ticket          KitchenTicket `gorm:"foreignKey:KitchenTicketID;constraint:OnDelete:CASCADE;"`
 
-	OrderItemID uuid.UUID `gorm:"type:uuid;not null"`
-	OrderType   string    `gorm:"size:20;not null"`
-
 	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
+	VariantId  *uuid.UUID
+	AddOns     []KitchenTicketItemAddon `gorm:"foreignKey:KitchenTicketItemID;constraint:OnDelete:CASCADE"`
 
 	Quantity  int    `gorm:"not null"`
-	Status    string `gorm:"size:20;default:'PENDING'"`
 	Remarks   string `gorm:"size:255"`
 	IsPrinted bool   `gorm:"default:false"`
 
-	OrderedFrom string
-
+	OrderType string `gorm:"size:20;not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+type KitchenTicketItemAddon struct {
+	ID                  uuid.UUID         `gorm:"type:uuid;primaryKey"`
+	KitchenTicketItemID uuid.UUID         `gorm:"type:uuid;not null"`
+	KitchenTicketItem   KitchenTicketItem `gorm:"foreignKey:KitchenTicketItemID;constraint:OnDelete:CASCADE;"`
+
+	AddOnID  uuid.UUID `gorm:"type:uuid;not null"`
+	Quantity int       `gorm:"not null;default:0"`
+
+	CreatedAt time.Time
 }

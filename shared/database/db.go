@@ -88,6 +88,7 @@ func MigrateDB(db *gorm.DB) error {
 		&hospitalitymodels.Kitchen{},
 		&hospitalitymodels.KitchenTicket{},
 		&hospitalitymodels.KitchenTicketItem{},
+		&hospitalitymodels.KitchenTicketItemAddon{},
 
 		//---------------------------------------------------
 

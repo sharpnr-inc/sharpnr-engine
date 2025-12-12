@@ -20,6 +20,11 @@ type KitchenRepositoryInterface interface {
 
 	CreateKitchenTicketItemDBTx(ctx context.Context, item *hospitalitymodels.KitchenTicketItem) (*hospitalitymodels.KitchenTicketItem, error)
 
+	CreateKitchenTicketItemAddonDBTx(
+		ctx context.Context,
+		addon *hospitalitymodels.KitchenTicketItemAddon,
+	) (*hospitalitymodels.KitchenTicketItemAddon, error)
+
 	GetNextTicketNumber(
 		ctx context.Context,
 		kitchenId uuid.UUID,

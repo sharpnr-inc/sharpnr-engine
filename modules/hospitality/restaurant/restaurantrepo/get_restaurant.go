@@ -10,8 +10,9 @@ import (
 func (r *restaurantRepo) GetRestaurantByOrgId(ctx context.Context, orgId uuid.UUID) (*hospitalitymodels.Restaurant, error) {
 	var restaurant hospitalitymodels.Restaurant
 
-	// Query: SELECT * FROM restaurants WHERE org_id = ?
 	err := r.db.WithContext(ctx).
+		Preload("Organization"). // <-- load organization
+		Preload("Kitchen").      // <-- load kitchen
 		Preload("Floors").
 		Preload("Floors.Tables").
 		Where("organization_id = ?", orgId).

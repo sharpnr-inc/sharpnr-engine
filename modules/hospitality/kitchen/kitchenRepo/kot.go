@@ -75,3 +75,15 @@ func (d *kitchenRepository) GetKitchenTickets(
 
 	return tickets, nil
 }
+
+func (d *kitchenRepository) CreateKitchenTicketItemAddonDBTx(
+	ctx context.Context,
+	addon *hospitalitymodels.KitchenTicketItemAddon,
+) (*hospitalitymodels.KitchenTicketItemAddon, error) {
+
+	if err := d.db.WithContext(ctx).Create(&addon).Error; err != nil {
+		return nil, err
+	}
+
+	return addon, nil
+}
