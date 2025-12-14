@@ -1,6 +1,7 @@
 package hotelcontrollers
 
 import (
+	"fmt"
 	"net/http"
 	dto "sharpnr-engine/core/dtos"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
@@ -52,4 +53,22 @@ func (c *HotelController) GetHotelFrontDesk(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, response)
 
+}
+
+func (c *HotelController) GetHotelReception(ctx *gin.Context) {
+	orgUUID, exists := ctx.Get("OrgUUID")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
+		return
+	}
+	// Type assert to UUID type (if you stored it as uuid.UUID)
+	orgID, ok := orgUUID.(uuid.UUID)
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
+		return
+	}
+
+	fmt.Println(orgID)
+
+	// Here we Need to get the Hotel Frontdesk
 }

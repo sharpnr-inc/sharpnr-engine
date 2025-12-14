@@ -39,6 +39,10 @@ func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	// It include the Data Available, occupied rooms
 	hotel_routes.GET("/frontdesk", newHotelController.GetHotelFrontDesk)
 
+	// TODO For Now this is Routes is used to return the Hotel Overview Data
+	// In future we will replace this Frontdesk endpoint
+	hotel_routes.GET("/reception", newHotelController.GetHotelReception)
+
 	// This is the endpoint for the changing the room status
 	hotel_routes.GET("/room-status/:hotelId/:roomId/:status", newHotelController.UpdateRoomStatus)
 
