@@ -45,9 +45,16 @@ type HotelRepository interface {
 	CreatePrimaryGuest(ctx context.Context, guest *hospitalitymodels.HotelGuest) error
 	CreateCharges(ctx context.Context, charges *hospitalitymodels.BookingCharge) error
 	GetBookingDetailsByRoomId(ctx context.Context, roomId uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
+
+	WithTx(ctx context.Context, fn func(txRepo HotelRepositoryTransactions) error) error
 }
 
 type HotelHouseKeepingRepositoryInterface interface {
 
 	// TODO :- This need To Implemented
+}
+
+type HotelRepositoryTransactions interface {
+	CreateRoom(ctx context.Context, room *hospitalitymodels.Room) error
+	// CreateRoomPrice(ctx context.Context, roomPrice *hospitalitymodels.HotelRoomPrice) error
 }

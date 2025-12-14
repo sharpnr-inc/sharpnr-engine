@@ -10,6 +10,10 @@ import (
 	"gorm.io/gorm"
 )
 
+/****************************************
+ * These are the endpoint for the Hotel *
+****************************************/
+
 func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	newHotelRepo := hotelrepo.NewHotelRepository(db)
 
@@ -30,7 +34,12 @@ func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	hotel_routes.GET("/bookings", newHotelController.GetHotelsBookings)
 	hotel_routes.GET("/request", newHotelController.GetRequestInHotels)
 	hotel_routes.POST("/configure", newHotelController.ConfigureAndUpdate)
+
+	// This is the Endpoint for Fetching the Hotel's frontdesk data
+	// It include the Data Available, occupied rooms
 	hotel_routes.GET("/frontdesk", newHotelController.GetHotelFrontDesk)
+
+	// This is the endpoint for the changing the room status
 	hotel_routes.GET("/room-status/:hotelId/:roomId/:status", newHotelController.UpdateRoomStatus)
 
 	hotel_routes.POST("/create-booking", newHotelController.CreateBooking)

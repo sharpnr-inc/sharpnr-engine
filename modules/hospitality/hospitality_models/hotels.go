@@ -31,6 +31,11 @@ type Hotel struct {
 	GstinNumber        string
 	FssaiLicenseNumber string
 
+	// -------------------------
+	// Front Desk Overview (1:1)
+	// -------------------------
+	FrontDeskOverview *HotelFrontDeskOverview `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE"`
+
 	IsKitchen   bool       `gorm:"default:true"`
 	KitchenID   *uuid.UUID `gorm:"type:uuid"`
 	Kitchen     *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;"`
@@ -39,6 +44,22 @@ type Hotel struct {
 	State       string
 	Pincode     string
 	IsKitchenOn bool
+}
+
+type HotelFrontDeskOverview struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	HotelID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex"`
+	Hotel   Hotel     `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE"`
+
+	TotalRoom           int `gorm:"not null;default:0"`
+	UpcomingReservation int `gorm:"not null;default:0"`
+	RoomOccupied        int `gorm:"not null;default:0"`
+	AvailableRooms      int `gorm:"not null;default:0"`
+	PendingRequest      int `gorm:"not null;default:0"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 // -----------------------------
@@ -58,8 +79,6 @@ type HotelFloor struct {
 // Rooms
 // -----------------------------
 
-// TODO: Create a Separate table for Room Price, gor price history tracking and Dynamic pricing
-
 type Room struct {
 	ID             uuid.UUID           `gorm:"type:uuid;primaryKey"`
 	FloorID        uuid.UUID           `gorm:"type:uuid;not null"`
@@ -67,14 +86,63 @@ type Room struct {
 	HotelID        uuid.UUID           `gorm:"type:uuid;not null"`
 	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
 	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
-
+	// TODO: Create a Separate table for Room Price, gor price history tracking and Dynamic pricing
+	// Prices      []HotelRoomPrice `gorm:"foreignKey:RoomID"`
 	Price       int
 	Description string
 	Status      hospitalityconstants.RoomStatus `gorm:"type:varchar(50);not null;default:'DISABLED'"`
+	QRCodes     []HotelRoomQRCode               `gorm:"foreignKey:RoomID"`
+	RoomName    string                          `gorm:"size:100;not null"`
+	BedSize     string                          `gorm:"size:50"`
+	Amenities   string                          `gorm:"type:text"`
 
-	RoomName  string `gorm:"size:100;not null"`
-	BedSize   string `gorm:"size:50"`
-	Amenities string `gorm:"type:text"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+// -----------------------------
+// Hotel Room Price
+// -----------------------------
+type HotelRoomPrice struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	RoomID uuid.UUID `gorm:"type:uuid;not null;index"`
+	Room   Room      `gorm:"foreignKey:RoomID;constraint:OnDelete:CASCADE"`
+
+	HotelID uuid.UUID `gorm:"type:uuid;not null;index"`
+	Hotel   Hotel     `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE"`
+
+	Price int `gorm:"not null"`
+
+	// Optional but HIGHLY recommended
+	EffectiveFrom time.Time
+	EffectiveTo   *time.Time
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+// -----------------------------
+// Hotel Room QR code
+// -----------------------------
+type HotelRoomQRCode struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	RoomID uuid.UUID `gorm:"type:uuid;not null"`
+	Room   Room      `gorm:"foreignKey:RoomID;constraint:OnDelete:CASCADE;"`
+
+	// what this QR is for
+	Purpose string `gorm:"size:50;not null"`
+	// ex: ROOM_SERVICE, FEEDBACK, CHECKOUT
+
+	Token string `gorm:"size:255;uniqueIndex;not null"`
+
+	IsActive bool `gorm:"default:true"`
+
+	ExpiresAt *time.Time
+
+	ScanCount     int `gorm:"default:0"`
+	LastScannedAt *time.Time
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
