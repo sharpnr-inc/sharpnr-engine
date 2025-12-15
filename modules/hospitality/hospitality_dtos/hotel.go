@@ -52,15 +52,15 @@ type CreateRoomInFloor_RES struct {
 }
 
 type Hotel_UpdateOrConfigure_REQUEST struct {
-	DisplayName      string `json:"display_name"`
-	LegalName        string `json:"legal_name"`
-	Address          string `json:"address"`
-	City             string `json:"city"`
-	State            string `json:"state"`
-	Country          string `json:"country"`
-	Pincode          string `json:"pincode"`
-	HotelGstNumber   string `json:"hotel_gst_number"`
-	HotelFSSAINumber string `json:"hotel_fssai_number"`
+	DisplayName      *string `json:"display_name"`
+	LegalName        *string `json:"legal_name"`
+	Address          *string `json:"address"`
+	City             *string `json:"city"`
+	State            *string `json:"state"`
+	Country          *string `json:"country"`
+	Pincode          *string `json:"pincode"`
+	HotelGstNumber   *string `json:"hotel_gst_number"`
+	HotelFSSAINumber *string `json:"hotel_fssai_number"`
 }
 
 // This is the Response Struct for the Hotel Booking Terminal

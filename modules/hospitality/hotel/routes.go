@@ -28,11 +28,21 @@ func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	hotel_routes.GET("/get-all-rooms")
 	hotel_routes.POST("/create-rooms", newHotelController.CreateRoom)
 	hotel_routes.POST("/create-floor", newHotelController.CreateFloorInHotel)
+
+	// This is the API for the booking rooms
+	// TODO :-> Not implemented
 	hotel_routes.POST("/book-room/:roomId")
+
 	hotel_routes.GET("/get-hotel", newHotelController.GetHotel)
+
 	hotel_routes.GET("/overview", newHotelController.GetHotelOverview)
+
+	// this is will List the All Booking currently Hotels have
+	// TODO :-> NOT IMPLEMENTED YET
 	hotel_routes.GET("/bookings", newHotelController.GetHotelsBookings)
 	hotel_routes.GET("/request", newHotelController.GetRequestInHotels)
+
+	//This Endpoint for the Configuring the updating the Hotel
 	hotel_routes.POST("/configure", newHotelController.ConfigureAndUpdate)
 
 	// This is the Endpoint for Fetching the Hotel's frontdesk data
@@ -47,6 +57,8 @@ func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB) {
 	hotel_routes.GET("/room-status/:hotelId/:roomId/:status", newHotelController.UpdateRoomStatus)
 
 	hotel_routes.POST("/create-booking", newHotelController.CreateBooking)
+
+	//This is endpoint for the Getting the Booking fo the Room
 	hotel_routes.GET("/get-booking/:roomId", newHotelController.GetBookingDetails)
 
 	houseKeeping := hotel_routes.Group("/houseKeeping")

@@ -21,5 +21,13 @@ type HotelService interface {
 	// Bookings
 	// ------------------
 	CreateBookingForRoom(ctx context.Context, orgId uuid.UUID, req *hospitalitydtos.Hotel_Room_booking_Req) error
+
+	// TODO This is Need Response Simply Error and Need Tx for it
 	GetRoomBookingDetails(ctx context.Context, roomId, orgID uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
+
+	UpdateHotelDetails(
+		ctx context.Context,
+		orgId uuid.UUID,
+		req hospitalitydtos.Hotel_UpdateOrConfigure_REQUEST,
+	) error
 }

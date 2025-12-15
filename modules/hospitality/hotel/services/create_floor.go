@@ -3,7 +3,6 @@ package hotelservices
 import (
 	"context"
 	"errors"
-	"fmt"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 
@@ -38,11 +37,11 @@ func (r *hotelService) CreateFloor(ctx context.Context, orgID uuid.UUID, req hos
 		return nil, err
 	}
 
-	// ✅ Update hotel floor count (optional)
-	hotel.NumberOfFloors += 1
-	if err := r.hotelRepo.UpdateHotel(ctx, hotel); err != nil {
-		fmt.Println("Warning: could not update floor count:", err)
-	}
+	// // ✅ Update hotel floor count (optional)
+	// hotel.NumberOfFloors += 1
+	// if err := r.hotelRepo.UpdateHotel(ctx, hotel); err != nil {
+	// 	fmt.Println("Warning: could not update floor count:", err)
+	// }
 
 	// ✅ Prepare response
 	resp := &hospitalitydtos.CreateFloorInHotel_RESPONSE{

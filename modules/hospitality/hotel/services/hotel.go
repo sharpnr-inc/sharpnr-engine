@@ -57,3 +57,56 @@ func (r *hotelService) GetHotelDetails(ctx context.Context, orgId uuid.UUID) (*h
 
 	return response, nil
 }
+
+func (r *hotelService) UpdateHotelDetails(
+	ctx context.Context,
+	orgId uuid.UUID,
+	req hospitalitydtos.Hotel_UpdateOrConfigure_REQUEST,
+) error {
+
+	// 1️⃣ Fetch hotel (org safety)
+	hotel, err := r.hotelRepo.GetHotelByOrgID(ctx, orgId)
+	if err != nil {
+		return err
+	}
+
+	// 2️⃣ Build update map (PATCH behavior)
+	updates := map[string]interface{}{}
+
+	if req.DisplayName != nil {
+		updates["display_name"] = *req.DisplayName
+	}
+	if req.LegalName != nil {
+		updates["legal_name"] = *req.LegalName
+	}
+	if req.Address != nil {
+		updates["address"] = *req.Address
+	}
+	if req.City != nil {
+		updates["city"] = *req.City
+	}
+	if req.State != nil {
+		updates["state"] = *req.State
+	}
+	if req.Pincode != nil {
+		updates["pincode"] = *req.Pincode
+	}
+	if req.HotelGstNumber != nil {
+		updates["gstin_number"] = *req.HotelGstNumber
+	}
+	if req.HotelFSSAINumber != nil {
+		updates["fssai_license_number"] = *req.HotelFSSAINumber
+	}
+
+	// Optional: mark hotel configured when first updated
+	if !hotel.IsConfigured && len(updates) > 0 {
+		updates["is_configured"] = true
+	}
+
+	if len(updates) == 0 {
+		return errors.New("no fields provided for update")
+	}
+
+	// 3️⃣ Call repository
+	return r.hotelRepo.UpdateHotelFields(ctx, hotel.ID, updates)
+}

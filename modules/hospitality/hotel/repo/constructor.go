@@ -31,8 +31,22 @@ func (h *hotelRepository) UpdateFloor(ctx context.Context, floor *hospitalitymod
 	panic("unimplemented")
 }
 
-func (h *hotelRepository) UpdateHotel(ctx context.Context, hotel *hospitalitymodels.Hotel) error {
-	return h.db.WithContext(ctx).Save(hotel).Error
+func (r *hotelRepository) UpdateHotelFields(
+	ctx context.Context,
+	hotelID uuid.UUID,
+	updates map[string]interface{},
+) error {
+
+	if len(updates) == 0 {
+		return nil
+	}
+
+	return r.db.
+		WithContext(ctx).
+		Model(&hospitalitymodels.Hotel{}).
+		Where("id = ?", hotelID).
+		Updates(updates).
+		Error
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------//

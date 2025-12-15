@@ -41,6 +41,7 @@ func (s *HotelController) CreateRoom(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// This is the Update Room Status
 func (s *HotelController) UpdateRoomStatus(ctx *gin.Context) {
 	// ✅ Get OrgUUID from context (set by middleware)
 	orgUUIDVal, exists := ctx.Get("OrgUUID")

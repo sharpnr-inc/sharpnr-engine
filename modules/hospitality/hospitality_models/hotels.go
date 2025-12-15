@@ -87,7 +87,7 @@ type Room struct {
 	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
 	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
 	// TODO: Create a Separate table for Room Price, gor price history tracking and Dynamic pricing
-	// Prices      []HotelRoomPrice `gorm:"foreignKey:RoomID"`
+	Prices      []HotelRoomPrice `gorm:"foreignKey:RoomID"`
 	Price       int
 	Description string
 	Status      hospitalityconstants.RoomStatus `gorm:"type:varchar(50);not null;default:'DISABLED'"`
