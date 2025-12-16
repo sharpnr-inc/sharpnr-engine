@@ -23,16 +23,5 @@ package accounting_repo
 // Implementations of this interface should use GORM or any other
 // database ORM/driver under the hood for persistence.
 type AccountingRepositoryInterface interface {
-	// Example placeholder methods for guidance
-	// (to be implemented in accounting_repo.go or submodules)
-
-	// CreateInvoice persists a new invoice record in the database.
-	// Returns the created invoice ID and an error if operation fails.
-	// CreateInvoice(ctx context.Context, invoice *accounting_models.Invoice) (uuid.UUID, error)
-
-	// GetLedgerBalance retrieves the ledger balance for a given account and fiscal year.
-	// GetLedgerBalance(ctx context.Context, accountID uuid.UUID, fiscalYearID uint) (*accounting_models.LedgerBalance, error)
-
-	// RecordTransaction saves a complete accounting transaction and its entries.
-	// RecordTransaction(ctx context.Context, tx *accounting_models.Transaction) error
+	WithDbTrnx()
 }

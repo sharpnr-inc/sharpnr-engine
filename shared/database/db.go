@@ -110,24 +110,29 @@ func MigrateDB(db *gorm.DB) error {
 		// 💰 ACCOUNTING MODELS
 		// -------------------------------
 		&accounting_models.AccountingBook{},
-		&accounting_models.Account{},
-		&accounting_models.AccountGroup{},
+		&accounting_models.AccountingSetting{},
+
 		&accounting_models.FiscalYear{},
-		&accounting_models.Voucher{},
-		&accounting_models.VoucherEntry{},
+		&accounting_models.AccountGroup{},
+		&accounting_models.Account{},
+
+		&accounting_models.JournalEntry{},
+		&accounting_models.JournalLine{},
+
 		&accounting_models.Transaction{},
+
 		&accounting_models.Invoice{},
 		&accounting_models.InvoiceItem{},
 		&accounting_models.Bill{},
 		&accounting_models.BillItem{},
 		&accounting_models.TaxRate{},
+
 		&accounting_models.GSTProfile{},
 		&accounting_models.Customer{},
 		&accounting_models.Supplier{},
 		&accounting_models.LedgerBalance{},
 		&accounting_models.ProfitLossSummary{},
 		&accounting_models.BalanceSheetSummary{},
-		&accounting_models.AccountingSetting{},
 		&accounting_models.AuditLog{},
 
 		// HR

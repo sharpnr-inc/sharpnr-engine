@@ -1,22 +1,25 @@
 package accounting_models
 
 import (
+	accountingconstants "sharpnr-engine/modules/accounting/accounting_constants"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 type Account struct {
-	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
-	BookID     uuid.UUID `gorm:"type:uuid;index;not null"`
-	Name       string    `gorm:"not null"`
-	Code       string    `gorm:"uniqueIndex;not null"`
-	GroupID    uuid.UUID `gorm:"type:uuid;index"`
-	Type       string
-	OpeningBal float64
-	CurrentBal float64
-	IsDefault  bool
-	Status     string
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	ID   uuid.UUID `gorm:"type:uuid;primaryKey"`
+	Name string    `gorm:"not null"`
+	Code string    `gorm:"uniqueIndex;not null"`
+
+	AccountGroupID uuid.UUID `gorm:"type:uuid;index"`
+	AccountGroup   AccountGroup
+
+	Type accountingconstants.AccountType
+
+	IsDefault bool
+	Status    string
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
