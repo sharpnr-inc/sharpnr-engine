@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type HotelRepository interface {
+type HotelRepositoryInterface interface {
 	//--------------------------------------------------------------
 	// Hotel
 	//--------------------------------------------------------------
@@ -51,7 +51,11 @@ type HotelRepository interface {
 	CreateCharges(ctx context.Context, charges *hospitalitymodels.BookingCharge) error
 	GetBookingDetailsByRoomId(ctx context.Context, roomId uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
 
-	WithTx(ctx context.Context, fn func(txRepo HotelRepositoryTransactions) error) error
+	// Documentation is needed
+	WithTx(
+		ctx context.Context,
+		fn func(txRepo *hotelRepository) error,
+	) error
 }
 
 type HotelHouseKeepingRepositoryInterface interface {

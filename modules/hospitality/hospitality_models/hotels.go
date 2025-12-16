@@ -23,13 +23,18 @@ type Hotel struct {
 
 	Floors []HotelFloor `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE;"`
 
-	IsConfigured       bool
-	CreatedAt          time.Time
-	UpdatedAt          time.Time
+	IsConfigured bool
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+
 	DisplayName        string
 	LegalName          string
 	GstinNumber        string
+	CinNumber          string
 	FssaiLicenseNumber string
+
+	CheckInTime  string `gorm:"default:10:00"`
+	CheckOutTime string `gorm:"default:13:00"`
 
 	// -------------------------
 	// Front Desk Overview (1:1)
@@ -113,6 +118,8 @@ type HotelRoomPrice struct {
 	Hotel   Hotel     `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE"`
 
 	Price int `gorm:"not null"`
+	// Can fluctuate
+	GST float32
 
 	// Optional but HIGHLY recommended
 	EffectiveFrom time.Time

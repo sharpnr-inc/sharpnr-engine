@@ -12,7 +12,7 @@ type kitchenService struct {
 	kitchenRepo    kitchenrepo.KitchenRepositoryInterface
 	restaurantRepo restaurantrepo.RestaurantRepository
 	barRepo        barrepo.BarRepository
-	hotelRepo      hotelrepo.HotelRepository
+	hotelRepo      hotelrepo.HotelRepositoryInterface
 	menuRepo       menurepo.MenuRepositoryInterface
 }
 
@@ -20,7 +20,7 @@ func NewKitchenService(
 	kitchenRepo kitchenrepo.KitchenRepositoryInterface,
 	restaurantRepo restaurantrepo.RestaurantRepository,
 	barRepo barrepo.BarRepository,
-	hotelRepo hotelrepo.HotelRepository,
+	hotelRepo hotelrepo.HotelRepositoryInterface,
 	menuRepo menurepo.MenuRepositoryInterface) *kitchenService {
 	return &kitchenService{
 		kitchenRepo:    kitchenRepo,

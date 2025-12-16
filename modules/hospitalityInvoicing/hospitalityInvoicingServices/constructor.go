@@ -26,7 +26,7 @@ import (
 type hospitalityInvoicingService struct {
 	hospInvoiceRepo hospitalityinvoicingrepo.HospitalityInvoicingRepositoryInterfaces
 
-	hotelRepo      hotelrepo.HotelRepository
+	hotelRepo      hotelrepo.HotelRepositoryInterface
 	barRepo        barrepo.BarRepository
 	restaurantRepo restaurantrepo.RestaurantRepository
 }
@@ -50,7 +50,7 @@ type hospitalityInvoicingService struct {
 //	*hospitalityInvoicingService — a fully initialized invoicing service.
 func NewHospitalityInvoicingService(
 	hospInvoiceRepo hospitalityinvoicingrepo.HospitalityInvoicingRepositoryInterfaces,
-	hotelRepo hotelrepo.HotelRepository,
+	hotelRepo hotelrepo.HotelRepositoryInterface,
 	barRepo barrepo.BarRepository,
 	restaurantRepo restaurantrepo.RestaurantRepository) *hospitalityInvoicingService {
 

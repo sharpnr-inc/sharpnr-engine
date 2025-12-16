@@ -6,6 +6,7 @@ import (
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,6 +17,11 @@ func (h *hotelService) CreateRoomInHotel(
 	ctx context.Context,
 	orgID uuid.UUID,
 	req hospitalitydtos.CreateRoomInFloor_REQ) (*hospitalitydtos.CreateRoomInFloor_RES, error) {
+
+	if strings.TrimSpace(req.Description) == "" ||
+		strings.TrimSpace(req.RoomName) == "" {
+		return nil, errors.New("description, room name and floor id are required")
+	}
 
 	// ✅ Verify floor exists
 	floor, err := h.hotelRepo.GetFloorByID(ctx, req.FloorId)
@@ -33,7 +39,7 @@ func (h *hotelService) CreateRoomInHotel(
 		HotelID:        floor.HotelID,
 		OrganizationID: orgID,
 		RoomName:       req.RoomName,
-		Status:         hospitalityconstants.Disabled,
+		Status:         hospitalityconstants.Available,
 		Price:          req.RoomPrice,
 	}
 

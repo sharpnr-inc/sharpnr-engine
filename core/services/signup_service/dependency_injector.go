@@ -25,7 +25,7 @@ type signupService struct {
 
 	uiRenderRepo sharpnruirenderer.UIRendererRepository
 
-	hotelRepo hotelrepo.HotelRepository
+	hotelRepo hotelrepo.HotelRepositoryInterface
 
 	barRepo barrepo.BarRepository
 
@@ -36,7 +36,7 @@ type signupService struct {
 	menuRepo menurepo.MenuRepositoryInterface
 }
 
-func NewSignupService(repo interfaces.OrganizationRepositoryInterface, hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface, policyrepo policyengine.PolicyRepository, uiRenderRepo sharpnruirenderer.UIRendererRepository, hotelRepo hotelrepo.HotelRepository, barRepo barrepo.BarRepository, restaurantRepo restaurantrepo.RestaurantRepository, kitchenRepo kitchenrepo.KitchenRepositoryInterface, menuRepo menurepo.MenuRepositoryInterface) *signupService {
+func NewSignupService(repo interfaces.OrganizationRepositoryInterface, hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface, policyrepo policyengine.PolicyRepository, uiRenderRepo sharpnruirenderer.UIRendererRepository, hotelRepo hotelrepo.HotelRepositoryInterface, barRepo barrepo.BarRepository, restaurantRepo restaurantrepo.RestaurantRepository, kitchenRepo kitchenrepo.KitchenRepositoryInterface, menuRepo menurepo.MenuRepositoryInterface) *signupService {
 	return &signupService{
 		orgRepo:        repo,
 		hrEmpRepo:      hrEmpRepo,

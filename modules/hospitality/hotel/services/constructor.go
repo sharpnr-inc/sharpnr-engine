@@ -6,13 +6,13 @@ import (
 )
 
 type hotelService struct {
-	hotelRepo   hotelrepo.HotelRepository
+	hotelRepo   hotelrepo.HotelRepositoryInterface
 	houseKeRepo hotelrepo.HotelHouseKeepingRepositoryInterface
 	kitchenRepo kitchenrepo.KitchenRepositoryInterface
 }
 
 func NewHotelService(
-	hotelRepo hotelrepo.HotelRepository,
+	hotelRepo hotelrepo.HotelRepositoryInterface,
 	houseKeRepo hotelrepo.HotelHouseKeepingRepositoryInterface,
 	kitchenRepo kitchenrepo.KitchenRepositoryInterface) *hotelService {
 	return &hotelService{
