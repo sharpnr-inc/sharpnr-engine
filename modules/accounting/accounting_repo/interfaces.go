@@ -3,6 +3,14 @@
 // persistence and data retrieval logic within the Accounting module.
 package accounting_repo
 
+import (
+	"context"
+	"sharpnr-engine/modules/accounting/accounting_models"
+	"time"
+
+	"github.com/google/uuid"
+)
+
 // AccountingRepository defines the core contract for data access and persistence
 // operations in the Accounting module.
 //
@@ -22,6 +30,105 @@ package accounting_repo
 //
 // Implementations of this interface should use GORM or any other
 // database ORM/driver under the hood for persistence.
-type AccountingRepositoryInterface interface {
-	WithDbTrnx()
+type AccountingRepository interface {
+
+	// ------------------------
+	// Transaction handling
+	// ------------------------
+	WithTx(
+		ctx context.Context,
+		fn func(txRepo AccountingRepository) error,
+	) error
+
+	// ------------------------
+	// Accounting Book
+	// ------------------------
+	CreateAccountingBook(
+		ctx context.Context,
+		book *accounting_models.AccountingBook,
+	) error
+
+	GetAccountingBookByID(
+		ctx context.Context,
+		bookID uuid.UUID,
+	) (*accounting_models.AccountingBook, error)
+
+	GetAccountingBooksByOrgID(
+		ctx context.Context,
+		orgID uuid.UUID,
+	) ([]accounting_models.AccountingBook, error)
+
+	// ------------------------
+	// Fiscal Year
+	// ------------------------
+	CreateFiscalYear(
+		ctx context.Context,
+		fy *accounting_models.FiscalYear,
+	) error
+
+	GetOpenFiscalYearByBookAndDate(
+		ctx context.Context,
+		bookID uuid.UUID,
+		date time.Time,
+	) (*accounting_models.FiscalYear, error)
+
+	CloseFiscalYear(
+		ctx context.Context,
+		fiscalYearID uuid.UUID,
+	) error
+
+	// ------------------------
+	// Account Groups
+	// ------------------------
+	CreateAccountGroup(
+		ctx context.Context,
+		group *accounting_models.AccountGroup,
+	) error
+
+	GetAccountGroupsByBookID(
+		ctx context.Context,
+		bookID uuid.UUID,
+	) ([]accounting_models.AccountGroup, error)
+
+	GetAccountGroupByID(
+		ctx context.Context,
+		groupID uuid.UUID,
+	) (*accounting_models.AccountGroup, error)
+
+	// ------------------------
+	// Accounts
+	// ------------------------
+	CreateAccount(
+		ctx context.Context,
+		account *accounting_models.Account,
+	) error
+
+	GetAccountsByGroupID(
+		ctx context.Context,
+		groupID uuid.UUID,
+	) ([]accounting_models.Account, error)
+
+	GetAccountByID(
+		ctx context.Context,
+		accountID uuid.UUID,
+	) (*accounting_models.Account, error)
+
+	// ------------------------
+	// Journal (CORE)
+	// ------------------------
+	CreateJournalEntry(
+		ctx context.Context,
+		entry *accounting_models.JournalEntry,
+	) error
+
+	GetJournalEntryByID(
+		ctx context.Context,
+		entryID uuid.UUID,
+	) (*accounting_models.JournalEntry, error)
+
+	GetJournalEntriesByBookAndPeriod(
+		ctx context.Context,
+		bookID uuid.UUID,
+		from, to time.Time,
+	) ([]accounting_models.JournalEntry, error)
 }
