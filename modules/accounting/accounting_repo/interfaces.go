@@ -22,7 +22,7 @@ package accounting_repo
 //
 // Implementations of this interface should use GORM or any other
 // database ORM/driver under the hood for persistence.
-type AccountingRepository interface {
+type AccountingRepositoryInterface interface {
 	// Example placeholder methods for guidance
 	// (to be implemented in accounting_repo.go or submodules)
 

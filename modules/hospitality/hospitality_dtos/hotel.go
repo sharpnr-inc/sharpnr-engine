@@ -73,10 +73,11 @@ type HotelBookingTerminal_Response struct {
 }
 
 type Hotel_Room_booking_Req struct {
-	Hotel_Id        uuid.UUID
-	RoomId          uuid.UUID
-	CheckInnDate    time.Time
-	CheckoutDate    time.Time
+	Hotel_Id     uuid.UUID
+	RoomId       uuid.UUID
+	CheckInnDate time.Time
+	CheckoutDate time.Time
+	// We need check inn time to calculate the date and time
 	BookingDate     time.Time
 	NumberOfGuest   int
 	GuestEmailAddr  string

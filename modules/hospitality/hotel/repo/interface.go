@@ -63,7 +63,5 @@ type HotelHouseKeepingRepositoryInterface interface {
 	// TODO :- This need To Implemented
 }
 
-type HotelRepositoryTransactions interface {
-	CreateRoom(ctx context.Context, room *hospitalitymodels.Room) error
-	// CreateRoomPrice(ctx context.Context, roomPrice *hospitalitymodels.HotelRoomPrice) error
+type HotelRoomBookingDBTxInterface interface {
 }
