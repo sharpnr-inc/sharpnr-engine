@@ -8,9 +8,6 @@ import (
 func RegisterAccountingRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 
 	accRoutes := v1.Group("/accounting")
-
-	// This will fetch the transaction
-	// it will have five Filters 1). All 2).Receipts 3).Payments 4).Transfers 5).Journal Entries
 	accRoutes.GET("/get/transactions")
 	accRoutes.GET("/get/sales")
 

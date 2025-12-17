@@ -30,14 +30,14 @@ import (
 //
 // Implementations of this interface should use GORM or any other
 // database ORM/driver under the hood for persistence.
-type AccountingRepository interface {
+type AccountingRepositoryInterface interface {
 
 	// ------------------------
 	// Transaction handling
 	// ------------------------
 	WithTx(
 		ctx context.Context,
-		fn func(txRepo AccountingRepository) error,
+		fn func(txRepo AccountingRepositoryInterface) error,
 	) error
 
 	// ------------------------
