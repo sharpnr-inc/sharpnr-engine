@@ -74,4 +74,9 @@ type OrganizationRepositoryInterface interface {
 	// -----------------------------
 
 	// AddPaymentGatewayCreds(ctx context.Context)
+
+	WithTx(
+		ctx context.Context,
+		fn func(orgTxRepo OrganizationRepositoryInterface) error,
+	) error
 }

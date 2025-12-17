@@ -1,6 +1,9 @@
 package organizationrepositories
 
 import (
+	"context"
+	"sharpnr-engine/core/interfaces"
+
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
@@ -29,4 +32,21 @@ func NewOrganizationRepo(db *gorm.DB, redis *redis.Client) *OrganizationReposito
 		redis: redis,
 		db:    db,
 	}
+}
+
+func (d *OrganizationRepository) WithTx(
+	ctx context.Context,
+	fn func(orgRepoTx interfaces.OrganizationRepositoryInterface) error,
+) error {
+	return d.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+
+		// Create a NEW repository instance bound to the transaction
+		orgRepoTx := &OrganizationRepository{
+			db:    tx,      // 🔥 transaction-scoped DB
+			redis: d.redis, // reuse same redis client
+		}
+
+		// Execute caller logic
+		return fn(orgRepoTx)
+	})
 }

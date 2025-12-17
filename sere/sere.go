@@ -1,25 +1,16 @@
 package sere
 
-import "fmt"
+import "sync"
 
 type SERE struct {
-	Events chan string
+	events      chan Event
+	subscribers map[string][]Handler
+	mu          sync.RWMutex
 }
 
 func NewSERE() *SERE {
 	return &SERE{
-		Events: make(chan string, 20),
+		events:      make(chan Event, 50),
+		subscribers: make(map[string][]Handler),
 	}
-}
-
-func (s *SERE) Start() {
-	fmt.Println("🚀 SERE: Sharpnr Event Relay Engine is starting...")
-
-	go func() {
-		fmt.Println("✅ SERE: Ready! Listening for events...")
-
-		for evt := range s.Events {
-			fmt.Println("📡 SERE RECEIVED EVENT →", evt)
-		}
-	}()
 }
