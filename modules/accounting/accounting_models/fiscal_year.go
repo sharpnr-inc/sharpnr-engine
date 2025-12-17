@@ -1,7 +1,6 @@
 package accounting_models
 
 import (
-	"sharpnr-engine/core/models"
 	accountingconstants "sharpnr-engine/modules/accounting/accounting_constants"
 	"time"
 
@@ -11,8 +10,7 @@ import (
 type FiscalYear struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	OrgID        uuid.UUID
-	Organization models.Organization
+	OrgID uuid.UUID
 
 	AccountingBookID uuid.UUID `gorm:"type:uuid;not null;index"`
 	AccountingBook   AccountingBook

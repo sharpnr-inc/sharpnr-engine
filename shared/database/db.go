@@ -110,7 +110,7 @@ func MigrateDB(db *gorm.DB) error {
 		// 💰 ACCOUNTING MODELS
 		// -------------------------------
 		&accounting_models.AccountingBook{},
-		&accounting_models.AccountingSetting{},
+		&accounting_models.AccountingBookSetting{},
 
 		&accounting_models.FiscalYear{},
 		&accounting_models.AccountGroup{},
