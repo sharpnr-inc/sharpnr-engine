@@ -8,3 +8,9 @@ type OrganizationCreated struct {
 	OrganizationName string
 	SharpnrID        string
 }
+
+type RoomCreated struct {
+	RoomID  uuid.UUID
+	HotelID uuid.UUID
+	Name    string
+}

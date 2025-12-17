@@ -62,7 +62,7 @@ func main() {
 	app.RegisterSereEventHandler(sereEngine, accountingRepo)
 
 	// Create and configure the main router
-	r := api.SetupRouter(db, redisDb)
+	r := api.SetupRouter(db, redisDb, sereEngine)
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

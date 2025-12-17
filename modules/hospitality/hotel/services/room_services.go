@@ -6,6 +6,7 @@ import (
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
+	"sharpnr-engine/sere/events"
 	"strings"
 	"time"
 
@@ -47,6 +48,16 @@ func (h *hotelService) CreateRoomInHotel(
 	if err := h.hotelRepo.CreateRoom(ctx, &room); err != nil {
 		return nil, err
 	}
+
+	h.sere.Publish(
+		ctx,
+		"RoomCreated",
+		events.RoomCreated{
+			RoomID:  room.ID,
+			HotelID: room.HotelID,
+			Name:    room.RoomName,
+		},
+	)
 
 	// ✅ Prepare response
 	res := &hospitalitydtos.CreateRoomInFloor_RES{

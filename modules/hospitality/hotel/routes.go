@@ -5,6 +5,7 @@ import (
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
 	hotelservices "sharpnr-engine/modules/hospitality/hotel/services"
 	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
+	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -14,12 +15,12 @@ import (
  * These are the endpoint for the Hotel *
 ****************************************/
 
-func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB) {
+func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB, sere *sere.SERE) {
 	newHotelRepo := hotelrepo.NewHotelRepository(db)
 
 	newKitchenRepo := kitchenrepo.NewKitchenRepository(db)
 	newHouseKeepingRepo := hotelrepo.NewHotelHouseKeepingRepository(db)
-	newHotelService := hotelservices.NewHotelService(newHotelRepo, newHouseKeepingRepo, newKitchenRepo)
+	newHotelService := hotelservices.NewHotelService(sere, newHotelRepo, newHouseKeepingRepo, newKitchenRepo)
 
 	newHotelController := hotelcontrollers.NewHotelController(newHotelService)
 
