@@ -5,7 +5,10 @@ import (
 	"log"
 
 	"sharpnr-engine/api"
+	"sharpnr-engine/app"
 	"sharpnr-engine/config"
+	"sharpnr-engine/modules/accounting/accounting_repo"
+	"sharpnr-engine/sere"
 	"sharpnr-engine/shared/database"
 
 	_ "sharpnr-engine/docs"
@@ -39,6 +42,24 @@ func main() {
 		log.Fatalf("DB migration failed: %v", err)
 	}
 	log.Println("✅ Database migration completed.")
+
+	sereEngine := sere.NewSERE()
+	sereEngine.Start()
+	sereEngine.WaitUntilStarted()
+
+	log.Println("✅ SERE is up and running")
+
+	// -------------------------------------------------
+	// 4️⃣ Create repositories (for handlers)
+	// -------------------------------------------------
+
+	accountingRepo := accounting_repo.NewAccountingRepository(db)
+
+	// -------------------------------------------------
+	// 5️⃣ Register event handlers (wiring)
+	// -------------------------------------------------
+
+	app.RegisterSereEventHandler(sereEngine, accountingRepo)
 
 	// Create and configure the main router
 	r := api.SetupRouter(db, redisDb)

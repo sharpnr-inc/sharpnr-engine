@@ -1,11 +1,19 @@
 package sere
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 // Publish announces a business fact
 // It NEVER blocks the caller
-func (s *SERE) Publish(name string, payload any) {
+func (s *SERE) Publish(
+	ctx context.Context,
+	name string,
+	payload any,
+) {
 	s.events <- Event{
+		Ctx:       ctx,
 		Name:      name,
 		Payload:   payload,
 		CreatedAt: time.Now(),
