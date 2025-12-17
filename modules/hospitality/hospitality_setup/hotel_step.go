@@ -18,7 +18,7 @@ func (s *HotelSetupStep) Execute(ctx context.Context, c SetupContext) error {
 		ID:             uuid.New(),
 		OrganizationID: c.Org.ID,
 		Organization:   c.Org,
-		Name:           "__DEFAULT__HOTEL__NAME__",
+		Name:           "Default Hotels",
 		IsKitchen:      true,
 		KitchenID:      &c.Kitchen.ID,
 		CreatedAt:      time.Now(),

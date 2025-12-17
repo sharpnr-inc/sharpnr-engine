@@ -17,7 +17,7 @@ func (s *RestaurantSetupStep) Execute(ctx context.Context, c SetupContext) error
 
 	restaurant := &hospitalitymodels.Restaurant{
 		ID:             uuid.New(),
-		Name:           "__DEFAULT__RESTAURANT__NAME__",
+		Name:           "Default Restaurant",
 		OrganizationID: c.Org.ID,
 		Organization:   c.Org,
 		IsKitchen:      true,

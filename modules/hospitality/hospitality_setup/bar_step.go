@@ -15,7 +15,7 @@ func (s *BarSetupStep) Name() string { return "BAR" }
 func (s *BarSetupStep) Execute(ctx context.Context, c SetupContext) error {
 	bar := &hospitalitymodels.Bar{
 		ID:             uuid.New(),
-		Name:           "__DEFAULT__BAR__NAME__",
+		Name:           "Default Bar",
 		OrganizationID: c.Org.ID,
 		Organization:   c.Org,
 		IsKitchen:      true,
