@@ -66,7 +66,7 @@ type AccountGroup struct {
 	//   - EXPENSE
 	//
 	// This value must remain immutable once the group is created.
-	Type accountingconstants.AccountType `gorm:"type:varchar(20);not null"`
+	Type accountingconstants.AccountGroupType `gorm:"type:varchar(20);not null"`
 
 	// CreatedAt is the timestamp when the account group was created.
 	CreatedAt time.Time

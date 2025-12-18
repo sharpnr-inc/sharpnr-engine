@@ -49,7 +49,7 @@ type Account struct {
 	// Example:
 	//   - "1001" (Cash)
 	//   - "4001" (Room Revenue)
-	Code string `gorm:"uniqueIndex;not null"`
+	Code string `gorm:"not null"`
 
 	// AccountGroupID is the identifier of the account group
 	// this account belongs to.
@@ -63,7 +63,7 @@ type Account struct {
 	//
 	// This value must always match the Type of the parent AccountGroup.
 	// It should never be changed after creation.
-	Type accountingconstants.AccountType `gorm:"type:varchar(20);not null"`
+	Type accountingconstants.AccountGroupType `gorm:"type:varchar(20);not null"`
 
 	// IsDefault indicates whether this is a system-defined default account.
 	//

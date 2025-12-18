@@ -1,11 +1,11 @@
 package accountingconstants
 
-type AccountType string
+type AccountGroupType string
 
 const (
-	AccountAsset     AccountType = "ASSET"
-	AccountLiability AccountType = "LIABILITY"
-	AccountEquity    AccountType = "EQUITY"
-	AccountIncome    AccountType = "INCOME"
-	AccountExpense   AccountType = "EXPENSE"
+	AccountAsset     AccountGroupType = "ASSET"
+	AccountLiability AccountGroupType = "LIABILITY"
+	AccountEquity    AccountGroupType = "EQUITY"
+	AccountIncome    AccountGroupType = "INCOME"
+	AccountExpense   AccountGroupType = "EXPENSE"
 )

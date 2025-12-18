@@ -3,6 +3,8 @@ package accountingconstants
 type JournalEntryType string
 
 const (
-	Debit  JournalEntryType = "DEBIT"
-	Credit JournalEntryType = "CREDIT"
+	JournalNormal         JournalEntryType = "NORMAL"
+	JournalOpeningBalance JournalEntryType = "OPENING_BALANCE"
+	JournalAdjustment     JournalEntryType = "ADJUSTMENT"
+	JournalReversal       JournalEntryType = "REVERSAL"
 )
