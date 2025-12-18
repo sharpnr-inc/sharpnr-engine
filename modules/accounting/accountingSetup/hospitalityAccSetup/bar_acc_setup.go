@@ -53,7 +53,7 @@ func (s *BarAccountingSetupStep) Execute(
 		// 1️⃣ Idempotency: Check if BAR AccountingBook exists
 		// ------------------------------------------------
 
-		books, err := txRepo.GetAccountingBooksByOrgID(ctx, c.Org.ID)
+		books, err := txRepo.GetAccountingBooksByOrgID(ctx, c.OrganizationID)
 		if err != nil {
 			return err
 		}
@@ -74,7 +74,7 @@ func (s *BarAccountingSetupStep) Execute(
 
 		book := &accounting_models.AccountingBook{
 			ID:        uuid.New(),
-			OrgID:     c.Org.ID,
+			OrgID:     c.OrganizationID,
 			Name:      "Bar Accounting",
 			Module:    &module,
 			SubModule: &subModule,
@@ -108,6 +108,9 @@ func (s *BarAccountingSetupStep) Execute(
 				Name:           defaultBarAccountName(g.Type),
 				IsDefault:      true,
 				Status:         "ACTIVE",
+				Code:           "Default-01",
+				CreatedAt:      time.Now(),
+				UpdatedAt:      time.Now(),
 			}
 
 			if err := txRepo.CreateAccount(ctx, account); err != nil {
@@ -125,6 +128,7 @@ func (s *BarAccountingSetupStep) Execute(
 
 		fy := &accounting_models.FiscalYear{
 			ID:               uuid.New(),
+			OrgID:            c.OrganizationID,
 			AccountingBookID: book.ID,
 			Name:             "FY " + fyStart.Format("2006") + "-" + fyEnd.Format("2006"),
 			StartDate:        fyStart,

@@ -12,7 +12,7 @@ import (
 // GetOrgTypes returns the list of available organization types.
 func GetOrgTypes(c *gin.Context) {
 	orgTypes := []constants.OrgType{
-		constants.Hotel,
+		constants.Hospitality,
 		constants.Retail,
 		constants.Salon,
 	}

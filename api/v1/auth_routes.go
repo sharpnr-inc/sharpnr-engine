@@ -13,6 +13,7 @@ import (
 	menurepo "sharpnr-engine/modules/hospitality/menu/menu_repo"
 	"sharpnr-engine/modules/hospitality/restaurant/restaurantrepo"
 	hr_employee_repo "sharpnr-engine/modules/hr/employees/repo"
+	"sharpnr-engine/sere"
 
 	"sharpnr-engine/pkg/jwtpack"
 	policyengine "sharpnr-engine/policy_engine"
@@ -24,7 +25,7 @@ import (
 )
 
 // These Are the Auth routes for the authentication registration
-func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
+func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client, sere *sere.SERE) {
 	newPolicyEngineRepo := policyengine.NewOrgPolicyRepo(db)
 
 	newHotelRepo := hotelrepo.NewHotelRepository(db)
@@ -37,7 +38,18 @@ func AuthRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client) {
 	newHrEmployeeRepo := hr_employee_repo.NewHrEmployeeRepository(db)
 
 	newOrgRepo := organizationrepositories.NewOrganizationRepo(db, redis)
-	newSignupService := signupservice.NewSignupService(newOrgRepo, newHrEmployeeRepo, newPolicyEngineRepo, newUIRendererRepo, newHotelRepo, newBarRepo, newRestaurantRepo, newKitchenRepo, newMenuRepo)
+
+	newSignupService := signupservice.NewSignupService(
+		sere,
+		newOrgRepo,
+		newHrEmployeeRepo,
+		newPolicyEngineRepo,
+		newUIRendererRepo,
+		newHotelRepo,
+		newBarRepo,
+		newRestaurantRepo,
+		newKitchenRepo,
+		newMenuRepo)
 	newSignupController := signupcontrollers.NewSignUpController(newSignupService)
 
 	newAuthService := authservice.NewAuthService(newOrgRepo, newHrEmployeeRepo)

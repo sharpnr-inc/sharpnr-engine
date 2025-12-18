@@ -9,6 +9,7 @@ import (
 	"sharpnr-engine/modules/hospitality/hospitality_setup"
 	sharphr_models "sharpnr-engine/modules/hr/hrModels"
 	"sharpnr-engine/pkg/jwtpack"
+	"sharpnr-engine/sere/events"
 	"time"
 
 	"github.com/google/uuid"
@@ -169,6 +170,13 @@ func (s *signupService) CompleteOrgRegistration(
 		EmployeeName: createdEmp.FirstName,
 		EmployeeRole: string(createdEmp.Role),
 	}
+
+	s.sere.Publish(ctx, "OrgCreated", events.OrganizationCreated{
+		OrganizationID:   existingOrg.ID,
+		OrganizationName: existingOrg.Name,
+		OrganizationType: string(existingOrg.OrgOperationType),
+		Modules:          req.OrgSubModule,
+	})
 
 	fmt.Printf("✅ Organization registration completed for: %s (%s)\n", existingOrg.Name, existingOrg.SharpnrID)
 	return response, authToken, nil

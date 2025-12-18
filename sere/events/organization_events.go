@@ -6,7 +6,8 @@ import "github.com/google/uuid"
 type OrganizationCreated struct {
 	OrganizationID   uuid.UUID
 	OrganizationName string
-	SharpnrID        string
+	OrganizationType string
+	Modules          []string
 }
 
 type RoomCreated struct {

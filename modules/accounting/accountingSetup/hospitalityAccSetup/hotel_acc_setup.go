@@ -53,7 +53,7 @@ func (s *HotelAccountingSetupStep) Execute(
 		// ------------------------------------------------
 		// 1️⃣ Idempotency: Check if HOTEL book already exists
 		// ------------------------------------------------
-		books, err := txRepo.GetAccountingBooksByOrgID(ctx, c.Org.ID)
+		books, err := txRepo.GetAccountingBooksByOrgID(ctx, c.OrganizationID)
 		if err != nil {
 			return err
 		}
@@ -74,7 +74,7 @@ func (s *HotelAccountingSetupStep) Execute(
 
 		book := &accounting_models.AccountingBook{
 			ID:        uuid.New(),
-			OrgID:     c.Org.ID,
+			OrgID:     c.OrganizationID,
 			Name:      "Hotel Accounting",
 			Module:    &module,
 			SubModule: &subModule,

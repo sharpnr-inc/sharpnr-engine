@@ -19,7 +19,7 @@ func SetupRouter(db *gorm.DB, redis *redis.Client, sere *sere.SERE) *gin.Engine 
 	v1Group := router.Group("/api/v1")
 
 	// Register all V1 routes.
-	v1.AuthRoutes(v1Group, db, redis)
+	v1.AuthRoutes(v1Group, db, redis, sere)
 	v1.RegisterModuleRoutes(v1Group, db, sere)
 	v1.CoreOrgRoutes(v1Group, db, redis)
 

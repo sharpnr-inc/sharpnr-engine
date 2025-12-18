@@ -9,6 +9,7 @@ import (
 	"sharpnr-engine/modules/hospitality/restaurant/restaurantrepo"
 	hr_employee_repo "sharpnr-engine/modules/hr/employees/repo"
 	policyengine "sharpnr-engine/policy_engine"
+	"sharpnr-engine/sere"
 	sharpnruirenderer "sharpnr-engine/sharpnr_ui_renderer"
 )
 
@@ -16,6 +17,7 @@ import (
 
 // SignupService handles organization signup logic
 type signupService struct {
+	sere    *sere.SERE
 	orgRepo interfaces.OrganizationRepositoryInterface // interface, not concrete struct
 	// This is Employee Repo for the creation of employee during the signup of Organization
 
@@ -36,8 +38,20 @@ type signupService struct {
 	menuRepo menurepo.MenuRepositoryInterface
 }
 
-func NewSignupService(repo interfaces.OrganizationRepositoryInterface, hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface, policyrepo policyengine.PolicyRepository, uiRenderRepo sharpnruirenderer.UIRendererRepository, hotelRepo hotelrepo.HotelRepositoryInterface, barRepo barrepo.BarRepository, restaurantRepo restaurantrepo.RestaurantRepository, kitchenRepo kitchenrepo.KitchenRepositoryInterface, menuRepo menurepo.MenuRepositoryInterface) *signupService {
+func NewSignupService(
+	sere *sere.SERE,
+	repo interfaces.OrganizationRepositoryInterface,
+	hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface,
+	policyrepo policyengine.PolicyRepository,
+	uiRenderRepo sharpnruirenderer.UIRendererRepository,
+	hotelRepo hotelrepo.HotelRepositoryInterface,
+	barRepo barrepo.BarRepository,
+	restaurantRepo restaurantrepo.RestaurantRepository,
+	kitchenRepo kitchenrepo.KitchenRepositoryInterface,
+	menuRepo menurepo.MenuRepositoryInterface,
+) *signupService {
 	return &signupService{
+		sere:           sere,
 		orgRepo:        repo,
 		hrEmpRepo:      hrEmpRepo,
 		policyRepo:     policyrepo,
