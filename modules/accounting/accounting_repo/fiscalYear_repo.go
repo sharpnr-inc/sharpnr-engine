@@ -15,7 +15,7 @@ func (r *accountingRepository) CloseFiscalYear(ctx context.Context, fiscalYearID
 
 // CreateFiscalYear implements AccountingRepositoryInterface.
 func (r *accountingRepository) CreateFiscalYear(ctx context.Context, fy *accounting_models.FiscalYear) error {
-	panic("unimplemented")
+	return r.db.WithContext(ctx).Create(fy).Error
 }
 
 // GetOpenFiscalYearByBookAndDate implements AccountingRepositoryInterface.

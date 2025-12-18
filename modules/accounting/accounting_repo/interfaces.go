@@ -131,4 +131,27 @@ type AccountingRepositoryInterface interface {
 		bookID uuid.UUID,
 		from, to time.Time,
 	) ([]accounting_models.JournalEntry, error)
+
+	// ------------------------
+	// Journal Lines (Ledger Backbone)
+	// ------------------------
+
+	// Batch insert of journal lines (used during posting)
+	CreateJournalLines(
+		ctx context.Context,
+		lines []accounting_models.JournalLine,
+	) error
+
+	// Fetch all lines for a given journal entry (voucher view)
+	GetJournalLinesByEntryID(
+		ctx context.Context,
+		entryID uuid.UUID,
+	) ([]accounting_models.JournalLine, error)
+
+	// Fetch lines for a given account within a period (ledger, trial balance)
+	GetJournalLinesByAccountAndPeriod(
+		ctx context.Context,
+		accountID uuid.UUID,
+		from, to time.Time,
+	) ([]accounting_models.JournalLine, error)
 }
