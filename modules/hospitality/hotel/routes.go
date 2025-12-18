@@ -2,7 +2,7 @@ package hotel
 
 import (
 	hotelcontrollers "sharpnr-engine/modules/hospitality/hotel/hotel_controllers"
-	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
+	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
 	hotelservices "sharpnr-engine/modules/hospitality/hotel/services"
 	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
 	"sharpnr-engine/sere"

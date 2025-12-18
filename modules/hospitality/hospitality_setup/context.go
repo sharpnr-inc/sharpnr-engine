@@ -4,7 +4,7 @@ import (
 	"sharpnr-engine/core/models"
 	barrepo "sharpnr-engine/modules/hospitality/bar/repo"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
-	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
+	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
 	menurepo "sharpnr-engine/modules/hospitality/menu/menu_repo"
 	"sharpnr-engine/modules/hospitality/restaurant/restaurantrepo"
 	sharpnruirenderer "sharpnr-engine/sharpnr_ui_renderer"

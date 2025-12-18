@@ -2,7 +2,7 @@ package kitchen
 
 import (
 	barrepo "sharpnr-engine/modules/hospitality/bar/repo"
-	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
+	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
 	kitchencontrollers "sharpnr-engine/modules/hospitality/kitchen/kitchenControllers"
 	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
 	kitchenservices "sharpnr-engine/modules/hospitality/kitchen/kitchenServices"
