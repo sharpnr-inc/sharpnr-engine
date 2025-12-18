@@ -54,6 +54,8 @@ type AccountingBook struct {
 	//   - "RETAIL"
 	Module *string
 
+	SubModule *string
+
 	// FiscalYears contains all fiscal years configured for this accounting book.
 	//
 	// At any given time, only one FiscalYear should be in OPEN state.
