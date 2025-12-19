@@ -27,7 +27,7 @@ type HotelService interface {
 
 	GetRoomBookingDetails(ctx context.Context, roomId, orgID uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
 
-	SearchGuests(ctx context.Context, orgId uuid.UUID, qry string) ([]hoteldtos.HotelGuest_dto, error)
+	SearchGuests(ctx context.Context, orgId uuid.UUID, qry string) ([]hoteldtos.HotelGuestResponseDTO, error)
 
 	UpdateHotelDetails(
 		ctx context.Context,

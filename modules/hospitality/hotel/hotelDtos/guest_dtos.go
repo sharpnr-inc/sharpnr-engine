@@ -8,11 +8,11 @@ type CreateHotelGuestsRequest struct {
 	AadhaarId string
 }
 
-type HotelGuest_dto struct {
-	ID        uuid.UUID
-	Name      string
-	DOB       string
-	Gender    string
-	AadhaarId string
-	Address   string
+type HotelGuestResponseDTO struct {
+	ID        uuid.UUID `json:"id"`
+	Name      string    `json:"name"`
+	DOB       string    `json:"dob"`
+	Gender    string    `json:"gender"`
+	AadhaarId string    `json:"aadhaarId"`
+	Address   string    `json:"address"`
 }

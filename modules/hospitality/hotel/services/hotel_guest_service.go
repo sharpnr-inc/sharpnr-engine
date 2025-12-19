@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *hotelService) SearchGuests(ctx context.Context, orgId uuid.UUID, qry string) ([]hoteldtos.HotelGuest_dto, error) {
+func (s *hotelService) SearchGuests(ctx context.Context, orgId uuid.UUID, qry string) ([]hoteldtos.HotelGuestResponseDTO, error) {
 	hotel, err := s.hotelRepo.GetHotelByOrgID(ctx, orgId)
 	if err != nil {
 		return nil, err
@@ -24,9 +24,9 @@ func (s *hotelService) SearchGuests(ctx context.Context, orgId uuid.UUID, qry st
 	}
 
 	// 3️⃣ Map model → DTO
-	result := make([]hoteldtos.HotelGuest_dto, 0, len(guests))
+	result := make([]hoteldtos.HotelGuestResponseDTO, 0, len(guests))
 	for _, g := range guests {
-		result = append(result, hoteldtos.HotelGuest_dto{
+		result = append(result, hoteldtos.HotelGuestResponseDTO{
 			ID:        g.ID,
 			Name:      g.Name,
 			DOB:       g.DOB,

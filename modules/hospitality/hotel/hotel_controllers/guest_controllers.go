@@ -41,7 +41,7 @@ func (s *HotelController) SearchGuests(ctx *gin.Context) {
 		return
 	}
 
-	response := dto.Response[[]hoteldtos.HotelGuest_dto]{
+	response := dto.Response[[]hoteldtos.HotelGuestResponseDTO]{
 		StatusCode: http.StatusOK,
 		Message:    "Guest In Hotels",
 		Error: dto.ErrorResponse{
