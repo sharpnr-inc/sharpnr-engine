@@ -318,6 +318,7 @@ type HotelGuest struct {
 // -----------------------------
 type BookingGuest struct {
 	ID                 uuid.UUID `gorm:"type:uuid;primaryKey"`
+	HotelID            uuid.UUID
 	HotelGuestID       uuid.UUID
 	HotelRoomBookingID uuid.UUID `gorm:"type:uuid"`
 	Name               string

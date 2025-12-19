@@ -10,6 +10,51 @@ import (
 	"github.com/google/uuid"
 )
 
+func (s *HotelController) GetHotel(ctx *gin.Context) {
+	orgUUID, exists := ctx.Get("OrgUUID")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
+		return
+	}
+	// Type assert to UUID type (if you stored it as uuid.UUID)
+	orgID, ok := orgUUID.(uuid.UUID)
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
+		return
+	}
+
+	// ✅ Call service
+	res, err := s.hotelService.GetHotelDetails(ctx, orgID)
+	if err != nil {
+		response := dto.Response[any]{
+			StatusCode: http.StatusOK,
+			Message:    "There was an Error Fetching Hotel Details",
+			Error: dto.ErrorResponse{
+				Message: err.Error(),
+				IsError: true,
+			},
+			Data:      nil,
+			Timestamp: time.Now(),
+		}
+		ctx.JSON(http.StatusInternalServerError, response)
+		return
+	}
+
+	response := dto.Response[*hospitalitydtos.GetHotel_RESPONSE]{
+		StatusCode: http.StatusOK,
+		Message:    "Hotel Fetched Successfully",
+		Error: dto.ErrorResponse{
+			Message: "",
+			IsError: false,
+		},
+		Data:      &res,
+		Timestamp: time.Now(),
+	}
+
+	ctx.JSON(http.StatusOK, response)
+
+}
+
 func (c *HotelController) ConfigureAndUpdate(ctx *gin.Context) {
 	// 1️⃣ Get org UUID from context
 	orgUUID, exists := ctx.Get("OrgUUID")
@@ -79,4 +124,36 @@ func (c *HotelController) ConfigureAndUpdate(ctx *gin.Context) {
 		Data:      nil,
 		Timestamp: time.Now(),
 	})
+}
+
+func (s *HotelController) GetHotelOverview(ctx *gin.Context) {
+	/*
+		TODO We have have fetch the Data How many Room are available
+	*/
+	data := dto.Response[any]{
+		StatusCode: 200,
+		Message:    "Fetched Data",
+		Error: dto.ErrorResponse{
+			Message: "",
+			IsError: false,
+		},
+		Data:      nil,
+		Timestamp: time.Now(),
+	}
+	ctx.JSON(http.StatusOK, data)
+}
+
+func (s *HotelController) GetRequestInHotels(ctx *gin.Context) {
+	resData := dto.Response[any]{
+		StatusCode: 200,
+		Message:    "data fetched successfully",
+		Error: dto.ErrorResponse{
+			Message: "",
+			IsError: false,
+		},
+		Data:      nil,
+		Timestamp: time.Now(),
+	}
+
+	ctx.JSON(http.StatusOK, resData)
 }
