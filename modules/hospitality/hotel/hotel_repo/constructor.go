@@ -2,51 +2,12 @@ package hotelrepo
 
 import (
 	"context"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type hotelRepository struct {
 	db *gorm.DB
-}
-
-type hotelHouseKeepingRepository struct {
-	db *gorm.DB
-}
-
-// GetAllRoomInFloor implements HotelRepository.
-func (h *hotelRepository) GetAllRoomInFloor() {
-	panic("unimplemented")
-}
-
-// GetFloorsByHotel implements HotelRepository.
-func (h *hotelRepository) GetFloorsByHotel(ctx context.Context, hotelID uuid.UUID) ([]hospitalitymodels.HotelFloor, error) {
-	panic("unimplemented")
-}
-
-// UpdateFloor implements HotelRepository.
-func (h *hotelRepository) UpdateFloor(ctx context.Context, floor *hospitalitymodels.HotelFloor) error {
-	panic("unimplemented")
-}
-
-func (r *hotelRepository) UpdateHotelFields(
-	ctx context.Context,
-	hotelID uuid.UUID,
-	updates map[string]interface{},
-) error {
-
-	if len(updates) == 0 {
-		return nil
-	}
-
-	return r.db.
-		WithContext(ctx).
-		Model(&hospitalitymodels.Hotel{}).
-		Where("id = ?", hotelID).
-		Updates(updates).
-		Error
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------//
@@ -112,6 +73,10 @@ func (r *hotelRepository) WithTx(
 }
 
 // -----------------------------------------------------------------------------------------------------------------------------------//
+
+type hotelHouseKeepingRepository struct {
+	db *gorm.DB
+}
 
 func NewHotelHouseKeepingRepository(db *gorm.DB) *hotelHouseKeepingRepository {
 	return &hotelHouseKeepingRepository{

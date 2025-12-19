@@ -59,12 +59,12 @@ func (r *hotelService) CreateBookingForRoom(ctx context.Context, orgId uuid.UUID
 		nights = 1
 	}
 
-	charge := &hospitalitymodels.BookingCharge{
-		ID:          uuid.New(),
-		BookingID:   booking.ID,
-		ChargeType:  "room_rent",
-		Description: fmt.Sprintf("Room rent for %d nights", nights),
-		Amount:      float64(room.Price) * float64(nights),
+	charge := &hospitalitymodels.HotelBookingCharge{
+		ID:                 uuid.New(),
+		HotelRoomBookingID: booking.ID,
+		ChargeType:         "room_rent",
+		Description:        fmt.Sprintf("Room rent for %d nights", nights),
+		Amount:             float64(room.Price) * float64(nights),
 	}
 
 	if err := r.hotelRepo.CreateCharges(ctx, charge); err != nil {
@@ -72,14 +72,14 @@ func (r *hotelService) CreateBookingForRoom(ctx context.Context, orgId uuid.UUID
 	}
 
 	if req.AdvancedPayment > 0 {
-		bookingPayment := &hospitalitymodels.BookingPayment{
-			ID:        uuid.New(),
-			BookingID: booking.ID,
-			Amount:    req.AdvancedPayment,
-			Mode:      "CASH",
-			Status:    "SUCCESS",
-			Reference: "CASH",
-			CreatedAt: time.Now(),
+		bookingPayment := &hospitalitymodels.HotelRoomBookingPayment{
+			ID:                 uuid.New(),
+			HotelRoomBookingID: booking.ID,
+			Amount:             req.AdvancedPayment,
+			Mode:               "CASH",
+			Status:             "SUCCESS",
+			Reference:          "CASH",
+			CreatedAt:          time.Now(),
 		}
 
 		if err := r.hotelRepo.CreateOrAddBookingPayment(ctx, bookingPayment); err != nil {

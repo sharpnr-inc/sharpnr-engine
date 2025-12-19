@@ -64,12 +64,12 @@ func MigrateDB(db *gorm.DB) error {
 		&hospitalitymodels.HotelRoomPrice{},
 		&hospitalitymodels.HotelGuest{},
 		&hospitalitymodels.HotelRoomBooking{},
-		&hospitalitymodels.HotelBookingOrder{},
-		&hospitalitymodels.HotelBookingOrderItem{},
+		// &hospitalitymodels.HotelBookingOrder{},
+		// &hospitalitymodels.HotelBookingOrderItem{},
 		&hospitalitymodels.HotelService{},
 		&hospitalitymodels.HotelServiceItem{},
-		&hospitalitymodels.BookingCharge{},
-		&hospitalitymodels.BookingPayment{},
+		&hospitalitymodels.HotelBookingCharge{},
+		&hospitalitymodels.HotelRoomBookingPayment{},
 
 		// Hospitality --> Bar
 		&hospitalitymodels.Bar{},

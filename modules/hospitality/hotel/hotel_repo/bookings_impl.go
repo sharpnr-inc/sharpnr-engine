@@ -14,14 +14,14 @@ func (d *hotelRepository) CreateRoomBooking(ctx context.Context, booking *hospit
 	return nil
 }
 
-func (d *hotelRepository) CreateOrAddBookingPayment(ctx context.Context, bookingPayment *hospitalitymodels.BookingPayment) error {
+func (d *hotelRepository) CreateOrAddBookingPayment(ctx context.Context, bookingPayment *hospitalitymodels.HotelRoomBookingPayment) error {
 	if err := d.db.WithContext(ctx).Create(bookingPayment).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (d *hotelRepository) CreateCharges(ctx context.Context, charges *hospitalitymodels.BookingCharge) error {
+func (d *hotelRepository) CreateCharges(ctx context.Context, charges *hospitalitymodels.HotelBookingCharge) error {
 	if err := d.db.WithContext(ctx).Create(charges).Error; err != nil {
 		return err
 	}

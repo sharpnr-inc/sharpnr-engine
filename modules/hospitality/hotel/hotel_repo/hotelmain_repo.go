@@ -9,6 +9,15 @@ import (
 	"gorm.io/gorm"
 )
 
+func (h *hotelRepository) CreateHotel(ctx context.Context, hotel *hospitalitymodels.Hotel) error {
+	// Example logic:
+	if err := h.db.WithContext(ctx).Create(hotel).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // GetHotelByID implements HotelRepository.
 func (h *hotelRepository) GetHotelByID(ctx context.Context, id uuid.UUID) (*hospitalitymodels.Hotel, error) {
 	var hotel hospitalitymodels.Hotel
@@ -48,4 +57,22 @@ func (h *hotelRepository) GetHotelByOrgID(ctx context.Context, orgid uuid.UUID) 
 	}
 
 	return &hotel, nil
+}
+
+func (r *hotelRepository) UpdateHotelFields(
+	ctx context.Context,
+	hotelID uuid.UUID,
+	updates map[string]interface{},
+) error {
+
+	if len(updates) == 0 {
+		return nil
+	}
+
+	return r.db.
+		WithContext(ctx).
+		Model(&hospitalitymodels.Hotel{}).
+		Where("id = ?", hotelID).
+		Updates(updates).
+		Error
 }

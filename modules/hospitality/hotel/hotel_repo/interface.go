@@ -46,9 +46,9 @@ type HotelRepositoryInterface interface {
 	// ------------------------------------------------------------
 
 	CreateRoomBooking(ctx context.Context, booking *hospitalitymodels.HotelRoomBooking) error
-	CreateOrAddBookingPayment(ctx context.Context, bookingPayment *hospitalitymodels.BookingPayment) error
+	CreateOrAddBookingPayment(ctx context.Context, bookingPayment *hospitalitymodels.HotelRoomBookingPayment) error
 	CreatePrimaryGuest(ctx context.Context, guest *hospitalitymodels.HotelGuest) error
-	CreateCharges(ctx context.Context, charges *hospitalitymodels.BookingCharge) error
+	CreateCharges(ctx context.Context, charges *hospitalitymodels.HotelBookingCharge) error
 	GetBookingDetailsByRoomId(ctx context.Context, roomId uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
 
 	// Documentation is needed
@@ -61,7 +61,4 @@ type HotelRepositoryInterface interface {
 type HotelHouseKeepingRepositoryInterface interface {
 
 	// TODO :- This need To Implemented
-}
-
-type HotelRoomBookingDBTxInterface interface {
 }

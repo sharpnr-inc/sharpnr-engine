@@ -10,7 +10,7 @@ import (
 )
 
 // -----------------------------
-// Hotel
+// Hotel master
 // -----------------------------
 type Hotel struct {
 	ID             uuid.UUID            `gorm:"type:uuid;primaryKey"`
@@ -44,14 +44,18 @@ type Hotel struct {
 	IsKitchen   bool       `gorm:"default:true"`
 	KitchenID   *uuid.UUID `gorm:"type:uuid"`
 	Kitchen     *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;"`
-	Address     string
-	City        string
-	State       string
-	Pincode     string
 	IsKitchenOn bool
+
+	Address string
+	City    string
+	State   string
+	Country string
+	Pincode string
 
 	TaxRules []HotelTaxRule `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE;"`
 }
+
+//--------------------------------------------------------------------------------------------//
 
 type HotelTaxRule struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
@@ -74,20 +78,26 @@ type HotelTaxRule struct {
 
 	IsActive bool
 
+	HotelTaxComponent []HotelTaxComponent `gorm:"foreignKey:HotelTaxRuleID;constraint:OnDelete:CASCADE"`
+
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
+// --------------------------------------------------------------------------------------------//
+
 type HotelTaxComponent struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	TaxRuleID uuid.UUID `gorm:"type:uuid;not null;index"`
+	HotelTaxRuleID uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	ComponentType hospitalityconstants.TaxComponentType `gorm:"type:varchar(10);not null"`
 	Rate          float64
 
 	CreatedAt time.Time
 }
+
+//--------------------------------------------------------------------------------------------//
 
 type HotelFrontDeskOverview struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
@@ -105,6 +115,8 @@ type HotelFrontDeskOverview struct {
 	UpdatedAt time.Time
 }
 
+//--------------------------------------------------------------------------------------------//
+
 // -----------------------------
 // Floors
 // -----------------------------
@@ -118,6 +130,8 @@ type HotelFloor struct {
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null"`
 }
 
+//--------------------------------------------------------------------------------------------//
+
 // -----------------------------
 // Rooms
 // -----------------------------
@@ -129,7 +143,7 @@ type Room struct {
 	HotelID        uuid.UUID           `gorm:"type:uuid;not null"`
 	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
 	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
-	// TODO: Create a Separate table for Room Price, gor price history tracking and Dynamic pricing
+
 	Prices      []HotelRoomPrice `gorm:"foreignKey:RoomID"`
 	Price       int
 	Description string
@@ -142,6 +156,8 @@ type Room struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+//--------------------------------------------------------------------------------------------//
 
 // -----------------------------
 // Hotel Room Price
@@ -156,8 +172,6 @@ type HotelRoomPrice struct {
 	Hotel   Hotel     `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE"`
 
 	Price int `gorm:"not null"`
-	// Can fluctuate
-	GST float32
 
 	// Optional but HIGHLY recommended
 	EffectiveFrom time.Time
@@ -166,6 +180,8 @@ type HotelRoomPrice struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+//--------------------------------------------------------------------------------------------//
 
 // -----------------------------
 // Hotel Room QR code
@@ -193,53 +209,93 @@ type HotelRoomQRCode struct {
 	UpdatedAt time.Time
 }
 
+//--------------------------------------------------------------------------------------------//
+
 // -----------------------------
 // Booking
 // -----------------------------
 type HotelRoomBooking struct {
-	ID      uuid.UUID `gorm:"type:uuid;primaryKey"`
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
 	HotelID uuid.UUID `gorm:"type:uuid;not null"`
-	RoomID  uuid.UUID `gorm:"type:uuid;not null"`
-	Room    *Room     `gorm:"foreignKey:RoomID"`
-	Status  string    `gorm:"size:20"` // reserved, checked_in, checked_out, cancelled
+
+	RoomID uuid.UUID `gorm:"type:uuid;not null"`
+
+	Room *Room `gorm:"foreignKey:RoomID"`
+
+	Status string `gorm:"size:20"` // reserved, checked_in, checked_out, cancelled
 
 	// Guest Details
 	PrimaryGuestID uuid.UUID      `gorm:"type:uuid;not null"`
 	PrimaryGuest   *HotelGuest    `gorm:"foreignKey:PrimaryGuestID"`
 	Guests         []BookingGuest `gorm:"foreignKey:BookingID"`
 
-	Charges  []BookingCharge  `gorm:"foreignKey:BookingID"`
-	Payments []BookingPayment `gorm:"foreignKey:BookingID"`
-
-	// Orders & Services (One booking → many)
-	Orders   []HotelBookingOrder `gorm:"foreignKey:BookingID"`
-	Services []HotelService      `gorm:"foreignKey:BookingID"`
+	CheckInDate  time.Time
+	CheckOutDate time.Time
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-type BookingCharge struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-	// TODO Name change :->  HotelRoomBookingID (Table+Column)
-	BookingID        uuid.UUID `gorm:"type:uuid;not null"` // Foreign Key Will
-	ChargeType       string    `gorm:"size:50"`            // room_rent, room_service, bar, laundry, spa, minibar
-	Description      string    `gorm:"size:200"`
+//--------------------------------------------------------------------------------------------//
+
+type HotelBookingCharge struct {
+	ID                 uuid.UUID `gorm:"type:uuid;primaryKey"`
+	HotelRoomBookingID uuid.UUID `gorm:"type:uuid;not null"` // Foreign Key Will
+	ChargeType         string    `gorm:"size:50"`            // room_rent, room_service, bar, laundry, spa, minibar
+
+	ReferenceID      *uuid.UUID
+	Description      string `gorm:"size:200"`
 	Amount           float64
 	CreatedAt        time.Time
 	BookingPaymentID uuid.UUID
 	PaymentStatus    string
 }
 
-type BookingPayment struct {
-	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
-	BookingID uuid.UUID `gorm:"type:uuid;not null"`
-	Amount    float64   `gorm:"not null"`
-	Mode      string    `gorm:"size:50"`  // cash, upi, card, room_charge
-	Status    string    `gorm:"size:20"`  // success, pending, failed
-	Reference string    `gorm:"size:100"` // UPI txn ID, Ref no.
-	CreatedAt time.Time
+//--------------------------------------------------------------------------------------------//
+
+type HotelBill struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	HotelRoomBookingID uuid.UUID `gorm:"uniqueIndex"`
+	HotelID            uuid.UUID
+
+	BaseAmount  float64
+	TaxAmount   float64
+	TotalAmount float64
+
+	Status string // DRAFT, FINALIZED, CANCELLED
+
+	CreatedAt   time.Time
+	FinalizedAt *time.Time
 }
+
+//--------------------------------------------------------------------------------------------//
+
+type HotelBillTax struct {
+	ID uuid.UUID
+
+	HotelBillID uuid.UUID
+
+	ComponentType string
+	Rate          float64
+	Amount        float64
+}
+
+//--------------------------------------------------------------------------------------------//
+
+type HotelRoomBookingPayment struct {
+	ID                 uuid.UUID `gorm:"type:uuid;primaryKey"`
+	HotelID            uuid.UUID
+	HotelRoomBookingID uuid.UUID `gorm:"type:uuid;not null"`
+	Amount             float64   `gorm:"not null"`
+	Mode               string    `gorm:"size:50"`  // cash, upi, card, room_charge
+	Status             string    `gorm:"size:20"`  // success, pending, failed
+	Reference          string    `gorm:"size:100"` // UPI txn ID, Ref no.
+	CreatedAt          time.Time
+}
+
+//--------------------------------------------------------------------------------------------//
 
 // -----------------------------
 // Guest (Primary)
@@ -252,40 +308,24 @@ type HotelGuest struct {
 	Gender    string
 	DOB       string
 	AadhaarId string
+	// BookingGuests []BookingGuest `gorm:"foreignKey:HotelGuestID;OnDelete:CASCADE"`
 }
+
+//--------------------------------------------------------------------------------------------//
 
 // -----------------------------
 // Additional Guests
 // -----------------------------
 type BookingGuest struct {
-	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
-	BookingID uuid.UUID `gorm:"type:uuid"`
-	Name      string
-	Mobile    string
+	ID                 uuid.UUID `gorm:"type:uuid;primaryKey"`
+	HotelGuestID       uuid.UUID
+	HotelRoomBookingID uuid.UUID `gorm:"type:uuid"`
+	Name               string
+	Mobile             string
+	DOB                string
 }
 
-// -----------------------------
-// Order (One booking -> many orders)
-// -----------------------------
-type HotelBookingOrder struct {
-	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
-	BookingID uuid.UUID `gorm:"type:uuid;not null"`
-	OrderType string    `gorm:"size:50"` // restaurant, room_service, bar, laundry, spa
-	Status    string    `gorm:"size:20"` // pending, processing, completed, cancelled
-	Total     float64
-
-	Items []HotelBookingOrderItem `gorm:"foreignKey:BookingOrderID"`
-}
-
-// Items in an order
-type HotelBookingOrderItem struct {
-	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
-	BookingOrderID uuid.UUID `gorm:"type:uuid;not null"`
-	ItemName       string    `gorm:"size:200"`
-	ItemID         uuid.UUID
-	Quantity       int
-	Price          float64
-}
+//--------------------------------------------------------------------------------------------//
 
 // -----------------------------
 // Services requested during stay
@@ -298,6 +338,8 @@ type HotelService struct {
 	Items []HotelServiceItem `gorm:"foreignKey:ServiceID"`
 }
 
+//--------------------------------------------------------------------------------------------//
+
 type HotelServiceItem struct {
 	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
 	ServiceID uuid.UUID `gorm:"type:uuid;not null"`
@@ -305,3 +347,5 @@ type HotelServiceItem struct {
 	Type      string    `gorm:"size:50"` // spa, laundry, housekeeping
 	Price     float64   `gorm:"not null"`
 }
+
+//--------------------------------------------------------------------------------------------//
