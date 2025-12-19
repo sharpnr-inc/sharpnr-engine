@@ -12,17 +12,13 @@ import (
 )
 
 func (r *hotelService) CreateBookingForRoom(ctx context.Context, orgId uuid.UUID, req *hospitalitydtos.Hotel_Room_booking_Req) error {
-	/*
-	   TODO :-->
-	   *1 So First we need to find Hotel By OrgId and match it from the orgId == hotelId and in that if Room exist
-	   *2 And We Will create the Booking in table
-	   *3 And Every Order will be in the BookingId
-	*/
 
 	room, err := r.hotelRepo.GetRoomByID(ctx, req.RoomId)
 	if err != nil {
 		return errors.New("cannot find the room")
 	}
+
+	// Here it Will Be Guest i mean get Guest By Id
 
 	guest := &hospitalitymodels.HotelGuest{
 		ID:        uuid.New(),

@@ -227,8 +227,8 @@ type HotelRoomBooking struct {
 
 	// Guest Details
 	PrimaryGuestID uuid.UUID      `gorm:"type:uuid;not null"`
-	PrimaryGuest   *HotelGuest    `gorm:"foreignKey:PrimaryGuestID"`
-	Guests         []BookingGuest `gorm:"foreignKey:BookingID"`
+	PrimaryGuest   *HotelGuest    `gorm:"foreignKey:PrimaryGuestID;references:ID"`
+	Guests         []BookingGuest `gorm:"foreignKey:HotelRoomBookingID"`
 
 	CheckInDate  time.Time
 	CheckOutDate time.Time
@@ -301,14 +301,16 @@ type HotelRoomBookingPayment struct {
 // Guest (Primary)
 // -----------------------------
 type HotelGuest struct {
-	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
+	ID      uuid.UUID `gorm:"type:uuid;primaryKey"`
+	HotelId uuid.UUID `gorm:"type:uuid"`
+	OrgId   uuid.UUID `gorm:"type:uuid"`
+
 	Name      string
 	Mobile    string
 	Email     string
 	Gender    string
 	DOB       string
 	AadhaarId string
-	// BookingGuests []BookingGuest `gorm:"foreignKey:HotelGuestID;OnDelete:CASCADE"`
 }
 
 //--------------------------------------------------------------------------------------------//

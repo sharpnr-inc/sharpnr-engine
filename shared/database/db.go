@@ -58,23 +58,34 @@ func MigrateDB(db *gorm.DB) error {
 		// -------------------------------
 		// 🏨 HOSPITALITY MODELS
 		// -------------------------------
+		// ────────────── CORE HOTEL STRUCTURE ──────────────
 		&hospitalitymodels.Hotel{},
 		&hospitalitymodels.HotelFloor{},
 		&hospitalitymodels.Room{},
 		&hospitalitymodels.HotelRoomPrice{},
+
+		// ────────────── GUESTS ──────────────
 		&hospitalitymodels.HotelGuest{},
-		&hospitalitymodels.BookingGuest{},
+
+		// ────────────── BOOKINGS (PARENT) ──────────────
 		&hospitalitymodels.HotelRoomBooking{},
 
+		// ────────────── BOOKING CHILD TABLES ──────────────
+		&hospitalitymodels.BookingGuest{},
+		&hospitalitymodels.HotelRoomBookingPayment{},
 		&hospitalitymodels.HotelBookingCharge{},
+
+		// ────────────── SERVICES ──────────────
 		&hospitalitymodels.HotelService{},
 		&hospitalitymodels.HotelServiceItem{},
-		&hospitalitymodels.HotelRoomBookingPayment{},
 
+		// ────────────── TAX ──────────────
 		&hospitalitymodels.HotelTaxRule{},
 		&hospitalitymodels.HotelTaxComponent{},
-		&hospitalitymodels.HotelBillTax{},
+
+		// ────────────── BILLING ──────────────
 		&hospitalitymodels.HotelBill{},
+		&hospitalitymodels.HotelBillTax{},
 
 		// Hospitality --> Bar
 		&hospitalitymodels.Bar{},

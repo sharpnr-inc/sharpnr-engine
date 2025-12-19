@@ -8,6 +8,11 @@ import (
 )
 
 type HotelRepositoryInterface interface {
+	WithTx(
+		ctx context.Context,
+		fn func(txRepo *hotelRepository) error,
+	) error
+
 	//--------------------------------------------------------------
 	// Hotel
 	//--------------------------------------------------------------
@@ -47,15 +52,16 @@ type HotelRepositoryInterface interface {
 
 	CreateRoomBooking(ctx context.Context, booking *hospitalitymodels.HotelRoomBooking) error
 	CreateOrAddBookingPayment(ctx context.Context, bookingPayment *hospitalitymodels.HotelRoomBookingPayment) error
+
 	CreatePrimaryGuest(ctx context.Context, guest *hospitalitymodels.HotelGuest) error
+
 	CreateCharges(ctx context.Context, charges *hospitalitymodels.HotelBookingCharge) error
+
 	GetBookingDetailsByRoomId(ctx context.Context, roomId uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
 
-	// Documentation is needed
-	WithTx(
-		ctx context.Context,
-		fn func(txRepo *hotelRepository) error,
-	) error
+	CreateHotelGuest(ctx context.Context, guest *hospitalitymodels.HotelGuest) error
+	GetHotelGuests(ctx context.Context, hotelId uuid.UUID) ([]hospitalitymodels.HotelGuest, error)
+	SearchHotelGuest(ctx context.Context, hotelId uuid.UUID, qry string) ([]hospitalitymodels.HotelGuest, error)
 }
 
 type HotelHouseKeepingRepositoryInterface interface {
