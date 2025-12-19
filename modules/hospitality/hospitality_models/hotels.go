@@ -49,6 +49,44 @@ type Hotel struct {
 	State       string
 	Pincode     string
 	IsKitchenOn bool
+
+	TaxRules []HotelTaxRule `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE;"`
+}
+
+type HotelTaxRule struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	HotelID uuid.UUID `gorm:"type:uuid;not null;index"`
+
+	RuleName string
+
+	TaxType hospitalityconstants.TaxType `gorm:"type:varchar(50);not null"`
+
+	ConditionType hospitalityconstants.TaxConditionType `gorm:"type:varchar(50);not null"`
+
+	MinValue *float64
+	MaxValue *float64
+
+	TaxRate float64
+
+	EffectiveFrom time.Time
+	EffectiveTo   *time.Time
+
+	IsActive bool
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+type HotelTaxComponent struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	TaxRuleID uuid.UUID `gorm:"type:uuid;not null;index"`
+
+	ComponentType hospitalityconstants.TaxComponentType `gorm:"type:varchar(10);not null"`
+	Rate          float64
+
+	CreatedAt time.Time
 }
 
 type HotelFrontDeskOverview struct {
