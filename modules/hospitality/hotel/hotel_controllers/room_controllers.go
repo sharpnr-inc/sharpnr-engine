@@ -4,6 +4,7 @@ import (
 	"net/http"
 	dto "sharpnr-engine/core/dtos"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
+	"sharpnr-engine/shared/utils"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -13,31 +14,33 @@ import (
 func (s *HotelController) CreateRoom(ctx *gin.Context) {
 	var req hoteldtos.CreateRoomInFloor_REQ
 
-	// ✅ Bind and validate request body
+	// 🔹 Bind & validate
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request", "details": err.Error()})
+		utils.ErrorResponse(ctx, http.StatusBadRequest, "Invalid request payload", err)
 		return
 	}
 
-	// ✅ Get OrgUUID from context (set by middleware)
+	// 🔹 Get OrgUUID from context
 	orgUUIDVal, exists := ctx.Get("OrgUUID")
 	if !exists {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
+		utils.ErrorResponse(ctx, http.StatusUnauthorized, "Organization UUID missing", nil)
 		return
 	}
+
 	orgUUID, ok := orgUUIDVal.(uuid.UUID)
 	if !ok {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
+		utils.ErrorResponse(ctx, http.StatusBadRequest, "Invalid organization UUID format", nil)
 		return
 	}
 
-	// ✅ Call service
 	if err := s.hotelService.CreateRoomInHotel(ctx, orgUUID, req); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		utils.ErrorResponse(ctx, http.StatusInternalServerError, "Failed to create room", err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"Success": "Room Added successfully"})
+	// 🔹 Success
+	var data any = nil
+	utils.SuccessResponse(ctx, http.StatusOK, "Room added successfully", data)
 }
 
 // This is the Update Room Status
