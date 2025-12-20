@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // CreateRoom implements HotelRepository.
@@ -118,6 +119,34 @@ func (h *hotelRepository) CreatePriceForRoom(ctx context.Context, roomPrice *hos
 
 	// 3️⃣ Insert
 	return h.db.WithContext(ctx).Create(roomPrice).Error
+}
+
+func (h *hotelRepository) GetRoomPriceByRoomId(
+	ctx context.Context,
+	roomId uuid.UUID,
+) (*hospitalitymodels.HotelRoomPrice, error) {
+
+	var price hospitalitymodels.HotelRoomPrice
+	now := time.Now()
+
+	err := h.db.WithContext(ctx).
+		Where(
+			"room_id = ? AND effective_from <= ? AND (effective_to IS NULL OR effective_to > ?)",
+			roomId,
+			now,
+			now,
+		).
+		Order("effective_from DESC").
+		First(&price).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		}
+		return nil, err
+	}
+
+	return &price, nil
 }
 
 // DeleteRoom implements HotelRepository.

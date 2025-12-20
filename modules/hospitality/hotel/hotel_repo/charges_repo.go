@@ -2,6 +2,7 @@ package hotelrepo
 
 import (
 	"context"
+	"errors"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 
 	"github.com/google/uuid"
@@ -24,4 +25,20 @@ func (d *hotelRepository) GetChargesByBookingID(
 	}
 
 	return charges, nil
+}
+
+func (d *hotelRepository) AddChargesInBooking(
+	ctx context.Context,
+	charge *hospitalitymodels.HotelBookingCharge,
+) error {
+
+	if charge == nil {
+		return errors.New("charge is nil")
+	}
+
+	if err := d.db.WithContext(ctx).Create(charge).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

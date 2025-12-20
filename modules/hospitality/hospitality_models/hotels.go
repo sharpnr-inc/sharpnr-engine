@@ -152,7 +152,7 @@ type Room struct {
 	RoomName         string                          `gorm:"size:100;not null"`
 	BedSize          string                          `gorm:"size:50"`
 	Amenities        string                          `gorm:"type:text"`
-	CurrentBookingID uuid.UUID                       `gorm:"type:uuid"`
+	CurrentBookingID *uuid.UUID                      `gorm:"type:uuid"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

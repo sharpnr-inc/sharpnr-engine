@@ -41,15 +41,30 @@ func (r *hotelService) GetHotelDetails(ctx context.Context, orgId uuid.UUID) (*h
 			FloorName:   f.FloorName,
 		}
 
-		// ✅ Add rooms for this floor
 		for _, room := range f.Rooms {
-			floorRes.Rooms = append(floorRes.Rooms, hospitalitydtos.RoomResponse{
-				RoomID:           room.ID,
-				RoomName:         room.RoomName,
-				Description:      room.Amenities,
-				Status:           string(room.Status),
-				CurrentBookingId: room.CurrentBookingID,
-			})
+			roomRes := hospitalitydtos.RoomResponse{
+				RoomID:      room.ID,
+				RoomName:    room.RoomName,
+				Description: room.Amenities,
+				Status:      string(room.Status),
+			}
+
+			// 🔹 Fetch room price
+			roomPrice, err := r.hotelRepo.GetRoomPriceByRoomId(ctx, room.ID)
+			if err != nil {
+				return nil, err // or log & continue based on your policy
+			}
+
+			if roomPrice != nil {
+				roomRes.RoomPrice = int(roomPrice.Price)
+			}
+
+			// ✅ Proper pointer + uuid.Nil check
+			if room.CurrentBookingID != nil && *room.CurrentBookingID != uuid.Nil {
+				roomRes.CurrentBookingId = room.CurrentBookingID
+			}
+
+			floorRes.Rooms = append(floorRes.Rooms, roomRes)
 		}
 
 		response.Floors = append(response.Floors, floorRes)

@@ -7,12 +7,12 @@ import (
 )
 
 type RoomResponse struct {
-	RoomID           uuid.UUID `json:"room_id"`
-	RoomName         string    `json:"room_name"`
-	RoomPrice        int       `json:"room_price"`
-	Description      string    `json:"description"`
-	Status           string    `json:"status"`
-	CurrentBookingId uuid.UUID `json:"current_bookingId"`
+	RoomID           uuid.UUID  `json:"room_id"`
+	RoomName         string     `json:"room_name"`
+	RoomPrice        int        `json:"room_price"`
+	Description      string     `json:"description"`
+	Status           string     `json:"status"`
+	CurrentBookingId *uuid.UUID `json:"current_bookingId,omitempty"`
 }
 type FloorResponse struct {
 	FloorID     uuid.UUID      `json:"floor_id"`

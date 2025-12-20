@@ -90,6 +90,26 @@ func (r *hotelService) CreateBookingForRoom(
 			return err
 		}
 
+		roomPrice, err := txRepo.GetRoomPriceByRoomId(ctx, req.RoomId)
+		if err != nil {
+			return nil
+		}
+
+		charges := &hospitalitymodels.HotelBookingCharge{
+			ID:                 uuid.New(),
+			HotelRoomBookingID: booking.ID,
+			ChargeType:         "Room Tariff",
+			ReferenceID:        nil,
+			Description:        "Room tariff for One night",
+			Amount:             float64(roomPrice.Price),
+			CreatedAt:          time.Now(),
+			PaymentStatus:      "PENDING",
+		}
+
+		if err := txRepo.AddChargesInBooking(ctx, charges); err != nil {
+			return nil
+		}
+
 		return nil
 	})
 
@@ -120,7 +140,7 @@ func (r *hotelService) GetRoomBookingDetails(ctx context.Context, roomId, orgID 
 		return nil, errors.New("room not found")
 	}
 
-	booking, err := r.hotelRepo.GetBookingByBookingId(ctx, room.CurrentBookingID)
+	booking, err := r.hotelRepo.GetBookingByBookingId(ctx, *room.CurrentBookingID)
 	if err != nil {
 		return nil, err
 	}
@@ -135,18 +155,18 @@ func (r *hotelService) GetRoomBookingDetails(ctx context.Context, roomId, orgID 
 	}
 
 	// 5️⃣ Charges
-	charges, err := r.hotelRepo.GetChargesByBookingID(ctx, room.CurrentBookingID)
+	charges, err := r.hotelRepo.GetChargesByBookingID(ctx, *room.CurrentBookingID)
 	if err != nil {
 		return nil, err
 	}
 
 	// 6️⃣ Payments
-	payments, err := r.hotelRepo.GetPaymentsByBookingId(ctx, room.CurrentBookingID)
+	payments, err := r.hotelRepo.GetPaymentsByBookingId(ctx, *room.CurrentBookingID)
 	if err != nil {
 		return nil, err
 	}
 
-	bill, _ := r.hotelRepo.GetBillByBookingId(ctx, room.CurrentBookingID)
+	bill, _ := r.hotelRepo.GetBillByBookingId(ctx, *room.CurrentBookingID)
 
 	// 8️⃣ Calculate balance
 	totalCharges := 0.0

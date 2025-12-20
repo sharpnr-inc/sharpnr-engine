@@ -47,6 +47,7 @@ type HotelRepositoryInterface interface {
 	DeleteRoom(ctx context.Context, roomID uuid.UUID) error
 	AddCurrentBookingIdToRoom(ctx context.Context, roomId, bookingId uuid.UUID) error
 	CreatePriceForRoom(ctx context.Context, roomPrice *hospitalitymodels.HotelRoomPrice) error
+	GetRoomPriceByRoomId(ctx context.Context, roomId uuid.UUID) (*hospitalitymodels.HotelRoomPrice, error)
 
 	//-------------------------------------------------------------
 	//   Booking
@@ -69,6 +70,7 @@ type HotelRepositoryInterface interface {
 	//   Charges
 	// ------------------------------------------------------------
 	GetChargesByBookingID(ctx context.Context, bookingId uuid.UUID) ([]hospitalitymodels.HotelBookingCharge, error)
+	AddChargesInBooking(ctx context.Context, charges *hospitalitymodels.HotelBookingCharge) error
 
 	//-------------------------------------------------------------
 	//   Bills

@@ -9,16 +9,10 @@ import (
 
 func (s *hotelService) GetFrontDeskTerminal(ctx context.Context, orgId uuid.UUID) (*hospitalitydtos.HotelBookingTerminal_Response, error) {
 
-	// Todo We need to find the hotel based on orgId and HotelID and response
-
 	hotelFrontDesk, err := s.hotelRepo.GetHotelByOrgID(ctx, orgId)
 	if err != nil {
 		return nil, err
 	}
-
-	// if hotelId != hotelFrontDesk.ID {
-	// 	return nil, errors.New("hotel is not available in the Org")
-	// }
 
 	res := hospitalitydtos.HotelBookingTerminal_Response{
 		Hotel_Id: hotelFrontDesk.ID,
@@ -33,13 +27,29 @@ func (s *hotelService) GetFrontDeskTerminal(ctx context.Context, orgId uuid.UUID
 		}
 
 		for _, room := range f.Rooms {
-			floorRes.Rooms = append(floorRes.Rooms, hospitalitydtos.RoomResponse{
-				RoomID:           room.ID,
-				RoomName:         room.RoomName,
-				Description:      room.Description,
-				Status:           string(room.Status),
-				CurrentBookingId: room.CurrentBookingID,
-			})
+			roomRes := hospitalitydtos.RoomResponse{
+				RoomID:      room.ID,
+				RoomName:    room.RoomName,
+				Description: room.Amenities,
+				Status:      string(room.Status),
+			}
+
+			// 🔹 Fetch room price
+			roomPrice, err := s.hotelRepo.GetRoomPriceByRoomId(ctx, room.ID)
+			if err != nil {
+				return nil, err // or log & continue based on your policy
+			}
+
+			if roomPrice != nil {
+				roomRes.RoomPrice = int(roomPrice.Price)
+			}
+
+			// ✅ Proper pointer + uuid.Nil check
+			if room.CurrentBookingID != nil && *room.CurrentBookingID != uuid.Nil {
+				roomRes.CurrentBookingId = room.CurrentBookingID
+			}
+
+			floorRes.Rooms = append(floorRes.Rooms, roomRes)
 		}
 
 		res.Floors = append(res.Floors, floorRes)
