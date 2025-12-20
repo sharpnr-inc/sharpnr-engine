@@ -10,7 +10,7 @@ import (
 type HotelRepositoryInterface interface {
 	WithTx(
 		ctx context.Context,
-		fn func(txRepo *hotelRepository) error,
+		fn func(txRepo HotelRepositoryInterface) error,
 	) error
 
 	//--------------------------------------------------------------
@@ -31,6 +31,7 @@ type HotelRepositoryInterface interface {
 	// ------------------------------------------------------------
 
 	CreateFloorInHotel(ctx context.Context, floor *hospitalitymodels.HotelFloor) error
+	GetFloorByID(ctx context.Context, id string) (*hospitalitymodels.HotelFloor, error)
 	GetAllRoomInFloor()
 	GetFloorsByHotel(ctx context.Context, hotelID uuid.UUID) ([]hospitalitymodels.HotelFloor, error)
 	UpdateFloor(ctx context.Context, floor *hospitalitymodels.HotelFloor) error
@@ -42,26 +43,41 @@ type HotelRepositoryInterface interface {
 	CreateRoom(ctx context.Context, room *hospitalitymodels.Room) error
 	GetRoomByID(ctx context.Context, roomID uuid.UUID) (*hospitalitymodels.Room, error)
 	UpdateRoom(ctx context.Context, fields map[string]interface{}, roomId uuid.UUID) error
+	UpdateRoomStatus(ctx context.Context, hotelId, roomId uuid.UUID, status string) error
 	DeleteRoom(ctx context.Context, roomID uuid.UUID) error
-
-	GetFloorByID(ctx context.Context, id string) (*hospitalitymodels.HotelFloor, error)
+	AddCurrentBookingIdToRoom(ctx context.Context, roomId, bookingId uuid.UUID) error
 
 	//-------------------------------------------------------------
 	//   Booking
 	// ------------------------------------------------------------
-
 	CreateRoomBooking(ctx context.Context, booking *hospitalitymodels.HotelRoomBooking) error
 	CreateOrAddBookingPayment(ctx context.Context, bookingPayment *hospitalitymodels.HotelRoomBookingPayment) error
-
-	CreatePrimaryGuest(ctx context.Context, guest *hospitalitymodels.HotelGuest) error
-
 	CreateCharges(ctx context.Context, charges *hospitalitymodels.HotelBookingCharge) error
+	GetBookingByBookingId(ctx context.Context, bookingId uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
 
-	GetBookingDetailsByRoomId(ctx context.Context, roomId uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
-
-	CreateHotelGuest(ctx context.Context, guest *hospitalitymodels.HotelGuest) error
+	//-------------------------------------------------------------
+	//   Guests
+	// ------------------------------------------------------------
+	CreatePrimaryGuest(ctx context.Context, guest *hospitalitymodels.HotelGuest) error
 	GetHotelGuests(ctx context.Context, hotelId uuid.UUID) ([]hospitalitymodels.HotelGuest, error)
 	SearchHotelGuest(ctx context.Context, hotelId uuid.UUID, qry string) ([]hospitalitymodels.HotelGuest, error)
+	GetHotelGuestById(ctx context.Context, guestId uuid.UUID) (hospitalitymodels.HotelGuest, error)
+	CreateBookingGuest(ctx context.Context, bookingGuest *hospitalitymodels.BookingGuest) error
+
+	//-------------------------------------------------------------
+	//   Charges
+	// ------------------------------------------------------------
+	GetChargesByBookingID(ctx context.Context, bookingId uuid.UUID) ([]hospitalitymodels.HotelBookingCharge, error)
+
+	//-------------------------------------------------------------
+	//   Bills
+	// ------------------------------------------------------------
+	GetBillByBookingId(ctx context.Context, bookingId uuid.UUID) (*hospitalitymodels.HotelBill, error)
+
+	//-------------------------------------------------------------
+	//   Payments
+	// ------------------------------------------------------------
+	GetPaymentsByBookingId(ctx context.Context, bookingId uuid.UUID) ([]hospitalitymodels.HotelRoomBookingPayment, error)
 }
 
 type HotelHouseKeepingRepositoryInterface interface {

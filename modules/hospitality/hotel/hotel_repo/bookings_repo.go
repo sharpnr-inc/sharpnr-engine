@@ -2,9 +2,11 @@ package hotelrepo
 
 import (
 	"context"
+	"errors"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func (d *hotelRepository) CreateRoomBooking(ctx context.Context, booking *hospitalitymodels.HotelRoomBooking) error {
@@ -49,6 +51,23 @@ func (d *hotelRepository) GetBookingDetailsByRoomId(
 		First(&booking).Error
 
 	if err != nil {
+		return nil, err
+	}
+
+	return &booking, nil
+}
+
+func (d *hotelRepository) GetBookingByBookingId(ctx context.Context, bookingId uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error) {
+	var booking hospitalitymodels.HotelRoomBooking
+
+	err := d.db.WithContext(ctx).
+		Where("id = ?", bookingId).
+		First(&booking).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		}
 		return nil, err
 	}
 

@@ -7,11 +7,12 @@ import (
 )
 
 type RoomResponse struct {
-	RoomID      uuid.UUID `json:"room_id"`
-	RoomName    string    `json:"room_name"`
-	RoomPrice   int       `json:"room_price"`
-	Description string    `json:"description"`
-	Status      string    `json:"status"`
+	RoomID           uuid.UUID `json:"room_id"`
+	RoomName         string    `json:"room_name"`
+	RoomPrice        int       `json:"room_price"`
+	Description      string    `json:"description"`
+	Status           string    `json:"status"`
+	CurrentBookingId uuid.UUID `json:"current_bookingId"`
 }
 type FloorResponse struct {
 	FloorID     uuid.UUID      `json:"floor_id"`
@@ -73,11 +74,10 @@ type HotelBookingTerminal_Response struct {
 }
 
 type Hotel_Room_booking_Req struct {
-	Hotel_Id     uuid.UUID
-	RoomId       uuid.UUID
-	CheckInnDate time.Time
-	CheckoutDate time.Time
-	// We need check inn time to calculate the date and time
+	Hotel_Id        uuid.UUID
+	RoomId          uuid.UUID
+	CheckInnDate    time.Time
+	CheckoutDate    time.Time
 	BookingDate     time.Time
 	NumberOfGuest   int
 	GuestEmailAddr  string

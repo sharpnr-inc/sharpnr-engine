@@ -3,7 +3,7 @@ package hotelcontrollers
 import (
 	"net/http"
 	dto "sharpnr-engine/core/dtos"
-	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
+	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -56,7 +56,7 @@ func (c *HotelController) CreateBooking(ctx *gin.Context) {
 		return
 	}
 
-	var req hospitalitydtos.Hotel_Room_booking_Req
+	var req hoteldtos.RoomBookingRequest_dto
 
 	// Bind JSON request body
 	if err := ctx.ShouldBindJSON(&req); err != nil {

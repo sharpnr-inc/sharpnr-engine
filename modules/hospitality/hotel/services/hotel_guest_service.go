@@ -63,5 +63,5 @@ func (s *hotelService) CreateGuestInHotel(
 		Gender:    "M/F",
 	}
 
-	return s.hotelRepo.CreateHotelGuest(ctx, guest)
+	return s.hotelRepo.CreatePrimaryGuest(ctx, guest)
 }

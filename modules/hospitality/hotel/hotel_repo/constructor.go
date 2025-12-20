@@ -62,7 +62,7 @@ func NewHotelRepository(db *gorm.DB) *hotelRepository {
 //   - Returning nil commits the transaction
 func (r *hotelRepository) WithTx(
 	ctx context.Context,
-	fn func(txRepo *hotelRepository) error,
+	fn func(txRepo HotelRepositoryInterface) error,
 ) error {
 
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {

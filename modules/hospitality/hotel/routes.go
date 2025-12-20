@@ -62,7 +62,7 @@ func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB, sere *sere.SERE) {
 	{
 		hotelBooking.POST("/create", newHotelController.CreateBooking)
 		hotelBooking.GET("/:bookingId")
-		hotelBooking.GET("/roomId", newHotelController.GetBookingDetails)
+		hotelBooking.GET("/details/:roomId", newHotelController.GetBookingDetails)
 
 	}
 

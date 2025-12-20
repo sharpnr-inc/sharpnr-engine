@@ -144,14 +144,15 @@ type Room struct {
 	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
 	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
 
-	Prices      []HotelRoomPrice `gorm:"foreignKey:RoomID"`
-	Price       int
-	Description string
-	Status      hospitalityconstants.RoomStatus `gorm:"type:varchar(50);not null;default:'DISABLED'"`
-	QRCodes     []HotelRoomQRCode               `gorm:"foreignKey:RoomID"`
-	RoomName    string                          `gorm:"size:100;not null"`
-	BedSize     string                          `gorm:"size:50"`
-	Amenities   string                          `gorm:"type:text"`
+	Prices           []HotelRoomPrice `gorm:"foreignKey:RoomID"`
+	Price            int
+	Description      string
+	Status           hospitalityconstants.RoomStatus `gorm:"type:varchar(50);not null;default:'DISABLED'"`
+	QRCodes          []HotelRoomQRCode               `gorm:"foreignKey:RoomID"`
+	RoomName         string                          `gorm:"size:100;not null"`
+	BedSize          string                          `gorm:"size:50"`
+	Amenities        string                          `gorm:"type:text"`
+	CurrentBookingID uuid.UUID                       `gorm:"type:uuid"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -325,6 +326,7 @@ type BookingGuest struct {
 	HotelRoomBookingID uuid.UUID `gorm:"type:uuid"`
 	Name               string
 	Mobile             string
+	Email              string
 	DOB                string
 }
 

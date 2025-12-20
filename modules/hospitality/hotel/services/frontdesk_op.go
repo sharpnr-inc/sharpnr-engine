@@ -34,11 +34,12 @@ func (s *hotelService) GetFrontDeskTerminal(ctx context.Context, orgId uuid.UUID
 
 		for _, room := range f.Rooms {
 			floorRes.Rooms = append(floorRes.Rooms, hospitalitydtos.RoomResponse{
-				RoomID:      room.ID,
-				RoomName:    room.RoomName,
-				RoomPrice:   room.Price,
-				Description: room.Description,
-				Status:      string(room.Status),
+				RoomID:           room.ID,
+				RoomName:         room.RoomName,
+				RoomPrice:        room.Price,
+				Description:      room.Description,
+				Status:           string(room.Status),
+				CurrentBookingId: room.CurrentBookingID,
 			})
 		}
 
