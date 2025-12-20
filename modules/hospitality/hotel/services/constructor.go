@@ -1,15 +1,27 @@
 package hotelservices
 
 import (
-	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
+	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
+	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
+	"sharpnr-engine/sere"
 )
 
 type hotelService struct {
-	hotelRepo hotelrepo.HotelRepository
+	sere        *sere.SERE // 🔥 event engine
+	hotelRepo   hotelrepo.HotelRepositoryInterface
+	houseKeRepo hotelrepo.HotelHouseKeepingRepositoryInterface
+	kitchenRepo kitchenrepo.KitchenRepositoryInterface
 }
 
-func NewHotelService(hotelRepo hotelrepo.HotelRepository) *hotelService {
+func NewHotelService(
+	sere *sere.SERE,
+	hotelRepo hotelrepo.HotelRepositoryInterface,
+	houseKeRepo hotelrepo.HotelHouseKeepingRepositoryInterface,
+	kitchenRepo kitchenrepo.KitchenRepositoryInterface) *hotelService {
 	return &hotelService{
-		hotelRepo: hotelRepo,
+		sere:        sere,
+		hotelRepo:   hotelRepo,
+		houseKeRepo: houseKeRepo,
+		kitchenRepo: kitchenRepo,
 	}
 }

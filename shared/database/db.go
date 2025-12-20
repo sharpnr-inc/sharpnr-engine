@@ -6,8 +6,9 @@ import (
 	"os"
 
 	"sharpnr-engine/core/models"
-	accountingmodels "sharpnr-engine/modules/base/accounting/accounting_models"
+	"sharpnr-engine/modules/accounting/accounting_models"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	sharphr_models "sharpnr-engine/modules/hr/hrModels"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -27,9 +28,11 @@ func ConnectDB() *gorm.DB {
 		dbHost, dbUser, dbPassword, dbName, dbPort,
 	)
 
+	// dsn := os.Getenv("DATABASE_URL")
+
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("Failed to connect to DB: %v", err)
+		log.Fatalf("❌ Failed to connect to DB: %v", err)
 	}
 
 	DB = db
@@ -37,22 +40,118 @@ func ConnectDB() *gorm.DB {
 	return DB
 }
 
-// Run migration to create tables
-// This Function will Create Database
+// -------------------------------
+// 🧱 Run Migration to Create Tables
+// -------------------------------
 func MigrateDB(db *gorm.DB) error {
 	return db.AutoMigrate(
-
+		// -------------------------------
+		// 🌐 CORE MODELS
+		// -------------------------------
 		&models.Organization{},
 		&models.OrganizationPolicy{},
 		&models.OrgUIRendererTree{},
+		&models.OrganizationBrandingDetails{},
 		&models.OrganizationBankAccount{},
-		&models.Employee{},
+		&sharphr_models.Employee{},
+
+		// -------------------------------
+		// 🏨 HOSPITALITY MODELS
+		// -------------------------------
+		// ────────────── CORE HOTEL STRUCTURE ──────────────
 		&hospitalitymodels.Hotel{},
 		&hospitalitymodels.HotelFloor{},
 		&hospitalitymodels.Room{},
+		&hospitalitymodels.HotelRoomPrice{},
+
+		// ────────────── GUESTS ──────────────
+		&hospitalitymodels.HotelGuest{},
+
+		// ────────────── BOOKINGS (PARENT) ──────────────
+		&hospitalitymodels.HotelRoomBooking{},
+
+		// ────────────── BOOKING CHILD TABLES ──────────────
+		&hospitalitymodels.BookingGuest{},
+		&hospitalitymodels.HotelRoomBookingPayment{},
+		&hospitalitymodels.HotelBookingCharge{},
+
+		// ────────────── SERVICES ──────────────
+		&hospitalitymodels.HotelService{},
+		&hospitalitymodels.HotelServiceItem{},
+
+		// ────────────── TAX ──────────────
+		&hospitalitymodels.HotelTaxRule{},
+		&hospitalitymodels.HotelTaxComponent{},
+
+		// ────────────── BILLING ──────────────
+		&hospitalitymodels.HotelBill{},
+		&hospitalitymodels.HotelBillTax{},
+
+		// Hospitality --> Bar
 		&hospitalitymodels.Bar{},
+		&hospitalitymodels.BarFloor{},
+		&hospitalitymodels.BarTable{},
+		// Bar-orders
+		&hospitalitymodels.BarTableSession{},
+		&hospitalitymodels.BarTablesSessionOrder{},
+
+		// Hospitality --> Restaurant
 		&hospitalitymodels.Restaurant{},
+		&hospitalitymodels.RestaurantFloor{},
+		&hospitalitymodels.RestaurantTable{},
+		&hospitalitymodels.RestaurantTableBookingSession{},
+
+		//Hospitality --> Kitchen
 		&hospitalitymodels.Kitchen{},
-		&accountingmodels.AccountingBills{},
+		&hospitalitymodels.KitchenTicket{},
+		&hospitalitymodels.KitchenTicketItem{},
+		&hospitalitymodels.KitchenTicketItemAddon{},
+
+		//---------------------------------------------------
+
+		// ✅ MENU SYSTEM
+		&hospitalitymodels.MenuGroup{},
+		&hospitalitymodels.MenuCategory{},
+		&hospitalitymodels.MenuSubCategory{},
+		&hospitalitymodels.MenuItem{},
+		&hospitalitymodels.MenuVariant{},
+		&hospitalitymodels.MenuVariantGroup{},
+		&hospitalitymodels.Addon{},
+
+		// -------------------------------
+		// 💰 Hospitality Customer & Guest MODELS
+		// -------------------------------
+
+		// -------------------------------
+		// 💰 ACCOUNTING MODELS
+		// -------------------------------
+		&accounting_models.AccountingBook{},
+		&accounting_models.AccountingBookSetting{},
+
+		&accounting_models.FiscalYear{},
+		&accounting_models.AccountGroup{},
+		&accounting_models.Account{},
+
+		&accounting_models.JournalEntry{},
+		&accounting_models.JournalLine{},
+
+		&accounting_models.Transaction{},
+
+		&accounting_models.Invoice{},
+		&accounting_models.InvoiceItem{},
+		&accounting_models.Bill{},
+		&accounting_models.BillItem{},
+		&accounting_models.TaxRate{},
+
+		&accounting_models.GSTProfile{},
+		&accounting_models.Customer{},
+		&accounting_models.Supplier{},
+		&accounting_models.LedgerBalance{},
+		&accounting_models.ProfitLossSummary{},
+		&accounting_models.BalanceSheetSummary{},
+		&accounting_models.AuditLog{},
+
+		// HR
+
 	)
 }

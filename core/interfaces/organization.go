@@ -24,8 +24,12 @@ type OrganizationSignUpService interface {
 	CompleteOrgRegistration(ctx context.Context, req dto.Org_Complete_Registration_REQ_DTO, org_root_email, org_sharpnr_id string) (*dto.Org_Complete_Registration_RESPONSE_DTO, string, error)
 }
 
+type OrchestratorOrganizationServiceInterface interface {
+	GetOrgDetails()
+}
+
 // OrganizationRepository defines methods for organization signup & lookup.
-type OrganizationRepository interface {
+type OrganizationRepositoryInterface interface {
 	// -----------------------------
 	// Redis / Temporary Signup Data
 	// -----------------------------
@@ -65,4 +69,14 @@ type OrganizationRepository interface {
 	GetPrimaryBankAccount(ctx context.Context, orgID uuid.UUID) (*models.OrganizationBankAccount, error)
 	UpdateBankAccounts(ctx context.Context, orgID uuid.UUID, accounts []models.OrganizationBankAccount) error
 	GetOrg(ctx context.Context, org uuid.UUID) (*models.Organization, error)
+	// -----------------------------
+	// Main DB / Permanent Org Data
+	// -----------------------------
+
+	// AddPaymentGatewayCreds(ctx context.Context)
+
+	WithTx(
+		ctx context.Context,
+		fn func(orgTxRepo OrganizationRepositoryInterface) error,
+	) error
 }

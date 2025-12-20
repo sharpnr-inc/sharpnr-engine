@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// This is Master Model For the Organisation
+// This is Master Model For the Organization
 type Organization struct {
 	ID               uuid.UUID         `gorm:"not null;primaryKey"`
 	Name             string            `gorm:"size:100;not null"`
@@ -52,7 +52,6 @@ type Organization struct {
 	IsRegistrationComplete bool           `gorm:"default:false; not null"`
 
 	// Relationships
-	Employees    []Employee                `gorm:"foreignKey:OrganizationID"`
 	BankAccounts []OrganizationBankAccount `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 

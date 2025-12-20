@@ -14,7 +14,7 @@ func CORSMiddleWare() gin.HandlerFunc {
 	if env == "production" {
 		allowedOrigins = []string{
 			"http://localhost:5173",
-			"http://192.168.1.36:5173",
+			"http://192.168.1.33:5173",
 		}
 	} else {
 		allowedOrigins = []string{"http://localhost:5173", "http://192.168.1.33:5173"}

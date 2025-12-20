@@ -24,6 +24,172 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/hospitality-menu/categories": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create Category in linked to the authenticated organization UUID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Hospitality / Menu"
+                ],
+                "summary": "Create Category In Menu",
+                "responses": {
+                    "200": {
+                        "description": "Bar details retrieved successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid organization UUID format",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Organization UUID missing",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No bar found for this organization",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch bar details",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create Category linked to the authenticated organization UUID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Hospitality / Menu"
+                ],
+                "summary": "Create Category In Menu",
+                "responses": {
+                    "200": {
+                        "description": "Category created successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid organization UUID format",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hospitality/bar": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieves bar information linked to the authenticated organization UUID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Hospitality - Bar"
+                ],
+                "summary": "Get bar details for the current organization",
+                "responses": {
+                    "200": {
+                        "description": "Bar details retrieved successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid organization UUID format",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Organization UUID missing",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No bar found for this organization",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch bar details",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/otp-verify": {
             "post": {
                 "description": "Verifies the OTP sent to the organization's email during signup.",
@@ -57,27 +223,21 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OTP verified successfully",
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.Org_Verify_Otp_RESPONSE_DTO"
+                            "$ref": "#/definitions/dto.Response-dto_Org_Verify_Otp_RESPONSE_DTO"
                         }
                     },
                     "400": {
-                        "description": "Invalid request payload or verification failed",
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.Response-any"
                         }
                     },
                     "401": {
-                        "description": "Invalid OTP or token expired",
+                        "description": "Unauthorized",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.Response-any"
                         }
                     }
                 }
@@ -131,19 +291,26 @@ const docTemplate = `{
         "constants.OrgType": {
             "type": "string",
             "enum": [
-                "HOTEL",
+                "HOSPITALITY",
                 "RETAIL",
-                "SALON",
-                "CLUB",
-                "RESTAURANT"
+                "SALON"
             ],
             "x-enum-varnames": [
                 "Hotel",
                 "Retail",
-                "Salon",
-                "Club",
-                "Restaurant"
+                "Salon"
             ]
+        },
+        "dto.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "isError": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
         },
         "dto.Org_Signup_REQUEST_DTO": {
             "type": "object",
@@ -186,16 +353,6 @@ const docTemplate = `{
                     "description": "Email of the organization.",
                     "type": "string",
                     "example": "hotel@example.com"
-                },
-                "message": {
-                    "description": "Message provides additional information about the signup operation.",
-                    "type": "string",
-                    "example": "OTP sent successfully"
-                },
-                "token": {
-                    "description": "Token is the authentication token issued for the newly created organization.",
-                    "type": "string",
-                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 }
             }
         },
@@ -206,11 +363,6 @@ const docTemplate = `{
                     "description": "OTP is the one-time password sent to the organization's email or mobile.",
                     "type": "string",
                     "example": "123456"
-                },
-                "token": {
-                    "description": "Token is the temporary token associated with the OTP verification process.",
-                    "type": "string",
-                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 }
             }
         },
@@ -222,7 +374,7 @@ const docTemplate = `{
                     "type": "string",
                     "example": "hotel@example.com"
                 },
-                "name": {
+                "org_name": {
                     "description": "Name of the organization.",
                     "type": "string",
                     "example": "Sharpnr Hotel"
@@ -240,11 +392,59 @@ const docTemplate = `{
                     "description": "Sharpnr_Id is the unique identifier assigned to the organization.",
                     "type": "string",
                     "example": "SHRabc123def456"
+                }
+            }
+        },
+        "dto.Response-any": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "\u003c-- pointer here"
+                },
+                "error": {
+                    "$ref": "#/definitions/dto.ErrorResponse"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                },
+                "timestamp": {
+                    "type": "string"
                 },
                 "token": {
-                    "description": "Token is the authentication token issued after successful OTP verification.",
-                    "type": "string",
-                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    "description": "✅ Optional field",
+                    "type": "string"
+                }
+            }
+        },
+        "dto.Response-dto_Org_Verify_Otp_RESPONSE_DTO": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "\u003c-- pointer here",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.Org_Verify_Otp_RESPONSE_DTO"
+                        }
+                    ]
+                },
+                "error": {
+                    "$ref": "#/definitions/dto.ErrorResponse"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "statusCode": {
+                    "type": "integer"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "token": {
+                    "description": "✅ Optional field",
+                    "type": "string"
                 }
             }
         }

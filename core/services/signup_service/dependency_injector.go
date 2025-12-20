@@ -3,10 +3,13 @@ package signupservice
 import (
 	"sharpnr-engine/core/interfaces"
 	barrepo "sharpnr-engine/modules/hospitality/bar/repo"
-	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
+	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
 	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
+	menurepo "sharpnr-engine/modules/hospitality/menu/menu_repo"
 	"sharpnr-engine/modules/hospitality/restaurant/restaurantrepo"
+	hr_employee_repo "sharpnr-engine/modules/hr/employees/repo"
 	policyengine "sharpnr-engine/policy_engine"
+	"sharpnr-engine/sere"
 	sharpnruirenderer "sharpnr-engine/sharpnr_ui_renderer"
 )
 
@@ -14,32 +17,49 @@ import (
 
 // SignupService handles organization signup logic
 type signupService struct {
-	orgRepo interfaces.OrganizationRepository // interface, not concrete struct
+	sere    *sere.SERE
+	orgRepo interfaces.OrganizationRepositoryInterface // interface, not concrete struct
 	// This is Employee Repo for the creation of employee during the signup of Organization
-	empRepo interfaces.EmployeeRepository
+
+	hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface
 
 	policyRepo policyengine.PolicyRepository
 
 	uiRenderRepo sharpnruirenderer.UIRendererRepository
 
-	hotelRepo hotelrepo.HotelRepository
+	hotelRepo hotelrepo.HotelRepositoryInterface
 
 	barRepo barrepo.BarRepository
 
 	restaurantRepo restaurantrepo.RestaurantRepository
 
-	kitchenRepo kitchenrepo.KitchenRepository
+	kitchenRepo kitchenrepo.KitchenRepositoryInterface
+
+	menuRepo menurepo.MenuRepositoryInterface
 }
 
-func NewSignupService(repo interfaces.OrganizationRepository, emprepo interfaces.EmployeeRepository, policyrepo policyengine.PolicyRepository, uiRenderRepo sharpnruirenderer.UIRendererRepository, hotelRepo hotelrepo.HotelRepository, barRepo barrepo.BarRepository, restaurantRepo restaurantrepo.RestaurantRepository, kitchenRepo kitchenrepo.KitchenRepository) *signupService {
+func NewSignupService(
+	sere *sere.SERE,
+	repo interfaces.OrganizationRepositoryInterface,
+	hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface,
+	policyrepo policyengine.PolicyRepository,
+	uiRenderRepo sharpnruirenderer.UIRendererRepository,
+	hotelRepo hotelrepo.HotelRepositoryInterface,
+	barRepo barrepo.BarRepository,
+	restaurantRepo restaurantrepo.RestaurantRepository,
+	kitchenRepo kitchenrepo.KitchenRepositoryInterface,
+	menuRepo menurepo.MenuRepositoryInterface,
+) *signupService {
 	return &signupService{
+		sere:           sere,
 		orgRepo:        repo,
-		empRepo:        emprepo,
+		hrEmpRepo:      hrEmpRepo,
 		policyRepo:     policyrepo,
 		uiRenderRepo:   uiRenderRepo,
 		hotelRepo:      hotelRepo,
 		barRepo:        barRepo,
 		restaurantRepo: restaurantRepo,
 		kitchenRepo:    kitchenRepo,
+		menuRepo:       menuRepo,
 	}
 }

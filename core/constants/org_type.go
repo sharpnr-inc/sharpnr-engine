@@ -4,15 +4,15 @@ package constants
 type OrgType string
 
 const (
-	Hotel  OrgType = "HOSPITALITY"
-	Retail OrgType = "RETAIL"
-	Salon  OrgType = "SALON"
+	Hospitality OrgType = "HOSPITALITY"
+	Retail      OrgType = "RETAIL"
+	Salon       OrgType = "SALON"
 )
 
 // IsValid checks if the organization type is valid.
 func (ot OrgType) IsValid() bool {
 	switch ot {
-	case Hotel, Retail, Salon:
+	case Hospitality, Retail, Salon:
 		return true
 	}
 	return false
