@@ -46,7 +46,6 @@ func (r *hotelService) GetHotelDetails(ctx context.Context, orgId uuid.UUID) (*h
 			floorRes.Rooms = append(floorRes.Rooms, hospitalitydtos.RoomResponse{
 				RoomID:           room.ID,
 				RoomName:         room.RoomName,
-				RoomPrice:        room.Price, // Add if you have room price field in model
 				Description:      room.Amenities,
 				Status:           string(room.Status),
 				CurrentBookingId: room.CurrentBookingID,

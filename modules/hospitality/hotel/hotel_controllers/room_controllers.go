@@ -3,7 +3,7 @@ package hotelcontrollers
 import (
 	"net/http"
 	dto "sharpnr-engine/core/dtos"
-	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
+	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +11,7 @@ import (
 )
 
 func (s *HotelController) CreateRoom(ctx *gin.Context) {
-	var req hospitalitydtos.CreateRoomInFloor_REQ
+	var req hoteldtos.CreateRoomInFloor_REQ
 
 	// ✅ Bind and validate request body
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -32,13 +32,12 @@ func (s *HotelController) CreateRoom(ctx *gin.Context) {
 	}
 
 	// ✅ Call service
-	res, err := s.hotelService.CreateRoomInHotel(ctx, orgUUID, req)
-	if err != nil {
+	if err := s.hotelService.CreateRoomInHotel(ctx, orgUUID, req); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, res)
+	ctx.JSON(http.StatusOK, gin.H{"Success": "Room Added successfully"})
 }
 
 // This is the Update Room Status

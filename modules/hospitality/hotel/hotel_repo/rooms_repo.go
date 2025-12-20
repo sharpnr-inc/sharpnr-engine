@@ -59,11 +59,6 @@ func (h *hotelRepository) UpdateRoomStatus(
 	return nil
 }
 
-// DeleteRoom implements HotelRepository.
-func (h *hotelRepository) DeleteRoom(ctx context.Context, roomID uuid.UUID) error {
-	panic("unimplemented")
-}
-
 func (d *hotelRepository) AddCurrentBookingIdToRoom(
 	ctx context.Context,
 	roomId uuid.UUID,
@@ -87,4 +82,45 @@ func (d *hotelRepository) AddCurrentBookingIdToRoom(
 	}
 
 	return nil
+}
+
+func (h *hotelRepository) CreatePriceForRoom(ctx context.Context, roomPrice *hospitalitymodels.HotelRoomPrice) error {
+	// 1️⃣ Basic validation
+	if roomPrice.Price <= 0 {
+		return errors.New("room price must be greater than zero")
+	}
+
+	if roomPrice.EffectiveFrom.IsZero() {
+		return errors.New("effective_from is required")
+	}
+
+	// 2️⃣ Overlap protection (CRITICAL)
+	var count int64
+
+	err := h.db.WithContext(ctx).
+		Model(&hospitalitymodels.HotelRoomPrice{}).
+		Where("room_id = ?", roomPrice.RoomID).
+		Where("effective_from <= ?", roomPrice.EffectiveFrom).
+		Where(
+			h.db.
+				Where("effective_to IS NULL").
+				Or("effective_to >= ?", roomPrice.EffectiveFrom),
+		).
+		Count(&count).Error
+
+	if err != nil {
+		return err
+	}
+
+	if count > 0 {
+		return errors.New("room price already exists for this date")
+	}
+
+	// 3️⃣ Insert
+	return h.db.WithContext(ctx).Create(roomPrice).Error
+}
+
+// DeleteRoom implements HotelRepository.
+func (h *hotelRepository) DeleteRoom(ctx context.Context, roomID uuid.UUID) error {
+	panic("unimplemented")
 }

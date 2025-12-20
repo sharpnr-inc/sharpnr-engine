@@ -12,8 +12,8 @@ type HotelService interface {
 	CreateRoomInHotel(
 		ctx context.Context,
 		orgID uuid.UUID,
-		req hospitalitydtos.CreateRoomInFloor_REQ,
-	) (*hospitalitydtos.CreateRoomInFloor_RES, error)
+		req hoteldtos.CreateRoomInFloor_REQ,
+	) error
 
 	UpdateHotelDetails(
 		ctx context.Context,

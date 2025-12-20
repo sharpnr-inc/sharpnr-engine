@@ -46,6 +46,7 @@ type HotelRepositoryInterface interface {
 	UpdateRoomStatus(ctx context.Context, hotelId, roomId uuid.UUID, status string) error
 	DeleteRoom(ctx context.Context, roomID uuid.UUID) error
 	AddCurrentBookingIdToRoom(ctx context.Context, roomId, bookingId uuid.UUID) error
+	CreatePriceForRoom(ctx context.Context, roomPrice *hospitalitymodels.HotelRoomPrice) error
 
 	//-------------------------------------------------------------
 	//   Booking

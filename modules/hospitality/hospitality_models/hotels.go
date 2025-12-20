@@ -144,8 +144,8 @@ type Room struct {
 	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
 	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
 
-	Prices           []HotelRoomPrice `gorm:"foreignKey:RoomID"`
-	Price            int
+	Prices []HotelRoomPrice `gorm:"foreignKey:RoomID"`
+
 	Description      string
 	Status           hospitalityconstants.RoomStatus `gorm:"type:varchar(50);not null;default:'DISABLED'"`
 	QRCodes          []HotelRoomQRCode               `gorm:"foreignKey:RoomID"`
