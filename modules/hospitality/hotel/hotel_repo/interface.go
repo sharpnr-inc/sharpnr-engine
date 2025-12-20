@@ -85,10 +85,18 @@ type HotelRepositoryInterface interface {
 	GetPaymentsByBookingId(ctx context.Context, bookingId uuid.UUID) ([]hospitalitymodels.HotelRoomBookingPayment, error)
 
 	//-------------------------------------------------------------
-	//   Tax
+	//    Tax
 	// ------------------------------------------------------------
-	CreateTaxRuleOfHotel(ctx context.Context, taxRule *hospitalitymodels.HotelTaxRule) error
-	AddTaxComponentInTaxRule(ctx context.Context, taxComp *hospitalitymodels.HotelTaxComponent) error
+	CreateTaxRuleOfHotel(
+		ctx context.Context,
+		taxRule *hospitalitymodels.HotelTaxRule,
+	) error
+
+	AddTaxComponentInTaxRule(
+		ctx context.Context,
+		taxComp *hospitalitymodels.HotelTaxComponent,
+	) error
+
 	GetActiveTaxRulesByHotelAndType(
 		ctx context.Context,
 		hotelId uuid.UUID,
@@ -96,9 +104,15 @@ type HotelRepositoryInterface interface {
 		time time.Time,
 	) ([]hospitalitymodels.HotelTaxRule, error)
 
-	GetTaxComponentsByRuleID(ctx context.Context, taxRuleId uuid.UUID) ([]hospitalitymodels.HotelTaxComponent, error)
+	GetTaxComponentsByRuleID(
+		ctx context.Context,
+		taxRuleId uuid.UUID,
+	) ([]hospitalitymodels.HotelTaxComponent, error)
 }
 
+/*******************************************
+ * this is the Interface for House Keeping *
+ *******************************************/
 type HotelHouseKeepingRepositoryInterface interface {
 
 	// TODO :- This need To Implemented
