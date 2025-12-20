@@ -81,6 +81,12 @@ type HotelRepositoryInterface interface {
 	//   Payments
 	// ------------------------------------------------------------
 	GetPaymentsByBookingId(ctx context.Context, bookingId uuid.UUID) ([]hospitalitymodels.HotelRoomBookingPayment, error)
+
+	//-------------------------------------------------------------
+	//   Tax
+	// ------------------------------------------------------------
+	CreateTaxRuleOfHotel(ctx context.Context, taxRule *hospitalitymodels.HotelTaxRule) error
+	AddTaxComponentInTaxRule(ctx context.Context, taxComp *hospitalitymodels.HotelTaxComponent) error
 }
 
 type HotelHouseKeepingRepositoryInterface interface {

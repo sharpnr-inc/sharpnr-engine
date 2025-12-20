@@ -86,4 +86,9 @@ func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB, sere *sere.SERE) {
 		hotelGuest.POST("/create", newHotelController.CreateHotelGuest)
 	}
 
+	hotelTax := hotel_routes.Group("/tax")
+	{
+		hotelTax.POST("/create-rule", newHotelController.CreateTaxRule)
+	}
+
 }

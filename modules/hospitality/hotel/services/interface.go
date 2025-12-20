@@ -62,4 +62,10 @@ type HotelService interface {
 		orgId uuid.UUID,
 		req hoteldtos.CreateHotelGuestsRequest,
 	) error
+
+	// -----------------
+	// Tax
+	// ------------------
+
+	CreateTaxRule(ctx context.Context, orgId uuid.UUID, req hoteldtos.CreateHotelTaxRuleRequest) error
 }
