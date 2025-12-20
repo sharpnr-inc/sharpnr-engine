@@ -16,7 +16,10 @@ func (d *hotelRepository) CreatePrimaryGuest(ctx context.Context, guest *hospita
 }
 
 func (d *hotelRepository) CreateHotelGuest(ctx context.Context, guest *hospitalitymodels.HotelGuest) error {
-	panic("unimplemented")
+	if err := d.db.WithContext(ctx).Create(guest).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 func (d *hotelRepository) GetHotelGuests(ctx context.Context, hotelId uuid.UUID) ([]hospitalitymodels.HotelGuest, error) {

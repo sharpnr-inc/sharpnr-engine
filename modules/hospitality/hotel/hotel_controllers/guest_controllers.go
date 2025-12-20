@@ -12,7 +12,37 @@ import (
 )
 
 func (s *HotelController) CreateHotelGuest(ctx *gin.Context) {
-	panic("unimplemented")
+	orgUUID, exists := ctx.Get("OrgUUID")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
+		return
+	}
+
+	orgID, ok := orgUUID.(uuid.UUID)
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
+		return
+	}
+
+	var req hoteldtos.CreateHotelGuestsRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Validation failed",
+			"details": err.Error(),
+		})
+		return
+	}
+
+	if err := s.hotelService.CreateGuestInHotel(ctx, orgID, req); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, gin.H{
+		"message": "Customer created successfully",
+	})
 }
 
 func (s *HotelController) SearchGuests(ctx *gin.Context) {

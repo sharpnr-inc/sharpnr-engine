@@ -10,13 +10,33 @@ import (
 )
 
 type HotelService interface {
-	CreateRoomInHotel(ctx context.Context, orgID uuid.UUID, req hospitalitydtos.CreateRoomInFloor_REQ) (*hospitalitydtos.CreateRoomInFloor_RES, error)
+	CreateRoomInHotel(
+		ctx context.Context,
+		orgID uuid.UUID,
+		req hospitalitydtos.CreateRoomInFloor_REQ,
+	) (*hospitalitydtos.CreateRoomInFloor_RES, error)
 
-	CreateFloor(ctx context.Context, orgID uuid.UUID, req hospitalitydtos.CreateFloorInHotel_REQ) (*hospitalitydtos.CreateFloorInHotel_RESPONSE, error)
+	UpdateHotelDetails(
+		ctx context.Context,
+		orgId uuid.UUID,
+		req hospitalitydtos.Hotel_UpdateOrConfigure_REQUEST,
+	) error
 
-	GetHotelDetails(ctx context.Context, orgId uuid.UUID) (*hospitalitydtos.GetHotel_RESPONSE, error)
+	CreateFloor(
+		ctx context.Context,
+		orgID uuid.UUID,
+		req hospitalitydtos.CreateFloorInHotel_REQ,
+	) (*hospitalitydtos.CreateFloorInHotel_RESPONSE, error)
 
-	GetFrontDeskTerminal(ctx context.Context, orgId uuid.UUID) (*hospitalitydtos.HotelBookingTerminal_Response, error)
+	GetHotelDetails(
+		ctx context.Context,
+		orgId uuid.UUID,
+	) (*hospitalitydtos.GetHotel_RESPONSE, error)
+
+	GetFrontDeskTerminal(
+		ctx context.Context,
+		orgId uuid.UUID,
+	) (*hospitalitydtos.HotelBookingTerminal_Response, error)
 
 	UpdateRoomStatus(ctx context.Context, orgId, hotelId, roomId uuid.UUID, status string) error
 
@@ -27,11 +47,21 @@ type HotelService interface {
 
 	GetRoomBookingDetails(ctx context.Context, roomId, orgID uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
 
-	SearchGuests(ctx context.Context, orgId uuid.UUID, qry string) ([]hoteldtos.HotelGuestResponseDTO, error)
+	// -----------------
+	// Guest
+	// ------------------
 
-	UpdateHotelDetails(
+	SearchGuests(
 		ctx context.Context,
 		orgId uuid.UUID,
-		req hospitalitydtos.Hotel_UpdateOrConfigure_REQUEST,
+		qry string,
+	) (
+		[]hoteldtos.HotelGuestResponseDTO,
+		error)
+
+	CreateGuestInHotel(
+		ctx context.Context,
+		orgId uuid.UUID,
+		req hoteldtos.CreateHotelGuestsRequest,
 	) error
 }
