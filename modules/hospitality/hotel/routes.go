@@ -91,4 +91,9 @@ func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB, sere *sere.SERE) {
 		hotelTax.POST("/create-rule", newHotelController.CreateTaxRule)
 	}
 
+	hotelBill := hotel_routes.Group("/billing")
+	{
+		hotelBill.GET("/preview/:bookingId", newHotelController.PreviewBill)
+	}
+
 }

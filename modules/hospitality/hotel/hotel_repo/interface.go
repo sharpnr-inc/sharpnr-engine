@@ -3,6 +3,8 @@ package hotelrepo
 import (
 	"context"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	"sharpnr-engine/modules/hospitality/hospitalityconstants"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -87,6 +89,14 @@ type HotelRepositoryInterface interface {
 	// ------------------------------------------------------------
 	CreateTaxRuleOfHotel(ctx context.Context, taxRule *hospitalitymodels.HotelTaxRule) error
 	AddTaxComponentInTaxRule(ctx context.Context, taxComp *hospitalitymodels.HotelTaxComponent) error
+	GetActiveTaxRulesByHotelAndType(
+		ctx context.Context,
+		hotelId uuid.UUID,
+		taxtype hospitalityconstants.TaxType,
+		time time.Time,
+	) ([]hospitalitymodels.HotelTaxRule, error)
+
+	GetTaxComponentsByRuleID(ctx context.Context, taxRuleId uuid.UUID) ([]hospitalitymodels.HotelTaxComponent, error)
 }
 
 type HotelHouseKeepingRepositoryInterface interface {

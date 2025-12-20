@@ -68,4 +68,9 @@ type HotelService interface {
 	// ------------------
 
 	CreateTaxRule(ctx context.Context, orgId uuid.UUID, req hoteldtos.CreateHotelTaxRuleRequest) error
+
+	// -----------------
+	// Billing
+	// ------------------
+	PreviewBill(ctx context.Context, orgId, bookingID uuid.UUID) (*hoteldtos.BillPreviewDTO, error)
 }

@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	"sharpnr-engine/modules/hospitality/hospitalityconstants"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -57,4 +59,55 @@ func (h *hotelRepository) AddTaxComponentInTaxRule(
 	}
 
 	return nil
+}
+
+func (h *hotelRepository) GetActiveTaxRulesByHotelAndType(
+	ctx context.Context,
+	hotelId uuid.UUID,
+	taxType hospitalityconstants.TaxType,
+	at time.Time,
+) ([]hospitalitymodels.HotelTaxRule, error) {
+
+	var rules []hospitalitymodels.HotelTaxRule
+
+	err := h.db.
+		WithContext(ctx).
+		Where("hotel_id = ?", hotelId).
+		Where("tax_type = ?", taxType).
+		Where("is_active = ?", true).
+		Where("effective_from <= ?", at).
+		Where(
+			h.db.
+				Where("effective_to IS NULL").
+				Or("effective_to >= ?", at),
+		).
+		Order("effective_from DESC").
+		Find(&rules).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return rules, nil
+}
+
+func (h *hotelRepository) GetTaxComponentsByRuleID(
+	ctx context.Context,
+	taxRuleId uuid.UUID,
+) ([]hospitalitymodels.HotelTaxComponent, error) {
+
+	var components []hospitalitymodels.HotelTaxComponent
+
+	err := h.db.
+		WithContext(ctx).
+		Where("hotel_tax_rule_id = ?", taxRuleId).
+		Find(&components).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return components, nil
 }
