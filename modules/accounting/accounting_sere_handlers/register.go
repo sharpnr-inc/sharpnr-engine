@@ -10,5 +10,5 @@ func Register(
 	accRepo accounting_repo.AccountingRepositoryInterface,
 ) {
 	handler := NewOrganizationCreatedEventHandler(accRepo)
-	sere.Subscribe("OrgCreated", handler.Handle)
+	sere.SubscribeAsync("OrgCreated", handler.Handle)
 }
