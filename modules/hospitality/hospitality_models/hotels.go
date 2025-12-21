@@ -147,12 +147,12 @@ type Room struct {
 	Prices []HotelRoomPrice `gorm:"foreignKey:RoomID"`
 
 	Description      string
-	Status           hospitalityconstants.RoomStatus `gorm:"type:varchar(50);not null;default:'DISABLED'"`
-	QRCodes          []HotelRoomQRCode               `gorm:"foreignKey:RoomID"`
-	RoomName         string                          `gorm:"size:100;not null"`
-	BedSize          string                          `gorm:"size:50"`
-	Amenities        string                          `gorm:"type:text"`
-	CurrentBookingID *uuid.UUID                      `gorm:"type:uuid"`
+	Status           hospitalityconstants.HotelRoomStatusType `gorm:"type:varchar(50);not null;default:'DISABLED'"`
+	QRCodes          []HotelRoomQRCode                        `gorm:"foreignKey:RoomID"`
+	RoomName         string                                   `gorm:"size:100;not null"`
+	BedSize          string                                   `gorm:"size:50"`
+	Amenities        string                                   `gorm:"type:text"`
+	CurrentBookingID *uuid.UUID                               `gorm:"type:uuid"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -288,11 +288,11 @@ type HotelBillTax struct {
 type HotelRoomBookingPayment struct {
 	ID                 uuid.UUID `gorm:"type:uuid;primaryKey"`
 	HotelID            uuid.UUID
-	HotelRoomBookingID uuid.UUID `gorm:"type:uuid;not null"`
-	Amount             float64   `gorm:"not null"`
-	Mode               string    `gorm:"size:50"`  // cash, upi, card, room_charge
-	Status             string    `gorm:"size:20"`  // success, pending, failed
-	Reference          string    `gorm:"size:100"` // UPI txn ID, Ref no.
+	HotelRoomBookingID uuid.UUID                          `gorm:"type:uuid;not null"`
+	Amount             float64                            `gorm:"not null"`
+	Mode               hospitalityconstants.PaymentMethod `gorm:"size:50"`  // cash, upi, card, room_charge
+	Status             hospitalityconstants.PaymentStatus `gorm:"size:20"`  // success, pending, failed
+	Reference          string                             `gorm:"size:100"` // UPI txn ID, Ref no.
 	CreatedAt          time.Time
 }
 

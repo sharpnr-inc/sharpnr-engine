@@ -73,4 +73,9 @@ type HotelService interface {
 	// Billing
 	// ------------------
 	PreviewBill(ctx context.Context, orgId, bookingID uuid.UUID) (*hoteldtos.BillPreviewDTO, error)
+
+	// -----------------
+	// Payments
+	// ------------------
+	AddPaymentForBooking(ctx context.Context, orgID uuid.UUID, req hoteldtos.AddPaymentsForBookingRequest_dto) error
 }
