@@ -52,14 +52,6 @@ type HotelRepositoryInterface interface {
 	GetRoomPriceByRoomId(ctx context.Context, roomId uuid.UUID) (*hospitalitymodels.HotelRoomPrice, error)
 
 	//-------------------------------------------------------------
-	//   Booking
-	// ------------------------------------------------------------
-	CreateRoomBooking(ctx context.Context, booking *hospitalitymodels.HotelRoomBooking) error
-	CreateOrAddBookingPayment(ctx context.Context, bookingPayment *hospitalitymodels.HotelRoomBookingPayment) error
-	CreateCharges(ctx context.Context, charges *hospitalitymodels.HotelBookingCharge) error
-	GetBookingByBookingId(ctx context.Context, bookingId uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
-
-	//-------------------------------------------------------------
 	//   Guests
 	// ------------------------------------------------------------
 	CreatePrimaryGuest(ctx context.Context, guest *hospitalitymodels.HotelGuest) error
@@ -69,20 +61,45 @@ type HotelRepositoryInterface interface {
 	CreateBookingGuest(ctx context.Context, bookingGuest *hospitalitymodels.BookingGuest) error
 
 	//-------------------------------------------------------------
+	//   Booking
+	// ------------------------------------------------------------
+	CreateRoomBooking(ctx context.Context, booking *hospitalitymodels.HotelRoomBooking) error
+	CreateOrAddBookingPayment(ctx context.Context, bookingPayment *hospitalitymodels.HotelRoomBookingPayment) error
+	CreateCharges(ctx context.Context, charges *hospitalitymodels.HotelBookingCharge) error
+	GetBookingByBookingId(ctx context.Context, bookingId uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
+
+	//-------------------------------------------------------------
 	//   Charges
 	// ------------------------------------------------------------
-	GetChargesByBookingID(ctx context.Context, bookingId uuid.UUID) ([]hospitalitymodels.HotelBookingCharge, error)
-	AddChargesInBooking(ctx context.Context, charges *hospitalitymodels.HotelBookingCharge) error
+	GetChargesByBookingID(
+		ctx context.Context,
+		bookingId uuid.UUID,
+	) ([]hospitalitymodels.HotelBookingCharge, error)
+
+	AddChargesInBooking(
+		ctx context.Context,
+		charges *hospitalitymodels.HotelBookingCharge,
+	) error
 
 	//-------------------------------------------------------------
 	//   Bills
 	// ------------------------------------------------------------
 	GetBillByBookingId(ctx context.Context, bookingId uuid.UUID) (*hospitalitymodels.HotelBill, error)
 
+	CreateBookingBill(ctx context.Context, bill *hospitalitymodels.HotelBill) error
+
 	//-------------------------------------------------------------
 	//   Payments
 	// ------------------------------------------------------------
-	GetPaymentsByBookingId(ctx context.Context, bookingId uuid.UUID) ([]hospitalitymodels.HotelRoomBookingPayment, error)
+	GetPaymentsByBookingId(
+		ctx context.Context,
+		bookingId uuid.UUID,
+	) ([]hospitalitymodels.HotelRoomBookingPayment, error)
+
+	AddPaymentsInBooking(
+		ctx context.Context,
+		payemnt *hospitalitymodels.HotelRoomBookingPayment,
+	) error
 
 	//-------------------------------------------------------------
 	//    Tax

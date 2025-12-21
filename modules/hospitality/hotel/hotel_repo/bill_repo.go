@@ -29,3 +29,7 @@ func (d *hotelRepository) GetBillByBookingId(
 
 	return &bill, nil
 }
+
+func (d *hotelRepository) CreateBookingBill(ctx context.Context, bill *hospitalitymodels.HotelBill) error {
+	panic("unimplemented")
+}

@@ -25,3 +25,10 @@ func (d *hotelRepository) GetPaymentsByBookingId(
 
 	return payments, nil
 }
+
+func (d *hotelRepository) AddPaymentsInBooking(
+	ctx context.Context,
+	payemnt *hospitalitymodels.HotelRoomBookingPayment,
+) error {
+	panic("unimplemented")
+}
