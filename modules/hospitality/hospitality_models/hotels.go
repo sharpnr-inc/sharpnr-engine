@@ -265,9 +265,9 @@ type HotelBill struct {
 	HotelRoomBookingID uuid.UUID `gorm:"uniqueIndex"`
 	HotelID            uuid.UUID
 
-	BaseAmount  float64
-	TaxAmount   float64
-	TotalAmount float64
+	BaseAmount  float64 `gorm:"not null"`
+	TaxAmount   float64 `gorm:"not null"`
+	TotalAmount float64 `gorm:"not null"`
 
 	Status string // DRAFT, FINALIZED, CANCELLED
 

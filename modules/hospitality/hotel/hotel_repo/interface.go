@@ -67,6 +67,11 @@ type HotelRepositoryInterface interface {
 	CreateOrAddBookingPayment(ctx context.Context, bookingPayment *hospitalitymodels.HotelRoomBookingPayment) error
 	CreateCharges(ctx context.Context, charges *hospitalitymodels.HotelBookingCharge) error
 	GetBookingByBookingId(ctx context.Context, bookingId uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
+	UpdateBookingStatus(
+		ctx context.Context,
+		bookingID uuid.UUID,
+		status hospitalityconstants.HotelBookingStatusType,
+	) error
 
 	//-------------------------------------------------------------
 	//   Charges
@@ -125,6 +130,16 @@ type HotelRepositoryInterface interface {
 		ctx context.Context,
 		taxRuleId uuid.UUID,
 	) ([]hospitalitymodels.HotelTaxComponent, error)
+
+	//-------------------------------------------------------------
+	//    Hotel Bill Tax
+	// ------------------------------------------------------------
+
+	CreateHotelBillTax(ctx context.Context, hotelBillTax *hospitalitymodels.HotelBillTax) error
+	GetBillTaxes(
+		ctx context.Context,
+		billID uuid.UUID,
+	) ([]hospitalitymodels.HotelBillTax, error)
 }
 
 /*******************************************

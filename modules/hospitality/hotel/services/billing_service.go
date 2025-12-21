@@ -6,6 +6,7 @@ import (
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
+	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
 	"time"
 
 	"github.com/google/uuid"
@@ -138,4 +139,138 @@ func evaluateTaxRule(
 	}
 
 	return nil, errors.New("no applicable tax rule found")
+}
+
+func (s *hotelService) FinalizeBill(
+	ctx context.Context,
+	orgID uuid.UUID,
+	bookingID uuid.UUID,
+) (*hospitalitymodels.HotelBill, error) {
+
+	var finalizedBill *hospitalitymodels.HotelBill
+
+	err := s.hotelRepo.WithTx(ctx, func(txRepo hotelrepo.HotelRepositoryInterface) error {
+		// 1️⃣ Resolve hotel
+		hotel, err := txRepo.GetHotelByOrgID(ctx, orgID)
+		if err != nil {
+			return err
+		}
+
+		// 2️⃣ Booking
+		booking, err := txRepo.GetBookingByBookingId(ctx, bookingID)
+		if err != nil {
+			return err
+		}
+
+		if booking.HotelID != hotel.ID {
+			return errors.New("booking does not belong to hotel")
+		}
+
+		// 3️⃣ Prevent double finalize
+		existingBill, _ := txRepo.GetBillByBookingId(ctx, bookingID)
+		if existingBill != nil {
+			return errors.New("bill already finalized")
+		}
+
+		// 4️⃣ Charges must exist
+		charges, err := txRepo.GetChargesByBookingID(ctx, bookingID)
+		if err != nil {
+			return err
+		}
+
+		if len(charges) == 0 {
+			return errors.New("cannot finalize bill without charges")
+		}
+
+		// 5️⃣ Base amount
+		baseAmount := 0.0
+		for _, c := range charges {
+			baseAmount += c.Amount
+		}
+
+		// 6️⃣ Tax evaluation (your existing logic)
+		taxResult, err := s.CalculateTaxForBooking(
+			ctx,
+			hotel.ID,
+			baseAmount,
+		)
+		if err != nil {
+			return err
+		}
+
+		now := time.Now()
+		// 7️⃣ Create bill
+		bill := &hospitalitymodels.HotelBill{
+			ID:                 uuid.New(),
+			HotelRoomBookingID: bookingID,
+			HotelID:            hotel.ID,
+			BaseAmount:         baseAmount,
+			TaxAmount:          taxResult.TotalTax,
+			TotalAmount:        baseAmount + taxResult.TotalTax,
+			Status:             string(hospitalityconstants.BillFinalized),
+			CreatedAt:          time.Now(),
+			FinalizedAt:        &now,
+		}
+
+		if err := txRepo.CreateBookingBill(ctx, bill); err != nil {
+			return err
+		}
+
+		// 8️⃣ Freeze tax snapshot
+		for _, t := range taxResult.Components {
+			bt := &hospitalitymodels.HotelBillTax{
+				ID:            uuid.New(),
+				HotelBillID:   bill.ID,
+				ComponentType: string(t.ComponentType),
+				Rate:          t.Rate,
+				Amount:        t.Amount,
+			}
+			if err := txRepo.CreateHotelBillTax(ctx, bt); err != nil {
+				return err
+			}
+		}
+
+		// 9️⃣ Update booking status → CHECKED_OUT
+		if err := txRepo.UpdateBookingStatus(
+			ctx,
+			bookingID,
+			hospitalityconstants.HotelRoomCheckedOut,
+		); err != nil {
+			return err
+		}
+
+		if err := txRepo.UpdateRoomStatus(ctx, hotel.ID, booking.RoomID, string(hospitalityconstants.Available)); err != nil {
+			return err
+		}
+		finalizedBill = bill
+		return nil
+
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return finalizedBill, nil
+}
+
+func (s *hotelService) FinalizeBillAndGetInvoice(
+	ctx context.Context,
+	orgID uuid.UUID,
+	bookingID uuid.UUID,
+) (*hoteldtos.HotelInvoiceDTO, error) {
+
+	// 1️⃣ Finalize bill (DB write)
+	bill, err := s.FinalizeBill(ctx, orgID, bookingID)
+	if err != nil {
+		return nil, err
+	}
+
+	// 2️⃣ Fetch booking (needed for invoice)
+	booking, err := s.hotelRepo.GetBookingByBookingId(ctx, bookingID)
+	if err != nil {
+		return nil, err
+	}
+
+	// 3️⃣ Build invoice DTO (pure read)
+	return s.buildInvoiceDTO(ctx, booking, bill)
 }

@@ -31,5 +31,13 @@ func (d *hotelRepository) GetBillByBookingId(
 }
 
 func (d *hotelRepository) CreateBookingBill(ctx context.Context, bill *hospitalitymodels.HotelBill) error {
-	panic("unimplemented")
+	if bill == nil {
+		return errors.New("bill cannot be nil")
+	}
+
+	if bill.Status == "" {
+		bill.Status = "DRAFT"
+	}
+
+	return d.db.WithContext(ctx).Create(bill).Error
 }

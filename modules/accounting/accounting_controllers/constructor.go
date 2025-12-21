@@ -1,12 +1,12 @@
 package accounting_controllers
 
-import accountingservice "sharpnr-engine/modules/accounting/accounting_service"
+import accounting_service "sharpnr-engine/modules/accounting/accounting_service"
 
 type accountingController struct {
-	accSvc accountingservice.AccountingServiceInterface
+	accSvc accounting_service.AccountingServiceInterface
 }
 
-func NewAccountingController(accSvc accountingservice.AccountingServiceInterface) *accountingController {
+func NewAccountingController(accSvc accounting_service.AccountingServiceInterface) *accountingController {
 	return &accountingController{
 		accSvc: accSvc,
 	}

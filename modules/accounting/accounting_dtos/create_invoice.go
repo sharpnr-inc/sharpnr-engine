@@ -1,3 +1,5 @@
 package accountingdtos
 
-// So this is the Package for the accoting DTOS
+type CreateAccountMapping_Request_dto struct {
+	//
+}

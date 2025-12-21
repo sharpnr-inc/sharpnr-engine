@@ -42,3 +42,10 @@ const (
 	DamageCharge  HotelChargeType = "DAMAGE"
 	ServiceCharge HotelChargeType = "SERVICE_CHARGE"
 )
+
+type HotelBookingStatusType string
+
+const (
+	HotelRoomCheckedId  HotelBookingStatusType = "CHECKED_IN"
+	HotelRoomCheckedOut HotelBookingStatusType = "CHECKED_OUT"
+)

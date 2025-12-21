@@ -111,3 +111,29 @@ func (h *hotelRepository) GetTaxComponentsByRuleID(
 
 	return components, nil
 }
+
+func (h *hotelRepository) CreateHotelBillTax(ctx context.Context, hotelBillTax *hospitalitymodels.HotelBillTax) error {
+	if hotelBillTax == nil {
+		return errors.New("hotel bill tax cannot be nil")
+	}
+
+	return h.db.WithContext(ctx).Create(hotelBillTax).Error
+}
+
+func (h *hotelRepository) GetBillTaxes(
+	ctx context.Context,
+	billID uuid.UUID,
+) ([]hospitalitymodels.HotelBillTax, error) {
+
+	var taxes []hospitalitymodels.HotelBillTax
+
+	err := h.db.WithContext(ctx).
+		Where("hotel_bill_id = ?", billID).
+		Find(&taxes).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return taxes, nil
+}
