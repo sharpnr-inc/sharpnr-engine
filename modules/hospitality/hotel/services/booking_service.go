@@ -8,6 +8,7 @@ import (
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
 	hotelevents "sharpnr-engine/modules/hospitality/hotel/hotel_events"
+	"sharpnr-engine/modules/hospitality/hotel/hotel_events_names"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
 	"time"
 
@@ -28,6 +29,7 @@ func (r *hotelService) CreateBookingForRoom(
 ) error {
 
 	var booking *hospitalitymodels.HotelRoomBooking
+	var charges *hospitalitymodels.HotelBookingCharge
 
 	err := r.hotelRepo.WithTx(ctx, func(txRepo hotelrepo.HotelRepositoryInterface) error {
 
@@ -98,17 +100,16 @@ func (r *hotelService) CreateBookingForRoom(
 
 		nights := calculateNights(booking.CheckInDate, booking.CheckOutDate)
 
-		charges := &hospitalitymodels.HotelBookingCharge{
+		charges = &hospitalitymodels.HotelBookingCharge{
 			ID:                 uuid.New(),
 			HotelRoomBookingID: booking.ID,
-			ChargeType:         "Room Tariff",
+			ChargeType:         hospitalityconstants.RoomRent,
 			ReferenceID:        nil,
 			Description:        fmt.Sprintf("Room rent (%d nights)", int(nights)),
 			Quantity:           nights,
 			UnitRate:           float64(roomPrice.Price),
 			Amount:             nights * float64(roomPrice.Price),
 			CreatedAt:          time.Now(),
-			PaymentStatus:      "PENDING",
 		}
 
 		if err := txRepo.AddChargesInBooking(ctx, charges); err != nil {
@@ -129,6 +130,15 @@ func (r *hotelService) CreateBookingForRoom(
 		RoomId:             booking.RoomID,
 		PrimaryGuestId:     booking.PrimaryGuestID,
 	})
+
+	r.sere.Publish(
+		ctx,
+		hotel_events_names.Hotel_ChargeIsCreatedInBooking,
+		hotelevents.ChargesCreatedInBooking{
+			BookingID:   booking.ID,
+			ChargesId:   charges.ID,
+			ChargesType: charges.ChargeType,
+		})
 
 	return nil
 }

@@ -1,6 +1,7 @@
 package hoteldtos
 
 import (
+	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	"time"
 
 	"github.com/google/uuid"
@@ -47,11 +48,11 @@ type HotelInvoiceTaxDTO struct {
 }
 
 type HotelInvoiceItemDTO struct {
-	Description string  `json:"description"`
-	Quantity    float64 `json:"quantity"`
-	Rate        float64 `json:"rate"`
-	Amount      float64 `json:"amount"`
-	Type        string  `json:"type"` // ROOM_RENT, FOOD, SERVICE
+	Description string                               `json:"description"`
+	Quantity    float64                              `json:"quantity"`
+	Rate        float64                              `json:"rate"`
+	Amount      float64                              `json:"amount"`
+	Type        hospitalityconstants.HotelChargeType `json:"type"` // ROOM_RENT, FOOD, SERVICE
 }
 
 type HotelInvoiceGuestDTO struct {

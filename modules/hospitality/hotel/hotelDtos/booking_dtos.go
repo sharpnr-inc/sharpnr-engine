@@ -59,11 +59,11 @@ type GuestInfoDTO struct {
 }
 
 type ChargeDTO struct {
-	ID          uuid.UUID `json:"id"`
-	Type        string    `json:"type"`
-	Description string    `json:"description"`
-	Amount      float64   `json:"amount"`
-	CreatedAt   time.Time `json:"createdAt"`
+	ID          uuid.UUID                            `json:"id"`
+	Type        hospitalityconstants.HotelChargeType `json:"type"`
+	Description string                               `json:"description"`
+	Amount      float64                              `json:"amount"`
+	CreatedAt   time.Time                            `json:"createdAt"`
 }
 
 type PaymentDTO struct {

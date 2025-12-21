@@ -90,24 +90,24 @@ func mapChargesToInvoiceItems(
 	return items
 }
 
-func humanizeChargeType(ct string) string {
+func humanizeChargeType(ct hospitalityconstants.HotelChargeType) string {
 	switch ct {
-	case string(hospitalityconstants.RoomRent):
+	case hospitalityconstants.RoomRent:
 		return "Room Rent"
-	case string(hospitalityconstants.FoodOrder):
+	case hospitalityconstants.FoodOrder:
 		return "Food Order"
-	case string(hospitalityconstants.BarOrder):
+	case hospitalityconstants.BarOrder:
 		return "Bar Order"
-	case string(hospitalityconstants.LaundryService):
+	case hospitalityconstants.LaundryService:
 		return "Laundry Service"
-	case string(hospitalityconstants.SpaService):
+	case hospitalityconstants.SpaService:
 		return "Spa Service"
-	case string(hospitalityconstants.Minibar):
+	case hospitalityconstants.Minibar:
 		return "Minibar"
-	case string(hospitalityconstants.ServiceCharge):
+	case hospitalityconstants.ServiceCharge:
 		return "Service Charge"
 	default:
-		return ct
+		return string(ct)
 	}
 }
 
