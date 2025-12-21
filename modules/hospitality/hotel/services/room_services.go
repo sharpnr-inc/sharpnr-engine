@@ -6,8 +6,8 @@ import (
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
+	hotelevents "sharpnr-engine/modules/hospitality/hotel/hotel_events"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
-	"sharpnr-engine/sere/events"
 	"strings"
 	"time"
 
@@ -112,7 +112,7 @@ func (h *hotelService) CreateRoomInHotel(
 		return err
 	}
 
-	h.sere.Publish(ctx, "RoomCreated", events.RoomCreated{
+	h.sere.Publish(ctx, "RoomCreated", hotelevents.RoomCreated{
 		RoomID:  room.ID,
 		HotelID: room.HotelID,
 		Name:    room.RoomName,

@@ -8,3 +8,9 @@ type RoomBookingCreated struct {
 	RoomId             uuid.UUID
 	PrimaryGuestId     uuid.UUID
 }
+
+type RoomCreated struct {
+	RoomID  uuid.UUID
+	HotelID uuid.UUID
+	Name    string
+}

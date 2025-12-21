@@ -2,10 +2,10 @@ package accounting_sere_handlers
 
 import (
 	"log/slog"
+	"sharpnr-engine/core/core_modules_events"
 	hospitality_acc_setup "sharpnr-engine/modules/accounting/accountingSetup/hospitalityAccSetup"
 	"sharpnr-engine/modules/accounting/accounting_repo"
 	"sharpnr-engine/sere"
-	"sharpnr-engine/sere/events"
 )
 
 func contains(arr []string, v string) bool {
@@ -42,7 +42,7 @@ func NewOrganizationCreatedEventHandler(
 
 func (h *OrganizationCreatedEventHandler) Handle(e sere.Event) error {
 
-	event := e.Payload.(events.OrganizationCreated)
+	event := e.Payload.(core_modules_events.OrganizationCreated)
 	ctx := e.Ctx
 
 	logger := slog.With(

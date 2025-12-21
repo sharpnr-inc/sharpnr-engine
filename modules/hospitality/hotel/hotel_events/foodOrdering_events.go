@@ -1,4 +1,4 @@
-package hotel_events
+package hotelevents
 
 import (
 	"time"

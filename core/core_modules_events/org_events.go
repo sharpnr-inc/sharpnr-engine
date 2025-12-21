@@ -1,4 +1,4 @@
-package events
+package core_modules_events
 
 import "github.com/google/uuid"
 
@@ -8,10 +8,4 @@ type OrganizationCreated struct {
 	OrganizationName string
 	OrganizationType string
 	Modules          []string
-}
-
-type RoomCreated struct {
-	RoomID  uuid.UUID
-	HotelID uuid.UUID
-	Name    string
 }

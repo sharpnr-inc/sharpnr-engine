@@ -27,7 +27,7 @@ func (s *SERE) Start() {
 		for event := range s.events {
 
 			s.mu.RLock()
-			handlers := s.subscribers[event.Name]
+			handlers := s.subscribers[string(event.Name)]
 			s.mu.RUnlock()
 
 			if len(handlers) == 0 {

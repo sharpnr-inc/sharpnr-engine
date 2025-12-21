@@ -4,12 +4,13 @@ import (
 	"context"
 	"fmt"
 	"sharpnr-engine/core/constants"
+	"sharpnr-engine/core/core_modules_events"
+	core_events_names "sharpnr-engine/core/core_modules_events/coreEventsNames"
 	dto "sharpnr-engine/core/dtos"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitality_setup"
 	sharphr_models "sharpnr-engine/modules/hr/hrModels"
 	"sharpnr-engine/pkg/jwtpack"
-	"sharpnr-engine/sere/events"
 	"time"
 
 	"github.com/google/uuid"
@@ -171,7 +172,7 @@ func (s *signupService) CompleteOrgRegistration(
 		EmployeeRole: string(createdEmp.Role),
 	}
 
-	s.sere.Publish(ctx, "OrgCreated", events.OrganizationCreated{
+	s.sere.Publish(ctx, core_events_names.OrgCreated, core_modules_events.OrganizationCreated{
 		OrganizationID:   existingOrg.ID,
 		OrganizationName: existingOrg.Name,
 		OrganizationType: string(existingOrg.OrgOperationType),
