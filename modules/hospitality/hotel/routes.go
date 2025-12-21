@@ -94,10 +94,10 @@ func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB, sere *sere.SERE) {
 	hotelBill := hotel_routes.Group("/billing")
 	{
 		hotelBill.GET("/preview/:bookingId", newHotelController.PreviewBill)
-		hotelBill.GET("/finalize/:bookingId")
+		hotelBill.GET("/finalize/:bookingId", newHotelController.FinalizeBill)
 	}
 
-	hotelPayments := hotel_routes.GET("/payments")
+	hotelPayments := hotel_routes.Group("/payments")
 	{
 		hotelPayments.POST("/add", newHotelController.AddPayments)
 		hotelPayments.GET("/:paymentID/status")

@@ -3,6 +3,7 @@ package hotelservices
 import (
 	"context"
 	"errors"
+	"fmt"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
@@ -95,13 +96,17 @@ func (r *hotelService) CreateBookingForRoom(
 			return nil
 		}
 
+		nights := calculateNights(booking.CheckInDate, booking.CheckOutDate)
+
 		charges := &hospitalitymodels.HotelBookingCharge{
 			ID:                 uuid.New(),
 			HotelRoomBookingID: booking.ID,
 			ChargeType:         "Room Tariff",
 			ReferenceID:        nil,
-			Description:        "Room tariff for One night",
-			Amount:             float64(roomPrice.Price),
+			Description:        fmt.Sprintf("Room rent (%d nights)", int(nights)),
+			Quantity:           nights,
+			UnitRate:           float64(roomPrice.Price),
+			Amount:             nights * float64(roomPrice.Price),
 			CreatedAt:          time.Now(),
 			PaymentStatus:      "PENDING",
 		}
@@ -126,6 +131,14 @@ func (r *hotelService) CreateBookingForRoom(
 	})
 
 	return nil
+}
+
+func calculateNights(checkIn, checkOut time.Time) float64 {
+	days := checkOut.Sub(checkIn).Hours() / 24
+	if days < 1 {
+		return 1
+	}
+	return float64(int(days))
 }
 
 func (r *hotelService) GetRoomBookingDetails(ctx context.Context, roomId, orgID uuid.UUID) (*hoteldtos.BookingDetailsDTO, error) {

@@ -245,9 +245,13 @@ type HotelBookingCharge struct {
 	HotelRoomBookingID uuid.UUID `gorm:"type:uuid;not null"` // Foreign Key Will
 	ChargeType         string    `gorm:"size:50"`            // room_rent, room_service, bar, laundry, spa, minibar
 
-	ReferenceID      *uuid.UUID
-	Description      string `gorm:"size:200"`
-	Amount           float64
+	ReferenceID *uuid.UUID
+
+	Description string  `gorm:"size:200"`
+	Quantity    float64 `gorm:"default:1"`
+	UnitRate    float64 `gorm:"default:0"`
+	Amount      float64
+
 	CreatedAt        time.Time
 	BookingPaymentID uuid.UUID
 	PaymentStatus    string
