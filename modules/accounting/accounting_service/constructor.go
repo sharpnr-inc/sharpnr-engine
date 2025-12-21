@@ -1,4 +1,4 @@
-package accoutingservice
+package accounting_service
 
 import "sharpnr-engine/modules/accounting/accounting_repo"
 
