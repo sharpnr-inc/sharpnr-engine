@@ -22,13 +22,13 @@ func RegisterAccountingRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 		// -------------------------
 		books := accRoutes.Group("/books")
 		{
-			books.GET("", accController.CreateTest)
+			books.GET("", accController.GetAccountingBooks)
 			books.GET("/:bookId", accController.CreateTest)
 
 			// -------------------------
 			// Account Groups
 			// -------------------------
-			books.GET("/:bookId/groups", accController.CreateTest)
+			books.GET("/:bookId/groups", accController.GetAccountBookGroups)
 			books.GET("/:bookId/groups/:groupId", accController.CreateTest)
 
 			// -------------------------
