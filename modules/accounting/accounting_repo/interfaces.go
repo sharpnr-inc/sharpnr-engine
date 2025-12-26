@@ -154,4 +154,11 @@ type AccountingRepositoryInterface interface {
 		accountID uuid.UUID,
 		from, to time.Time,
 	) ([]accounting_models.JournalLine, error)
+
+	// This repo Method return array of Accounting Mapping in Array
+	// it also need sub-module of module like BAR, HOTEL in Hospitality module
+	GetAccountMappingsByOrg(
+		ctx context.Context,
+		orgID uuid.UUID,
+	) ([]accounting_models.AccountMapping, error)
 }

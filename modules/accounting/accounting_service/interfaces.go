@@ -8,15 +8,39 @@ import (
 )
 
 type AccountingServiceInterface interface {
-	// Books
+
+	/***********************************************
+	 * All the Service Methods for Accounting Books *
+	***********************************************/
 
 	GetAccountingBooksOfOrg(
 		ctx context.Context,
 		orgID uuid.UUID,
 	) (*accountingdtos.GetAccountBooksOfOrg_Response_dto, error)
 
+	// -----------------------------------------------------------------------//
+
+	/**********************************************
+	 * All the Service methods for Accounting Groups *
+	**********************************************/
+
+	//Service method For fetching All the Accounting Groups in Accounting Book
+	// It takes OrgId and BookID of Account Groups we want
 	GetAccountingGroupOfBook(
 		ctx context.Context,
 		orgID, bookId uuid.UUID,
 	) (*accountingdtos.GetAccountingGroupOfBook_Response_dto, error)
+
+	// -----------------------------------------------------------------------//
+
+	/***********************************************
+	 * All the Service methods for Account Mapping *
+	 ***********************************************/
+
+	GetAccountMapping(
+		ctx context.Context,
+		orgID uuid.UUID,
+	) ([]accountingdtos.AccountMappingDTO, error)
+
+	// -----------------------------------------------------------------------//
 }
