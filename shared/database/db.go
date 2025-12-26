@@ -131,6 +131,7 @@ func MigrateDB(db *gorm.DB) error {
 		&accounting_models.FiscalYear{},
 		&accounting_models.AccountGroup{},
 		&accounting_models.Account{},
+		&accounting_models.AccountMapping{},
 
 		&accounting_models.JournalEntry{},
 		&accounting_models.JournalLine{},

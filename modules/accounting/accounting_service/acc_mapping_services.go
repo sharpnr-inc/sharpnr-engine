@@ -3,6 +3,8 @@ package accounting_service
 import (
 	"context"
 	accountingdtos "sharpnr-engine/modules/accounting/accounting_dtos"
+	"sharpnr-engine/modules/accounting/accounting_models"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -32,4 +34,35 @@ func (s *accountingServices) GetAccountMapping(
 	}
 
 	return resp, nil
+}
+
+func (s *accountingServices) CreateAccountMapping(
+	ctx context.Context,
+	orgId uuid.UUID,
+	req accountingdtos.CreateAccountMappingRequest_dto,
+) error {
+
+	account, err := s.accRepo.GetAccountByID(ctx, req.AccountID)
+	if err != nil {
+		return err
+	}
+
+	mapping := &accounting_models.AccountMapping{
+		ID:         uuid.New(),
+		OrgID:      orgId,
+		Module:     "HOSPITALITY",
+		SubModule:  "HOTEL",
+		SourceType: req.SourceType,
+		SourceCode: req.SourceCode,
+		AccountID:  account.ID,
+		Account:    *account,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+	}
+
+	if err := s.accRepo.CreateAccountMapping(ctx, mapping); err != nil {
+		return err
+	}
+
+	return nil
 }

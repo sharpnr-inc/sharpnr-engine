@@ -13,3 +13,10 @@ type AccountMappingDTO struct {
 	AccountName string    `json:"account_name"`
 	AccountCode string    `json:"account_code"`
 }
+
+type CreateAccountMappingRequest_dto struct {
+	SourceType string `json:"source_type"`
+	SourceCode string `json:"source_code"`
+
+	AccountID uuid.UUID `json:"account_id"`
+}

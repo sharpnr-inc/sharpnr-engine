@@ -161,4 +161,9 @@ type AccountingRepositoryInterface interface {
 		ctx context.Context,
 		orgID uuid.UUID,
 	) ([]accounting_models.AccountMapping, error)
+
+	CreateAccountMapping(
+		ctx context.Context,
+		accountMapping *accounting_models.AccountMapping,
+	) error
 }

@@ -42,5 +42,11 @@ type AccountingServiceInterface interface {
 		orgID uuid.UUID,
 	) ([]accountingdtos.AccountMappingDTO, error)
 
+	CreateAccountMapping(
+		ctx context.Context,
+		orgId uuid.UUID,
+		req accountingdtos.CreateAccountMappingRequest_dto,
+	) error
+
 	// -----------------------------------------------------------------------//
 }

@@ -44,7 +44,7 @@ func RegisterAccountingRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 		mappings := accRoutes.Group("/mappings")
 		{
 			mappings.GET("", accController.GetAllAccountMapping)
-			mappings.POST("", accController.CreateTest)
+			mappings.POST("", accController.CreateAccountMapping)
 		}
 
 		// -------------------------

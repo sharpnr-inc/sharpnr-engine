@@ -75,3 +75,25 @@ const (
 	BillFinalized BillStatus = "FINALIZED"
 	BillCancelled BillStatus = "CANCELLED"
 )
+
+type SourceType string
+
+const (
+	// -------------------------
+	// Revenue / Cost generation
+	// -------------------------
+	SourceCharge  SourceType = "CHARGE"  // room rent, food, service, minibar
+	SourceTax     SourceType = "TAX"     // CGST, SGST, IGST
+	SourcePayment SourceType = "PAYMENT" // cash, card, UPI, bank
+
+	// -------------------------
+	// System generated
+	// -------------------------
+	SourceSystem SourceType = "SYSTEM" // receivable, payable, rounding
+
+	// -------------------------
+	// Adjustments
+	// -------------------------
+	SourceAdjustment SourceType = "ADJUSTMENT" // discounts, write-offs
+	SourceRefund     SourceType = "REFUND"     // customer refund
+)

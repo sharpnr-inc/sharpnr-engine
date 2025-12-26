@@ -2,6 +2,7 @@ package accounting_controllers
 
 import (
 	"net/http"
+	accountingdtos "sharpnr-engine/modules/accounting/accounting_dtos"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
@@ -9,8 +10,59 @@ import (
 )
 
 func (c *accountingController) CreateAccountMapping(ctx *gin.Context) {
-	// it will takes the Request and create the mapping for the Accounting book
-	panic("unimplemented")
+	// 1️⃣ Extract Org UUID from context
+	orgUUIDVal, exists := ctx.Get("OrgUUID")
+	if !exists {
+		utils.ErrorResponse(
+			ctx,
+			http.StatusUnauthorized,
+			"Organization UUID missing",
+			nil,
+		)
+		return
+	}
+
+	orgID, ok := orgUUIDVal.(uuid.UUID)
+	if !ok {
+		utils.ErrorResponse(
+			ctx,
+			http.StatusBadRequest,
+			"Invalid organization UUID",
+			nil,
+		)
+		return
+	}
+
+	// 2️⃣ Bind request body
+	var req accountingdtos.CreateAccountMappingRequest_dto
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.ErrorResponse(
+			ctx,
+			http.StatusBadRequest,
+			"Invalid request payload",
+			err,
+		)
+		return
+	}
+
+	// 3️⃣ Call service
+	err := c.accSvc.CreateAccountMapping(ctx, orgID, req)
+	if err != nil {
+		utils.ErrorResponse(
+			ctx,
+			http.StatusInternalServerError,
+			"Failed to create account mapping",
+			err,
+		)
+		return
+	}
+
+	utils.SuccessResponse(
+		ctx,
+		http.StatusCreated,
+		"Account mapping created successfully",
+		"",
+	)
 }
 
 func (c *accountingController) GetAllAccountMapping(ctx *gin.Context) {
