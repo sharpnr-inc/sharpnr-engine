@@ -33,6 +33,18 @@ type AccountingServiceInterface interface {
 
 	// -----------------------------------------------------------------------//
 
+	/************************************
+	 * All Service Methods for Accounts *
+	************************************/
+
+	CreateAccount(
+		ctx context.Context,
+		orgID uuid.UUID,
+		req accountingdtos.CreateAccountRequest,
+	) error
+
+	// -----------------------------------------------------------------------//
+
 	/***********************************************
 	 * All the Service methods for Account Mapping *
 	 ***********************************************/

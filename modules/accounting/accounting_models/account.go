@@ -65,6 +65,10 @@ type Account struct {
 	// It should never be changed after creation.
 	Type accountingconstants.AccountGroupType `gorm:"type:varchar(20);not null"`
 
+	// Opening balance for a fiscal year
+	OpeningBalance float64 `gorm:"default:0"`
+	OpeningIsDebit bool    `gorm:"default:true"`
+
 	// IsDefault indicates whether this is a system-defined default account.
 	//
 	// Default accounts are created during initial accounting setup

@@ -3,6 +3,7 @@ package accounting_controllers
 import (
 	"fmt"
 	"net/http"
+	accountingdtos "sharpnr-engine/modules/accounting/accounting_dtos"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
@@ -44,4 +45,21 @@ func (c *accountingController) GetAccounts(ctx *gin.Context) {
 	}
 	fmt.Println(bookID)
 	fmt.Println(orgID)
+}
+
+func (c *accountingController) CreateAccount(ctx *gin.Context) {
+	orgID := ctx.MustGet("OrgUUID").(uuid.UUID)
+
+	var req accountingdtos.CreateAccountRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.ErrorResponse(ctx, 400, err.Error(), nil)
+		return
+	}
+
+	if err := c.accSvc.CreateAccount(ctx, orgID, req); err != nil {
+		utils.ErrorResponse(ctx, 400, err.Error(), nil)
+		return
+	}
+
+	utils.SuccessResponse(ctx, 201, "Account created successfully", "")
 }
