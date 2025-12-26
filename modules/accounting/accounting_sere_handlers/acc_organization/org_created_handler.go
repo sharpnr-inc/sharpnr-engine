@@ -1,4 +1,4 @@
-package accounting_sere_handlers
+package acc_organization
 
 import (
 	"log/slog"

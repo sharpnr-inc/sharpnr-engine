@@ -34,7 +34,7 @@ func RegisterAccountingRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 			// -------------------------
 			// Accounts
 			// -------------------------
-			books.GET("/:bookId/accounts", accController.CreateTest)
+			books.GET("/:bookId/accounts", accController.GetAccounts)
 			books.GET("/:bookId/accounts/:accountId", accController.CreateTest)
 		}
 

@@ -138,17 +138,16 @@ func (r *hotelService) CreateBookingForRoom(
 			BookingID:   booking.ID,
 			ChargesId:   charges.ID,
 			ChargesType: charges.ChargeType,
+			HotelID:     booking.HotelID,
+			OrgID:       orgId,
+			Quantity:    charges.Quantity,
+			UnitAmount:  charges.UnitRate,
+			ReferenceID: charges.ReferenceID,
+			TotalAmount: charges.Amount,
+			OccurredAt:  time.Now(),
 		})
 
 	return nil
-}
-
-func calculateNights(checkIn, checkOut time.Time) float64 {
-	days := checkOut.Sub(checkIn).Hours() / 24
-	if days < 1 {
-		return 1
-	}
-	return float64(int(days))
 }
 
 func (r *hotelService) GetRoomBookingDetails(ctx context.Context, roomId, orgID uuid.UUID) (*hoteldtos.BookingDetailsDTO, error) {

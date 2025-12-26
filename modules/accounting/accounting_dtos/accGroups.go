@@ -18,4 +18,11 @@ type AccountingGroup_Response_dto struct {
 	CreatedAt time.Time `json:"created_at"`
 
 	UpdatedAt time.Time `json:"updated_at"`
+
+	Accounts []AccountsResponse_dto `json:"accounts"`
+}
+
+type AccountsResponse_dto struct {
+	ID   string
+	Name string
 }
