@@ -58,6 +58,32 @@ type AccountingRepositoryInterface interface {
 		orgID uuid.UUID,
 	) ([]accounting_models.AccountingBook, error)
 
+	// GetAccountingBookByOrgAndSubModule fetches an accounting book
+	// scoped to an organization and a specific sub-module.
+	//
+	// Returns:
+	//   - (*AccountingBook, nil) if found
+	//   - (nil, nil) if not found
+	//   - (nil, error) on database errors
+	GetAccountingBookByOrgAndSubModule(
+		ctx context.Context,
+		orgID uuid.UUID,
+		subModule string,
+	) (*accounting_models.AccountingBook, error)
+
+	// GetAccountingBookByOrgAndModule fetches an accounting book
+	// scoped to an organization and a module.
+	//
+	// Returns:
+	//   - (*AccountingBook, nil) if found
+	//   - (nil, nil) if not found
+	//   - (nil, error) on database errors
+	GetAccountingBookByOrgAndModule(
+		ctx context.Context,
+		orgID uuid.UUID,
+		module string,
+	) (*accounting_models.AccountingBook, error)
+
 	// ------------------------
 	// Fiscal Year
 	// ------------------------
@@ -155,6 +181,10 @@ type AccountingRepositoryInterface interface {
 		from, to time.Time,
 	) ([]accounting_models.JournalLine, error)
 
+	/***************************************************
+	 * ⭐ Account Mapping *
+	***************************************************/
+
 	// This repo Method return array of Accounting Mapping in Array
 	// it also need sub-module of module like BAR, HOTEL in Hospitality module
 	GetAccountMappingsByOrg(
@@ -166,4 +196,12 @@ type AccountingRepositoryInterface interface {
 		ctx context.Context,
 		accountMapping *accounting_models.AccountMapping,
 	) error
+
+	ResolveAccountMapping(
+		ctx context.Context,
+		orgID uuid.UUID,
+		module string,
+		sourceType string,
+		sourceCode string,
+	) (*accounting_models.Account, error)
 }

@@ -49,3 +49,55 @@ func (r *accountingRepository) GetAccountingBooksByOrgID(ctx context.Context, or
 
 	return books, nil
 }
+
+func (r *accountingRepository) GetAccountingBookByOrgAndSubModule(
+	ctx context.Context,
+	orgID uuid.UUID,
+	subModule string,
+) (*accounting_models.AccountingBook, error) {
+
+	var book accounting_models.AccountingBook
+
+	err := r.db.WithContext(ctx).
+		Where(
+			"org_id = ? AND sub_module = ?",
+			orgID,
+			subModule,
+		).
+		First(&book).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &book, nil
+}
+
+func (r *accountingRepository) GetAccountingBookByOrgAndModule(
+	ctx context.Context,
+	orgID uuid.UUID,
+	module string,
+) (*accounting_models.AccountingBook, error) {
+
+	var book accounting_models.AccountingBook
+
+	err := r.db.WithContext(ctx).
+		Where(
+			"org_id = ? AND module = ?",
+			orgID,
+			module,
+		).
+		First(&book).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &book, nil
+}
