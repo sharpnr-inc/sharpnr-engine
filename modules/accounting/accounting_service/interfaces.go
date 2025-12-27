@@ -75,4 +75,10 @@ type AccountingServiceInterface interface {
 		limit int,
 		offset int,
 	) ([]accountingdtos.JournalEntryListDTO, int64, error)
+
+	GetTransactionDetails(
+		ctx context.Context,
+		orgID uuid.UUID,
+		entryID uuid.UUID,
+	) (*accountingdtos.JournalEntryDetailDTO, error)
 }

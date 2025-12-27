@@ -72,7 +72,7 @@ func RegisterAccountingRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 		tranx := accRoutes.Group("/transactions")
 		{
 			tranx.GET("", accController.GetTransactions)
-			tranx.GET("/entry/:entryID")
+			tranx.GET("/entry/:entryId", accController.GetTransactionDetails)
 		}
 	}
 }

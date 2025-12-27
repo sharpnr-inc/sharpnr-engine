@@ -129,3 +129,33 @@ func (r *accountingRepository) GetJournalEntryTotals(
 
 	return res.TotalDebit, res.TotalCredit, nil
 }
+
+func (r *accountingRepository) GetJournalEntryWithLines(
+	ctx context.Context,
+	entryID uuid.UUID,
+) (*accounting_models.JournalEntry, []accounting_models.JournalLine, error) {
+
+	var entry accounting_models.JournalEntry
+	var lines []accounting_models.JournalLine
+
+	// 1️⃣ Fetch Journal Entry
+	if err := r.db.
+		WithContext(ctx).
+		First(&entry, "id = ?", entryID).
+		Error; err != nil {
+		return nil, nil, err
+	}
+
+	// 2️⃣ Fetch Journal Lines with Account info
+	if err := r.db.
+		WithContext(ctx).
+		Preload("Account").
+		Where("journal_entry_id = ?", entryID).
+		Order("created_at ASC").
+		Find(&lines).
+		Error; err != nil {
+		return nil, nil, err
+	}
+
+	return &entry, lines, nil
+}

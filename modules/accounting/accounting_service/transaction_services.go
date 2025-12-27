@@ -77,3 +77,46 @@ func sumJournalLines(
 
 	return totalDebit, totalCredit
 }
+
+func (s *accountingServices) GetTransactionDetails(
+	ctx context.Context,
+	orgID uuid.UUID,
+	entryID uuid.UUID,
+) (*accountingdtos.JournalEntryDetailDTO, error) {
+
+	entry, lines, err := s.accRepo.GetJournalEntryWithLines(ctx, entryID)
+	if err != nil {
+		return nil, err
+	}
+
+	// 🔐 Optional safety: validate org via book
+	book, err := s.accRepo.GetAccountingBookByID(ctx, entry.AccountingBookID)
+	if err != nil {
+		return nil, err
+	}
+	if book.OrgID != orgID {
+		return nil, errors.New("unauthorized access")
+	}
+
+	resp := &accountingdtos.JournalEntryDetailDTO{
+		ID:        entry.ID,
+		EntryDate: entry.EntryDate,
+		Reference: entry.Reference,
+		Narration: entry.Narration,
+		Lines:     []accountingdtos.JournalLineDTO{},
+	}
+
+	for _, l := range lines {
+		resp.Lines = append(resp.Lines, accountingdtos.JournalLineDTO{
+			AccountID:   l.AccountID,
+			AccountName: l.Account.Name,
+			AccountCode: l.Account.Code,
+			Debit:       l.Debit,
+			Credit:      l.Credit,
+		})
+		resp.TotalDebit += l.Debit
+		resp.TotalCredit += l.Credit
+	}
+
+	return resp, nil
+}

@@ -172,6 +172,11 @@ type AccountingRepositoryInterface interface {
 		entryID uuid.UUID,
 	) (totalDebit float64, totalCredit float64, err error)
 
+	GetJournalEntryWithLines(
+		ctx context.Context,
+		entryID uuid.UUID,
+	) (*accounting_models.JournalEntry, []accounting_models.JournalLine, error)
+
 	// ------------------------
 	// Journal Lines (Ledger Backbone)
 	// ------------------------
