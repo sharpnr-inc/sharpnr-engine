@@ -57,3 +57,75 @@ func (r *accountingRepository) GetJournalEntryByID(ctx context.Context, entryID 
 
 	return &entry, nil
 }
+
+func (r *accountingRepository) GetJournalEntries(
+	ctx context.Context,
+	bookID uuid.UUID,
+	from time.Time,
+	to time.Time,
+	limit int,
+	offset int,
+) ([]accounting_models.JournalEntry, int64, error) {
+
+	var entries []accounting_models.JournalEntry
+	var total int64
+
+	baseQuery := r.db.
+		WithContext(ctx).
+		Model(&accounting_models.JournalEntry{}).
+		Where(
+			"accounting_book_id = ? AND entry_date BETWEEN ? AND ?",
+			bookID,
+			from,
+			to,
+		)
+
+	// Count
+	if err := baseQuery.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// Fetch
+	err := baseQuery.
+		Order("entry_date DESC, created_at DESC").
+		Limit(limit).
+		Offset(offset).
+		Find(&entries).
+		Error
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return entries, total, nil
+}
+
+func (r *accountingRepository) GetJournalEntryTotals(
+	ctx context.Context,
+	entryID uuid.UUID,
+) (float64, float64, error) {
+
+	type result struct {
+		TotalDebit  float64
+		TotalCredit float64
+	}
+
+	var res result
+
+	err := r.db.
+		WithContext(ctx).
+		Model(&accounting_models.JournalLine{}).
+		Select(`
+			COALESCE(SUM(debit), 0) AS total_debit,
+			COALESCE(SUM(credit), 0) AS total_credit
+		`).
+		Where("journal_entry_id = ?", entryID).
+		Scan(&res).
+		Error
+
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return res.TotalDebit, res.TotalCredit, nil
+}

@@ -3,6 +3,7 @@ package accounting_service
 import (
 	"context"
 	accountingdtos "sharpnr-engine/modules/accounting/accounting_dtos"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -61,4 +62,17 @@ type AccountingServiceInterface interface {
 	) error
 
 	// -----------------------------------------------------------------------//
+
+	/*******************************
+	 * Transactions related method *
+	*******************************/
+	GetTransactions(
+		ctx context.Context,
+		orgID uuid.UUID,
+		bookID uuid.UUID,
+		from time.Time,
+		to time.Time,
+		limit int,
+		offset int,
+	) ([]accountingdtos.JournalEntryListDTO, int64, error)
 }

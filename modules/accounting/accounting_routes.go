@@ -66,5 +66,13 @@ func RegisterAccountingRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 			reports.GET("/profit-loss", accController.CreateTest)
 			reports.GET("/balance-sheet", accController.CreateTest)
 		}
+
+		// Transactions
+
+		tranx := accRoutes.Group("/transactions")
+		{
+			tranx.GET("", accController.GetTransactions)
+			tranx.GET("/entry/:entryID")
+		}
 	}
 }

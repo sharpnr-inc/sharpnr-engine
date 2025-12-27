@@ -158,6 +158,20 @@ type AccountingRepositoryInterface interface {
 		from, to time.Time,
 	) ([]accounting_models.JournalEntry, error)
 
+	GetJournalEntries(
+		ctx context.Context,
+		bookID uuid.UUID,
+		from time.Time,
+		to time.Time,
+		limit int,
+		offset int,
+	) ([]accounting_models.JournalEntry, int64, error)
+
+	GetJournalEntryTotals(
+		ctx context.Context,
+		entryID uuid.UUID,
+	) (totalDebit float64, totalCredit float64, err error)
+
 	// ------------------------
 	// Journal Lines (Ledger Backbone)
 	// ------------------------
