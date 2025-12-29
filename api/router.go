@@ -12,21 +12,35 @@ import (
 
 // SetupRouter creates and configures the main Gin router.
 // It delegates the registration of specific API versions to their respective packages.
-func SetupRouter(db *gorm.DB, redis *redis.Client, sere *sere.SERE) *gin.Engine {
+func SetupRouter(
+	db *gorm.DB,
+	redis *redis.Client,
+	sere *sere.SERE,
+) *gin.Engine {
+
 	router := gin.Default()
-	router.Use(middlewares.CORSMiddleWare())
-	// Create a router group for the v1 API.
-	v1Group := router.Group("/api/v1")
 
-	// Register all V1 routes.
-	v1.AuthRoutes(v1Group, db, redis, sere)
-	v1.RegisterModuleRoutes(v1Group, db, sere)
-	v1.CoreOrgRoutes(v1Group, db, redis)
+	// ✅ ONE CORS middleware for everything
+	router.Use(middlewares.UnifiedCORSMiddleware())
 
-	// If you had a v2, you would register it here:
-	// v2.RegisterV2Routes(router, db)
+	// ========================
+	// 🌐 WEB API (cookies)
+	// ========================
+	webV1 := router.Group("/api/v1")
+	{
+		v1.AuthRoutes(webV1, db, redis, sere)
+		v1.RegisterModuleRoutes(webV1, db, sere)
+		v1.CoreOrgRoutes(webV1, db, redis)
+		v1.UtilsRoutes(webV1)
+	}
 
-	v1.UtilsRoutes(v1Group)
+	// ========================
+	// 📱 MOBILE API (tokens)
+	// ========================
+	mobileV1 := router.Group("/api/v1/mobile")
+	{
+		v1.MobileAuthRoutes(mobileV1, db, redis, sere)
+	}
 
 	return router
 }
