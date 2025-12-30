@@ -34,3 +34,17 @@ type HREmployeeRepositoryInterface interface {
 	// Ensures that deletion is tenant-scoped by requiring orgID.
 	RemoveEmployee(ctx context.Context, orgID, empID uuid.UUID) error
 }
+
+type EmployeeVerificationRepositoryInterface interface {
+	Create(ctx context.Context, v *sharphr_models.EmployeeVerification) error
+	FindValidByTokenHash(ctx context.Context, hash string) (*sharphr_models.EmployeeVerification, bool, error)
+	MarkVerified(ctx context.Context, id uuid.UUID) error
+	InvalidateAll(ctx context.Context, employeeID uuid.UUID) error
+}
+
+type EmployeeAuthRepository interface {
+	FindByEmail(ctx context.Context, email string) (*sharphr_models.EmployeeAuth, bool, error)
+	Create(ctx context.Context, auth *sharphr_models.EmployeeAuth) error
+	Activate(ctx context.Context, employeeID uuid.UUID) error
+	SetPassword(ctx context.Context, employeeID uuid.UUID, hash string) error
+}

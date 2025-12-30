@@ -7,10 +7,20 @@ import (
 )
 
 func RegisterHRRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
-	hrRoutes := v1.Group("/sharp-hr/")
 
-	hrRoutes.POST("/employee/add-employee")
-	hrRoutes.GET("/employee/get")
-	hrRoutes.GET("/employee/get/:employeeId")
+	hr := v1.Group("/sharp-hr")
+
+	employees := hr.Group("/employees")
+	{
+		employees.POST("/add")
+		employees.GET("")             // List employees (filters, pagination)
+		employees.GET("/:employeeId") // Returns employee details
+	}
+
+	profile := employees.Group("/:employeeId/profile")
+	{
+		profile.GET("") // Get profile
+		profile.PUT("") // Update profile
+	}
 
 }
