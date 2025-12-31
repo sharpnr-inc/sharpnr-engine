@@ -3,6 +3,7 @@ package sharphr_models
 import (
 	"sharpnr-engine/core/constants"
 	"sharpnr-engine/core/models"
+	hr_emp_constants "sharpnr-engine/modules/hr/employees/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -17,25 +18,34 @@ type Employee struct {
 	Email       string `gorm:"not null"`
 	PhoneNumber string `gorm:"size:20"`
 
-	ReportingMangerID string
-
-	SkipLevelMangerID string
-
 	OrganizationID uuid.UUID           `gorm:"type:uuid;not null;index"`
 	Organization   models.Organization `gorm:"foreignKey:OrganizationID"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt          `gorm:"index"`
-	Role      constants.EmployeeRoles `gorm:"type:varchar(50);not null"`
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 
-	IsEmailVerified  bool
-	Address          string
-	EmergencyContact string
-	IsIDVerified     string
-	Salary           string
+	Role constants.EmployeeRoles `gorm:"type:varchar(50);not null"`
 
+	// Need to Add constants
 	Status string
+
+	// To be migrated
+	IsEmailVerified bool
+}
+
+type EmployeeOnboarding struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	EmployeeID uuid.UUID `gorm:"type:uuid;uniqueIndex"`
+
+	Status hr_emp_constants.EmployeeOnboardingStatus `gorm:"type:varchar(50);not null"`
+
+	LastUpdatedBy *uuid.UUID
+	Notes         *string
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type EmployeeVerification struct {
@@ -64,8 +74,28 @@ type EmployeeAuth struct {
 
 	PasswordHash string
 
-	IsActive    bool
+	IsActive      bool
+	IsProvisioned bool
+
+	CanAccessMobile    bool
+	CanAccessDashboard bool
+	CanAccessPOS       bool
+
 	LastLoginAt *time.Time
+}
+
+type EmployeePrivilegePolicy struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	EmployeeID uuid.UUID `gorm:"type:uuid;not null;index"`
+	PolicyID   uuid.UUID `gorm:"type:uuid;not null;index"`
+
+	// Optional but VERY useful
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
+	Domain         string    `gorm:"type:varchar(50)"` // HOSPITALITY, HR, etc.
+
+	AssignedAt time.Time
+	AssignedBy uuid.UUID // HR employee
 }
 
 type EmployeeSession struct {

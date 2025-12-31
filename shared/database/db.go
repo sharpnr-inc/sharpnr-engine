@@ -53,7 +53,27 @@ func MigrateDB(db *gorm.DB) error {
 		&models.OrgUIRendererTree{},
 		&models.OrganizationBrandingDetails{},
 		&models.OrganizationBankAccount{},
+
+		// -------------------------------
+		// Employee Models
+		// -------------------------------
+
 		&sharphr_models.Employee{},
+		&sharphr_models.EmployeeOnboarding{},
+		&sharphr_models.EmployeeVerification{},
+		&sharphr_models.EmployeeAuth{},
+		&sharphr_models.EmployeePrivilegePolicy{},
+		&sharphr_models.EmployeeSession{},
+		&sharphr_models.EmployeeProfile{},
+		&sharphr_models.EmployeeBankAccount{},
+		&sharphr_models.EmployeeDocument{},
+		&sharphr_models.EmployeeReporting{},
+		&sharphr_models.EmployeeEmployment{},
+		&sharphr_models.EmployeeCompensation{},
+		&sharphr_models.EmployeeSalaryComponent{},
+		&sharphr_models.EmployeeLeaveType{},
+		&sharphr_models.EmployeeLeaveBalance{},
+		&sharphr_models.EmployeeLeaveRequest{},
 
 		// -------------------------------
 		// 🏨 HOSPITALITY MODELS
