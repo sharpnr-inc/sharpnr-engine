@@ -28,9 +28,12 @@ func SetupRouter(
 	// ========================
 	webV1 := router.Group("/api/v1")
 	{
+		v1.SignUpRoutes(webV1, db, redis, sere)
+
 		v1.AuthRoutes(webV1, db, redis, sere)
+
 		v1.RegisterModuleRoutes(webV1, db, sere)
-		v1.CoreOrgRoutes(webV1, db, redis)
+
 		v1.UtilsRoutes(webV1)
 	}
 

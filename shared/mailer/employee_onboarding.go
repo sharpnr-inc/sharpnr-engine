@@ -12,7 +12,7 @@ func SendVerificationLinkToEmployee(email_add string, rawToken string) (bool, er
 
 	appURL := os.Getenv("FE_APP_URL")
 	verifyURL := fmt.Sprintf(
-		"%s/org/employee-verification?token=%s",
+		"%s/sharp-org-employee/verification?token=%s",
 		appURL,
 		rawToken,
 	)

@@ -51,7 +51,6 @@ func MigrateDB(db *gorm.DB) error {
 		&models.Organization{},
 		&models.OrganizationPolicy{},
 		&models.OrgUIRendererTree{},
-		&models.OrganizationBrandingDetails{},
 		&models.OrganizationBankAccount{},
 
 		// -------------------------------

@@ -51,53 +51,10 @@ func (s *signupService) CompleteOrgRegistration(
 		OrganizationID: existingOrg.ID,
 		Organization:   *existingOrg,
 	}
+
 	if err := s.kitchenRepo.CreateKitchen(ctx, defaultKitchen); err != nil {
 		return nil, "", fmt.Errorf("failed to create kitchen: %w", err)
 	}
-
-	// -------------------- Step 4: Create UI Renderer --------------------
-	// if _, err := s.uiRenderRepo.CreateOrgUIRenderer(ctx, existingOrg.ID, req.OrgSubModule, existingOrg.OrgOperationType); err != nil {
-	// 	fmt.Printf("⚠️ Failed to create UI renderer for org %s: %v\n", existingOrg.ID, err)
-	// }
-
-	// -------------------- Step 5: Setup Module(s) --------------------
-	// modules := req.OrgSubModule
-	// sort.Strings(modules) // Ensure consistent order for key
-	// key := strings.Join(modules, "_")
-	// fmt.Printf("🔑 Module combination key: %s\n", key)
-
-	// switch key {
-	// case "BAR":
-	// 	if err := s.SetUpBar(ctx, existingOrg, defaultKitchen); err != nil {
-	// 		return nil, "", fmt.Errorf("failed to set up BAR module: %w", err)
-	// 	}
-	// case "HOTEL":
-	// 	if err := s.SetUpHotel(ctx, existingOrg, defaultKitchen); err != nil {
-	// 		return nil, "", fmt.Errorf("failed to set up HOTEL module: %w", err)
-	// 	}
-	// case "RESTAURANT":
-	// 	if err := s.SetUpRestaurant(ctx, existingOrg, defaultKitchen); err != nil {
-	// 		return nil, "", fmt.Errorf("failed to set up RESTAURANT module: %w", err)
-	// 	}
-	// case "BAR_HOTEL":
-	// 	if err := s.SetUpHotelBar(ctx, existingOrg, defaultKitchen); err != nil {
-	// 		return nil, "", fmt.Errorf("failed to set up BAR_HOTEL modules: %w", err)
-	// 	}
-	// case "BAR_RESTAURANT":
-	// 	if err := s.SetUpBarRestaurant(ctx, existingOrg, defaultKitchen); err != nil {
-	// 		return nil, "", fmt.Errorf("failed to set up BAR_RESTAURANT modules: %w", err)
-	// 	}
-	// case "HOTEL_RESTAURANT":
-	// 	if err := s.SetUpHotelRestaurant(ctx, existingOrg, defaultKitchen); err != nil {
-	// 		return nil, "", fmt.Errorf("failed to set up HOTEL_RESTAURANT modules: %w", err)
-	// 	}
-	// case "BAR_HOTEL_RESTAURANT":
-	// 	if err := s.SetUpBarHotelRestaurant(ctx, existingOrg, defaultKitchen); err != nil {
-	// 		return nil, "", fmt.Errorf("failed to set up BAR_HOTEL_RESTAURANT modules: %w", err)
-	// 	}
-	// default:
-	// 	fmt.Printf("⚠️ Unknown module combination: %s\n", key)
-	// }
 
 	domainSteps := hospitality_setup.HospitalityModuleSetupFactory(req.OrgSubModule)
 

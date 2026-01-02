@@ -45,11 +45,10 @@ type GetEmployeeDetails_RESPONSE_DTO struct {
 }
 
 type CreateEmployeeInOrganization_RequestDTO struct {
-	Name           string `json:"name" binding:"required"`
-	Email          string `json:"email" binding:"required,email"`
-	Mobile         string `json:"mobile_number"`
-	OrganizationID string `json:"organizationId" binding:"required"`
-	Role           string `json:"employee_role"`
+	Name   string `json:"name" binding:"required"`
+	Email  string `json:"email" binding:"required,email"`
+	Mobile string `json:"mobile_number"`
+	Role   string `json:"employee_role"`
 }
 
 type CreateEmployeeInOrganizationResponseDTO struct {

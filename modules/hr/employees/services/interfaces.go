@@ -20,4 +20,10 @@ type HrEmployeeServiceInterface interface {
 	// UpdateEmployeeDetails updates an existing employee's details within the organization.
 	// Returns the updated employee object and an error, if any.
 	UpdateEmployeeDetails(ctx context.Context, orgID uuid.UUID, emp *sharphr_models.Employee) (*sharphr_models.Employee, error)
+
+	CreateNewEmployee(
+		ctx context.Context,
+		orgID uuid.UUID,
+		req sharphrdtos.CreateEmployeeInOrganization_RequestDTO,
+	) error
 }

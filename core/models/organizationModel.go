@@ -54,8 +54,3 @@ type Organization struct {
 	// Relationships
 	BankAccounts []OrganizationBankAccount `gorm:"foreignKey:OrganizationID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
-
-// TableName specifies the table name
-func (Organization) TableName() string {
-	return "organizations"
-}
