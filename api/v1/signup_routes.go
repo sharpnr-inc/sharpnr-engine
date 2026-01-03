@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"sharpnr-engine/cookieManager"
 	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
@@ -8,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func SignUpRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client, sere *sere.SERE) {
+func SignUpRoutes(v1 *gin.RouterGroup, db *gorm.DB, redis *redis.Client, sere *sere.SERE, cookies cookieManager.Manager) {
 
 	signup := v1.Group("/signup")
 

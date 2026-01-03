@@ -7,6 +7,7 @@ import (
 	"sharpnr-engine/api"
 	"sharpnr-engine/app"
 	"sharpnr-engine/config"
+	"sharpnr-engine/cookieManager"
 	"sharpnr-engine/modules/accounting/accounting_repo"
 	"sharpnr-engine/sere"
 	"sharpnr-engine/shared/database"
@@ -61,8 +62,13 @@ func main() {
 
 	app.RegisterSereEventHandler(sereEngine, accountingRepo)
 
+	cookieMgr := cookieManager.New(cookieManager.Config{
+		Secure: false,
+		Domain: "",
+	})
+
 	// Create and configure the main router
-	r := api.SetupRouter(db, redisDb, sereEngine)
+	r := api.SetupRouter(db, redisDb, sereEngine, cookieMgr)
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

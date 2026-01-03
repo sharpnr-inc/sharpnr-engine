@@ -2,6 +2,7 @@ package api
 
 import (
 	v1 "sharpnr-engine/api/v1"
+	"sharpnr-engine/cookieManager"
 	"sharpnr-engine/middlewares"
 	"sharpnr-engine/sere"
 
@@ -16,6 +17,7 @@ func SetupRouter(
 	db *gorm.DB,
 	redis *redis.Client,
 	sere *sere.SERE,
+	cookies cookieManager.Manager,
 ) *gin.Engine {
 
 	router := gin.Default()
@@ -28,7 +30,7 @@ func SetupRouter(
 	// ========================
 	webV1 := router.Group("/api/v1")
 	{
-		v1.SignUpRoutes(webV1, db, redis, sere)
+		v1.SignUpRoutes(webV1, db, redis, sere, cookies)
 
 		v1.AuthRoutes(webV1, db, redis, sere)
 
