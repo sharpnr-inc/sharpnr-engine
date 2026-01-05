@@ -3,12 +3,14 @@ package main
 // Main entry point of the application
 import (
 	"log"
+	"time"
 
 	"sharpnr-engine/api"
 	"sharpnr-engine/app"
 	"sharpnr-engine/config"
 	"sharpnr-engine/cookieManager"
 	"sharpnr-engine/modules/accounting/accounting_repo"
+	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
 	"sharpnr-engine/shared/database"
 
@@ -67,8 +69,17 @@ func main() {
 		Domain: "",
 	})
 
+	jwtmgr := jwt_manager.New(jwt_manager.Config{
+		Secret:     config.LoadJwtSecret(),
+		Issuer:     "Sharpnr-Engine-V1-alpha",
+		Audience:   "sharpnr-app",
+		AccessTTL:  15 * time.Minute,
+		RefreshTTL: 14 * 24 * time.Hour,
+		SignupTTL:  15 * time.Minute,
+	})
+
 	// Create and configure the main router
-	r := api.SetupRouter(db, redisDb, sereEngine, cookieMgr)
+	r := api.SetupRouter(db, redisDb, sereEngine, cookieMgr, jwtmgr)
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

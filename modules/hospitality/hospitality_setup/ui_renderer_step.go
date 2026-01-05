@@ -2,9 +2,8 @@ package hospitality_setup
 
 import (
 	"context"
-	"time"
+	"fmt"
 
-	"sharpnr-engine/core/models"
 	sharpnruirenderer "sharpnr-engine/sharpnr_ui_renderer"
 
 	"github.com/google/uuid"
@@ -28,13 +27,17 @@ func (s *UIRendererSetupStep) Execute(ctx context.Context, c SetupContext) error
 		return err
 	}
 
-	tree := &models.OrgUIRendererTree{
-		ID:             rendererID,
-		UIRendererTree: uiTree,
-		OrganizationID: c.Org.ID,
-		CreatedAt:      time.Now(),
-		UpdatedAt:      time.Now(),
-	}
+	fmt.Println(uiTree)
 
-	return c.UIRenderRepo.CreateOrgUIRenderer(ctx, tree)
+	// tree := &models.OrgUIRendererTree{
+	// 	ID:             rendererID,
+	// 	UIRendererTree: uiTree,
+	// 	OrganizationID: c.Org.ID,
+	// 	CreatedAt:      time.Now(),
+	// 	UpdatedAt:      time.Now(),
+	// }
+
+	// return c.UIRenderRepo.CreateOrgUIRenderer(ctx, tree)
+
+	return nil
 }

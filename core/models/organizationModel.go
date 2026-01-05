@@ -11,52 +11,30 @@ import (
 
 type OrganizationSignUpStaging struct {
 	ID       uuid.UUID
+	Name     string
 	Email    string
 	Phone    string
 	Otp      string
 	Password string
 }
 
-// This is Master Model For the Organization
+/***********************************************************
+ * This Table is Master Organization                       *
+ * this table should be considered as Root or Orchestrator *
+ ***********************************************************/
 type Organization struct {
 	ID        uuid.UUID `gorm:"not null;primaryKey"`
 	Name      string    `gorm:"size:100;not null"`
 	SharpnrID string    `gorm:"not null;unique"`
 
 	OrgOperationType constants.OrgType `gorm:"type:varchar(20);not null"`
-
-	Address string `gorm:"type:varchar(255);not null"`
-	State   string `gorm:"type:varchar(100);not null" `
-	City    string `gorm:"type:varchar(100);not null"`
-	Pincode string `gorm:"type:varchar(20);not null" `
-	Country string `gorm:"type:varchar(100);not null"`
-
-	// Contact fields
-	PublicContact        string  `gorm:"type:varchar(100);not null"`
-	ContactNumber        string  `gorm:"type:varchar(20);not null"`
-	ContactNumber2       *string `gorm:"type:varchar(20)"`
-	MasterPhoneNumber    string  `gorm:"type:varchar(20)"`
-	RootEmail            string  `gorm:"type:varchar(100);not null"`
-	Is_RootEmailVerified bool    `gorm:"default:false; not null"`
-	SecondaryEmail       *string `gorm:"type:varchar(100)"`
-
-	// Verification and registration
-	IsPhysicalVerified  bool    `gorm:"default:false;not null"`
-	ISRegistered        bool    `gorm:"default:false;not null"`
-	CinNumber           *string `gorm:"type:varchar(50)"`
-	GstNumber           *string `gorm:"type:varchar(50)"`
-	OrganizationRegType *string `gorm:"type:varchar(100)"`
-
-	// Security
-	Password string `gorm:"type:char(60);not null"`
+	Status           string            // CREATED, ACTIVE, SUSPENDED
+	RootEmail        string
 
 	// Timestamps
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
-
-	Policy                 datatypes.JSON `gorm:"type:jsonb;default:'{}'"`
-	IsRegistrationComplete bool           `gorm:"default:false; not null"`
 }
 
 type OrganizationOffice struct {
@@ -100,12 +78,18 @@ type OrganizationContact struct {
 	CreatedAt time.Time
 }
 
-type OrganizationSubscriptionDetails struct {
-	ID               uuid.UUID
-	OrganizationID   uuid.UUID
-	SubscriptionID   uuid.UUID
-	SubscriptionPlan string
-	RecurringDate    time.Time
+type OrganizationSubscription struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	OrganizationID uuid.UUID `gorm:"index"`
+
+	PlanCode string
+	Status   string // ACTIVE, PAUSED, CANCELLED
+
+	RenewsAt time.Time
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type OrganizationVerification struct {
@@ -137,8 +121,7 @@ type OrganizationSetting struct {
 }
 
 type OrganizationOnBoarding struct {
-	ID             uuid.UUID
-	TempOrgID      uuid.UUID
-	OrganizationID *uuid.UUID
-	Status         string
+	ID        uuid.UUID
+	TempOrgID uuid.UUID
+	Status    string
 }

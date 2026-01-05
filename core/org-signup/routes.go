@@ -5,6 +5,8 @@ import (
 	org_signup_controllers "sharpnr-engine/core/org-signup/controllers"
 	org_signup_repositories "sharpnr-engine/core/org-signup/repositories"
 	org_signup_services "sharpnr-engine/core/org-signup/services"
+	webMiddleware "sharpnr-engine/middlewares/web"
+	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
@@ -18,21 +20,28 @@ func OrgSignUpRoute(
 	redis *redis.Client,
 	sere *sere.SERE,
 	cookies cookieManager.Manager,
+	jwtmgr jwt_manager.Manager,
 ) {
 
 	tempSignUpRepo := org_signup_repositories.NewTempOrgSignUpRepository(redis)
 	mainSignUpRepo := org_signup_repositories.NewOrgMainSignUpRepository(db)
 
 	signUpService := org_signup_services.NewOrgSignUpService(sere, tempSignUpRepo, mainSignUpRepo)
-	controller := org_signup_controllers.NewOrgSignController(signUpService, cookies)
+	controller := org_signup_controllers.NewOrgSignController(signUpService, cookies, jwtmgr)
 
-	sgnRoutes := v1.Group("/signup")
-
+	publicSignup := v1.Group("/signup")
 	{
-		sgnRoutes.POST("/initiate", controller.InitiateNewOrgRegistration)
-		sgnRoutes.GET("/resend-otp")
-		sgnRoutes.POST("/verify-otp")
-		sgnRoutes.GET("/verify-token")
-		sgnRoutes.POST("/onBoarding")
+		publicSignup.POST("/initiate", controller.InitiateNewOrgRegistration)
+	}
+
+	protectedSignup := v1.Group("/signup")
+	protectedSignup.Use(webMiddleware.SignupGuardMiddleware(jwtmgr))
+	{
+		protectedSignup.POST("/verify-otp", controller.VerifyOtpForSignup)
+		protectedSignup.GET("/verify-token", controller.GetSignUpDetails)
+
+		protectedSignup.GET("/resend-otp", controller.ResendOtp)
+
+		protectedSignup.POST("/onBoarding", controller.OnBoardOrganization)
 	}
 }

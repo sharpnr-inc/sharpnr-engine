@@ -37,6 +37,7 @@ type OrganizationHospitality struct {
 	UpdatedAt time.Time
 }
 
+// here we add the manually
 type HospitalityModule struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 

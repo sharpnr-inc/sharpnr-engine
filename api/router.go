@@ -3,8 +3,10 @@ package api
 import (
 	v1 "sharpnr-engine/api/v1"
 	"sharpnr-engine/cookieManager"
+	org_signup "sharpnr-engine/core/org-signup"
 	sharpnr_identity_auth "sharpnr-engine/core/sharpnrIdentityAuth"
 	"sharpnr-engine/middlewares"
+	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +21,7 @@ func SetupRouter(
 	redis *redis.Client,
 	sere *sere.SERE,
 	cookies cookieManager.Manager,
+	jwtmgr jwt_manager.Manager,
 ) *gin.Engine {
 
 	router := gin.Default()
@@ -31,12 +34,8 @@ func SetupRouter(
 	// ========================
 	webV1 := router.Group("/api/v1")
 	{
-		// This will be replaced
-		v1.SignUpRoutes(webV1, db, redis, sere, cookies)
-
+		org_signup.OrgSignUpRoute(webV1, db, redis, sere, cookies, jwtmgr)
 		sharpnr_identity_auth.SharpnrIdentityAuthWebRoutes(webV1, db, redis, sere, cookies)
-
-		v1.AuthRoutes(webV1, db, redis, sere)
 
 		v1.RegisterModuleRoutes(webV1, db, sere)
 
@@ -48,9 +47,6 @@ func SetupRouter(
 	// ========================
 	mobileV1 := router.Group("/api/v1/mobile")
 	{
-		// This will be Replaced
-		v1.MobileAuthRoutes(mobileV1, db, redis, sere)
-
 		sharpnr_identity_auth.SharpnrIdentityAuthMobileRoutes(mobileV1, db, redis, sere)
 	}
 

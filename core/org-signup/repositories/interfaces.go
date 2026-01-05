@@ -9,7 +9,6 @@ type TempOrgSignUpRepositoryInterface interface {
 	// Store temp org with TTL
 	Create(
 		ctx context.Context,
-		ttlSeconds int,
 		tempOrg *models.OrganizationSignUpStaging,
 	) error
 
@@ -23,8 +22,7 @@ type TempOrgSignUpRepositoryInterface interface {
 	Exists(
 		ctx context.Context,
 		signupID string,
-	) (bool, error)
-
+	) (bool, models.OrganizationSignUpStaging, error)
 	// Remove after success or expiry
 	Delete(
 		ctx context.Context,
@@ -72,4 +70,6 @@ type MainOrgSignUpRepositoryInterface interface {
 		ctx context.Context,
 		org *models.Organization,
 	) error
+
+	FindOrgBySharpnrID(ctx context.Context, Id string) (models.OrganizationSignUpStaging, bool, error)
 }

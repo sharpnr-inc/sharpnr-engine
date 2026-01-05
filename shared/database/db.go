@@ -49,9 +49,7 @@ func MigrateDB(db *gorm.DB) error {
 		// 🌐 CORE MODELS
 		// -------------------------------
 		&models.Organization{},
-		&models.OrganizationPolicy{},
-		&models.OrgUIRendererTree{},
-		&models.OrganizationBankAccount{},
+		&models.OrganizationSignUpStaging{},
 
 		// -------------------------------
 		// Employee Models

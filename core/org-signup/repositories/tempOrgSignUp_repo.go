@@ -14,7 +14,6 @@ import (
 
 func (rd *orgTempSignUpRepo) Create(
 	ctx context.Context,
-	ttlSeconds int,
 	tempOrg *models.OrganizationSignUpStaging,
 ) error {
 
@@ -26,7 +25,8 @@ func (rd *orgTempSignUpRepo) Create(
 		return errors.New("email or phone is required")
 	}
 
-	ttl := time.Duration(ttlSeconds) * time.Second
+	const signupOTPTTL = 10 * time.Minute
+	ttl := signupOTPTTL
 
 	key := "org:signup:staging:" + tempOrg.ID.String()
 
@@ -135,20 +135,42 @@ func (rd *orgTempSignUpRepo) Get(
 func (rd *orgTempSignUpRepo) Exists(
 	ctx context.Context,
 	signupID string,
-) (bool, error) {
+) (bool, models.OrganizationSignUpStaging, error) {
+
+	var staging models.OrganizationSignUpStaging
 
 	if signupID == "" {
-		return false, errors.New("signupID is required")
+		return false, staging, errors.New("signupID is required")
 	}
 
 	key := "org:signup:staging:" + signupID
 
-	count, err := rd.redis.Exists(ctx, key).Result()
+	// 1️⃣ Check existence
+	exists, err := rd.redis.Exists(ctx, key).Result()
 	if err != nil {
-		return false, err
+		return false, staging, err
 	}
 
-	return count == 1, nil
+	if exists == 0 {
+		return false, staging, nil
+	}
+
+	// 2️⃣ Fetch value
+	val, err := rd.redis.Get(ctx, key).Result()
+	if err != nil {
+		if err == redis.Nil {
+			// Key vanished between EXISTS and GET (rare but possible)
+			return false, staging, nil
+		}
+		return false, staging, err
+	}
+
+	// 3️⃣ Deserialize
+	if err := json.Unmarshal([]byte(val), &staging); err != nil {
+		return true, staging, err
+	}
+
+	return true, staging, nil
 }
 
 func (rd *orgTempSignUpRepo) Delete(

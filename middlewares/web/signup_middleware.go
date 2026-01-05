@@ -2,13 +2,17 @@ package webMiddleware
 
 import (
 	"net/http"
+	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 
 	"github.com/gin-gonic/gin"
 )
 
-const signupCookieName = "__Host-signup"
+const (
+	signupCookieName       = "__Host-signup"
+	SignupUserIDContextKey = "signup_user_id"
+)
 
-func SignupGuardMiddleware() gin.HandlerFunc {
+func SignupGuardMiddleware(jwtMgr jwt_manager.Manager) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		// If user is already authenticated, onboarding is irrelevant
@@ -20,12 +24,23 @@ func SignupGuardMiddleware() gin.HandlerFunc {
 		}
 
 		// Check signup cookie
-		if _, err := ctx.Cookie(signupCookieName); err != nil {
+		signupToken, err := ctx.Cookie(signupCookieName)
+		if err != nil || signupToken == "" {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"message": "Signup session expired or invalid",
 			})
 			return
 		}
+
+		claims, err := jwtMgr.VerifySignup(signupToken)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+				"message": "Invalid or expired signup token",
+			})
+			return
+		}
+
+		ctx.Set(SignupUserIDContextKey, claims.UserID)
 
 		ctx.Next()
 	}
