@@ -1,21 +1,23 @@
 package org_signup_repositories
 
-import "context"
+import (
+	"context"
+	"sharpnr-engine/core/models"
+)
 
 type TempOrgSignUpRepositoryInterface interface {
 	// Store temp org with TTL
 	Create(
 		ctx context.Context,
-		signupID string,
-
 		ttlSeconds int,
+		tempOrg *models.OrganizationSignUpStaging,
 	) error
 
 	// Fetch temp org
 	Get(
 		ctx context.Context,
 		signupID string,
-	) error
+	) (*models.OrganizationSignUpStaging, error)
 
 	// Existence check (used before OTP resend, etc.)
 	Exists(
@@ -28,6 +30,12 @@ type TempOrgSignUpRepositoryInterface interface {
 		ctx context.Context,
 		signupID string,
 	) error
+
+	GetByEmailOrPhone(
+		ctx context.Context,
+		email string,
+		phone string,
+	) (bool, error)
 }
 
 type MainOrgSignUpRepositoryInterface interface {
@@ -62,27 +70,6 @@ type MainOrgSignUpRepositoryInterface interface {
 	// Create the organization (final step after OTP verification)
 	CreateOrganization(
 		ctx context.Context,
-		// org *Organization,
-	) error
-
-	// ─────────────── Post-Creation Hooks (Optional but Useful) ───────────────
-
-	// Assign default owner / super admin
-	CreateOwnerEmployee(
-		ctx context.Context,
-		// owner *Employee,
-	) error
-
-	// Initialize default policies / roles
-	CreateDefaultPolicies(
-		ctx context.Context,
-		orgID string,
-	) error
-
-	// Initialize modules/submodules selected during signup
-	InitializeOrganizationModules(
-		ctx context.Context,
-		orgID string,
-		modules []string,
+		org *models.Organization,
 	) error
 }

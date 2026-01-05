@@ -40,8 +40,8 @@ type Policy struct {
 }
 
 type OrgDefaultPolicy struct {
-	Policy   Policy   `json:"Policy"`   // 👈 matches CreateOrgDefaultPolicy
-	Metadata Metadata `json:"Metadata"` // 👈 matches CreateOrgDefaultPolicy
+	Policy   Policy   `json:"Policy"`
+	Metadata Metadata `json:"Metadata"`
 }
 
 // Role types

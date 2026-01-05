@@ -3,6 +3,7 @@ package api
 import (
 	v1 "sharpnr-engine/api/v1"
 	"sharpnr-engine/cookieManager"
+	sharpnr_identity_auth "sharpnr-engine/core/sharpnrIdentityAuth"
 	"sharpnr-engine/middlewares"
 	"sharpnr-engine/sere"
 
@@ -30,7 +31,10 @@ func SetupRouter(
 	// ========================
 	webV1 := router.Group("/api/v1")
 	{
+		// This will be replaced
 		v1.SignUpRoutes(webV1, db, redis, sere, cookies)
+
+		sharpnr_identity_auth.SharpnrIdentityAuthWebRoutes(webV1, db, redis, sere, cookies)
 
 		v1.AuthRoutes(webV1, db, redis, sere)
 
@@ -44,7 +48,10 @@ func SetupRouter(
 	// ========================
 	mobileV1 := router.Group("/api/v1/mobile")
 	{
+		// This will be Replaced
 		v1.MobileAuthRoutes(mobileV1, db, redis, sere)
+
+		sharpnr_identity_auth.SharpnrIdentityAuthMobileRoutes(mobileV1, db, redis, sere)
 	}
 
 	return router

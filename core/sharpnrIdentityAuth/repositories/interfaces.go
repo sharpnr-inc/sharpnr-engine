@@ -1,0 +1,4 @@
+package sharpnr_identity_auth_repositories
+
+type SharpnrIdentityAuthRepositoryInterface interface {
+}

@@ -5,14 +5,22 @@ import (
 	"gorm.io/gorm"
 )
 
-type orgSignUpRepo struct {
-	db    *gorm.DB
+type orgMainSignUpRepo struct {
+	db *gorm.DB
+}
+
+func NewOrgMainSignUpRepository(db *gorm.DB) *orgMainSignUpRepo {
+	return &orgMainSignUpRepo{
+		db: db,
+	}
+}
+
+type orgTempSignUpRepo struct {
 	redis *redis.Client
 }
 
-func NewOrgSignUpRepository(db *gorm.DB, redis *redis.Client) *orgSignUpRepo {
-	return &orgSignUpRepo{
-		db:    db,
+func NewTempOrgSignUpRepository(redis *redis.Client) *orgTempSignUpRepo {
+	return &orgTempSignUpRepo{
 		redis: redis,
 	}
 }
