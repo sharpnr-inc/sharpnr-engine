@@ -39,12 +39,6 @@ type TempOrgSignUpRepositoryInterface interface {
 }
 
 type MainOrgSignUpRepositoryInterface interface {
-	// Transaction boundary (used during OTP verification → org creation)
-	WithTx(
-		ctx context.Context,
-		fn func(tx MainOrgSignUpRepositoryInterface) error,
-	) error
-
 	// ─────────────── Existence Checks ───────────────
 
 	// Check if an organization already exists by email

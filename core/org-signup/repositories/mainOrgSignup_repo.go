@@ -7,71 +7,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
-
-// WithTx executes the provided function within a database transaction.
-//
-// This method establishes a transactional boundary for the organization
-// signup flow. It is typically used after OTP verification to ensure that
-// all database operations involved in creating an organization and its
-// related entities are executed atomically.
-//
-// All repository calls made through the `tx` argument participate in the
-// same database transaction. If the function returns an error, the
-// transaction is rolled back. If the function returns nil, the transaction
-// is committed.
-//
-// The service layer controls the business flow, while this method guarantees
-// transactional consistency without exposing the underlying *gorm.DB.
-//
-// Parameters:
-//   - ctx: Context used to control request lifetime, cancellation, and deadlines.
-//   - fn: A function that receives a transactional instance of
-//     MainOrgSignUpRepositoryInterface.
-//
-// Returns:
-//   - error: Any error returned by the function or raised during transaction
-//     execution.
-//
-// Example:
-//
-//	err := repo.WithTx(ctx, func(tx MainOrgSignUpRepositoryInterface) error {
-//	    if err := tx.CreateOrganization(ctx); err != nil {
-//	        return err
-//	    }
-//
-//	    if err := tx.CreateOwnerEmployee(ctx); err != nil {
-//	        return err
-//	    }
-//
-//	    if err := tx.CreateDefaultPolicies(ctx, orgID); err != nil {
-//	        return err
-//	    }
-//
-//	    return nil
-//	})
-//
-//	if err != nil {
-//	    // Transaction rolled back due to error
-//	    return err
-//	}
-func (d *orgMainSignUpRepo) WithTx(
-	ctx context.Context,
-	fn func(tx MainOrgSignUpRepositoryInterface) error,
-) error {
-
-	if fn == nil {
-		return errors.New("transaction function cannot be nil")
-	}
-
-	return d.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		txRepo := &orgMainSignUpRepo{
-			db: tx,
-		}
-		return fn(txRepo)
-	})
-}
 
 func (r *orgMainSignUpRepo) ExistsByEmail(
 	ctx context.Context,
