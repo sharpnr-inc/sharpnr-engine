@@ -29,9 +29,6 @@ type Employee struct {
 
 	// Need to Add constants
 	Status string
-
-	// To be migrated
-	IsEmailVerified bool
 }
 
 type EmployeeOnboarding struct {
@@ -82,20 +79,6 @@ type EmployeeAuth struct {
 	CanAccessPOS       bool
 
 	LastLoginAt *time.Time
-}
-
-type EmployeePrivilegePolicy struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	EmployeeID uuid.UUID `gorm:"type:uuid;not null;index"`
-	PolicyID   uuid.UUID `gorm:"type:uuid;not null;index"`
-
-	// Optional but VERY useful
-	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
-	Domain         string    `gorm:"type:varchar(50)"` // HOSPITALITY, HR, etc.
-
-	AssignedAt time.Time
-	AssignedBy uuid.UUID // HR employee
 }
 
 type EmployeeSession struct {

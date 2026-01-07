@@ -152,3 +152,28 @@ func (r *orgMainSignUpRepo) CreateOrganization(
 		Create(org).
 		Error
 }
+
+// AddOrgOfficeAddress implements MainOrgSignUpRepositoryInterface.
+func (d *orgMainSignUpRepo) AddOrgOfficeAddress(ctx context.Context, Addr models.OrganizationOffice) error {
+	return d.db.WithContext(ctx).Create(Addr).Error
+}
+
+// AddOrgVerificationDetails implements MainOrgSignUpRepositoryInterface.
+func (d *orgMainSignUpRepo) AddOrgVerificationDetails(ctx context.Context, orgSetting models.OrganizationSetting) error {
+	return d.db.WithContext(ctx).Create(orgSetting).Error
+}
+
+// CreateOrgSubscription implements MainOrgSignUpRepositoryInterface.
+func (d *orgMainSignUpRepo) CreateOrgSubscription(ctx context.Context, orgSub models.OrganizationSubscription) error {
+	return d.db.WithContext(ctx).Create(orgSub).Error
+}
+
+// FindOrgBySharpnrID implements MainOrgSignUpRepositoryInterface.
+func (d *orgMainSignUpRepo) FindOrgBySharpnrID(ctx context.Context, Id string) (models.OrganizationSignUpStaging, bool, error) {
+	panic("unimplemented")
+}
+
+// GetOrgSubscriptionPlan implements MainOrgSignUpRepositoryInterface.
+func (d *orgMainSignUpRepo) GetOrgSubscriptionPlan(ctx context.Context, orgId uuid.UUID) (*models.OrganizationSubscription, error) {
+	panic("unimplemented")
+}

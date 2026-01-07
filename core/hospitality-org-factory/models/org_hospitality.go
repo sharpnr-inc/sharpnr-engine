@@ -36,13 +36,3 @@ type OrganizationHospitality struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
-
-// here we add the manually
-type HospitalityModule struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	Code string `gorm:"uniqueIndex"` // BAR, RESTAURANT, HOTEL
-	Name string
-
-	CreatedAt time.Time
-}

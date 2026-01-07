@@ -2,7 +2,7 @@ package hospitality_org_factory_repository
 
 import (
 	"context"
-	hospitality_org_models "sharpnr-engine/core/hospitalityOrgFactory/models"
+	hospitality_org_models "sharpnr-engine/core/hospitality-org-factory/models"
 )
 
 type HospitalityOrgFactoryRepoInterface interface {

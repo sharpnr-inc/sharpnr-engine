@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	hospitality_org_models "sharpnr-engine/core/hospitality-org-factory/models"
 	"sharpnr-engine/core/models"
 	"sharpnr-engine/modules/accounting/accounting_models"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
@@ -49,7 +50,18 @@ func MigrateDB(db *gorm.DB) error {
 		// 🌐 CORE MODELS
 		// -------------------------------
 		&models.Organization{},
-		&models.OrganizationSignUpStaging{},
+		&models.OrganizationSubscription{},
+		&models.OrganizationOffice{},
+		&models.OrganizationSetting{},
+		&models.OrganizationVerification{},
+		&models.OrganizationSetting{},
+		// More to come
+
+		// Core --> Hospitality
+
+		&hospitality_org_models.OrganizationHospitality{},
+		&hospitality_org_models.OrganizationHospitalityConfiguration{},
+		&hospitality_org_models.OrganizationHospitalityModules{},
 
 		// -------------------------------
 		// Employee Models

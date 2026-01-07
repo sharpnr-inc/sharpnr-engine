@@ -119,9 +119,3 @@ type OrganizationSetting struct {
 
 	UpdatedAt time.Time
 }
-
-type OrganizationOnBoarding struct {
-	ID        uuid.UUID
-	TempOrgID uuid.UUID
-	Status    string
-}

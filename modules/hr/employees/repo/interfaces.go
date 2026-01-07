@@ -8,7 +8,7 @@ import (
 )
 
 // This is Repository interface have Methods For Creating and Removing the Employee
-type HREmployeeRepositoryInterface interface {
+type SharpHrEmployeeRepositoryInterface interface {
 	// CreateEmployee persists a new employee in the database.
 	// The employee must already have a valid OrganizationID (tenant).
 	CreateEmployee(ctx context.Context, emp *sharphr_models.Employee) (*sharphr_models.Employee, error)
@@ -35,16 +35,21 @@ type HREmployeeRepositoryInterface interface {
 	RemoveEmployee(ctx context.Context, orgID, empID uuid.UUID) error
 }
 
-type EmployeeVerificationRepositoryInterface interface {
-	Create(ctx context.Context, v *sharphr_models.EmployeeVerification) error
-	FindValidByTokenHash(ctx context.Context, hash string) (*sharphr_models.EmployeeVerification, bool, error)
-	MarkVerified(ctx context.Context, id uuid.UUID) error
-	InvalidateAll(ctx context.Context, employeeID uuid.UUID) error
+type SharpHrEmployeeCreationInterface interface {
+	Create()
+
+	CreateOnBoarding()
+
+	AddEmployeeVerification()
+
+	AddEmployeeAuthDetails()
+
+	CreateEmployeeProfile()
+
+	CreateEmployeeReporting()
+
+	AddEmployeeEmployeeEmployment()
 }
 
-type EmployeeAuthRepository interface {
-	FindByEmail(ctx context.Context, email string) (*sharphr_models.EmployeeAuth, bool, error)
-	Create(ctx context.Context, auth *sharphr_models.EmployeeAuth) error
-	Activate(ctx context.Context, employeeID uuid.UUID) error
-	SetPassword(ctx context.Context, employeeID uuid.UUID, hash string) error
+type SharpHrEmployeeBankDetailsRepo interface {
 }

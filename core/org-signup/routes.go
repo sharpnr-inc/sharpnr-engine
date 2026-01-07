@@ -2,6 +2,7 @@ package org_signup
 
 import (
 	"sharpnr-engine/cookieManager"
+	dbtx "sharpnr-engine/core/dbTx"
 	org_signup_controllers "sharpnr-engine/core/org-signup/controllers"
 	org_signup_repositories "sharpnr-engine/core/org-signup/repositories"
 	org_signup_services "sharpnr-engine/core/org-signup/services"
@@ -17,6 +18,7 @@ import (
 func OrgSignUpRoute(
 	v1 *gin.RouterGroup,
 	db *gorm.DB,
+	txManager dbtx.TxManager,
 	redis *redis.Client,
 	sere *sere.SERE,
 	cookies cookieManager.Manager,
@@ -26,7 +28,7 @@ func OrgSignUpRoute(
 	tempSignUpRepo := org_signup_repositories.NewTempOrgSignUpRepository(redis)
 	mainSignUpRepo := org_signup_repositories.NewOrgMainSignUpRepository(db)
 
-	signUpService := org_signup_services.NewOrgSignUpService(sere, tempSignUpRepo, mainSignUpRepo)
+	signUpService := org_signup_services.NewOrgSignUpService(txManager, sere, tempSignUpRepo, mainSignUpRepo)
 	controller := org_signup_controllers.NewOrgSignController(signUpService, cookies, jwtmgr)
 
 	publicSignup := v1.Group("/signup")

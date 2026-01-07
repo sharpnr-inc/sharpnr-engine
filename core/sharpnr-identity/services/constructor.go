@@ -1,6 +1,6 @@
 package sharpnr_identity_auth_services
 
-import sharpnr_identity_auth_repositories "sharpnr-engine/core/sharpnrIdentityAuth/repositories"
+import sharpnr_identity_auth_repositories "sharpnr-engine/core/sharpnr-identity/repositories"
 
 type sharpnrIdentityAuthService struct {
 	identitySvc sharpnr_identity_auth_repositories.SharpnrIdentityAuthRepositoryInterface

@@ -2,7 +2,7 @@ package sharpnr_identity_auth_services
 
 import (
 	"context"
-	sharpnr_identity_auth_dtos "sharpnr-engine/core/sharpnrIdentityAuth/dtos"
+	sharpnr_identity_auth_dtos "sharpnr-engine/core/sharpnr-identity/dtos"
 
 	"github.com/google/uuid"
 )

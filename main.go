@@ -9,6 +9,7 @@ import (
 	"sharpnr-engine/app"
 	"sharpnr-engine/config"
 	"sharpnr-engine/cookieManager"
+	dbtx "sharpnr-engine/core/dbTx"
 	"sharpnr-engine/modules/accounting/accounting_repo"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
@@ -78,8 +79,10 @@ func main() {
 		SignupTTL:  15 * time.Minute,
 	})
 
+	txManager := dbtx.NewGormTxManager(db)
+
 	// Create and configure the main router
-	r := api.SetupRouter(db, redisDb, sereEngine, cookieMgr, jwtmgr)
+	r := api.SetupRouter(db, txManager, redisDb, sereEngine, cookieMgr, jwtmgr)
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

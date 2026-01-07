@@ -3,6 +3,8 @@ package org_signup_repositories
 import (
 	"context"
 	"sharpnr-engine/core/models"
+
+	"github.com/google/uuid"
 )
 
 type TempOrgSignUpRepositoryInterface interface {
@@ -71,5 +73,32 @@ type MainOrgSignUpRepositoryInterface interface {
 		org *models.Organization,
 	) error
 
-	FindOrgBySharpnrID(ctx context.Context, Id string) (models.OrganizationSignUpStaging, bool, error)
+	FindOrgBySharpnrID(
+		ctx context.Context,
+		Id string,
+	) (models.OrganizationSignUpStaging, bool, error)
+
+	//_-__-_-__-_-__-_-_-_-_-__-_-___
+
+	CreateOrgSubscription(
+		ctx context.Context,
+		orgSub models.OrganizationSubscription,
+	) error
+
+	GetOrgSubscriptionPlan(
+		ctx context.Context,
+		orgId uuid.UUID,
+	) (*models.OrganizationSubscription, error)
+
+	AddOrgVerificationDetails(
+		ctx context.Context,
+		orgSetting models.OrganizationSetting,
+	) error
+
+	AddOrgOfficeAddress(
+		ctx context.Context,
+		Addr models.OrganizationOffice,
+	) error
+
+	// hr_employee_repo.HREmployeeRepositoryInterface
 }

@@ -13,7 +13,5 @@ func HospitalityModuleSetupFactory(modules []string) []HospitalitySetupStepInter
 			steps = append(steps, &RestaurantSetupStep{})
 		}
 	}
-
-	steps = append(steps, &UIRendererSetupStep{})
 	return steps
 }

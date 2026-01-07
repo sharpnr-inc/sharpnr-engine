@@ -7,7 +7,6 @@ import (
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
 	menurepo "sharpnr-engine/modules/hospitality/menu/menu_repo"
 	"sharpnr-engine/modules/hospitality/restaurant/restaurantrepo"
-	sharpnruirenderer "sharpnr-engine/sharpnr_ui_renderer"
 )
 
 type SetupContext struct {
@@ -18,5 +17,4 @@ type SetupContext struct {
 	HotelRepo      hotelrepo.HotelRepositoryInterface
 	RestaurantRepo restaurantrepo.RestaurantRepository
 	MenuRepo       menurepo.MenuRepositoryInterface
-	UIRenderRepo   sharpnruirenderer.UIRendererRepository
 }

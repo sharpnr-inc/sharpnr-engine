@@ -3,8 +3,9 @@ package api
 import (
 	v1 "sharpnr-engine/api/v1"
 	"sharpnr-engine/cookieManager"
+	dbtx "sharpnr-engine/core/dbTx"
 	org_signup "sharpnr-engine/core/org-signup"
-	sharpnr_identity_auth "sharpnr-engine/core/sharpnrIdentityAuth"
+	sharpnr_identity_auth "sharpnr-engine/core/sharpnr-identity"
 	"sharpnr-engine/middlewares"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
@@ -18,6 +19,7 @@ import (
 // It delegates the registration of specific API versions to their respective packages.
 func SetupRouter(
 	db *gorm.DB,
+	txManager dbtx.TxManager,
 	redis *redis.Client,
 	sere *sere.SERE,
 	cookies cookieManager.Manager,
@@ -34,7 +36,7 @@ func SetupRouter(
 	// ========================
 	webV1 := router.Group("/api/v1")
 	{
-		org_signup.OrgSignUpRoute(webV1, db, redis, sere, cookies, jwtmgr)
+		org_signup.OrgSignUpRoute(webV1, db, txManager, redis, sere, cookies, jwtmgr)
 		sharpnr_identity_auth.SharpnrIdentityAuthWebRoutes(webV1, db, redis, sere, cookies)
 
 		v1.RegisterModuleRoutes(webV1, db, sere)

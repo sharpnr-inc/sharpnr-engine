@@ -10,7 +10,7 @@ import (
 )
 
 type hrEmployeeService struct {
-	hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface
+	hrEmpRepo hr_employee_repo.SharpHrEmployeeRepositoryInterface
 }
 
 // AddEmployeeInOrg implements HrEmployeeServiceInterface.
@@ -28,7 +28,7 @@ func (s *hrEmployeeService) UpdateEmployeeDetails(ctx context.Context, orgID uui
 	panic("unimplemented")
 }
 
-func NewHrEmployeeService(hrEmpRepo hr_employee_repo.HREmployeeRepositoryInterface) *hrEmployeeService {
+func NewHrEmployeeService(hrEmpRepo hr_employee_repo.SharpHrEmployeeRepositoryInterface) *hrEmployeeService {
 	return &hrEmployeeService{
 		hrEmpRepo: hrEmpRepo,
 	}
