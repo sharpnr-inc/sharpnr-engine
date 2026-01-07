@@ -95,8 +95,8 @@ func (d *orgMainSignUpRepo) AddOrgOfficeAddress(ctx context.Context, Addr models
 }
 
 // AddOrgVerificationDetails implements MainOrgSignUpRepositoryInterface.
-func (d *orgMainSignUpRepo) AddOrgVerificationDetails(ctx context.Context, orgSetting models.OrganizationSetting) error {
-	return d.db.WithContext(ctx).Create(orgSetting).Error
+func (d *orgMainSignUpRepo) AddOrgVerificationDetails(ctx context.Context, orgVerification models.OrganizationVerification) error {
+	return d.db.WithContext(ctx).Create(orgVerification).Error
 }
 
 // CreateOrgSubscription implements MainOrgSignUpRepositoryInterface.

@@ -44,9 +44,54 @@ func (c *orgSignUpService) StartOrgOnBoarding(
 		return nil, err
 	}
 
-	// Todo := First We need to create the Employee and then
-	// *Step 2 := We need to use the Hospitality Setup function to Create the Hospitality and its module
-	// *Step 3 := We need to Create the Accounting for the Hospitality by sending or Publishing the Event
+	orgAddr := &models.OrganizationOffice{
+		ID:             uuid.New(),
+		OrganizationID: org.ID,
+		Code:           "HQ",
+		Name:           stagingOrg.Name,
+		AddressLine:    req.OrgAddressLine,
+		City:           req.OrgCity,
+		State:          req.OrgState,
+		Pincode:        req.OrgPincode,
+		Country:        req.OrgCountry,
+		IsHQ:           true,
+		IsActive:       true,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+	}
+
+	if err := c.mainOrgSignUpRepo.AddOrgOfficeAddress(ctx, *orgAddr); err != nil {
+		return nil, err
+	}
+
+	orgSubc := &models.OrganizationSubscription{
+		ID:             uuid.New(),
+		OrganizationID: org.ID,
+		PlanCode:       "FREE",
+		Status:         "Active",
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+	}
+
+	if err := c.mainOrgSignUpRepo.CreateOrgSubscription(ctx, *orgSubc); err != nil {
+		return nil, err
+	}
+
+	orgVerification := &models.OrganizationVerification{
+		ID:               uuid.New(),
+		OrganizationID:   org.ID,
+		EmailVerified:    true,
+		MobileVerified:   false,
+		PhysicalVerified: false,
+		GSTVerified:      false,
+		CINVerified:      false,
+		CreatedAt:        time.Now(),
+		UpdatedAt:        time.Now(),
+	}
+
+	if err := c.mainOrgSignUpRepo.AddOrgVerificationDetails(ctx, *orgVerification); err != nil {
+		return nil, err
+	}
 
 	res := org_signup_dtos.OrgOnBoardingSuccessResponse_dto{
 		OrgId:        org.ID,

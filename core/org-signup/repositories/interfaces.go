@@ -86,7 +86,7 @@ type MainOrgSignUpRepositoryInterface interface {
 
 	AddOrgVerificationDetails(
 		ctx context.Context,
-		orgSetting models.OrganizationSetting,
+		orgVerification models.OrganizationVerification,
 	) error
 
 	AddOrgOfficeAddress(
