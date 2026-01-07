@@ -109,12 +109,15 @@ func (c *orgSignUpService) StartOrgOnBoarding(
 
 	}
 
-	// c.hrEmployeeService.CreateDefaultSuperAdmin(ctx, org.ID)
+	employeeId, err := c.hrEmployeeService.CreateDefaultSuperAdmin(ctx, org.ID)
+	if err != nil {
+		return nil, err
+	}
 
 	res := org_signup_dtos.OrgOnBoardingSuccessResponse_dto{
 		OrgId:        org.ID,
-		EmployeeID:   uuid.Nil,
-		EmployeeRole: "",
+		EmployeeID:   employeeId,
+		EmployeeRole: "SUPER_ADMIN",
 	}
 
 	return &res, err
