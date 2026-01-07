@@ -1,6 +1,7 @@
 package hospitality
 
 import (
+	"sharpnr-engine/app"
 	"sharpnr-engine/middlewares"
 	"sharpnr-engine/modules/hospitality/bar"
 	"sharpnr-engine/modules/hospitality/concierge"
@@ -16,7 +17,12 @@ import (
 	"gorm.io/gorm"
 )
 
-func RegisterHotelModuleRoutes(v1 *gin.RouterGroup, db *gorm.DB, sere *sere.SERE) {
+func RegisterHotelModuleRoutes(
+	v1 *gin.RouterGroup,
+	db *gorm.DB,
+	sere *sere.SERE,
+	modules app.ModulesProvider,
+) {
 
 	// Route Group
 	sharpHospitality := v1.Group("/sharp-hospitality")

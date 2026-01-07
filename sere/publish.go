@@ -1,3 +1,4 @@
+// sere/publish.go
 package sere
 
 import (

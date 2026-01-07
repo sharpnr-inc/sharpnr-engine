@@ -2,6 +2,7 @@
 package hr
 
 import (
+	"sharpnr-engine/app"
 	hr_employee_controllers "sharpnr-engine/modules/hr/employees/controllers"
 	hr_employee_repo "sharpnr-engine/modules/hr/employees/repo"
 	hr_employee_services "sharpnr-engine/modules/hr/employees/services"
@@ -10,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func RegisterHRRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
+func RegisterHRRoutes(v1 *gin.RouterGroup, db *gorm.DB, modules app.ModulesProvider) {
 
 	newHrRepo := hr_employee_repo.NewHrEmployeeRepository(db)
 	newHrEmpService := hr_employee_services.NewHrEmployeeService(newHrRepo)

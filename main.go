@@ -10,7 +10,6 @@ import (
 	"sharpnr-engine/config"
 	"sharpnr-engine/cookieManager"
 	dbtx "sharpnr-engine/core/dbTx"
-	"sharpnr-engine/modules/accounting/accounting_repo"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
 	"sharpnr-engine/shared/database"
@@ -53,18 +52,6 @@ func main() {
 
 	log.Println("✅ SERE is up and running")
 
-	// -------------------------------------------------
-	// 4️⃣ Create repositories (for handlers)
-	// -------------------------------------------------
-
-	accountingRepo := accounting_repo.NewAccountingRepository(db)
-
-	// -------------------------------------------------
-	// 5️⃣ Register event handlers (wiring)
-	// -------------------------------------------------
-
-	app.RegisterSereEventHandler(sereEngine, accountingRepo)
-
 	cookieMgr := cookieManager.New(cookieManager.Config{
 		Secure: false,
 		Domain: "",
@@ -81,8 +68,18 @@ func main() {
 
 	txManager := dbtx.NewGormTxManager(db)
 
+	sharpnrModules := app.BootstrapModules(db, txManager, sereEngine)
+
 	// Create and configure the main router
-	r := api.SetupRouter(db, txManager, redisDb, sereEngine, cookieMgr, jwtmgr)
+	r := api.SetupRouter(
+		db,
+		txManager,
+		redisDb,
+		sereEngine,
+		cookieMgr,
+		jwtmgr,
+		sharpnrModules,
+	)
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

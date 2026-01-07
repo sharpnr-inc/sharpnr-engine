@@ -1,3 +1,4 @@
+// sere/handler_mode.go
 package sere
 
 type HandlerMode int

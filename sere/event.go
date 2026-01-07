@@ -1,3 +1,5 @@
+// sere/events.go
+
 package sere
 
 import (

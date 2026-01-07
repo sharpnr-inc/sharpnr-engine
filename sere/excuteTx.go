@@ -1,3 +1,5 @@
+// sere/excuteTx.go
+
 package sere
 
 import "context"
@@ -43,4 +45,8 @@ func (s *SERE) ExecuteTx(
 	}
 
 	return wf, nil
+}
+
+func (s *SERE) UseTxExecutor(exec TxExecutor) {
+	s.txExecutor = exec
 }

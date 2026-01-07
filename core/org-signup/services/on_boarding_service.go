@@ -109,10 +109,21 @@ func (c *orgSignUpService) StartOrgOnBoarding(
 
 	}
 
-	employeeId, err := c.hrEmployeeService.CreateDefaultSuperAdmin(ctx, org.ID)
+	wf, err := c.sere.ExecuteTx(
+		ctx,
+		"ORG_ONBOARD_WORKFLOW",
+		map[string]any{
+			"org_id": org.ID,
+			"email":  stagingOrg.Email,
+			"sector": req.OrgSector,
+		},
+	)
+
 	if err != nil {
 		return nil, err
 	}
+
+	employeeId := wf.Data["employee_id"].(uuid.UUID)
 
 	res := org_signup_dtos.OrgOnBoardingSuccessResponse_dto{
 		OrgId:        org.ID,

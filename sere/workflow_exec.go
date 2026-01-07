@@ -1,9 +1,9 @@
+// sere/workflow_exec.go
+
 package sere
 
 import "context"
 
-// SubscribeWorkflow registers a workflow handler
-// These handlers are executed synchronously and in order.
 func (s *SERE) SubscribeWorkflow(
 	name EventName,
 	handler WorkflowHandler,

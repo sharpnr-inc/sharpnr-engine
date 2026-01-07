@@ -1,10 +1,10 @@
 package org_signup_services
 
 import (
+	"sharpnr-engine/app"
 	dbtx "sharpnr-engine/core/dbTx"
 	hospitality_org_factory_repository "sharpnr-engine/core/hospitality-org-factory/repository"
 	org_signup_repositories "sharpnr-engine/core/org-signup/repositories"
-	hr_employee_services "sharpnr-engine/modules/hr/employees/services"
 	"sharpnr-engine/sere"
 )
 
@@ -14,8 +14,7 @@ type orgSignUpService struct {
 	tempOrgSignupRepo      org_signup_repositories.TempOrgSignUpRepositoryInterface
 	mainOrgSignUpRepo      org_signup_repositories.MainOrgSignUpRepositoryInterface
 	hospitalityFactoryRepo hospitality_org_factory_repository.HospitalityOrgFactoryRepoInterface
-
-	hrEmployeeService hr_employee_services.HrEmployeeServiceInterface
+	sharpModules           app.ModulesProvider
 }
 
 func NewOrgSignUpService(
@@ -24,7 +23,7 @@ func NewOrgSignUpService(
 	tempOrgSignupRepo org_signup_repositories.TempOrgSignUpRepositoryInterface,
 	mainOrgSignUpRepo org_signup_repositories.MainOrgSignUpRepositoryInterface,
 	hospitalityFactoryRepo hospitality_org_factory_repository.HospitalityOrgFactoryRepoInterface,
-	hrEmployeeService hr_employee_services.HrEmployeeServiceInterface,
+	sharpModules app.ModulesProvider,
 ) *orgSignUpService {
 	return &orgSignUpService{
 		txManager:              txManager,
@@ -32,6 +31,6 @@ func NewOrgSignUpService(
 		tempOrgSignupRepo:      tempOrgSignupRepo,
 		mainOrgSignUpRepo:      mainOrgSignUpRepo,
 		hospitalityFactoryRepo: hospitalityFactoryRepo,
-		hrEmployeeService:      hrEmployeeService,
+		sharpModules:           sharpModules,
 	}
 }

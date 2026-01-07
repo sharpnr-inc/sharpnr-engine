@@ -1,6 +1,7 @@
 package base
 
 import (
+	"sharpnr-engine/app"
 	"sharpnr-engine/middlewares"
 	"sharpnr-engine/modules/accounting"
 	"sharpnr-engine/modules/hr"
@@ -11,7 +12,11 @@ import (
 )
 
 // This is the Routes of All Base Module
-func RegisterBaseModuleRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
+func RegisterBaseModuleRoutes(
+	v1 *gin.RouterGroup,
+	db *gorm.DB,
+	modules app.ModulesProvider,
+) {
 
 	// 🔐 Protected base modules (Org scoped)
 	protected := v1.Group("/")
@@ -19,6 +24,6 @@ func RegisterBaseModuleRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
 		middlewares.RequireTokenType(jwtpack.TokenTypeAuth),
 		middlewares.SetOrgUUID(),
 	)
-	accounting.RegisterAccountingRoutes(protected, db)
-	hr.RegisterHRRoutes(protected, db)
+	accounting.RegisterAccountingRoutes(protected, db, modules)
+	hr.RegisterHRRoutes(protected, db, modules)
 }

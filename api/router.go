@@ -2,6 +2,7 @@ package api
 
 import (
 	v1 "sharpnr-engine/api/v1"
+	"sharpnr-engine/app"
 	"sharpnr-engine/cookieManager"
 	dbtx "sharpnr-engine/core/dbTx"
 	org_signup "sharpnr-engine/core/org-signup"
@@ -24,6 +25,8 @@ func SetupRouter(
 	sere *sere.SERE,
 	cookies cookieManager.Manager,
 	jwtmgr jwt_manager.Manager,
+	modules app.ModulesProvider,
+
 ) *gin.Engine {
 
 	router := gin.Default()
@@ -36,10 +39,10 @@ func SetupRouter(
 	// ========================
 	webV1 := router.Group("/api/v1")
 	{
-		org_signup.OrgSignUpRoute(webV1, db, txManager, redis, sere, cookies, jwtmgr)
+		org_signup.OrgSignUpRoute(webV1, db, txManager, redis, sere, cookies, jwtmgr, modules)
 		sharpnr_identity_auth.SharpnrIdentityAuthWebRoutes(webV1, db, redis, sere, cookies)
 
-		v1.RegisterModuleRoutes(webV1, db, sere)
+		v1.RegisterModuleRoutes(webV1, db, sere, modules)
 
 		v1.UtilsRoutes(webV1)
 	}
