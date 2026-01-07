@@ -93,6 +93,4 @@ type MainOrgSignUpRepositoryInterface interface {
 		ctx context.Context,
 		Addr models.OrganizationOffice,
 	) error
-
-	// hr_employee_repo.HREmployeeRepositoryInterface
 }

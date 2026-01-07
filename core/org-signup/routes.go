@@ -3,10 +3,13 @@ package org_signup
 import (
 	"sharpnr-engine/cookieManager"
 	dbtx "sharpnr-engine/core/dbTx"
+	hospitality_org_factory_repository "sharpnr-engine/core/hospitality-org-factory/repository"
 	org_signup_controllers "sharpnr-engine/core/org-signup/controllers"
 	org_signup_repositories "sharpnr-engine/core/org-signup/repositories"
 	org_signup_services "sharpnr-engine/core/org-signup/services"
 	webMiddleware "sharpnr-engine/middlewares/web"
+	hr_employee_repo "sharpnr-engine/modules/hr/employees/repo"
+	hr_employee_services "sharpnr-engine/modules/hr/employees/services"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
 
@@ -25,11 +28,27 @@ func OrgSignUpRoute(
 	jwtmgr jwt_manager.Manager,
 ) {
 
+	hospitalityFactoryRepo := hospitality_org_factory_repository.NewHospitalityOrgFactoryRepository(db)
+	sharpHrRepo := hr_employee_repo.NewHrEmployeeRepository(db)
+	sharpHrEmployeeService := hr_employee_services.NewHrEmployeeService(sharpHrRepo)
+
 	tempSignUpRepo := org_signup_repositories.NewTempOrgSignUpRepository(redis)
 	mainSignUpRepo := org_signup_repositories.NewOrgMainSignUpRepository(db)
 
-	signUpService := org_signup_services.NewOrgSignUpService(txManager, sere, tempSignUpRepo, mainSignUpRepo)
-	controller := org_signup_controllers.NewOrgSignController(signUpService, cookies, jwtmgr)
+	signUpService := org_signup_services.NewOrgSignUpService(
+		txManager,
+		sere,
+		tempSignUpRepo,
+		mainSignUpRepo,
+		hospitalityFactoryRepo,
+		sharpHrEmployeeService,
+	)
+
+	controller := org_signup_controllers.NewOrgSignController(
+		signUpService,
+		cookies,
+		jwtmgr,
+	)
 
 	publicSignup := v1.Group("/signup")
 	{
