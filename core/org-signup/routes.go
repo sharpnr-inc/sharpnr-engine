@@ -3,23 +3,15 @@ package org_signup
 import (
 	"sharpnr-engine/app"
 	"sharpnr-engine/cookieManager"
-	dbtx "sharpnr-engine/core/dbTx"
 	org_signup_controllers "sharpnr-engine/core/org-signup/controllers"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
-	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis/v9"
-	"gorm.io/gorm"
 )
 
 func OrgSignUpRoute(
 	v1 *gin.RouterGroup,
-	db *gorm.DB,
-	txManager dbtx.TxManager,
-	redis *redis.Client,
-	sere *sere.SERE,
 	cookies cookieManager.Manager,
 	jwtmgr jwt_manager.Manager,
 	modules app.ModulesProvider,

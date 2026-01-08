@@ -39,7 +39,8 @@ func SetupRouter(
 	// ========================
 	webV1 := router.Group("/api/v1")
 	{
-		org_signup.OrgSignUpRoute(webV1, db, txManager, redis, sere, cookies, jwtmgr, modules)
+		org_signup.OrgSignUpRoute(webV1, cookies, jwtmgr, modules)
+
 		sharpnr_identity_auth.SharpnrIdentityAuthWebRoutes(webV1, db, redis, sere, cookies)
 
 		v1.RegisterModuleRoutes(webV1, db, sere, modules)
