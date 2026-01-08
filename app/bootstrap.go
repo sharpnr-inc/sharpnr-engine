@@ -6,6 +6,7 @@ import (
 	org_signup_repositories "sharpnr-engine/core/org-signup/repositories"
 	org_signup_services "sharpnr-engine/core/org-signup/services"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr-identity/services"
+	"sharpnr-engine/modules/accounting/accounting_repo"
 	"sharpnr-engine/modules/accounting/accounting_service"
 	barservices "sharpnr-engine/modules/hospitality/bar/services"
 	hotelservices "sharpnr-engine/modules/hospitality/hotel/services"
@@ -88,6 +89,9 @@ func BootstrapModules(
 	mainOrgSignUpRepo := org_signup_repositories.NewOrgMainSignUpRepository(db)
 	orgSignUpService := org_signup_services.NewOrgSignUpService(txManager, sereEngine, tempOrgSignUpRepo, mainOrgSignUpRepo)
 
+	accountingRepo := accounting_repo.NewAccountingRepository(db)
+	// accountingService := accounting_service.NewAccountingService(accountingRepo)
+
 	hrEmployeeRepo := hr_employee_repo.NewHrEmployeeRepository(db)
 	hrEmployeeService := hr_employee_services.NewHrEmployeeService(hrEmployeeRepo)
 
@@ -98,8 +102,8 @@ func BootstrapModules(
 		})
 	})
 
-	RegisterAllWorkFlow()
-	// RegisterSereEventHandler(sereEngine,)
+	RegisterAllWorkFlow(sereEngine, hrEmployeeService)
+	RegisterSereEventHandler(sereEngine, accountingRepo)
 
 	return &AppModules{
 		orgSignupService: orgSignUpService,
