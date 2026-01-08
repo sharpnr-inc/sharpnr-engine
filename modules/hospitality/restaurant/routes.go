@@ -1,20 +1,19 @@
 package restaurant
 
 import (
-	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
+	"sharpnr-engine/app"
 	restaurantcontrollers "sharpnr-engine/modules/hospitality/restaurant/controllers"
-	"sharpnr-engine/modules/hospitality/restaurant/restaurantrepo"
-	"sharpnr-engine/modules/hospitality/restaurant/restaurantservices"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func RestaurantRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
-	newRestaurantRepo := restaurantrepo.NewRestaurantRepository(db)
-	newKitchenRepo := kitchenrepo.NewKitchenRepository(db)
-	newRestaurantService := restaurantservices.NewRestaurantRepository(newRestaurantRepo, newKitchenRepo)
-	newRestaurantController := restaurantcontrollers.NewRestaurantController(newRestaurantService)
+func RestaurantRoutes(
+	v1 *gin.RouterGroup,
+	modules app.ModulesProvider,
+) {
+
+	restaurantService := modules.HospitalityRestaurantService()
+	newRestaurantController := restaurantcontrollers.NewRestaurantController(restaurantService)
 
 	resRoutes := v1.Group("/restaurant")
 

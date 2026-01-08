@@ -27,5 +27,5 @@ type HrEmployeeServiceInterface interface {
 		req sharphrdtos.CreateEmployeeInOrganization_RequestDTO,
 	) error
 
-	CreateDefaultSuperAdmin(ctx context.Context, orgId uuid.UUID) (uuid.UUID, error)
+	CreateDefaultSuperAdmin(ctx context.Context, orgId uuid.UUID, rootEmail string) (uuid.UUID, error)
 }

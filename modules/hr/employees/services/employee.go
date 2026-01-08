@@ -21,6 +21,6 @@ func (s *hrEmployeeService) CreateNewEmployee(
 	return nil
 }
 
-func (s *hrEmployeeService) CreateDefaultSuperAdmin(ctx context.Context, orgId uuid.UUID) (uuid.UUID, error) {
+func (s *hrEmployeeService) CreateDefaultSuperAdmin(ctx context.Context, orgId uuid.UUID, rootEmail string) (uuid.UUID, error) {
 	panic("unimplemented")
 }

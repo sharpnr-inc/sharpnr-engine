@@ -43,7 +43,7 @@ func SetupRouter(
 
 		sharpnr_identity_auth.SharpnrIdentityAuthWebRoutes(webV1, db, redis, sere, cookies)
 
-		v1.RegisterModuleRoutes(webV1, db, sere, modules)
+		v1.RegisterModuleRoutes(webV1, sere, modules)
 
 		v1.UtilsRoutes(webV1)
 	}

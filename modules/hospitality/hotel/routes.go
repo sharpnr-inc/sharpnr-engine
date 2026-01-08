@@ -1,27 +1,26 @@
 package hotel
 
 import (
+	"sharpnr-engine/app"
 	hotelcontrollers "sharpnr-engine/modules/hospitality/hotel/hotel_controllers"
-	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
-	hotelservices "sharpnr-engine/modules/hospitality/hotel/services"
-	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
 	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 /****************************************
  * These are the endpoint for the Hotel *
 ****************************************/
 
-func Hospitalityhotelroutes(v1 *gin.RouterGroup, db *gorm.DB, sere *sere.SERE) {
-	newHotelRepo := hotelrepo.NewHotelRepository(db)
+func Hospitalityhotelroutes(
+	v1 *gin.RouterGroup,
+	sere *sere.SERE,
+	modules app.ModulesProvider,
+) {
 
-	newKitchenRepo := kitchenrepo.NewKitchenRepository(db)
-	newHouseKeepingRepo := hotelrepo.NewHotelHouseKeepingRepository(db)
-	newHotelService := hotelservices.NewHotelService(sere, newHotelRepo, newHouseKeepingRepo, newKitchenRepo)
-	newHotelController := hotelcontrollers.NewHotelController(newHotelService)
+	hotelService := modules.HospitalityHotelService()
+
+	newHotelController := hotelcontrollers.NewHotelController(hotelService)
 
 	/************************
 	 * Main Routes of Hotel *

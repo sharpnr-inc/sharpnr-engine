@@ -97,9 +97,10 @@ func (c *orgSignUpService) StartOrgOnBoarding(
 		ctx,
 		"ORG_ONBOARD_WORKFLOW",
 		map[string]any{
-			"org_id": org.ID,
-			"email":  stagingOrg.Email,
-			"sector": req.OrgSector,
+			"org_id":         org.ID,
+			"email":          stagingOrg.Email,
+			"sector":         req.OrgSector,
+			"sector_modules": req.OrgSectorModules,
 		},
 	)
 

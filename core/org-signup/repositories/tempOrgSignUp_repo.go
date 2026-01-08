@@ -26,6 +26,7 @@ func (rd *orgTempSignUpRepo) Create(
 	}
 
 	const signupOTPTTL = 10 * time.Minute
+
 	ttl := signupOTPTTL
 
 	key := "org:signup:staging:" + tempOrg.ID.String()

@@ -8,13 +8,11 @@ import (
 	"sharpnr-engine/pkg/jwtpack"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 // This is the Routes of All Base Module
 func RegisterBaseModuleRoutes(
 	v1 *gin.RouterGroup,
-	db *gorm.DB,
 	modules app.ModulesProvider,
 ) {
 
@@ -24,6 +22,6 @@ func RegisterBaseModuleRoutes(
 		middlewares.RequireTokenType(jwtpack.TokenTypeAuth),
 		middlewares.SetOrgUUID(),
 	)
-	accounting.RegisterAccountingRoutes(protected, db, modules)
-	hr.RegisterHRRoutes(protected, db, modules)
+	accounting.RegisterAccountingRoutes(protected, modules)
+	hr.RegisterHRRoutes(protected, modules)
 }

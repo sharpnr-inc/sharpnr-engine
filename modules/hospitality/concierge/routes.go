@@ -1,11 +1,12 @@
 package concierge
 
 import (
+	"sharpnr-engine/app"
+
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func ConciergeRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
+func ConciergeRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) {
 	croutes := v1.Group("/concierge")
 
 	croutes.GET("/get-requests")

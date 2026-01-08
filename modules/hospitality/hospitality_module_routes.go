@@ -14,12 +14,10 @@ import (
 	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 func RegisterHotelModuleRoutes(
 	v1 *gin.RouterGroup,
-	db *gorm.DB,
 	sere *sere.SERE,
 	modules app.ModulesProvider,
 ) {
@@ -31,12 +29,18 @@ func RegisterHotelModuleRoutes(
 	sharpHospitality.Use(middlewares.RequireTokenType(jwtpack.TokenTypeAuth), middlewares.SetOrgUUID())
 
 	// Hospitality Routes
-	hotel.Hospitalityhotelroutes(sharpHospitality, db, sere)
-	kitchen.KitchenRoutes(sharpHospitality, db)
-	restaurant.RestaurantRoutes(sharpHospitality, db)
-	bar.BarRoutes(sharpHospitality, db)
-	hospitalitymenu.MenuRoutes(sharpHospitality, db)
-	hospitalityinventory.HospitalityRoutes(sharpHospitality, db)
-	concierge.ConciergeRoutes(sharpHospitality, db)
+	hotel.Hospitalityhotelroutes(sharpHospitality, sere, modules)
+
+	kitchen.KitchenRoutes(sharpHospitality, modules)
+
+	restaurant.RestaurantRoutes(sharpHospitality, modules)
+
+	bar.BarRoutes(sharpHospitality, modules)
+
+	hospitalitymenu.MenuRoutes(sharpHospitality, modules)
+
+	hospitalityinventory.HospitalityRoutes(sharpHospitality, modules)
+
+	concierge.ConciergeRoutes(sharpHospitality, modules)
 
 }

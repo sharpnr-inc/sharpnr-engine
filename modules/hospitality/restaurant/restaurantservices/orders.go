@@ -87,76 +87,76 @@ func (s *restaurantService) AddItemInBookingSession(
 	orgId, sessionId uuid.UUID,
 	request hospitalitydtos.Hospitality_Restaurant_AddOrderItemINTheSession_Request) error {
 
-	// 1️⃣ Get Restaurant
-	restaurant, err := s.restaurantRepo.GetRestaurantByOrgId(ctx, orgId)
-	if err != nil {
-		return err
-	}
+	// // 1️⃣ Get Restaurant
+	// restaurant, err := s.restaurantRepo.GetRestaurantByOrgId(ctx, orgId)
+	// if err != nil {
+	// 	return err
+	// }
 
-	// 2️⃣ Get Session
-	session, err := s.restaurantRepo.GetBookingSessionById(ctx, sessionId)
-	if err != nil {
-		return err
-	}
+	// // 2️⃣ Get Session
+	// session, err := s.restaurantRepo.GetBookingSessionById(ctx, sessionId)
+	// if err != nil {
+	// 	return err
+	// }
 
-	// 3️⃣ Create Kitchen Ticket
-	orderTicket := &hospitalitymodels.KitchenTicket{
-		ID:                              uuid.New(),
-		OrganizationID:                  orgId,
-		Organization:                    *restaurant.Organization,
-		KitchenID:                       *restaurant.KitchenID,
-		Kitchen:                         *restaurant.Kitchen,
-		Status:                          "PENDING",
-		TicketNo:                        "0001",
-		RestaurantTableBookingSessionID: &session.ID,
-		CreatedAt:                       time.Now(),
-		UpdatedAt:                       time.Now(),
-	}
+	// // 3️⃣ Create Kitchen Ticket
+	// orderTicket := &hospitalitymodels.KitchenTicket{
+	// 	ID:                              uuid.New(),
+	// 	OrganizationID:                  orgId,
+	// 	Organization:                    *restaurant.Organization,
+	// 	KitchenID:                       *restaurant.KitchenID,
+	// 	Kitchen:                         *restaurant.Kitchen,
+	// 	Status:                          "PENDING",
+	// 	TicketNo:                        "0001",
+	// 	RestaurantTableBookingSessionID: &session.ID,
+	// 	CreatedAt:                       time.Now(),
+	// 	UpdatedAt:                       time.Now(),
+	// }
 
-	kot, err := s.kitchenRepo.CreateKitchenTicketDBTx(ctx, orderTicket)
-	if err != nil {
-		return err
-	}
+	// kot, err := s.kitchenRepo.CreateKitchenTicketDBTx(ctx, orderTicket)
+	// if err != nil {
+	// 	return err
+	// }
 
-	// 4️⃣ Create All Items + Addons
-	for _, items := range request.Order {
+	// // 4️⃣ Create All Items + Addons
+	// for _, items := range request.Order {
 
-		// 4.1 → Insert item
-		item := &hospitalitymodels.KitchenTicketItem{
-			ID:              uuid.New(),
-			KitchenTicketID: kot.ID,
-			MenuItemID:      items.MenuItemId,
-			VariantId:       items.VariantId,
-			Quantity:        items.Quantity,
-			Remarks:         items.Notes,
-			OrderType:       "TableOrder",
-			IsPrinted:       false,
-			CreatedAt:       time.Now(),
-			UpdatedAt:       time.Now(),
-		}
+	// 	// 4.1 → Insert item
+	// 	item := &hospitalitymodels.KitchenTicketItem{
+	// 		ID:              uuid.New(),
+	// 		KitchenTicketID: kot.ID,
+	// 		MenuItemID:      items.MenuItemId,
+	// 		VariantId:       items.VariantId,
+	// 		Quantity:        items.Quantity,
+	// 		Remarks:         items.Notes,
+	// 		OrderType:       "TableOrder",
+	// 		IsPrinted:       false,
+	// 		CreatedAt:       time.Now(),
+	// 		UpdatedAt:       time.Now(),
+	// 	}
 
-		item, err := s.kitchenRepo.CreateKitchenTicketItemDBTx(ctx, item)
-		if err != nil {
-			return err
-		}
+	// 	item, err := s.kitchenRepo.CreateKitchenTicketItemDBTx(ctx, item)
+	// 	if err != nil {
+	// 		return err
+	// 	}
 
-		// 4.2 → Add addon rows
-		if items.AddonOnId != nil {
-			for _, addon := range *items.AddonOnId {
-				addonModel := &hospitalitymodels.KitchenTicketItemAddon{
-					ID:                  uuid.New(),
-					KitchenTicketItemID: item.ID,
-					AddOnID:             addon.AddOnId,
-					Quantity:            addon.Quantity,
-					CreatedAt:           time.Now(),
-				}
+	// 	// 4.2 → Add addon rows
+	// 	if items.AddonOnId != nil {
+	// 		for _, addon := range *items.AddonOnId {
+	// 			addonModel := &hospitalitymodels.KitchenTicketItemAddon{
+	// 				ID:                  uuid.New(),
+	// 				KitchenTicketItemID: item.ID,
+	// 				AddOnID:             addon.AddOnId,
+	// 				Quantity:            addon.Quantity,
+	// 				CreatedAt:           time.Now(),
+	// 			}
 
-				if _, err := s.kitchenRepo.CreateKitchenTicketItemAddonDBTx(ctx, addonModel); err != nil {
-					return err
-				}
-			}
-		}
-	}
+	// 			if _, err := s.kitchenRepo.CreateKitchenTicketItemAddonDBTx(ctx, addonModel); err != nil {
+	// 				return err
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	return nil
 }

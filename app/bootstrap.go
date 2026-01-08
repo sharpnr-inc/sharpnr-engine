@@ -5,13 +5,17 @@ import (
 	dbtx "sharpnr-engine/core/dbTx"
 	org_signup_repositories "sharpnr-engine/core/org-signup/repositories"
 	org_signup_services "sharpnr-engine/core/org-signup/services"
-	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr-identity/services"
 	"sharpnr-engine/modules/accounting/accounting_repo"
 	"sharpnr-engine/modules/accounting/accounting_service"
+	barrepo "sharpnr-engine/modules/hospitality/bar/repo"
 	barservices "sharpnr-engine/modules/hospitality/bar/services"
+	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
 	hotelservices "sharpnr-engine/modules/hospitality/hotel/services"
+	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
 	kitchenservices "sharpnr-engine/modules/hospitality/kitchen/kitchenServices"
+	menurepo "sharpnr-engine/modules/hospitality/menu/menu_repo"
 	menuservice "sharpnr-engine/modules/hospitality/menu/menu_service"
+	"sharpnr-engine/modules/hospitality/restaurant/restaurantrepo"
 	"sharpnr-engine/modules/hospitality/restaurant/restaurantservices"
 	hr_employee_repo "sharpnr-engine/modules/hr/employees/repo"
 	hr_employee_services "sharpnr-engine/modules/hr/employees/services"
@@ -20,63 +24,6 @@ import (
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
-
-type AppModules struct {
-	orgSignupService org_signup_services.OrgSignUpServiceInterface
-	sharpAuthService sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
-
-	hospitality_hotelService      hotelservices.HotelService
-	hospitality_barService        barservices.BarServices
-	hospitality_restaurantService restaurantservices.RestaurantService
-	hospitality_kitchenService    kitchenservices.KitchenServiceInterface
-	hospitality_menuService       menuservice.MenuService
-
-	hrService         hr_employee_services.HrEmployeeServiceInterface
-	accountingService accounting_service.AccountingServiceInterface
-}
-
-// AccountingService implements ModulesProvider.
-func (m *AppModules) AccountingService() accounting_service.AccountingServiceInterface {
-	return m.accountingService
-}
-
-// HospitalityBarService implements ModulesProvider.
-func (m *AppModules) HospitalityBarService() barservices.BarServices {
-	return m.hospitality_barService
-}
-
-// HospitalityHotelService implements ModulesProvider.
-func (m *AppModules) HospitalityHotelService() hotelservices.HotelService {
-	return m.hospitality_hotelService
-}
-
-// HospitalityKitchenService implements ModulesProvider.
-func (m *AppModules) HospitalityKitchenService() kitchenservices.KitchenServiceInterface {
-	return m.hospitality_kitchenService
-}
-
-// HospitalityMenuService implements ModulesProvider.
-func (m *AppModules) HospitalityMenuService() menuservice.MenuService {
-	return m.hospitality_menuService
-}
-
-// HospitalityRestaurantService implements ModulesProvider.
-func (m *AppModules) HospitalityRestaurantService() restaurantservices.RestaurantService {
-	return m.hospitality_restaurantService
-}
-
-// SharpAuthService implements ModulesProvider.
-func (m *AppModules) SharpAuthService() sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface {
-	return m.sharpAuthService
-}
-
-func (m *AppModules) HrService() hr_employee_services.HrEmployeeServiceInterface {
-	return m.hrService
-}
-
-func (m *AppModules) OrgSignUpService() org_signup_services.OrgSignUpServiceInterface {
-	return m.orgSignupService
-}
 
 func BootstrapModules(
 	db *gorm.DB,
@@ -89,8 +36,28 @@ func BootstrapModules(
 	mainOrgSignUpRepo := org_signup_repositories.NewOrgMainSignUpRepository(db)
 	orgSignUpService := org_signup_services.NewOrgSignUpService(txManager, sereEngine, tempOrgSignUpRepo, mainOrgSignUpRepo)
 
+	// Hospitality kitchen
+	hospitality_kitchenRepo := kitchenrepo.NewKitchenRepository(db)
+	hospitality_kitchenService := kitchenservices.NewKitchenService(hospitality_kitchenRepo)
+
+	// hospitality Menu
+	newMeneRepo := menurepo.NewHospitalityMenuRepository(db)
+	newMenuService := menuservice.NewHospitalityMenuService(newMeneRepo)
+
+	// hospitality Hotel
+	hospitality_hotelRepo := hotelrepo.NewHotelRepository(db)
+	hospitality_hotelService := hotelservices.NewHotelService(sereEngine, hospitality_hotelRepo)
+
+	// hospitality Bar
+	hospitality_barRepo := barrepo.NewBarRepository(db)
+	hospitality_barService := barservices.NewBarServices(hospitality_barRepo)
+
+	// hospitality Restaurant
+	hospitality_restaurantRepo := restaurantrepo.NewRestaurantRepository(db)
+	hospitality_restaurantService := restaurantservices.NewRestaurantService(hospitality_restaurantRepo)
+
 	accountingRepo := accounting_repo.NewAccountingRepository(db)
-	// accountingService := accounting_service.NewAccountingService(accountingRepo)
+	accountingService := accounting_service.NewAccountingService(accountingRepo)
 
 	hrEmployeeRepo := hr_employee_repo.NewHrEmployeeRepository(db)
 	hrEmployeeService := hr_employee_services.NewHrEmployeeService(hrEmployeeRepo)
@@ -106,8 +73,14 @@ func BootstrapModules(
 	RegisterSereEventHandler(sereEngine, accountingRepo)
 
 	return &AppModules{
-		orgSignupService: orgSignUpService,
-		hrService:        hrEmployeeService,
+		orgSignupService:              orgSignUpService,
+		hrService:                     hrEmployeeService,
+		hospitality_hotelService:      hospitality_hotelService,
+		hospitality_barService:        hospitality_barService,
+		hospitality_restaurantService: hospitality_restaurantService,
+		hospitality_kitchenService:    hospitality_kitchenService,
+		hospitality_menuService:       newMenuService,
+		accountingService:             accountingService,
 	}
 
 }

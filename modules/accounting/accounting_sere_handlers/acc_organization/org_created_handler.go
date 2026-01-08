@@ -54,14 +54,6 @@ func (h *OrganizationCreatedEventHandler) Handle(e sere.Event) error {
 		"modules", event.Modules,
 	)
 
-	// ------------------------------------------------
-	// Check if hospitality module is enabled
-	// ------------------------------------------------
-	// if !contains(event.OrganizationType, "HOSPITALITY") {
-	// 	logger.Info("hospitality module not enabled, skipping accounting setup")
-	// 	return nil
-	// }
-
 	subModules := extractHospitalitySubModules(event.Modules)
 
 	if len(subModules) == 0 {

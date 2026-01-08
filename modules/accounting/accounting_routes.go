@@ -3,18 +3,14 @@ package accounting
 import (
 	"sharpnr-engine/app"
 	"sharpnr-engine/modules/accounting/accounting_controllers"
-	"sharpnr-engine/modules/accounting/accounting_repo"
-	"sharpnr-engine/modules/accounting/accounting_service"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func RegisterAccountingRoutes(v1 *gin.RouterGroup, db *gorm.DB, modules app.ModulesProvider) {
+func RegisterAccountingRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) {
 
-	accRepo := accounting_repo.NewAccountingRepository(db)
-	accService := accounting_service.NewAccountingService(accRepo)
-	accController := accounting_controllers.NewAccountingController(accService)
+	accountingService := modules.AccountingService()
+	accController := accounting_controllers.NewAccountingController(accountingService)
 
 	accRoutes := v1.Group("/accounting")
 	{
