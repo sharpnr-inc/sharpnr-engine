@@ -3,7 +3,6 @@ package org_signup_services
 import (
 	"context"
 	"sharpnr-engine/core/constants"
-	hospitality_org_models "sharpnr-engine/core/hospitality-org-factory/models"
 	"sharpnr-engine/core/models"
 	org_signup_dtos "sharpnr-engine/core/org-signup/dtos"
 	"sharpnr-engine/shared/utils"
@@ -92,21 +91,6 @@ func (c *orgSignUpService) StartOrgOnBoarding(
 
 	if err := c.mainOrgSignUpRepo.AddOrgVerificationDetails(ctx, *orgVerification); err != nil {
 		return nil, err
-	}
-
-	switch req.OrgSector {
-	case "HOSPITALITY":
-		hospOrg := hospitality_org_models.OrganizationHospitality{
-			ID:             uuid.New(),
-			OrganizationID: org.ID,
-			Status:         "CREATED",
-			CreatedAt:      time.Now(),
-			UpdatedAt:      time.Now(),
-		}
-		if err := c.hospitalityFactoryRepo.CreateHospitalityOrg(ctx, &hospOrg); err != nil {
-			return nil, err
-		}
-
 	}
 
 	wf, err := c.sere.ExecuteTx(

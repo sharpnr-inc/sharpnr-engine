@@ -68,7 +68,7 @@ func main() {
 
 	txManager := dbtx.NewGormTxManager(db)
 
-	sharpnrModules := app.BootstrapModules(db, txManager, sereEngine)
+	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, sereEngine)
 
 	// Create and configure the main router
 	r := api.SetupRouter(
