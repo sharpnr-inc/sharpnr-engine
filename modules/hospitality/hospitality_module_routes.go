@@ -11,14 +11,12 @@ import (
 	hospitalitymenu "sharpnr-engine/modules/hospitality/menu"
 	"sharpnr-engine/modules/hospitality/restaurant"
 	"sharpnr-engine/pkg/jwtpack"
-	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
 )
 
 func RegisterHotelModuleRoutes(
 	v1 *gin.RouterGroup,
-	sere *sere.SERE,
 	modules app.ModulesProvider,
 ) {
 
@@ -29,7 +27,7 @@ func RegisterHotelModuleRoutes(
 	sharpHospitality.Use(middlewares.RequireTokenType(jwtpack.TokenTypeAuth), middlewares.SetOrgUUID())
 
 	// Hospitality Routes
-	hotel.Hospitalityhotelroutes(sharpHospitality, sere, modules)
+	hotel.Hospitalityhotelroutes(sharpHospitality, modules)
 
 	kitchen.KitchenRoutes(sharpHospitality, modules)
 

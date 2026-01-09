@@ -3,7 +3,6 @@ package hotel
 import (
 	"sharpnr-engine/app"
 	hotelcontrollers "sharpnr-engine/modules/hospitality/hotel/hotel_controllers"
-	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,12 +13,10 @@ import (
 
 func Hospitalityhotelroutes(
 	v1 *gin.RouterGroup,
-	sere *sere.SERE,
 	modules app.ModulesProvider,
 ) {
 
 	hotelService := modules.HospitalityHotelService()
-
 	newHotelController := hotelcontrollers.NewHotelController(hotelService)
 
 	/************************

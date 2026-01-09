@@ -7,11 +7,8 @@ import (
 	"github.com/google/uuid"
 )
 
-func RegisterHRWorkflows(s *sere.SERE, hrService hr_employee_services.HrEmployeeServiceInterface) {
-	s.SubscribeWorkflow("ORG_ONBOARD_WORKFLOW", hrOnboardHandler(hrService))
-}
-
-func hrOnboardHandler(
+// This is the function for creating
+func hrEmployeeOnboardHandler(
 	hrService hr_employee_services.HrEmployeeServiceInterface,
 ) sere.WorkflowHandler {
 

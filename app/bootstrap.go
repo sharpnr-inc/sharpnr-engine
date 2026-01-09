@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
+	hospitality_org_factory_repository "sharpnr-engine/core/hospitality-org-factory/repository"
 	org_signup_repositories "sharpnr-engine/core/org-signup/repositories"
 	org_signup_services "sharpnr-engine/core/org-signup/services"
 	"sharpnr-engine/modules/accounting/accounting_repo"
@@ -35,6 +36,8 @@ func BootstrapModules(
 	tempOrgSignUpRepo := org_signup_repositories.NewTempOrgSignUpRepository(redis)
 	mainOrgSignUpRepo := org_signup_repositories.NewOrgMainSignUpRepository(db)
 	orgSignUpService := org_signup_services.NewOrgSignUpService(txManager, sereEngine, tempOrgSignUpRepo, mainOrgSignUpRepo)
+
+	hospitalityOrgFactoryRepository := hospitality_org_factory_repository.NewHospitalityOrgFactoryRepository(db)
 
 	// Hospitality kitchen
 	hospitality_kitchenRepo := kitchenrepo.NewKitchenRepository(db)
@@ -69,7 +72,27 @@ func BootstrapModules(
 		})
 	})
 
-	RegisterAllWorkFlow(sereEngine, hrEmployeeService)
+	RegisterAllWorkFlow(
+		sereEngine,
+		hrEmployeeService,
+		hospitality_kitchenRepo,
+		hospitality_hotelRepo,
+		hospitality_hotelService,
+
+		hospitality_barRepo,
+		hospitality_barService,
+
+		hospitality_restaurantRepo,
+		hospitality_restaurantService,
+
+		newMeneRepo,
+		newMenuService,
+
+		accountingRepo,
+		accountingService,
+		hospitalityOrgFactoryRepository,
+	)
+
 	RegisterSereEventHandler(sereEngine, accountingRepo)
 
 	return &AppModules{
