@@ -6,6 +6,8 @@ import (
 	hospitality_org_factory_repository "sharpnr-engine/core/hospitality-org-factory/repository"
 	org_signup_repositories "sharpnr-engine/core/org-signup/repositories"
 	org_signup_services "sharpnr-engine/core/org-signup/services"
+	sharpnr_identity_auth_repositories "sharpnr-engine/core/sharpnr-identity/repositories"
+	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr-identity/services"
 	"sharpnr-engine/modules/accounting/accounting_repo"
 	"sharpnr-engine/modules/accounting/accounting_service"
 	barrepo "sharpnr-engine/modules/hospitality/bar/repo"
@@ -65,6 +67,9 @@ func BootstrapModules(
 	hrEmployeeRepo := hr_employee_repo.NewHrEmployeeRepository(db)
 	hrEmployeeService := hr_employee_services.NewHrEmployeeService(hrEmployeeRepo)
 
+	sharpnrIdentityRepo := sharpnr_identity_auth_repositories.NewSharpnrIdentityAuthRepository(db)
+	sharpnrIdentityService := sharpnr_identity_auth_services.NewSharpnrIdentityAuthService(sharpnrIdentityRepo)
+
 	sereEngine.UseTxExecutor(func(ctx context.Context, fn func(ctx context.Context) error) error {
 		return txManager.WithTx(ctx, func(tx *gorm.DB) error {
 			txCtx := dbtx.InjectTx(ctx, tx)
@@ -74,7 +79,9 @@ func BootstrapModules(
 
 	RegisterAllWorkFlow(
 		sereEngine,
+		hrEmployeeRepo,
 		hrEmployeeService,
+		sharpnrIdentityService,
 		hospitality_kitchenRepo,
 		hospitality_hotelRepo,
 		hospitality_hotelService,
@@ -104,6 +111,7 @@ func BootstrapModules(
 		hospitality_kitchenService:    hospitality_kitchenService,
 		hospitality_menuService:       newMenuService,
 		accountingService:             accountingService,
+		sharpAuthService:              sharpnrIdentityService,
 	}
 
 }

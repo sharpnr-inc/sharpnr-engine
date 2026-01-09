@@ -101,6 +101,7 @@ func (c *orgSignUpService) StartOrgOnBoarding(
 			"email":          stagingOrg.Email,
 			"sector":         req.OrgSector,
 			"sector_modules": req.OrgSectorModules,
+			"hashPass":       stagingOrg.Password,
 		},
 	)
 

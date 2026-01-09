@@ -3,6 +3,7 @@ package app
 import (
 	hospitality_org_factory_repository "sharpnr-engine/core/hospitality-org-factory/repository"
 	hospitality_factory_sere_adapter "sharpnr-engine/core/hospitality-org-factory/sere_adapter"
+	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr-identity/services"
 	"sharpnr-engine/modules/accounting/acc_sere_wf_adapters"
 	"sharpnr-engine/modules/accounting/accounting_repo"
 	"sharpnr-engine/modules/accounting/accounting_service"
@@ -20,6 +21,7 @@ import (
 	"sharpnr-engine/modules/hospitality/restaurant/restaurantrepo"
 	"sharpnr-engine/modules/hospitality/restaurant/restaurantservices"
 	restaurant_sere_adapters "sharpnr-engine/modules/hospitality/restaurant/sere_adapters"
+	hr_employee_repo "sharpnr-engine/modules/hr/employees/repo"
 	employee_sere_adapter "sharpnr-engine/modules/hr/employees/sere_adapter"
 	hr_employee_services "sharpnr-engine/modules/hr/employees/services"
 	"sharpnr-engine/sere"
@@ -27,7 +29,9 @@ import (
 
 func RegisterAllWorkFlow(
 	sere *sere.SERE,
+	hrEmpRepo hr_employee_repo.SharpHrEmployeeRepositoryInterface,
 	hrEmployeeService hr_employee_services.HrEmployeeServiceInterface,
+	sharpnrIdSvc sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface,
 	kitchenRepo kitchenrepo.KitchenRepositoryInterface,
 	hotelRepo hotelrepo.HotelRepositoryInterface,
 	hotelService hotelservices.HotelService,

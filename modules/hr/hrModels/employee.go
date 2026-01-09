@@ -81,18 +81,6 @@ type EmployeeAuth struct {
 	LastLoginAt *time.Time
 }
 
-type EmployeeSession struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	EmployeeID uuid.UUID
-
-	App        string // MOBILE, DASHBOARD, POS
-	DeviceInfo string
-
-	ExpiresAt time.Time
-	RevokedAt *time.Time
-}
-
 type EmployeeProfile struct {
 	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
 	EmployeeID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex"`
@@ -238,4 +226,16 @@ type EmployeeHospitalityProfile struct {
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+type EmployeeSession struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	EmployeeID uuid.UUID
+
+	App        string // MOBILE, DASHBOARD, POS
+	DeviceInfo string
+
+	ExpiresAt time.Time
+	RevokedAt *time.Time
 }

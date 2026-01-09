@@ -1,7 +1,9 @@
 package sharpnr_identity_auth
 
 import (
+	"sharpnr-engine/app"
 	"sharpnr-engine/cookieManager"
+	sharpnr_identity_auth_controllers "sharpnr-engine/core/sharpnr-identity/controllers"
 	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
@@ -11,15 +13,16 @@ import (
 
 func SharpnrIdentityAuthWebRoutes(
 	webV1 *gin.RouterGroup,
-	db *gorm.DB,
-	redis *redis.Client,
-	sere *sere.SERE,
 	cookie cookieManager.Manager,
+	modules app.ModulesProvider,
 ) {
+
+	sharpIdService := modules.SharpAuthService()
+	sharpIdController := sharpnr_identity_auth_controllers.NewSharpnrIdentityAuthController(sharpIdService)
 
 	idWebRoutes := webV1.Group("/identity/web")
 	{
-		idWebRoutes.POST("/login")
+		idWebRoutes.POST("/login", sharpIdController.WebLogin)
 		idWebRoutes.POST("/refresh")
 		idWebRoutes.GET("/myprofile")
 		idWebRoutes.POST("/renderer")
