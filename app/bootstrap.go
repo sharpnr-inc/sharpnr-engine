@@ -64,8 +64,21 @@ func BootstrapModules(
 	accountingRepo := accounting_repo.NewAccountingRepository(db)
 	accountingService := accounting_service.NewAccountingService(accountingRepo)
 
-	hrEmployeeRepo := hr_employee_repo.NewHrEmployeeRepository(db)
-	hrEmployeeService := hr_employee_services.NewHrEmployeeService(hrEmployeeRepo)
+	empIdentityRepo := hr_employee_repo.NewEmployeeIdentityRepository(db)
+	empAuthRepo := hr_employee_repo.NewEmployeeAuthRepository(db)
+	empOnboardingRepo := hr_employee_repo.NewEmployeeOnboardingRepository(db)
+	empVerificationRepo := hr_employee_repo.NewEmployeeVerificationRepo(db)
+	empProfileRepo := hr_employee_repo.NewEmployeeProfileRepo(db)
+	empEmploymentRepo := hr_employee_repo.NewEmployeeEmploymentRepo(db)
+
+	hrEmployeeService := hr_employee_services.NewHrEmployeeService(
+		empIdentityRepo,
+		empAuthRepo,
+		empOnboardingRepo,
+		empVerificationRepo,
+		empProfileRepo,
+		empEmploymentRepo,
+	)
 
 	sharpnrIdentityRepo := sharpnr_identity_auth_repositories.NewSharpnrIdentityAuthRepository(db)
 	sharpnrIdentityService := sharpnr_identity_auth_services.NewSharpnrIdentityAuthService(sharpnrIdentityRepo)
@@ -79,7 +92,6 @@ func BootstrapModules(
 
 	RegisterAllWorkFlow(
 		sereEngine,
-		hrEmployeeRepo,
 		hrEmployeeService,
 		sharpnrIdentityService,
 		hospitality_kitchenRepo,
@@ -103,8 +115,10 @@ func BootstrapModules(
 	RegisterSereEventHandler(sereEngine, accountingRepo)
 
 	return &AppModules{
-		orgSignupService:              orgSignUpService,
-		hrService:                     hrEmployeeService,
+		orgSignupService: orgSignUpService,
+
+		hrService: hrEmployeeService,
+
 		hospitality_hotelService:      hospitality_hotelService,
 		hospitality_barService:        hospitality_barService,
 		hospitality_restaurantService: hospitality_restaurantService,

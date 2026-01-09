@@ -3,53 +3,44 @@ package hr_employee_repo
 import (
 	"context"
 	sharphr_models "sharpnr-engine/modules/hr/hrModels"
+	"time"
 
 	"github.com/google/uuid"
 )
 
-// This is Repository interface have Methods For Creating and Removing the Employee
-type SharpHrEmployeeRepositoryInterface interface {
-	// CreateEmployee persists a new employee in the database.
-	// The employee must already have a valid OrganizationID (tenant).
-	CreateEmployee(ctx context.Context, emp *sharphr_models.Employee) (*sharphr_models.Employee, error)
-	// FindEmployeeById retrieves an employee by organization ID and employee ID.
-	// Returns the employee (if found), a boolean indicating existence,
-	// and an error if the query fails.
-	FindEmployeeById(ctx context.Context, orgID, empID uuid.UUID) (*sharphr_models.Employee, bool, error)
-
-	// FindByEmail retrieves an employee by organization ID and email address.
-	// Returns the employee (if found), a boolean indicating existence,
-	// and an error if the query fails.
-	FindByEmail(ctx context.Context, email string) (*sharphr_models.Employee, bool, error)
-
-	// ListEmployees retrieves all employees for a given organization.
-	// Returns a slice of employees and an error if the query fails.
-	ListEmployees(ctx context.Context, orgID uuid.UUID) ([]*sharphr_models.Employee, error)
-
-	// UpdateEmployeeDetails updates the provided employee's details.
-	// The returned value is the updated employee object.
-	UpdateEmployeeDetails(ctx context.Context, emp *sharphr_models.Employee) (*sharphr_models.Employee, error)
-
-	// RemoveEmployee deletes an employee from the given organization by employee ID.
-	// Ensures that deletion is tenant-scoped by requiring orgID.
-	RemoveEmployee(ctx context.Context, orgID, empID uuid.UUID) error
+type EmployeeIdentityRepositoryInterface interface {
+	Create(ctx context.Context, emp *sharphr_models.Employee) error
+	GetByID(ctx context.Context, empID uuid.UUID) (*sharphr_models.Employee, error)
+	GetByEmail(ctx context.Context, email string) (*sharphr_models.Employee, error)
+	ListByOrg(ctx context.Context, orgID uuid.UUID) ([]*sharphr_models.Employee, error)
 }
 
-type SharpHrEmployeeCreationInterface interface {
-	Create()
-
-	CreateOnBoarding()
-
-	AddEmployeeVerification()
-
-	AddEmployeeAuthDetails()
-
-	CreateEmployeeProfile()
-
-	CreateEmployeeReporting()
-
-	AddEmployeeEmployeeEmployment()
+type EmployeeAuthRepositoryInterface interface {
+	Create(ctx context.Context, auth *sharphr_models.EmployeeAuth) error
+	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*sharphr_models.EmployeeAuth, error)
+	GetByUsername(ctx context.Context, username string) (*sharphr_models.EmployeeAuth, error)
+	UpdateLastLogin(ctx context.Context, empID uuid.UUID, at time.Time) error
 }
 
-type SharpHrEmployeeBankDetailsRepo interface {
+type EmployeeOnboardingRepositoryInterface interface {
+	Create(ctx context.Context, onboarding *sharphr_models.EmployeeOnboarding) error
+	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*sharphr_models.EmployeeOnboarding, error)
+	UpdateStatus(ctx context.Context, empID uuid.UUID, status string) error
+}
+
+type EmployeeVerificationRepositoryInterface interface {
+	Create(ctx context.Context, v *sharphr_models.EmployeeVerification) error
+	GetByTokenHash(ctx context.Context, hash string) (*sharphr_models.EmployeeVerification, error)
+	MarkVerified(ctx context.Context, id uuid.UUID, at time.Time) error
+}
+
+type EmployeeProfileRepositoryInterface interface {
+	Create(ctx context.Context, profile *sharphr_models.EmployeeProfile) error
+	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*sharphr_models.EmployeeProfile, error)
+	Update(ctx context.Context, profile *sharphr_models.EmployeeProfile) error
+}
+
+type EmployeeEmploymentRepositoryInterface interface {
+	Create(ctx context.Context, emp *sharphr_models.EmployeeEmployment) error
+	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*sharphr_models.EmployeeEmployment, error)
 }
