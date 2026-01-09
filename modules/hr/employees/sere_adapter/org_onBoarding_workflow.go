@@ -15,8 +15,9 @@ func hrEmployeeOnboardHandler(
 	return func(wf *sere.Workflow) error {
 		orgID := wf.Data["org_id"].(uuid.UUID)
 		orgRootEmail := wf.Data["email"].(string)
+		hashPass := wf.Data["hashPass"].(string)
 
-		empID, err := hrService.CreateDefaultSuperAdmin(wf.Ctx, orgID, orgRootEmail)
+		empID, err := hrService.CreateDefaultSuperAdmin(wf.Ctx, orgID, orgRootEmail, hashPass)
 		if err != nil {
 			return err
 		}

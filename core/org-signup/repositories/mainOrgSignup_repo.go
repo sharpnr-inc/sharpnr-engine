@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func (r *orgMainSignUpRepo) ExistsByEmail(
@@ -19,7 +20,7 @@ func (r *orgMainSignUpRepo) ExistsByEmail(
 	}
 
 	normalizedEmail := strings.ToLower(strings.TrimSpace(email))
-	return r.exists(ctx, "email", normalizedEmail)
+	return r.exists(ctx, "root_email", normalizedEmail)
 }
 
 func (r *orgMainSignUpRepo) ExistsByPhone(
@@ -105,8 +106,27 @@ func (d *orgMainSignUpRepo) CreateOrgSubscription(ctx context.Context, orgSub mo
 }
 
 // FindOrgBySharpnrID implements MainOrgSignUpRepositoryInterface.
-func (d *orgMainSignUpRepo) FindOrgBySharpnrID(ctx context.Context, Id string) (models.OrganizationSignUpStaging, bool, error) {
-	panic("unimplemented")
+func (d *orgMainSignUpRepo) FindOrgBySharpnrID(
+	ctx context.Context,
+	id string,
+) (models.OrganizationSignUpStaging, bool, error) {
+
+	var org models.OrganizationSignUpStaging
+
+	err := d.db.
+		WithContext(ctx).
+		Where("sharpnr_id = ?", id).
+		First(&org).
+		Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return models.OrganizationSignUpStaging{}, false, nil
+		}
+		return models.OrganizationSignUpStaging{}, false, err
+	}
+
+	return org, true, nil
 }
 
 // GetOrgSubscriptionPlan implements MainOrgSignUpRepositoryInterface.

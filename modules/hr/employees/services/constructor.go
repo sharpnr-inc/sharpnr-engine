@@ -2,10 +2,11 @@ package hr_employee_services
 
 import (
 	"context"
-	"github.com/google/uuid"
 	hr_employee_repo "sharpnr-engine/modules/hr/employees/repo"
 	sharphr_models "sharpnr-engine/modules/hr/hrModels"
 	sharphrdtos "sharpnr-engine/modules/hr/hr_dtos"
+
+	"github.com/google/uuid"
 )
 
 // hrEmployeeService is the orchestration layer for
@@ -27,15 +28,15 @@ type hrEmployeeService struct {
 	// HR Details
 	empProfileRepo    hr_employee_repo.EmployeeProfileRepositoryInterface
 	empEmploymentRepo hr_employee_repo.EmployeeEmploymentRepositoryInterface
+
+	// Policy
+	policyRepo           hr_employee_repo.EmployeePolicyRepositoryInterface
+	policyRuleRepo       hr_employee_repo.EmployeePolicyRuleRepositoryInterface
+	policyAssignmentRepo hr_employee_repo.EmployeePrivilegePolicyRepositoryInterface
 }
 
 // AddEmployeeInOrg implements HrEmployeeServiceInterface.
 func (h *hrEmployeeService) AddEmployeeInOrg(ctx context.Context, sharpnr_id string, req sharphrdtos.CreateEmployeeInOrganization_RequestDTO) (*sharphrdtos.CreateEmployeeInOrganizationResponseDTO, error) {
-	panic("unimplemented")
-}
-
-// CreateDefaultSuperAdmin implements HrEmployeeServiceInterface.
-func (h *hrEmployeeService) CreateDefaultSuperAdmin(ctx context.Context, orgId uuid.UUID, rootEmail string) (uuid.UUID, error) {
 	panic("unimplemented")
 }
 
@@ -66,14 +67,22 @@ func NewHrEmployeeService(
 	empVerifyRepo hr_employee_repo.EmployeeVerificationRepositoryInterface,
 	empProfileRepo hr_employee_repo.EmployeeProfileRepositoryInterface,
 	empEmploymentRepo hr_employee_repo.EmployeeEmploymentRepositoryInterface,
+
+	// Policy
+	policyRepo hr_employee_repo.EmployeePolicyRepositoryInterface,
+	policyRuleRepo hr_employee_repo.EmployeePolicyRuleRepositoryInterface,
+	policyAssignmentRepo hr_employee_repo.EmployeePrivilegePolicyRepositoryInterface,
 ) *hrEmployeeService {
 
 	return &hrEmployeeService{
-		empIdentityRepo:   empIdentityRepo,
-		empAuthRepo:       empAuthRepo,
-		empOnboardingRepo: empOnboardingRepo,
-		empVerifyRepo:     empVerifyRepo,
-		empProfileRepo:    empProfileRepo,
-		empEmploymentRepo: empEmploymentRepo,
+		empIdentityRepo:      empIdentityRepo,
+		empAuthRepo:          empAuthRepo,
+		empOnboardingRepo:    empOnboardingRepo,
+		empVerifyRepo:        empVerifyRepo,
+		empProfileRepo:       empProfileRepo,
+		empEmploymentRepo:    empEmploymentRepo,
+		policyRepo:           policyRepo,
+		policyRuleRepo:       policyRuleRepo,
+		policyAssignmentRepo: policyAssignmentRepo,
 	}
 }

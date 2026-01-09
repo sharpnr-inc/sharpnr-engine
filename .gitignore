@@ -6,3 +6,6 @@
 GEMINI.md
 /sharpnr-engine
 .vscode
+
+__debug_bin*
+.debug/

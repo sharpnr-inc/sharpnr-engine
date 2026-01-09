@@ -44,3 +44,41 @@ type EmployeeEmploymentRepositoryInterface interface {
 	Create(ctx context.Context, emp *sharphr_models.EmployeeEmployment) error
 	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*sharphr_models.EmployeeEmployment, error)
 }
+
+type EmployeePolicyRepositoryInterface interface {
+	Create(ctx context.Context, policy *sharphr_models.EmployeePolicy) error
+	GetByID(ctx context.Context, id uuid.UUID) (*sharphr_models.EmployeePolicy, error)
+	GetByCode(ctx context.Context, orgID uuid.UUID, code string) (*sharphr_models.EmployeePolicy, error)
+	ListByOrganization(ctx context.Context, orgID uuid.UUID) ([]*sharphr_models.EmployeePolicy, error)
+}
+
+type EmployeePolicyRuleRepositoryInterface interface {
+	Create(ctx context.Context, rule *sharphr_models.EmployeePolicyRule) error
+
+	ListByPolicyID(
+		ctx context.Context,
+		policyID uuid.UUID,
+	) ([]*sharphr_models.EmployeePolicyRule, error)
+
+	DeleteByPolicyID(
+		ctx context.Context,
+		policyID uuid.UUID,
+	) error
+}
+
+type EmployeePrivilegePolicyRepositoryInterface interface {
+	Assign(
+		ctx context.Context,
+		assignment *sharphr_models.EmployeePrivilegePolicy,
+	) error
+
+	ListByEmployeeID(
+		ctx context.Context,
+		employeeID uuid.UUID,
+	) ([]*sharphr_models.EmployeePrivilegePolicy, error)
+
+	RevokeByEmployeeID(
+		ctx context.Context,
+		employeeID uuid.UUID,
+	) error
+}

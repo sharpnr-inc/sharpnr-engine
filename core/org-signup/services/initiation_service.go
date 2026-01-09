@@ -44,12 +44,12 @@ func (o *orgSignUpService) InitiateSignup(
 		return "", ErrOrgEmailExists
 	}
 
-	// 3. Check main DB (phone)
-	if ok, err := o.mainOrgSignUpRepo.ExistsByPhone(ctx, req.OrgMobile); err != nil {
-		return "", err
-	} else if ok {
-		return "", ErrOrgPhoneExists
-	}
+	// // 3. Check main DB (phone)
+	// if ok, err := o.mainOrgSignUpRepo.ExistsByPhone(ctx, req.OrgMobile); err != nil {
+	// 	return "", err
+	// } else if ok {
+	// 	return "", ErrOrgPhoneExists
+	// }
 
 	// 4. Generate OTP
 	otp, err := utils.GenerateOTP()

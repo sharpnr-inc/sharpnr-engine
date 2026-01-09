@@ -71,6 +71,10 @@ func BootstrapModules(
 	empProfileRepo := hr_employee_repo.NewEmployeeProfileRepo(db)
 	empEmploymentRepo := hr_employee_repo.NewEmployeeEmploymentRepo(db)
 
+	policyRepo := hr_employee_repo.NewEmployeePolicyRepo(db)
+	policyRuleRepo := hr_employee_repo.NewEmployeePolicyRuleRepository(db)
+	privilegePolicyRepo := hr_employee_repo.NewEmployeePrivilegePolicyRepository(db)
+
 	hrEmployeeService := hr_employee_services.NewHrEmployeeService(
 		empIdentityRepo,
 		empAuthRepo,
@@ -78,6 +82,11 @@ func BootstrapModules(
 		empVerificationRepo,
 		empProfileRepo,
 		empEmploymentRepo,
+
+		// Policy
+		policyRepo,
+		policyRuleRepo,
+		privilegePolicyRepo,
 	)
 
 	sharpnrIdentityRepo := sharpnr_identity_auth_repositories.NewSharpnrIdentityAuthRepository(db)

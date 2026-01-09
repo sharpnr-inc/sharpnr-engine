@@ -43,7 +43,9 @@ func (c *orgSignUpController) OnBoardOrganization(ctx *gin.Context) {
 	}
 	fmt.Println(res.EmployeeID)
 
-	// c.cookies.ClearSignup(ctx)
+	// c.jwtMgr.IssueAccess()
+	ctx.JSON(http.StatusOK, gin.H{"done": "done"})
+	c.cookies.ClearSignup(ctx)
 	// c.jwtMgr.IssueRefresh()
 	// c.jwtMgr.IssueAccess()
 	// c.cookies.Set(ctx, cookieManager.Auth)
