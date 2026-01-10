@@ -25,7 +25,7 @@ func (rd *orgTempSignUpRepo) Create(
 		return errors.New("email or phone is required")
 	}
 
-	const signupOTPTTL = 10 * time.Minute
+	const signupOTPTTL = 40 * time.Minute
 
 	ttl := signupOTPTTL
 

@@ -84,6 +84,10 @@ func MigrateDB(db *gorm.DB) error {
 		&sharphr_models.EmployeeLeaveBalance{},
 		&sharphr_models.EmployeeLeaveRequest{},
 
+		&sharphr_models.EmployeePolicy{},
+		&sharphr_models.EmployeePolicyRule{},
+		&sharphr_models.EmployeePrivilegePolicy{},
+
 		// -------------------------------
 		// 🏨 HOSPITALITY MODELS
 		// -------------------------------

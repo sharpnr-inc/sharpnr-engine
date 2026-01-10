@@ -8,5 +8,5 @@ type InitiateOrgSignUpRequest_Dto struct {
 }
 
 type VerifyOtpRequest_Dto struct {
-	Otp string `json:"otp" binding:"required, otp"`
+	Otp string `json:"otp" binding:"required,len=6,numeric"`
 }

@@ -91,17 +91,17 @@ func (r *orgMainSignUpRepo) CreateOrganization(
 }
 
 // AddOrgOfficeAddress implements MainOrgSignUpRepositoryInterface.
-func (d *orgMainSignUpRepo) AddOrgOfficeAddress(ctx context.Context, Addr models.OrganizationOffice) error {
+func (d *orgMainSignUpRepo) AddOrgOfficeAddress(ctx context.Context, Addr *models.OrganizationOffice) error {
 	return d.db.WithContext(ctx).Create(Addr).Error
 }
 
 // AddOrgVerificationDetails implements MainOrgSignUpRepositoryInterface.
-func (d *orgMainSignUpRepo) AddOrgVerificationDetails(ctx context.Context, orgVerification models.OrganizationVerification) error {
+func (d *orgMainSignUpRepo) AddOrgVerificationDetails(ctx context.Context, orgVerification *models.OrganizationVerification) error {
 	return d.db.WithContext(ctx).Create(orgVerification).Error
 }
 
 // CreateOrgSubscription implements MainOrgSignUpRepositoryInterface.
-func (d *orgMainSignUpRepo) CreateOrgSubscription(ctx context.Context, orgSub models.OrganizationSubscription) error {
+func (d *orgMainSignUpRepo) CreateOrgSubscription(ctx context.Context, orgSub *models.OrganizationSubscription) error {
 	return d.db.WithContext(ctx).Create(orgSub).Error
 }
 
@@ -109,9 +109,9 @@ func (d *orgMainSignUpRepo) CreateOrgSubscription(ctx context.Context, orgSub mo
 func (d *orgMainSignUpRepo) FindOrgBySharpnrID(
 	ctx context.Context,
 	id string,
-) (models.OrganizationSignUpStaging, bool, error) {
+) (models.Organization, bool, error) {
 
-	var org models.OrganizationSignUpStaging
+	var org models.Organization
 
 	err := d.db.
 		WithContext(ctx).
@@ -121,9 +121,9 @@ func (d *orgMainSignUpRepo) FindOrgBySharpnrID(
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return models.OrganizationSignUpStaging{}, false, nil
+			return models.Organization{}, false, nil
 		}
-		return models.OrganizationSignUpStaging{}, false, err
+		return models.Organization{}, false, err
 	}
 
 	return org, true, nil

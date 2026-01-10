@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	signupCookieName       = "__Host-signup"
+	signupCookieName       = "_signup"
 	SignupUserIDContextKey = "signup_user_id"
 )
 
@@ -16,7 +16,7 @@ func SignupGuardMiddleware(jwtMgr jwt_manager.Manager) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		// If user is already authenticated, onboarding is irrelevant
-		if _, err := ctx.Cookie("__Host-auth"); err == nil {
+		if _, err := ctx.Cookie("__Host-Auth"); err == nil {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"message": "Already authenticated",
 			})

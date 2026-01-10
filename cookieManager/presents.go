@@ -8,10 +8,10 @@ var registry = map[Type]Definition{
 	// 🟡 Temporary cookie after OTP verification
 	// Allows access to /onboarding
 	Signup: {
-		Name:     "__Host-signup",
+		Name:     "_signup",
 		Scope:    Protected,
-		TTL:      10 * 60, // 10 minutes
-		SameSite: http.SameSiteStrictMode,
+		TTL:      60 * 60, // 10 minutes
+		SameSite: http.SameSiteLaxMode,
 	},
 
 	// 🟢 Authenticated session cookie (refresh token)

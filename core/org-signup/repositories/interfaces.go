@@ -70,13 +70,13 @@ type MainOrgSignUpRepositoryInterface interface {
 	FindOrgBySharpnrID(
 		ctx context.Context,
 		Id string,
-	) (models.OrganizationSignUpStaging, bool, error)
+	) (models.Organization, bool, error)
 
 	//_-__-_-__-_-__-_-_-_-_-__-_-___
 
 	CreateOrgSubscription(
 		ctx context.Context,
-		orgSub models.OrganizationSubscription,
+		orgSub *models.OrganizationSubscription,
 	) error
 
 	GetOrgSubscriptionPlan(
@@ -86,11 +86,11 @@ type MainOrgSignUpRepositoryInterface interface {
 
 	AddOrgVerificationDetails(
 		ctx context.Context,
-		orgVerification models.OrganizationVerification,
+		orgVerification *models.OrganizationVerification,
 	) error
 
 	AddOrgOfficeAddress(
 		ctx context.Context,
-		Addr models.OrganizationOffice,
+		Addr *models.OrganizationOffice,
 	) error
 }

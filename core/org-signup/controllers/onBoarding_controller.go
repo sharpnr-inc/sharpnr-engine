@@ -34,7 +34,7 @@ func (c *orgSignUpController) OnBoardOrganization(ctx *gin.Context) {
 		return
 	}
 
-	res, err := c.orgSvc.StartOrgOnBoarding(ctx, userID, onBoardingRequest)
+	res, err := c.orgSvc.StartOrgOnBoarding(ctx.Request.Context(), userID, onBoardingRequest)
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{
 			"Error": err.Error(),

@@ -2,7 +2,6 @@ package org_signup_services
 
 import (
 	"context"
-	"crypto/subtle"
 	"errors"
 	org_signup_dtos "sharpnr-engine/core/org-signup/dtos"
 )
@@ -24,11 +23,7 @@ func (s *orgSignUpService) VerifyOtp(
 		return errors.New("signup session expired")
 	}
 
-	// 2️⃣ Compare OTP (constant-time)
-	if subtle.ConstantTimeCompare(
-		[]byte(stagingOrg.Otp),
-		[]byte(otp.Otp),
-	) != 1 {
+	if stagingOrg.Otp != otp.Otp {
 		return errors.New("invalid otp")
 	}
 	return nil
