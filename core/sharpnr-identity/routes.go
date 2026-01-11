@@ -4,6 +4,7 @@ import (
 	"sharpnr-engine/app"
 	"sharpnr-engine/cookieManager"
 	sharpnr_identity_auth_controllers "sharpnr-engine/core/sharpnr-identity/controllers"
+	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
@@ -14,11 +15,16 @@ import (
 func SharpnrIdentityAuthWebRoutes(
 	webV1 *gin.RouterGroup,
 	cookie cookieManager.Manager,
+	jwtMgr jwt_manager.Manager,
 	modules app.ModulesProvider,
 ) {
 
 	sharpIdService := modules.SharpAuthService()
-	sharpIdController := sharpnr_identity_auth_controllers.NewSharpnrIdentityAuthController(sharpIdService)
+	sharpIdController := sharpnr_identity_auth_controllers.NewSharpnrIdentityAuthController(
+		cookie,
+		jwtMgr,
+		sharpIdService,
+	)
 
 	idWebRoutes := webV1.Group("/identity/web")
 	{

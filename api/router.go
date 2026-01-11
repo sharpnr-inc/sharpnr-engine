@@ -42,7 +42,7 @@ func SetupRouter(
 	{
 		org_signup.OrgSignUpRoute(webV1, cookies, jwtmgr, modules)
 
-		sharpnr_identity_auth.SharpnrIdentityAuthWebRoutes(webV1, cookies, modules)
+		sharpnr_identity_auth.SharpnrIdentityAuthWebRoutes(webV1, cookies, jwtmgr, modules)
 
 		protected := webV1.Group("/")
 		protected.Use(

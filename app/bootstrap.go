@@ -90,7 +90,11 @@ func BootstrapModules(
 	)
 
 	sharpnrIdentityRepo := sharpnr_identity_auth_repositories.NewSharpnrIdentityAuthRepository(db)
-	sharpnrIdentityService := sharpnr_identity_auth_services.NewSharpnrIdentityAuthService(sharpnrIdentityRepo)
+	sharpnrIdentityService := sharpnr_identity_auth_services.NewSharpnrIdentityAuthService(
+		empIdentityRepo,
+		empAuthRepo,
+		sharpnrIdentityRepo,
+	)
 
 	sereEngine.UseTxExecutor(func(ctx context.Context, fn func(ctx context.Context) error) error {
 		return txManager.WithTx(ctx, func(tx *gorm.DB) error {

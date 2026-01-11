@@ -1,6 +1,9 @@
 package jwt_manager
 
-import "github.com/golang-jwt/jwt/v5"
+import (
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
+)
 
 // ---------- Access Token ----------
 
@@ -15,9 +18,9 @@ type AccessClaims struct {
 // ---------- Refresh Token ----------
 
 type RefreshClaims struct {
-	UserID    string `json:"uid"`
-	SessionID string `json:"sid"`
-	OrgID     string `json:"org_id"`
+	UserID    string    `json:"uid"`
+	SessionID string    `json:"sid"`
+	OrgID     uuid.UUID `json:"org_id"`
 
 	jwt.RegisteredClaims
 }

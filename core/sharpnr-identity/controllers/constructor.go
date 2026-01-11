@@ -1,15 +1,25 @@
 package sharpnr_identity_auth_controllers
 
-import sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr-identity/services"
+import (
+	"sharpnr-engine/cookieManager"
+	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr-identity/services"
+	jwt_manager "sharpnr-engine/pkg/jwtmanager"
+)
 
 type sharpnrIdentityAuthControllers struct {
-	IdSvc sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
+	cookieMgr cookieManager.Manager
+	jwtMgr    jwt_manager.Manager
+	IdSvc     sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
 }
 
 func NewSharpnrIdentityAuthController(
+	cookieMgr cookieManager.Manager,
+	jwtMgr jwt_manager.Manager,
 	IdSvc sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface,
 ) *sharpnrIdentityAuthControllers {
 	return &sharpnrIdentityAuthControllers{
-		IdSvc: IdSvc,
+		cookieMgr: cookieMgr,
+		jwtMgr:    jwtMgr,
+		IdSvc:     IdSvc,
 	}
 }

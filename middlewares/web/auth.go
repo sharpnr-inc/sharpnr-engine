@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	AuthCookie = "__Host-Auth"
+	AuthCookie = "_dev_auth"
 
 	// Legacy-compatible context keys
 	UserIDContextKey    = "user_id"

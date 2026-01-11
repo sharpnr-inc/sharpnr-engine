@@ -1,11 +1,15 @@
 package jwt_manager
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Manager interface {
 	// Issue
 	IssueAccess(userID, orgID, role string) (string, error)
-	IssueRefresh(userID, orgID string, sessionID string) (string, error)
+	IssueRefresh(userID string, orgID uuid.UUID, sessionID string) (string, error)
 	IssueSignup(userID string) (string, error)
 
 	// Verify

@@ -48,7 +48,7 @@ func (c *orgSignUpController) OnBoardOrganization(ctx *gin.Context) {
 
 	c.cookies.ClearSignup(ctx)
 
-	token, err := c.jwtMgr.IssueRefresh(res.EmployeeID.String(), res.OrgId.String(), res.OrgId.String())
+	token, err := c.jwtMgr.IssueRefresh(res.EmployeeID.String(), res.OrgId, res.OrgId.String())
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{
 			"Error": err.Error(),

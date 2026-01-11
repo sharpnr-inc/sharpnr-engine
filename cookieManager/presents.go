@@ -16,7 +16,8 @@ var registry = map[Type]Definition{
 
 	// 🟢 Authenticated session cookie (refresh token)
 	Auth: {
-		Name:     "__Host-auth",
+		// Name:     "__Host-auth",
+		Name:     "_dev_auth",
 		Scope:    Protected,
 		TTL:      60 * 60 * 24, // 24 hours (example)
 		SameSite: http.SameSiteLaxMode,

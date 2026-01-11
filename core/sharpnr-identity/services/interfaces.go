@@ -12,9 +12,8 @@ type SharpnrIdentityAuthServiceInterface interface {
 	// This is the common
 	LoginUser(
 		ctx context.Context,
-		orgID uuid.UUID,
 		req sharpnr_identity_auth_dtos.LoginRequest_dto) (
-		sharpnr_identity_auth_dtos.WebLoginResponse_dto,
+		*sharpnr_identity_auth_dtos.WebLoginResponse_dto,
 		error)
 
 	GetRenderer(
