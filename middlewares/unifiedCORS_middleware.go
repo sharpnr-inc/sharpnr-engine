@@ -14,7 +14,7 @@ func UnifiedCORSMiddleware() gin.HandlerFunc {
 			"http://192.168.1.35:5173",
 		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "X-CSRF-TOKEN"},
 		AllowCredentials: true,
 	})
 
@@ -31,5 +31,13 @@ func UnifiedCORSMiddleware() gin.HandlerFunc {
 		} else {
 			webCORS(c)
 		}
+
+		// Explicitly end preflight
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
 	}
 }

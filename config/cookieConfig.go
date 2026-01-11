@@ -69,7 +69,7 @@ func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieM
 		cookieManager.CSRF: {
 			Name:     "_dev_csrf",
 			Scope:    cookieManager.Public,
-			TTL:      int((30 * time.Minute).Seconds()),
+			TTL:      int((300 * time.Minute).Seconds()),
 			SameSite: http.SameSiteLaxMode,
 		},
 	}

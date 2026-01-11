@@ -54,7 +54,6 @@ func WebAuthMiddleware(
 		ctx.Set(UserIDContextKey, claims.UserID)
 		ctx.Set(OrgUUIDContextKey, orgUUID) // 👈 legacy-compatible
 
-		// 4️⃣ Continue request
 		ctx.Next()
 	}
 }
