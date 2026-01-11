@@ -2,8 +2,8 @@ package hotel_sere_handlers
 
 import (
 	"log"
+	hotelevents "sharpnr-engine/modules/hospitality/hotel/hotel_events"
 	"sharpnr-engine/sere"
-	"sharpnr-engine/sere/events"
 )
 
 type RoomCreatedLogHandler struct{}
@@ -14,7 +14,7 @@ func NewRoomCreatedLogHandler() *RoomCreatedLogHandler {
 
 func (h *RoomCreatedLogHandler) Handle(e sere.Event) error {
 
-	event := e.Payload.(events.RoomCreated)
+	event := e.Payload.(hotelevents.RoomCreated)
 
 	log.Println("🟢 [TEST] RoomCreated event received")
 	log.Println("   RoomID :", event.RoomID)

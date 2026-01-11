@@ -1,19 +1,19 @@
 package hospitalitymenu
 
 import (
+	"sharpnr-engine/app"
 	menucontroller "sharpnr-engine/modules/hospitality/menu/menu_controller"
-	menurepo "sharpnr-engine/modules/hospitality/menu/menu_repo"
-	menuservice "sharpnr-engine/modules/hospitality/menu/menu_service"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func MenuRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
+func MenuRoutes(
+	v1 *gin.RouterGroup,
+	modules app.ModulesProvider,
+) {
 
-	newMeneRepo := menurepo.NewHospitalityMenuRepository(db)
-	newMenuService := menuservice.NewHospitalityMenuService(newMeneRepo)
-	newMenuController := menucontroller.NewMenuController(newMenuService)
+	menuService := modules.HospitalityMenuService()
+	newMenuController := menucontroller.NewMenuController(menuService)
 
 	menuRoutes := v1.Group("/hospitality-menu")
 

@@ -3,6 +3,7 @@ package hotelservices
 import (
 	"context"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
+	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
 
 	"github.com/google/uuid"
@@ -73,4 +74,21 @@ type HotelService interface {
 	// Billing
 	// ------------------
 	PreviewBill(ctx context.Context, orgId, bookingID uuid.UUID) (*hoteldtos.BillPreviewDTO, error)
+
+	FinalizeBill(
+		ctx context.Context,
+		orgID uuid.UUID,
+		bookingID uuid.UUID,
+	) (*hospitalitymodels.HotelBill, error)
+
+	FinalizeBillAndGetInvoice(
+		ctx context.Context,
+		orgID uuid.UUID,
+		bookingID uuid.UUID,
+	) (*hoteldtos.HotelInvoiceDTO, error)
+
+	// -----------------
+	// Payments
+	// ------------------
+	AddPaymentForBooking(ctx context.Context, orgID uuid.UUID, req hoteldtos.AddPaymentsForBookingRequest_dto) error
 }

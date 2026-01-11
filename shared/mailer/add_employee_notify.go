@@ -1,7 +1,0 @@
-package mailer
-
-//
-
-func NotifyEmployee() {
-
-}

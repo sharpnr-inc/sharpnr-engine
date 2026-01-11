@@ -1,15 +1,33 @@
 package hr_employee_controllers
 
-func (c *hrEmployeeController) CreateEmployee() {
-	panic("unimplemented")
+import (
+	"net/http"
+	sharphrdtos "sharpnr-engine/modules/hr/hr_dtos"
+	"sharpnr-engine/shared/utils"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+)
+
+func (c *hrEmployeeController) AddEmployeeInOrg(ctx *gin.Context) {
+
+	orgUUIDVal, exists := ctx.Get("OrgUUID")
+	if !exists {
+		utils.ErrorResponse(ctx, http.StatusUnauthorized, "Organization UUID missing", nil)
+		return
+	}
+
+	orgID := orgUUIDVal.(uuid.UUID)
+
+	var req sharphrdtos.CreateEmployeeInOrganization_RequestDTO
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request", "details": err.Error()})
+		return
+	}
+
+	if err := c.hrEmpSvc.CreateNewEmployee(ctx, orgID, req); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{"Done": "Mail Send"})
+		return
+	}
+
 }
-
-/*
-	TODO
-	1. Need DTO For the Add Employee Request Body,
-	*2. Need DTO for Response
-	*3. Need a mailer to send the Email with a Button With a Link with a Token
-	*4. We also needs Endpoint to to verify the User
-	*5. Policy should Created Here
-
-*/

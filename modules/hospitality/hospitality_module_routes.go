@@ -1,7 +1,7 @@
 package hospitality
 
 import (
-	"sharpnr-engine/middlewares"
+	"sharpnr-engine/app"
 	"sharpnr-engine/modules/hospitality/bar"
 	"sharpnr-engine/modules/hospitality/concierge"
 	hospitalityinventory "sharpnr-engine/modules/hospitality/hospitalityInventory"
@@ -9,28 +9,30 @@ import (
 	"sharpnr-engine/modules/hospitality/kitchen"
 	hospitalitymenu "sharpnr-engine/modules/hospitality/menu"
 	"sharpnr-engine/modules/hospitality/restaurant"
-	"sharpnr-engine/pkg/jwtpack"
-	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func RegisterHotelModuleRoutes(v1 *gin.RouterGroup, db *gorm.DB, sere *sere.SERE) {
+func RegisterHotelModuleRoutes(
+	v1 *gin.RouterGroup,
+	modules app.ModulesProvider,
+) {
 
 	// Route Group
 	sharpHospitality := v1.Group("/sharp-hospitality")
 
-	//Middleware layer
-	sharpHospitality.Use(middlewares.RequireTokenType(jwtpack.TokenTypeAuth), middlewares.SetOrgUUID())
+	hotel.Hospitalityhotelroutes(sharpHospitality, modules)
 
-	// Hospitality Routes
-	hotel.Hospitalityhotelroutes(sharpHospitality, db, sere)
-	kitchen.KitchenRoutes(sharpHospitality, db)
-	restaurant.RestaurantRoutes(sharpHospitality, db)
-	bar.BarRoutes(sharpHospitality, db)
-	hospitalitymenu.MenuRoutes(sharpHospitality, db)
-	hospitalityinventory.HospitalityRoutes(sharpHospitality, db)
-	concierge.ConciergeRoutes(sharpHospitality, db)
+	kitchen.KitchenRoutes(sharpHospitality, modules)
+
+	restaurant.RestaurantRoutes(sharpHospitality, modules)
+
+	bar.BarRoutes(sharpHospitality, modules)
+
+	hospitalitymenu.MenuRoutes(sharpHospitality, modules)
+
+	hospitalityinventory.HospitalityRoutes(sharpHospitality, modules)
+
+	concierge.ConciergeRoutes(sharpHospitality, modules)
 
 }

@@ -2,7 +2,14 @@ package api
 
 import (
 	v1 "sharpnr-engine/api/v1"
+	"sharpnr-engine/app"
+	"sharpnr-engine/cookieManager"
+	dbtx "sharpnr-engine/core/dbTx"
+	org_signup "sharpnr-engine/core/org-signup"
+	sharpnr_identity_auth "sharpnr-engine/core/sharpnr-identity"
 	"sharpnr-engine/middlewares"
+	webMiddleware "sharpnr-engine/middlewares/web"
+	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
@@ -12,21 +19,51 @@ import (
 
 // SetupRouter creates and configures the main Gin router.
 // It delegates the registration of specific API versions to their respective packages.
-func SetupRouter(db *gorm.DB, redis *redis.Client, sere *sere.SERE) *gin.Engine {
+func SetupRouter(
+	db *gorm.DB,
+	txManager dbtx.TxManager,
+	redis *redis.Client,
+	sere *sere.SERE,
+	cookies cookieManager.Manager,
+	jwtmgr jwt_manager.Manager,
+	modules app.ModulesProvider,
+
+) *gin.Engine {
+
 	router := gin.Default()
-	router.Use(middlewares.CORSMiddleWare())
-	// Create a router group for the v1 API.
-	v1Group := router.Group("/api/v1")
 
-	// Register all V1 routes.
-	v1.AuthRoutes(v1Group, db, redis, sere)
-	v1.RegisterModuleRoutes(v1Group, db, sere)
-	v1.CoreOrgRoutes(v1Group, db, redis)
+	// ✅ ONE CORS middleware for everything
+	router.Use(middlewares.UnifiedCORSMiddleware())
 
-	// If you had a v2, you would register it here:
-	// v2.RegisterV2Routes(router, db)
+	// ========================
+	// 🌐 WEB API (cookies)
+	// ========================
+	webV1 := router.Group("/api/v1")
+	{
+		org_signup.OrgSignUpRoute(webV1, cookies, jwtmgr, modules)
 
-	v1.UtilsRoutes(v1Group)
+		sharpnr_identity_auth.SharpnrIdentityAuthWebRoutes(webV1, cookies, jwtmgr, modules)
+
+		protected := webV1.Group("/")
+		protected.Use(
+			webMiddleware.WebAuthMiddleware(jwtmgr),
+			webMiddleware.CSRFMiddleware(),
+		)
+
+		{
+			v1.RegisterModuleRoutes(protected, modules)
+		}
+
+		v1.UtilsRoutes(webV1)
+	}
+
+	// ========================
+	// 📱 MOBILE API (tokens)
+	// ========================
+	mobileV1 := router.Group("/api/v1/mobile")
+	{
+		sharpnr_identity_auth.SharpnrIdentityAuthMobileRoutes(mobileV1, db, redis, sere)
+	}
 
 	return router
 }

@@ -6,9 +6,8 @@ import (
 	"crypto/rand"
 	"fmt"
 	"math/big"
+	org_signup_repositories "sharpnr-engine/core/org-signup/repositories"
 	"strings"
-
-	"sharpnr-engine/core/interfaces"
 )
 
 // CHARSET includes alphanumeric uppercase (excluding confusing letters like I, O, 0)
@@ -26,7 +25,7 @@ func generateRandomString(length int) (string, error) {
 	return sb.String(), nil
 }
 
-func GenerateUniqueSharpnrOrgID(ctx context.Context, repo interfaces.OrganizationRepositoryInterface) (string, error) {
+func GenerateUniqueSharpnrOrgID(ctx context.Context, repo org_signup_repositories.MainOrgSignUpRepositoryInterface) (string, error) {
 	for {
 		randomPart, err := generateRandomString(13)
 		if err != nil {

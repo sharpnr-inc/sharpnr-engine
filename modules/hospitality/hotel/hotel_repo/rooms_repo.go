@@ -141,8 +141,10 @@ func (h *hotelRepository) GetRoomPriceByRoomId(
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, err
+			// ✅ No price is NOT an error
+			return nil, nil
 		}
+		// ❌ Real DB error
 		return nil, err
 	}
 

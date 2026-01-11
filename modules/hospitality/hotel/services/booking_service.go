@@ -3,10 +3,12 @@ package hotelservices
 import (
 	"context"
 	"errors"
+	"fmt"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
 	hotelevents "sharpnr-engine/modules/hospitality/hotel/hotel_events"
+	"sharpnr-engine/modules/hospitality/hotel/hotel_events_names"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
 	"time"
 
@@ -27,6 +29,7 @@ func (r *hotelService) CreateBookingForRoom(
 ) error {
 
 	var booking *hospitalitymodels.HotelRoomBooking
+	var charges *hospitalitymodels.HotelBookingCharge
 
 	err := r.hotelRepo.WithTx(ctx, func(txRepo hotelrepo.HotelRepositoryInterface) error {
 
@@ -95,15 +98,18 @@ func (r *hotelService) CreateBookingForRoom(
 			return nil
 		}
 
-		charges := &hospitalitymodels.HotelBookingCharge{
+		nights := calculateNights(booking.CheckInDate, booking.CheckOutDate)
+
+		charges = &hospitalitymodels.HotelBookingCharge{
 			ID:                 uuid.New(),
 			HotelRoomBookingID: booking.ID,
-			ChargeType:         "Room Tariff",
+			ChargeType:         hospitalityconstants.RoomRent,
 			ReferenceID:        nil,
-			Description:        "Room tariff for One night",
-			Amount:             float64(roomPrice.Price),
+			Description:        fmt.Sprintf("Room rent (%d nights)", int(nights)),
+			Quantity:           nights,
+			UnitRate:           float64(roomPrice.Price),
+			Amount:             nights * float64(roomPrice.Price),
 			CreatedAt:          time.Now(),
-			PaymentStatus:      "PENDING",
 		}
 
 		if err := txRepo.AddChargesInBooking(ctx, charges); err != nil {
@@ -124,6 +130,22 @@ func (r *hotelService) CreateBookingForRoom(
 		RoomId:             booking.RoomID,
 		PrimaryGuestId:     booking.PrimaryGuestID,
 	})
+
+	r.sere.Publish(
+		ctx,
+		hotel_events_names.Hotel_ChargeIsCreatedInBooking,
+		hotelevents.ChargesCreatedInBooking{
+			BookingID:   booking.ID,
+			ChargesId:   charges.ID,
+			ChargesType: charges.ChargeType,
+			HotelID:     booking.HotelID,
+			OrgID:       orgId,
+			Quantity:    charges.Quantity,
+			UnitAmount:  charges.UnitRate,
+			ReferenceID: charges.ReferenceID,
+			TotalAmount: charges.Amount,
+			OccurredAt:  time.Now(),
+		})
 
 	return nil
 }

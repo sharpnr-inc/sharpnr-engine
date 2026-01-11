@@ -1,3 +1,4 @@
+// sere/publish.go
 package sere
 
 import (
@@ -9,7 +10,7 @@ import (
 // It NEVER blocks the caller
 func (s *SERE) Publish(
 	ctx context.Context,
-	name string,
+	name EventName,
 	payload any,
 ) {
 	s.events <- Event{

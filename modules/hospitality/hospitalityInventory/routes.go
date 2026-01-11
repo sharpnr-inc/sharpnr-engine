@@ -1,11 +1,12 @@
 package hospitalityinventory
 
 import (
+	"sharpnr-engine/app"
+
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func HospitalityRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
+func HospitalityRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) {
 	inventoryRoutes := v1.Group("/inventory")
 
 	inventoryRoutes.GET("/get")

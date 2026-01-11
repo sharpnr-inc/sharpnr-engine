@@ -3,8 +3,9 @@ package database
 import (
 	"fmt"
 	"log"
-	"os"
 
+	"sharpnr-engine/config"
+	hospitality_org_models "sharpnr-engine/core/hospitality-org-factory/models"
 	"sharpnr-engine/core/models"
 	"sharpnr-engine/modules/accounting/accounting_models"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
@@ -16,19 +17,12 @@ import (
 
 var DB *gorm.DB
 
-func ConnectDB() *gorm.DB {
-	dbHost := os.Getenv("DB_HOST")
-	dbUser := os.Getenv("DB_USER")
-	dbPassword := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
-	dbPort := os.Getenv("DB_PORT")
+func ConnectDB(cfg config.DatabaseConfig) *gorm.DB {
 
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		dbHost, dbUser, dbPassword, dbName, dbPort,
+		cfg.Host, cfg.User, cfg.Password, cfg.Name, cfg.Port,
 	)
-
-	// dsn := os.Getenv("DATABASE_URL")
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -49,11 +43,43 @@ func MigrateDB(db *gorm.DB) error {
 		// 🌐 CORE MODELS
 		// -------------------------------
 		&models.Organization{},
-		&models.OrganizationPolicy{},
-		&models.OrgUIRendererTree{},
-		&models.OrganizationBrandingDetails{},
-		&models.OrganizationBankAccount{},
+		&models.OrganizationSubscription{},
+		&models.OrganizationOffice{},
+		&models.OrganizationSetting{},
+		&models.OrganizationVerification{},
+		&models.OrganizationSetting{},
+		// More to come
+
+		// Core --> Hospitality
+
+		&hospitality_org_models.OrganizationHospitality{},
+		&hospitality_org_models.OrganizationHospitalityConfiguration{},
+		&hospitality_org_models.OrganizationHospitalityModules{},
+
+		// -------------------------------
+		// Employee Models
+		// -------------------------------
+
 		&sharphr_models.Employee{},
+		&sharphr_models.EmployeeOnboarding{},
+		&sharphr_models.EmployeeVerification{},
+		&sharphr_models.EmployeeAuth{},
+		&sharphr_models.EmployeePrivilegePolicy{},
+		&sharphr_models.EmployeeSession{},
+		&sharphr_models.EmployeeProfile{},
+		&sharphr_models.EmployeeBankAccount{},
+		&sharphr_models.EmployeeDocument{},
+		&sharphr_models.EmployeeReporting{},
+		&sharphr_models.EmployeeEmployment{},
+		&sharphr_models.EmployeeCompensation{},
+		&sharphr_models.EmployeeSalaryComponent{},
+		&sharphr_models.EmployeeLeaveType{},
+		&sharphr_models.EmployeeLeaveBalance{},
+		&sharphr_models.EmployeeLeaveRequest{},
+
+		&sharphr_models.EmployeePolicy{},
+		&sharphr_models.EmployeePolicyRule{},
+		&sharphr_models.EmployeePrivilegePolicy{},
 
 		// -------------------------------
 		// 🏨 HOSPITALITY MODELS
@@ -131,6 +157,7 @@ func MigrateDB(db *gorm.DB) error {
 		&accounting_models.FiscalYear{},
 		&accounting_models.AccountGroup{},
 		&accounting_models.Account{},
+		&accounting_models.AccountMapping{},
 
 		&accounting_models.JournalEntry{},
 		&accounting_models.JournalLine{},

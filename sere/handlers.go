@@ -1,3 +1,5 @@
+// sere/handlers.go
+
 package sere
 
 // Handler reacts to an event

@@ -1,22 +1,19 @@
 package bar
 
 import (
+	"sharpnr-engine/app"
 	barcontrollers "sharpnr-engine/modules/hospitality/bar/controllers"
-	barrepo "sharpnr-engine/modules/hospitality/bar/repo"
-	barservices "sharpnr-engine/modules/hospitality/bar/services"
-	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func BarRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
+func BarRoutes(
+	v1 *gin.RouterGroup,
+	modules app.ModulesProvider,
+) {
 
-	newBarRepo := barrepo.NewBarRepository(db)
-
-	newKitchenRepo := kitchenrepo.NewKitchenRepository(db)
-	newBarService := barservices.NewBarServices(newBarRepo, newKitchenRepo)
-	newBarController := barcontrollers.NewBarController(newBarService)
+	barService := modules.HospitalityBarService()
+	newBarController := barcontrollers.NewBarController(barService)
 
 	barRoute := v1.Group("/bar")
 

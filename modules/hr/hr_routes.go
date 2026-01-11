@@ -2,15 +2,30 @@
 package hr
 
 import (
+	"sharpnr-engine/app"
+	hr_employee_controllers "sharpnr-engine/modules/hr/employees/controllers"
+
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func RegisterHRRoutes(v1 *gin.RouterGroup, db *gorm.DB) {
-	hrRoutes := v1.Group("/sharp-hr/")
+func RegisterHRRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) {
 
-	hrRoutes.POST("/employee/add-employee")
-	hrRoutes.GET("/employee/get")
-	hrRoutes.GET("/employee/get/:employeeId")
+	hrEmployeeService := modules.HrService()
+	newHrEmpController := hr_employee_controllers.NewHREmployeeController(hrEmployeeService)
+
+	hr := v1.Group("/sharp-hr")
+
+	employees := hr.Group("/employees")
+	{
+		employees.POST("/add", newHrEmpController.AddEmployeeInOrg)
+		employees.GET("")             // List employees (filters, pagination)
+		employees.GET("/:employeeId") // Returns employee details
+	}
+
+	profile := employees.Group("/:employeeId/profile")
+	{
+		profile.GET("") // Get profile
+		profile.PUT("") // Update profile
+	}
 
 }

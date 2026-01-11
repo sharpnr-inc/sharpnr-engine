@@ -147,12 +147,12 @@ type Room struct {
 	Prices []HotelRoomPrice `gorm:"foreignKey:RoomID"`
 
 	Description      string
-	Status           hospitalityconstants.RoomStatus `gorm:"type:varchar(50);not null;default:'DISABLED'"`
-	QRCodes          []HotelRoomQRCode               `gorm:"foreignKey:RoomID"`
-	RoomName         string                          `gorm:"size:100;not null"`
-	BedSize          string                          `gorm:"size:50"`
-	Amenities        string                          `gorm:"type:text"`
-	CurrentBookingID *uuid.UUID                      `gorm:"type:uuid"`
+	Status           hospitalityconstants.HotelRoomStatusType `gorm:"type:varchar(50);not null;default:'DISABLED'"`
+	QRCodes          []HotelRoomQRCode                        `gorm:"foreignKey:RoomID"`
+	RoomName         string                                   `gorm:"size:100;not null"`
+	BedSize          string                                   `gorm:"size:50"`
+	Amenities        string                                   `gorm:"type:text"`
+	CurrentBookingID *uuid.UUID                               `gorm:"type:uuid"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -241,16 +241,18 @@ type HotelRoomBooking struct {
 //--------------------------------------------------------------------------------------------//
 
 type HotelBookingCharge struct {
-	ID                 uuid.UUID `gorm:"type:uuid;primaryKey"`
-	HotelRoomBookingID uuid.UUID `gorm:"type:uuid;not null"` // Foreign Key Will
-	ChargeType         string    `gorm:"size:50"`            // room_rent, room_service, bar, laundry, spa, minibar
+	ID                 uuid.UUID                            `gorm:"type:uuid;primaryKey"`
+	HotelRoomBookingID uuid.UUID                            `gorm:"type:uuid;not null"` // Foreign Key Will
+	ChargeType         hospitalityconstants.HotelChargeType `gorm:"size:50"`            // room_rent, room_service, bar, laundry, spa, minibar
 
-	ReferenceID      *uuid.UUID
-	Description      string `gorm:"size:200"`
-	Amount           float64
-	CreatedAt        time.Time
-	BookingPaymentID uuid.UUID
-	PaymentStatus    string
+	ReferenceID *uuid.UUID
+
+	Description string  `gorm:"size:200"`
+	Quantity    float64 `gorm:"default:1"`
+	UnitRate    float64 `gorm:"default:0"`
+	Amount      float64
+
+	CreatedAt time.Time
 }
 
 //--------------------------------------------------------------------------------------------//
@@ -261,9 +263,9 @@ type HotelBill struct {
 	HotelRoomBookingID uuid.UUID `gorm:"uniqueIndex"`
 	HotelID            uuid.UUID
 
-	BaseAmount  float64
-	TaxAmount   float64
-	TotalAmount float64
+	BaseAmount  float64 `gorm:"not null"`
+	TaxAmount   float64 `gorm:"not null"`
+	TotalAmount float64 `gorm:"not null"`
 
 	Status string // DRAFT, FINALIZED, CANCELLED
 
@@ -288,11 +290,11 @@ type HotelBillTax struct {
 type HotelRoomBookingPayment struct {
 	ID                 uuid.UUID `gorm:"type:uuid;primaryKey"`
 	HotelID            uuid.UUID
-	HotelRoomBookingID uuid.UUID `gorm:"type:uuid;not null"`
-	Amount             float64   `gorm:"not null"`
-	Mode               string    `gorm:"size:50"`  // cash, upi, card, room_charge
-	Status             string    `gorm:"size:20"`  // success, pending, failed
-	Reference          string    `gorm:"size:100"` // UPI txn ID, Ref no.
+	HotelRoomBookingID uuid.UUID                          `gorm:"type:uuid;not null"`
+	Amount             float64                            `gorm:"not null"`
+	Mode               hospitalityconstants.PaymentMethod `gorm:"size:50"`  // cash, upi, card, room_charge
+	Status             hospitalityconstants.PaymentStatus `gorm:"size:20"`  // success, pending, failed
+	Reference          string                             `gorm:"size:100"` // UPI txn ID, Ref no.
 	CreatedAt          time.Time
 }
 

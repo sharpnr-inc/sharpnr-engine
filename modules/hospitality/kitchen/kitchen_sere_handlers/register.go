@@ -11,5 +11,5 @@ func Register(
 ) {
 	handler := NewOrderPlacedFromHotelRoom(kitchenRepo)
 
-	sere.Subscribe("OrderCreated", handler.Handle)
+	sere.SubscribeAsync("OrderCreated", handler.Handle)
 }

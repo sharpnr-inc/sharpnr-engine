@@ -1,11 +1,14 @@
 package hoteldtos
 
-import "github.com/google/uuid"
+import (
+	"sharpnr-engine/modules/hospitality/hospitalityconstants"
+
+	"github.com/google/uuid"
+)
 
 type AddPaymentsForBookingRequest_dto struct {
-	BookingId   uuid.UUID
-	RoomId      uuid.UUID
-	AmountId    uuid.UUID
-	Method      string
-	ReferenceId string
+	BookingID uuid.UUID                          `json:"booking_id" binding:"required"`
+	Amount    float64                            `json:"amount" binding:"required,gt=0"`
+	Method    hospitalityconstants.PaymentMethod `json:"method" binding:"required"`
+	Reference *string                            `json:"reference,omitempty"`
 }

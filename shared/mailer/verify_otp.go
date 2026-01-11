@@ -5,19 +5,12 @@ import (
 	"os"
 	"time"
 
-	"sharpnr-engine/shared/utils"
-
 	mail "github.com/xhit/go-simple-mail/v2"
 )
 
 // VerifyOtp_Org_Registration generates an OTP and sends a styled HTML email
 // to the provided address.  It returns true + the OTP on success.
-func VerifyOtp_Org_Registration(email_add string) (bool, string, error) {
-	// generate the OTP
-	ok, otp, err := utils.GenerateOtp()
-	if !ok || err != nil {
-		return false, "", err
-	}
+func VerifyOtp_Org_Registration(email_add string, otp string) error {
 
 	// Build HTML message with a light background and highlighted OTP
 	htmlBody := fmt.Sprintf(`
@@ -111,7 +104,7 @@ func VerifyOtp_Org_Registration(email_add string) (bool, string, error) {
 
 	smtpClient, err := server.Connect()
 	if err != nil {
-		return false, "", err
+		return err
 	}
 
 	// Build and send message
@@ -122,12 +115,12 @@ func VerifyOtp_Org_Registration(email_add string) (bool, string, error) {
 		SetBody(mail.TextHTML, htmlBody)
 
 	if msg.Error != nil {
-		return false, "", msg.Error
+		return msg.Error
 	}
 
 	if err := msg.Send(smtpClient); err != nil {
-		return false, "", err
+		return err
 	}
 
-	return true, otp, nil
+	return nil
 }

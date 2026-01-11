@@ -1,3 +1,5 @@
+// sere/events.go
+
 package sere
 
 import (
@@ -5,10 +7,12 @@ import (
 	"time"
 )
 
+type EventName string
+
 // Event represents a business fact that already happened
 type Event struct {
 	Ctx       context.Context
-	Name      string    // e.g. "OrganizationSignupCompleted"
+	Name      EventName
 	Payload   any       // domain-specific data
 	CreatedAt time.Time // when event was created
 }

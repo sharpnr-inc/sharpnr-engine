@@ -1,3 +1,4 @@
+// sere/start.go
 package sere
 
 import (
@@ -27,7 +28,7 @@ func (s *SERE) Start() {
 		for event := range s.events {
 
 			s.mu.RLock()
-			handlers := s.subscribers[event.Name]
+			handlers := s.subscribers[string(event.Name)]
 			s.mu.RUnlock()
 
 			if len(handlers) == 0 {
@@ -35,35 +36,44 @@ func (s *SERE) Start() {
 				continue
 			}
 
-			for _, handler := range handlers {
-				go func(h Handler, evt Event) {
+			for _, rh := range handlers {
 
-					// 🔥 Protect handler from crashing
+				// 🔒 SYNC HANDLER
+				if rh.mode == Sync {
+					if err := rh.handler(event); err != nil {
+						log.Println(
+							"❌ Sync handler failed:",
+							"event =", event.Name,
+							"err =", err,
+						)
+						continue // or break, policy choice
+					}
+					continue
+				}
+
+				// 🚀 ASYNC HANDLER
+				go func(h Handler, evt Event) {
 					defer func() {
 						if r := recover(); r != nil {
-							log.Println("🔥 Handler panic recovered:", r)
+							log.Println("🔥 Async handler panic recovered:", r)
 						}
 					}()
 
-					// ✅ Derive bounded context
-					ctx, cancel := context.WithTimeout(
-						evt.Ctx,
-						10*time.Second,
-					)
+					ctx, cancel := context.WithTimeout(evt.Ctx, 10*time.Second)
 					defer cancel()
 
 					evt.Ctx = ctx
 
 					if err := h(evt); err != nil {
 						log.Println(
-							"❌ Event handler error:",
+							"❌ Async handler error:",
 							"event =", evt.Name,
 							"err =", err,
 						)
 					}
-
-				}(handler, event)
+				}(rh.handler, event)
 			}
+
 		}
 
 		log.Println("🛑 SERE stopped")

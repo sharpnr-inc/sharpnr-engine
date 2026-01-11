@@ -7,7 +7,9 @@ import (
 	"sharpnr-engine/api"
 	"sharpnr-engine/app"
 	"sharpnr-engine/config"
-	"sharpnr-engine/modules/accounting/accounting_repo"
+	"sharpnr-engine/cookieManager"
+	dbtx "sharpnr-engine/core/dbTx"
+	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
 	"sharpnr-engine/shared/database"
 
@@ -32,9 +34,10 @@ import (
 // @host 192.168.1.35:8080
 // @BasePath /api/v1
 func main() {
-	config.LoadEnv() // Load environment variables
-	redisDb := database.ConnectRedis()
-	db := database.ConnectDB()
+	cfg := config.Load()
+
+	redisDb := database.ConnectRedis(cfg.Redis)
+	db := database.ConnectDB(cfg.Database)
 
 	// Run migrations
 	err := database.MigrateDB(db)
@@ -49,20 +52,37 @@ func main() {
 
 	log.Println("✅ SERE is up and running")
 
-	// -------------------------------------------------
-	// 4️⃣ Create repositories (for handlers)
-	// -------------------------------------------------
+	defs := config.CookieRegistry(cfg.App, cfg.TTL)
+	cookieManager.Init(defs)
+	cookieMgr := cookieManager.New(cookieManager.Config{
+		Secure: cfg.Cookie.Secure,
+		Domain: cfg.Cookie.Domain,
+	})
 
-	accountingRepo := accounting_repo.NewAccountingRepository(db)
+	jwtmgr := jwt_manager.New(jwt_manager.Config{
+		Secret:            cfg.JWT.Secret,
+		Issuer:            cfg.JWT.Issuer,
+		Audience:          cfg.JWT.Audience,
+		AccessTTL:         cfg.JWT.AccessTTL,
+		RefreshTTL:        cfg.JWT.RefreshTTL,
+		SignupTTL:         cfg.JWT.SignupTTL,
+		WebCookieTokenTTL: cfg.JWT.WebCookieTokenTTL,
+	})
 
-	// -------------------------------------------------
-	// 5️⃣ Register event handlers (wiring)
-	// -------------------------------------------------
+	txManager := dbtx.NewGormTxManager(db)
 
-	app.RegisterSereEventHandler(sereEngine, accountingRepo)
+	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, sereEngine)
 
 	// Create and configure the main router
-	r := api.SetupRouter(db, redisDb, sereEngine)
+	r := api.SetupRouter(
+		db,
+		txManager,
+		redisDb,
+		sereEngine,
+		cookieMgr,
+		jwtmgr,
+		sharpnrModules,
+	)
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

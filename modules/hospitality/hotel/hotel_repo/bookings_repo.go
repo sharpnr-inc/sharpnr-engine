@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -72,4 +73,17 @@ func (d *hotelRepository) GetBookingByBookingId(ctx context.Context, bookingId u
 	}
 
 	return &booking, nil
+}
+
+func (h *hotelRepository) UpdateBookingStatus(
+	ctx context.Context,
+	bookingID uuid.UUID,
+	status hospitalityconstants.HotelBookingStatusType,
+) error {
+
+	return h.db.WithContext(ctx).
+		Model(&hospitalitymodels.HotelRoomBooking{}).
+		Where("id = ?", bookingID).
+		Update("status", status).
+		Error
 }

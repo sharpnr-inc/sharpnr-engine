@@ -6,8 +6,9 @@ func Register(sere *sere.SERE) {
 
 	logHandler := NewRoomCreatedLogHandler()
 
-	sere.Subscribe(
+	sere.SubscribeAsync(
 		"RoomCreated",
 		logHandler.Handle,
 	)
+
 }

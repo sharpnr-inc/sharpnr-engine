@@ -1,6 +1,7 @@
 package hoteldtos
 
 import (
+	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	"time"
 
 	"github.com/google/uuid"
@@ -58,19 +59,19 @@ type GuestInfoDTO struct {
 }
 
 type ChargeDTO struct {
-	ID          uuid.UUID `json:"id"`
-	Type        string    `json:"type"`
-	Description string    `json:"description"`
-	Amount      float64   `json:"amount"`
-	CreatedAt   time.Time `json:"createdAt"`
+	ID          uuid.UUID                            `json:"id"`
+	Type        hospitalityconstants.HotelChargeType `json:"type"`
+	Description string                               `json:"description"`
+	Amount      float64                              `json:"amount"`
+	CreatedAt   time.Time                            `json:"createdAt"`
 }
 
 type PaymentDTO struct {
-	ID        uuid.UUID `json:"id"`
-	Amount    float64   `json:"amount"`
-	Method    string    `json:"method"`
-	Status    string    `json:"status"`
-	CreatedAt time.Time `json:"createdAt"`
+	ID        uuid.UUID                          `json:"id"`
+	Amount    float64                            `json:"amount"`
+	Method    hospitalityconstants.PaymentMethod `json:"method"`
+	Status    hospitalityconstants.PaymentStatus `json:"status"`
+	CreatedAt time.Time                          `json:"createdAt"`
 }
 
 type BillDTO struct {
