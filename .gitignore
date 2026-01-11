@@ -2,8 +2,7 @@
 .env.beta
 .env.production
 .env.development
-.env
-GEMINI.md
+.env.test
 /sharpnr-engine
 .vscode
 

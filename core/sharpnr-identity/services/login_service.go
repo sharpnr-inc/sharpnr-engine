@@ -35,7 +35,7 @@ func (s *sharpnrIdentityAuthService) LoginUser(
 	res := sharpnr_identity_auth_dtos.WebLoginResponse_dto{
 		OrgId:      authenticatedEmp.OrganizationID,
 		Email:      authenticatedEmp.Email,
-		EmployeeID: authenticatedEmp.ID.String(),
+		EmployeeID: authenticatedEmp.ID,
 		Name:       authenticatedEmp.FirstName,
 	}
 

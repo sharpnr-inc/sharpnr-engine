@@ -25,6 +25,14 @@ type RefreshClaims struct {
 	jwt.RegisteredClaims
 }
 
+//---------Web cookie Token -----------
+
+type WebCookieTokenClaims struct {
+	UserID uuid.UUID `json:"uid"`
+	OrgID  uuid.UUID `json:"orgId"`
+	jwt.RegisteredClaims
+}
+
 // ---------- Signup Token ----------
 
 type SignupClaims struct {

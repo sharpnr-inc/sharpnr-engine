@@ -73,3 +73,11 @@ func (m *manager) VerifySignup(token string) (*SignupClaims, error) {
 	}
 	return claims, nil
 }
+
+func (m *manager) VerifyWebCookie(token string) (*WebCookieTokenClaims, error) {
+	claims := &WebCookieTokenClaims{}
+	if err := m.parse(token, claims); err != nil {
+		return nil, err
+	}
+	return claims, nil
+}

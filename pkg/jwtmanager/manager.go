@@ -11,11 +11,13 @@ type Manager interface {
 	IssueAccess(userID, orgID, role string) (string, error)
 	IssueRefresh(userID string, orgID uuid.UUID, sessionID string) (string, error)
 	IssueSignup(userID string) (string, error)
+	IssueWebAuthCookieToken(userID, orgID uuid.UUID) (string, error)
 
 	// Verify
 	VerifyAccess(token string) (*AccessClaims, error)
 	VerifyRefresh(token string) (*RefreshClaims, error)
 	VerifySignup(token string) (*SignupClaims, error)
+	VerifyWebCookie(token string) (*WebCookieTokenClaims, error)
 }
 
 type manager struct {

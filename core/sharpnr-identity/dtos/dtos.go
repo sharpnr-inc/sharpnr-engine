@@ -10,7 +10,7 @@ type LoginRequest_dto struct {
 type WebLoginResponse_dto struct {
 	OrgId      uuid.UUID `json:"org_id"`
 	Email      string    `json:"email"`
-	EmployeeID string    `json:"employee_id"`
+	EmployeeID uuid.UUID `json:"employee_id"`
 	Name       string    `json:"name"`
 }
 

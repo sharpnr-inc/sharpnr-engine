@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"log"
-	"os"
 	"sharpnr-engine/config"
 
 	"github.com/redis/go-redis/v9"
@@ -13,12 +12,9 @@ var RedisClient *redis.Client
 
 func ConnectRedis(cfg config.RedisDBConfig) *redis.Client {
 
-	redisHost := os.Getenv("REDIS_HOST")         // 127.0.0.1:6379
-	redisPassword := os.Getenv("REDIS_PASSWORD") // "" if no password
-
 	RedisClient = redis.NewClient(&redis.Options{
-		Addr:     redisHost,
-		Password: redisPassword,
+		Addr:     cfg.Host,
+		Password: cfg.Password,
 		DB:       0,
 	})
 
