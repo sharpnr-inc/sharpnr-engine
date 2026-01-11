@@ -62,8 +62,8 @@ func (m *manager) IssueSignup(userID string) (string, error) {
 
 func (m *manager) IssueWebAuthCookieToken(userID, orgID uuid.UUID) (string, error) {
 	claims := WebCookieTokenClaims{
-		UserID: userID,
-		OrgID:  orgID,
+		UserID: userID.String(),
+		OrgID:  orgID.String(),
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    m.cfg.Issuer,
 			Audience:  []string{m.cfg.Audience},
@@ -71,5 +71,6 @@ func (m *manager) IssueWebAuthCookieToken(userID, orgID uuid.UUID) (string, erro
 			ExpiresAt: jwt.NewNumericDate(m.now().Add(m.cfg.WebCookieTokenTTL)),
 		},
 	}
-	return jwt.NewWithClaims(jwt.SigningMethodES256, claims).SignedString([]byte(m.cfg.Secret))
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).
+		SignedString([]byte(m.cfg.Secret))
 }

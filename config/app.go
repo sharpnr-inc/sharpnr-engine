@@ -10,7 +10,7 @@ type AppConfig struct {
 
 func loadApp() AppConfig {
 	env := os.Getenv("APP_ENV")
-	if env == "" {
+	if env == "development" {
 		env = "development"
 	}
 

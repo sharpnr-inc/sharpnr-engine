@@ -8,9 +8,17 @@ import (
 )
 
 func loadEnv() {
-	if os.Getenv("APP_ENV") == "development" {
-		if err := godotenv.Load(".env.development"); err != nil {
-			log.Println("⚠️ .env.development not found")
-		}
+	env := os.Getenv("APP_ENV")
+
+	file := ".env"
+	switch env {
+	case "development":
+		file = ".env.development"
+	case "production":
+		file = ".env.production"
+	}
+
+	if err := godotenv.Load(file); err != nil {
+		log.Printf("⚠️ could not load %s\n", file)
 	}
 }

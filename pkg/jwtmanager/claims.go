@@ -28,8 +28,8 @@ type RefreshClaims struct {
 //---------Web cookie Token -----------
 
 type WebCookieTokenClaims struct {
-	UserID uuid.UUID `json:"uid"`
-	OrgID  uuid.UUID `json:"orgId"`
+	UserID string `json:"uid"`
+	OrgID  string `json:"orgId"`
 	jwt.RegisteredClaims
 }
 

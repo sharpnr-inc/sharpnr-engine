@@ -25,7 +25,13 @@ func (s *sharpnrIdentityAuthControllers) WebLogin(ctx *gin.Context) {
 		return
 	}
 
-	token, _ := s.jwtMgr.IssueWebAuthCookieToken(res.EmployeeID, res.OrgId)
+	token, err := s.jwtMgr.IssueWebAuthCookieToken(res.EmployeeID, res.OrgId)
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway, gin.H{
+			"Error": err.Error(),
+		})
+		return
+	}
 	s.cookieMgr.Set(ctx, cookieManager.CSRF, token)
 	s.cookieMgr.Set(ctx, cookieManager.Auth, token)
 

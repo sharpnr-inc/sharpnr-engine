@@ -21,7 +21,7 @@ func loadCookie(app AppConfig, ttl TTLConfig) CookieConfig {
 
 	// development / test
 	return CookieConfig{
-		Domain: "localhost",
+		Domain: "",
 		Secure: false,
 	}
 }

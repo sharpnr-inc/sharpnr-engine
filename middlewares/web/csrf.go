@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	csrfCookieName = "XSRF-TOKEN"
+	csrfCookieName = "_dev_csrf"
 	csrfHeaderName = "X-CSRF-Token"
 )
 
@@ -15,12 +15,12 @@ func CSRFMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		// 🔐 Ensure user is authenticated first
-		if _, exists := ctx.Get(SessionIDContextKey); !exists {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"message": "Authentication required",
-			})
-			return
-		}
+		// if _, exists := ctx.Get(SessionIDContextKey); !exists {
+		// 	ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+		// 		"message": "Authentication required",
+		// 	})
+		// 	return
+		// }
 
 		// Only protect unsafe methods
 		switch ctx.Request.Method {

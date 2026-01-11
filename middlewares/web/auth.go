@@ -6,6 +6,7 @@ import (
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 const (
@@ -32,7 +33,7 @@ func WebAuthMiddleware(
 		}
 
 		// 2️⃣ Verify refresh token
-		claims, err := jwtMgr.VerifyRefresh(refreshToken)
+		claims, err := jwtMgr.VerifyWebCookie(refreshToken)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"message": "Invalid or expired session",
@@ -40,10 +41,18 @@ func WebAuthMiddleware(
 			return
 		}
 
+		orgUUID, err := uuid.Parse(claims.OrgID)
+		if err != nil {
+			// token is already invalid if this fails
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "invalid org id in token",
+			})
+			return
+		}
+
 		// 3️⃣ Populate legacy context keys
 		ctx.Set(UserIDContextKey, claims.UserID)
-		ctx.Set(OrgUUIDContextKey, claims.OrgID) // 👈 legacy-compatible
-		ctx.Set(SessionIDContextKey, claims.SessionID)
+		ctx.Set(OrgUUIDContextKey, orgUUID) // 👈 legacy-compatible
 
 		// 4️⃣ Continue request
 		ctx.Next()

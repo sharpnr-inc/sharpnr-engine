@@ -60,12 +60,13 @@ func main() {
 	})
 
 	jwtmgr := jwt_manager.New(jwt_manager.Config{
-		Secret:     cfg.JWT.Secret,
-		Issuer:     cfg.JWT.Issuer,
-		Audience:   cfg.JWT.Audience,
-		AccessTTL:  cfg.JWT.AccessTTL,
-		RefreshTTL: cfg.JWT.RefreshTTL,
-		SignupTTL:  cfg.JWT.SignupTTL,
+		Secret:            cfg.JWT.Secret,
+		Issuer:            cfg.JWT.Issuer,
+		Audience:          cfg.JWT.Audience,
+		AccessTTL:         cfg.JWT.AccessTTL,
+		RefreshTTL:        cfg.JWT.RefreshTTL,
+		SignupTTL:         cfg.JWT.SignupTTL,
+		WebCookieTokenTTL: cfg.JWT.WebCookieTokenTTL,
 	})
 
 	txManager := dbtx.NewGormTxManager(db)
