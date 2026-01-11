@@ -2,10 +2,8 @@ package base
 
 import (
 	"sharpnr-engine/app"
-	"sharpnr-engine/middlewares"
 	"sharpnr-engine/modules/accounting"
 	"sharpnr-engine/modules/hr"
-	"sharpnr-engine/pkg/jwtpack"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,13 +13,6 @@ func RegisterBaseModuleRoutes(
 	v1 *gin.RouterGroup,
 	modules app.ModulesProvider,
 ) {
-
-	// 🔐 Protected base modules (Org scoped)
-	protected := v1.Group("/")
-	protected.Use(
-		middlewares.RequireTokenType(jwtpack.TokenTypeAuth),
-		middlewares.SetOrgUUID(),
-	)
-	accounting.RegisterAccountingRoutes(protected, modules)
-	hr.RegisterHRRoutes(protected, modules)
+	accounting.RegisterAccountingRoutes(v1, modules)
+	hr.RegisterHRRoutes(v1, modules)
 }

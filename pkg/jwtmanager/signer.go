@@ -25,10 +25,11 @@ func (m *manager) IssueAccess(userID, orgID, role string) (string, error) {
 
 // ---------- Issue Refresh ----------
 
-func (m *manager) IssueRefresh(userID, sessionID string) (string, error) {
+func (m *manager) IssueRefresh(userID, orgId string, sessionID string) (string, error) {
 	claims := RefreshClaims{
 		UserID:    userID,
 		SessionID: sessionID,
+		OrgID:     orgId,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    m.cfg.Issuer,
 			Audience:  []string{m.cfg.Audience},

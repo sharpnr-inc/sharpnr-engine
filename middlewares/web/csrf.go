@@ -14,6 +14,14 @@ const (
 func CSRFMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
+		// 🔐 Ensure user is authenticated first
+		if _, exists := ctx.Get(SessionIDContextKey); !exists {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"message": "Authentication required",
+			})
+			return
+		}
+
 		// Only protect unsafe methods
 		switch ctx.Request.Method {
 		case http.MethodGet, http.MethodHead, http.MethodOptions:

@@ -5,7 +5,7 @@ import "time"
 type Manager interface {
 	// Issue
 	IssueAccess(userID, orgID, role string) (string, error)
-	IssueRefresh(userID, sessionID string) (string, error)
+	IssueRefresh(userID, orgID string, sessionID string) (string, error)
 	IssueSignup(userID string) (string, error)
 
 	// Verify

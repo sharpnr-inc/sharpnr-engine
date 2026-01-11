@@ -8,6 +8,7 @@ import (
 	org_signup "sharpnr-engine/core/org-signup"
 	sharpnr_identity_auth "sharpnr-engine/core/sharpnr-identity"
 	"sharpnr-engine/middlewares"
+	webMiddleware "sharpnr-engine/middlewares/web"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
 
@@ -43,7 +44,15 @@ func SetupRouter(
 
 		sharpnr_identity_auth.SharpnrIdentityAuthWebRoutes(webV1, cookies, modules)
 
-		v1.RegisterModuleRoutes(webV1, modules)
+		protected := webV1.Group("/")
+		protected.Use(
+			webMiddleware.WebAuthMiddleware(jwtmgr),
+			webMiddleware.CSRFMiddleware(),
+		)
+
+		{
+			v1.RegisterModuleRoutes(protected, modules)
+		}
 
 		v1.UtilsRoutes(webV1)
 	}

@@ -3,6 +3,7 @@ package org_signup_controllers
 import (
 	"fmt"
 	"net/http"
+	"sharpnr-engine/cookieManager"
 	org_signup_dtos "sharpnr-engine/core/org-signup/dtos"
 	webMiddleware "sharpnr-engine/middlewares/web"
 
@@ -43,11 +44,18 @@ func (c *orgSignUpController) OnBoardOrganization(ctx *gin.Context) {
 	}
 	fmt.Println(res.EmployeeID)
 
-	// c.jwtMgr.IssueAccess()
 	ctx.JSON(http.StatusOK, gin.H{"done": "done"})
+
 	c.cookies.ClearSignup(ctx)
-	// c.jwtMgr.IssueRefresh()
-	// c.jwtMgr.IssueAccess()
-	// c.cookies.Set(ctx, cookieManager.Auth)
+
+	token, err := c.jwtMgr.IssueRefresh(res.EmployeeID.String(), res.OrgId.String(), res.OrgId.String())
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway, gin.H{
+			"Error": err.Error(),
+		})
+		return
+	}
+	c.cookies.Set(ctx, cookieManager.CSRF, "iyfiluygbilugg")
+	c.cookies.Set(ctx, cookieManager.Auth, token)
 
 }
