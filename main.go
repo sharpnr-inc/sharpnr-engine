@@ -3,7 +3,6 @@ package main
 // Main entry point of the application
 import (
 	"log"
-	"time"
 
 	"sharpnr-engine/api"
 	"sharpnr-engine/app"
@@ -35,9 +34,10 @@ import (
 // @host 192.168.1.35:8080
 // @BasePath /api/v1
 func main() {
-	config.LoadEnv() // Load environment variables
-	redisDb := database.ConnectRedis()
-	db := database.ConnectDB()
+	cfg := config.Load()
+
+	redisDb := database.ConnectRedis(cfg.Redis)
+	db := database.ConnectDB(cfg.Database)
 
 	// Run migrations
 	err := database.MigrateDB(db)
@@ -52,18 +52,20 @@ func main() {
 
 	log.Println("✅ SERE is up and running")
 
+	defs := config.CookieRegistry(cfg.App, cfg.TTL)
+	cookieManager.Init(defs)
 	cookieMgr := cookieManager.New(cookieManager.Config{
-		Secure: false,
-		Domain: "",
+		Secure: cfg.Cookie.Secure,
+		Domain: cfg.Cookie.Domain,
 	})
 
 	jwtmgr := jwt_manager.New(jwt_manager.Config{
-		Secret:     config.LoadJwtSecret(),
-		Issuer:     "Sharpnr-Engine-V1-alpha",
-		Audience:   "sharpnr-app",
-		AccessTTL:  15 * time.Minute,
-		RefreshTTL: 14 * 24 * time.Hour,
-		SignupTTL:  15 * time.Minute,
+		Secret:     cfg.JWT.Secret,
+		Issuer:     cfg.JWT.Issuer,
+		Audience:   cfg.JWT.Audience,
+		AccessTTL:  cfg.JWT.AccessTTL,
+		RefreshTTL: cfg.JWT.RefreshTTL,
+		SignupTTL:  cfg.JWT.SignupTTL,
 	})
 
 	txManager := dbtx.NewGormTxManager(db)

@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"sharpnr-engine/config"
 	hospitality_org_models "sharpnr-engine/core/hospitality-org-factory/models"
 	"sharpnr-engine/core/models"
 	"sharpnr-engine/modules/accounting/accounting_models"
@@ -17,7 +18,8 @@ import (
 
 var DB *gorm.DB
 
-func ConnectDB() *gorm.DB {
+func ConnectDB(cfg config.DatabaseConfig) *gorm.DB {
+
 	dbHost := os.Getenv("DB_HOST")
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")

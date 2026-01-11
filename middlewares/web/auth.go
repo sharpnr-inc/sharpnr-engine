@@ -17,7 +17,9 @@ const (
 	SessionIDContextKey = "session_id"
 )
 
-func WebAuthMiddleware(jwtMgr jwt_manager.Manager) gin.HandlerFunc {
+func WebAuthMiddleware(
+	jwtMgr jwt_manager.Manager,
+) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		// 1️⃣ Read refresh token from cookie
