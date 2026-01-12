@@ -12,8 +12,6 @@ type SharpMailerEngine struct {
 	templateCache *template.Template
 	wg            sync.WaitGroup
 	quit          chan struct{}
-
-	mu sync.Mutex
 }
 
 func New(cfg *config.Config) *SharpMailerEngine {

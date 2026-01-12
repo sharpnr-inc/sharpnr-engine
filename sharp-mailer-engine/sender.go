@@ -9,64 +9,61 @@ import (
 	"time"
 )
 
-func (e *SharpMailerEngine) send(to, subject, htmlBody, fromAlias string) error {
+type smtpClientWrapper struct {
+	smtp *smtp.Client
+}
+
+func (c *smtpClientWrapper) IsClosed() bool {
+	// A simple Noop check to see if the server hung up
+	return c.smtp.Noop() != nil
+}
+
+func (e *SharpMailerEngine) dialNewClient() (*smtpClientWrapper, error) {
 	s := e.cfg.SMTP
 	addr := fmt.Sprintf("%s:%d", s.Host, s.Port)
 
-	// 1. Establish a Secure TLS Connection FIRST (Fixes EOF)
-	tlsConfig := &tls.Config{
-		InsecureSkipVerify: false,
-		ServerName:         s.Host,
-	}
-
+	tlsConfig := &tls.Config{ServerName: s.Host}
 	conn, err := tls.Dial("tcp", addr, tlsConfig)
 	if err != nil {
-		return fmt.Errorf("failed to connect to %s: %w", addr, err)
+		return nil, err
 	}
-	defer conn.Close()
 
-	// 2. Create the SMTP Client from the secure connection
 	client, err := smtp.NewClient(conn, s.Host)
 	if err != nil {
-		return fmt.Errorf("failed to create smtp client: %w", err)
+		return nil, err
 	}
-	defer client.Quit()
 
-	// 3. Authenticate
 	auth := smtp.PlainAuth("", s.Username, s.Password, s.Host)
 	if err = client.Auth(auth); err != nil {
-		return fmt.Errorf("auth failed: %w", err)
+		return nil, err
 	}
 
-	// 4. Set the "Envelope" (This makes Aliases work)
-	if err = client.Mail(fromAlias); err != nil {
-		return fmt.Errorf("failed to set MAIL FROM: %w", err)
+	return &smtpClientWrapper{smtp: client}, nil
+}
+
+func (e *SharpMailerEngine) sendPooled(c *smtp.Client, to, subject, htmlBody, from string) error {
+	if err := c.Mail(from); err != nil {
+		return err
 	}
-	if err = client.Rcpt(to); err != nil {
-		return fmt.Errorf("failed to set RCPT TO: %w", err)
+	if err := c.Rcpt(to); err != nil {
+		return err
 	}
 
-	// 5. Send the Data
-	w, err := client.Data()
+	w, err := c.Data()
 	if err != nil {
-		return fmt.Errorf("failed to open data writer: %w", err)
+		return err
 	}
 
-	msgId, _ := generateMessageID(s.Host)
-	message := fmt.Sprintf("From: %s\r\nTo: %s\r\nSubject: %s\r\nMessage-ID: %s\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=\"UTF-8\"\r\n\r\n%s",
-		fromAlias, to, subject, msgId, htmlBody)
+	msgId, _ := generateMessageID(e.cfg.SMTP.Host)
+	message := fmt.Sprintf("From: %s\r\nTo: %s\r\nSubject: %s\r\nMessage-ID: %s\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=\"UTF-8\"\r\nDate: %s\r\n\r\n%s",
+		from, to, subject, msgId, time.Now().Format(time.RFC1123Z), htmlBody)
 
 	_, err = w.Write([]byte(message))
 	if err != nil {
-		return fmt.Errorf("failed to write message: %w", err)
+		return err
 	}
 
-	err = w.Close()
-	if err != nil {
-		return fmt.Errorf("failed to close writer: %w", err)
-	}
-
-	return nil
+	return w.Close()
 }
 
 // generateMessageID creates a unique ID to help with email deliverability.
