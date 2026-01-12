@@ -23,6 +23,7 @@ import (
 	hr_employee_repo "sharpnr-engine/modules/hr/employees/repo"
 	hr_employee_services "sharpnr-engine/modules/hr/employees/services"
 	"sharpnr-engine/sere"
+	sharp_mailer_engine "sharpnr-engine/sharp-mailer-engine"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -33,11 +34,12 @@ func BootstrapModules(
 	redis *redis.Client,
 	txManager dbtx.TxManager,
 	sereEngine *sere.SERE,
+	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 ) *AppModules {
 
 	tempOrgSignUpRepo := org_signup_repositories.NewTempOrgSignUpRepository(redis)
 	mainOrgSignUpRepo := org_signup_repositories.NewOrgMainSignUpRepository(db)
-	orgSignUpService := org_signup_services.NewOrgSignUpService(txManager, sereEngine, tempOrgSignUpRepo, mainOrgSignUpRepo)
+	orgSignUpService := org_signup_services.NewOrgSignUpService(txManager, sereEngine, tempOrgSignUpRepo, mainOrgSignUpRepo, mailerEngine)
 
 	hospitalityOrgFactoryRepository := hospitality_org_factory_repository.NewHospitalityOrgFactoryRepository(db)
 

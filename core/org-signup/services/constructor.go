@@ -4,6 +4,7 @@ import (
 	dbtx "sharpnr-engine/core/dbTx"
 	org_signup_repositories "sharpnr-engine/core/org-signup/repositories"
 	"sharpnr-engine/sere"
+	sharp_mailer_engine "sharpnr-engine/sharp-mailer-engine"
 )
 
 type orgSignUpService struct {
@@ -11,6 +12,7 @@ type orgSignUpService struct {
 	sere              *sere.SERE
 	tempOrgSignupRepo org_signup_repositories.TempOrgSignUpRepositoryInterface
 	mainOrgSignUpRepo org_signup_repositories.MainOrgSignUpRepositoryInterface
+	mailerEngine      *sharp_mailer_engine.SharpMailerEngine
 }
 
 func NewOrgSignUpService(
@@ -18,11 +20,13 @@ func NewOrgSignUpService(
 	sere *sere.SERE,
 	tempOrgSignupRepo org_signup_repositories.TempOrgSignUpRepositoryInterface,
 	mainOrgSignUpRepo org_signup_repositories.MainOrgSignUpRepositoryInterface,
+	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 ) *orgSignUpService {
 	return &orgSignUpService{
 		txManager:         txManager,
 		sere:              sere,
 		tempOrgSignupRepo: tempOrgSignupRepo,
 		mainOrgSignUpRepo: mainOrgSignUpRepo,
+		mailerEngine:      mailerEngine,
 	}
 }

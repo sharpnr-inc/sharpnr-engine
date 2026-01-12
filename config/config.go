@@ -7,8 +7,8 @@ type Config struct {
 	JWT      JwtManagerConfigs
 	TTL      TTLConfig
 	Cookie   CookieConfig
-	// SMTP     SMTPConfig
-	// Email    EmailConfig
+	SMTP     SMTPConfig
+	Email    EmailConfig
 }
 
 func Load() *Config {
@@ -24,8 +24,8 @@ func Load() *Config {
 		JWT:      loadJWT(),
 		TTL:      loadTTL(),
 		Cookie:   loadCookie(app, ttl),
-		// SMTP:     loadSMTP(),
-		// Email:    loadEmail(),
+		SMTP:     loadSMTP(),
+		Email:    loadEmail(),
 	}
 
 	validate(cfg)

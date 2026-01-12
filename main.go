@@ -12,6 +12,7 @@ import (
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
 	"sharpnr-engine/shared/database"
+	sharp_mailer_engine "sharpnr-engine/sharp-mailer-engine"
 
 	_ "sharpnr-engine/docs"
 
@@ -52,6 +53,13 @@ func main() {
 
 	log.Println("✅ SERE is up and running")
 
+	mailerEng := sharp_mailer_engine.New(cfg)
+	if err := mailerEng.LoadTemplates("./sharp-mailer-engine/templates"); err != nil {
+		log.Fatal(err)
+	}
+	mailerEng.Start()
+	defer mailerEng.Shutdown()
+
 	defs := config.CookieRegistry(cfg.App, cfg.TTL)
 	cookieManager.Init(defs)
 	cookieMgr := cookieManager.New(cookieManager.Config{
@@ -71,7 +79,7 @@ func main() {
 
 	txManager := dbtx.NewGormTxManager(db)
 
-	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, sereEngine)
+	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, sereEngine, mailerEng)
 
 	// Create and configure the main router
 	r := api.SetupRouter(

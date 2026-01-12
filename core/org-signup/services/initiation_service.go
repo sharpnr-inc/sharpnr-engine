@@ -5,8 +5,8 @@ import (
 	"errors"
 	"sharpnr-engine/core/models"
 	org_signup_dtos "sharpnr-engine/core/org-signup/dtos"
-	"sharpnr-engine/shared/mailer"
 	"sharpnr-engine/shared/utils"
+	sharp_mailer_engine "sharpnr-engine/sharp-mailer-engine"
 
 	"github.com/google/uuid"
 )
@@ -77,11 +77,17 @@ func (o *orgSignUpService) InitiateSignup(
 		return "", err
 	}
 
-	// 7. Send OTP
-	if err := mailer.VerifyOtp_Org_Registration(req.OrgEmail, otp); err != nil {
-		return "", err
+	otpMailData := map[string]interface{}{
+		"Code":   stageOrg.Otp,
+		"Expiry": "10 minutes",
 	}
 
+	o.mailerEngine.Queues[sharp_mailer_engine.OTP] <- sharp_mailer_engine.EmailJob{
+		To:       stageOrg.Email,
+		Subject:  "Your Shapnr Verification Code",
+		Template: sharp_mailer_engine.TmplVerification,
+		Data:     otpMailData,
+	}
 	// 8. Return signup session ID (for cookie)
 	return stageOrg.ID.String(), nil
 }
