@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+
 	dbtx "sharpnr-engine/core/dbTx"
 	hospitality_org_factory_repository "sharpnr-engine/core/hospitality-org-factory/repository"
 	org_signup_repositories "sharpnr-engine/core/org-signup/repositories"
@@ -132,15 +133,18 @@ func BootstrapModules(
 	return &AppModules{
 		orgSignupService: orgSignUpService,
 
-		hrService: hrEmployeeService,
+		hrService:         hrEmployeeService,
+		accountingService: accountingService,
+		sharpAuthService:  sharpnrIdentityService,
+		hospitality: &HospitalityDomain{
+			hotelRepo:    hospitality_hotelRepo,
+			hotelService: hospitality_hotelService,
 
-		hospitality_hotelService:      hospitality_hotelService,
-		hospitality_barService:        hospitality_barService,
-		hospitality_restaurantService: hospitality_restaurantService,
-		hospitality_kitchenService:    hospitality_kitchenService,
-		hospitality_menuService:       newMenuService,
-		accountingService:             accountingService,
-		sharpAuthService:              sharpnrIdentityService,
+			barService:        hospitality_barService,
+			restaurantService: hospitality_restaurantService,
+			kitchenService:    hospitality_kitchenService,
+			menuService:       newMenuService,
+		},
 	}
 
 }
