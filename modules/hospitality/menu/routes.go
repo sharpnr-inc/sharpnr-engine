@@ -12,7 +12,7 @@ func MenuRoutes(
 	modules app.ModulesProvider,
 ) {
 
-	menuService := modules.HospitalityMenuService()
+	menuService := modules.Hospitality().MenuService()
 	newMenuController := menucontroller.NewMenuController(menuService)
 
 	menuRoutes := v1.Group("/hospitality-menu")

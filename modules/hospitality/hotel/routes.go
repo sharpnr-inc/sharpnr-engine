@@ -16,7 +16,7 @@ func Hospitalityhotelroutes(
 	modules app.ModulesProvider,
 ) {
 
-	hotelService := modules.HospitalityHotelService()
+	hotelService := modules.Hospitality().HotelService()
 	newHotelController := hotelcontrollers.NewHotelController(hotelService)
 
 	/************************

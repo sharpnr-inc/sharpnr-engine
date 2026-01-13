@@ -12,7 +12,7 @@ func BarRoutes(
 	modules app.ModulesProvider,
 ) {
 
-	barService := modules.HospitalityBarService()
+	barService := modules.Hospitality().BarService()
 	newBarController := barcontrollers.NewBarController(barService)
 
 	barRoute := v1.Group("/bar")

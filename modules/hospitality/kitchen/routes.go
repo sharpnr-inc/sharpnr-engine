@@ -11,7 +11,7 @@ func KitchenRoutes(
 	v1 *gin.RouterGroup,
 	modules app.ModulesProvider,
 ) {
-	kitchenService := modules.HospitalityKitchenService()
+	kitchenService := modules.Hospitality().KitchenService()
 	newKitchenController := kitchencontrollers.NewKitchenController(kitchenService)
 
 	kitchenRoutes := v1.Group("/kitchen")

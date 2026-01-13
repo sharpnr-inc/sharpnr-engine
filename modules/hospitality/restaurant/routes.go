@@ -12,7 +12,7 @@ func RestaurantRoutes(
 	modules app.ModulesProvider,
 ) {
 
-	restaurantService := modules.HospitalityRestaurantService()
+	restaurantService := modules.Hospitality().RestaurantService()
 	newRestaurantController := restaurantcontrollers.NewRestaurantController(restaurantService)
 
 	resRoutes := v1.Group("/restaurant")
