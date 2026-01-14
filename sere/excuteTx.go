@@ -1,5 +1,3 @@
-// sere/excuteTx.go
-
 package sere
 
 import "context"

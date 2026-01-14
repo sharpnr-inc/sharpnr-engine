@@ -10,6 +10,8 @@ import (
 	"github.com/google/uuid"
 )
 
+// So this is bad architecture we will not create accounting during the application
+
 var accountGroups = []struct {
 	Name string
 	Type accountingconstants.AccountGroupType
