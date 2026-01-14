@@ -4,7 +4,6 @@ import (
 	"context"
 
 	dbtx "sharpnr-engine/core/dbTx"
-	hospitality_org_factory_repository "sharpnr-engine/core/hospitality-org-factory/repository"
 	"sharpnr-engine/sere"
 	sharp_mailer_engine "sharpnr-engine/sharp-mailer-engine"
 
@@ -19,8 +18,6 @@ func BootstrapModules(
 	sereEngine *sere.SERE,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 ) *AppModules {
-
-	hospitalityOrgFactoryRepository := hospitality_org_factory_repository.NewHospitalityOrgFactoryRepository(db)
 
 	orgSignupService := bootstrapOrgSignup(db, redis, txManager, sereEngine, mailerEngine)
 	hr := bootstrapHR(db)
@@ -55,7 +52,6 @@ func BootstrapModules(
 
 		accountingModule.Repo,
 		accountingModule.Service,
-		hospitalityOrgFactoryRepository,
 	)
 
 	RegisterSereEventHandler(sereEngine, accountingModule.Repo)

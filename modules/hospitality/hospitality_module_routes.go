@@ -4,7 +4,6 @@ import (
 	"sharpnr-engine/app"
 	"sharpnr-engine/modules/hospitality/bar"
 	"sharpnr-engine/modules/hospitality/concierge"
-	hospitalityinventory "sharpnr-engine/modules/hospitality/hospitalityInventory"
 	"sharpnr-engine/modules/hospitality/hotel"
 	"sharpnr-engine/modules/hospitality/kitchen"
 	hospitalitymenu "sharpnr-engine/modules/hospitality/menu"
@@ -30,8 +29,6 @@ func RegisterHotelModuleRoutes(
 	bar.BarRoutes(sharpHospitality, modules)
 
 	hospitalitymenu.MenuRoutes(sharpHospitality, modules)
-
-	hospitalityinventory.HospitalityRoutes(sharpHospitality, modules)
 
 	concierge.ConciergeRoutes(sharpHospitality, modules)
 

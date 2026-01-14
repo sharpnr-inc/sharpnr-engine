@@ -1,8 +1,6 @@
 package app
 
 import (
-	hospitality_org_factory_repository "sharpnr-engine/core/hospitality-org-factory/repository"
-	hospitality_factory_sere_adapter "sharpnr-engine/core/hospitality-org-factory/sere_adapter"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr-identity/services"
 	"sharpnr-engine/modules/accounting/acc_sere_wf_adapters"
 	"sharpnr-engine/modules/accounting/accounting_repo"
@@ -44,16 +42,14 @@ func RegisterAllWorkFlow(
 	accountingRepo accounting_repo.AccountingRepositoryInterface,
 	accountingService accounting_service.AccountingServiceInterface,
 
-	hospitalityOrgFactoryRepository hospitality_org_factory_repository.HospitalityOrgFactoryRepoInterface,
-
 ) {
 	employee_sere_adapter.RegisterHREmployeeWorkflows(sere, hrEmployeeService)
 
 	kitchen_sere_adapters.RegisterKitchenWorkFlow(sere, kitchenRepo)
 
-	hotel_sere_adapter.RegisterHotelWorkFlow(sere, hotelRepo, hospitalityOrgFactoryRepository)
-	bar_sere_adapters.RegisterBarWorkFlow(sere, barRepo, hospitalityOrgFactoryRepository)
-	restaurant_sere_adapters.RegisterRestaurantWorkFlow(sere, restaurantRepo, hospitalityOrgFactoryRepository)
+	hotel_sere_adapter.RegisterHotelWorkFlow(sere, hotelRepo)
+	bar_sere_adapters.RegisterBarWorkFlow(sere, barRepo)
+	restaurant_sere_adapters.RegisterRestaurantWorkFlow(sere, restaurantRepo)
 
 	menu_sere_adapter.RegisterHospitalityBarMenuWorkflow(sere, menuRepo)
 	menu_sere_adapter.RegisterHospitalityHotelMenuWorkflow(sere, menuRepo)
@@ -62,6 +58,4 @@ func RegisterAllWorkFlow(
 	acc_sere_wf_adapters.RegisterAccountingBarWorkflows(sere, accountingRepo)
 	acc_sere_wf_adapters.RegisterAccountingHotelWorkflow(sere, accountingRepo)
 	acc_sere_wf_adapters.RegisterAccountingRestaurantWorkflow(sere, accountingRepo)
-
-	hospitality_factory_sere_adapter.RegisterHospitalityFactoryWorkFlow(sere)
 }

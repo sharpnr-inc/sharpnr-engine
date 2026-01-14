@@ -1,7 +1,6 @@
 package bar_sere_adapters
 
 import (
-	hospitality_org_factory_repository "sharpnr-engine/core/hospitality-org-factory/repository"
 	bar_models "sharpnr-engine/modules/hospitality/bar/models"
 	barrepo "sharpnr-engine/modules/hospitality/bar/repo"
 	"sharpnr-engine/sere"
@@ -12,7 +11,6 @@ import (
 
 func defaultBarHandler(
 	barRepo barrepo.BarRepository,
-	hospitalityOrgFactoryRepository hospitality_org_factory_repository.HospitalityOrgFactoryRepoInterface,
 ) sere.WorkflowHandler {
 	return func(wf *sere.Workflow) error {
 

@@ -1,7 +1,6 @@
 package restaurant_sere_adapters
 
 import (
-	hospitality_org_factory_repository "sharpnr-engine/core/hospitality-org-factory/repository"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 	"sharpnr-engine/modules/hospitality/restaurant/restaurantrepo"
 	"sharpnr-engine/sere"
@@ -12,7 +11,6 @@ import (
 
 func createDefaultRestaurant(
 	restaurantRepo restaurantrepo.RestaurantRepository,
-	hospitalityOrgFactoryRepository hospitality_org_factory_repository.HospitalityOrgFactoryRepoInterface,
 ) sere.WorkflowHandler {
 	return func(wf *sere.Workflow) error {
 
