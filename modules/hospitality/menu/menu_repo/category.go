@@ -2,19 +2,19 @@ package menurepo
 
 import (
 	"context"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
 )
 
 // CreateCategory implements MenuRepository.
-func (m *menuRepo) CreateCategory(ctx context.Context, category *hospitalitymodels.MenuCategory) error {
+func (m *menuRepo) CreateCategory(ctx context.Context, category *hospitalityMenu_models.MenuCategory) error {
 	return m.db.WithContext(ctx).Create(category).Error
 }
 
 // GetCategoriesByGroup implements MenuRepository.
-func (m *menuRepo) GetCategoriesByGroup(ctx context.Context, groupID uuid.UUID) ([]hospitalitymodels.MenuCategory, error) {
-	var categories []hospitalitymodels.MenuCategory
+func (m *menuRepo) GetCategoriesByGroup(ctx context.Context, groupID uuid.UUID) ([]hospitalityMenu_models.MenuCategory, error) {
+	var categories []hospitalityMenu_models.MenuCategory
 
 	err := m.db.WithContext(ctx).
 		Where("group_id = ?", groupID).
@@ -33,8 +33,8 @@ func (m *menuRepo) GetCategoriesByGroup(ctx context.Context, groupID uuid.UUID) 
 }
 
 // GetCategoryByID implements MenuRepository.
-func (m *menuRepo) GetCategoryByID(ctx context.Context, id uuid.UUID) (*hospitalitymodels.MenuCategory, error) {
-	var category hospitalitymodels.MenuCategory
+func (m *menuRepo) GetCategoryByID(ctx context.Context, id uuid.UUID) (*hospitalityMenu_models.MenuCategory, error) {
+	var category hospitalityMenu_models.MenuCategory
 
 	err := m.db.WithContext(ctx).
 		Where("id = ?", id).

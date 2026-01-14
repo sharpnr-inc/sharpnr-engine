@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 
 	"github.com/google/uuid"
 )
@@ -25,7 +25,7 @@ func (r *hotelService) CreateFloor(ctx context.Context, orgID uuid.UUID, req hos
 	}
 
 	// ✅ Create new floor
-	floor := hospitalitymodels.HotelFloor{
+	floor := hotel_models.HotelFloor{
 		ID:             uuid.New(),
 		HotelID:        hotelUUID,
 		OrganizationID: orgID,

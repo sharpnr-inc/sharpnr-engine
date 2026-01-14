@@ -3,10 +3,10 @@ package hotelservices
 import (
 	"context"
 	"errors"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -118,9 +118,9 @@ func (s *hotelService) PreviewBill(ctx context.Context, orgID, bookingID uuid.UU
 }
 
 func evaluateTaxRule(
-	rules []hospitalitymodels.HotelTaxRule,
+	rules []hotel_models.HotelTaxRule,
 	baseAmount float64,
-) (*hospitalitymodels.HotelTaxRule, error) {
+) (*hotel_models.HotelTaxRule, error) {
 
 	for _, rule := range rules {
 
@@ -145,9 +145,9 @@ func (s *hotelService) FinalizeBill(
 	ctx context.Context,
 	orgID uuid.UUID,
 	bookingID uuid.UUID,
-) (*hospitalitymodels.HotelBill, error) {
+) (*hotel_models.HotelBill, error) {
 
-	var finalizedBill *hospitalitymodels.HotelBill
+	var finalizedBill *hotel_models.HotelBill
 
 	err := s.hotelRepo.WithTx(ctx, func(txRepo hotelrepo.HotelRepositoryInterface) error {
 		// 1️⃣ Resolve hotel
@@ -200,7 +200,7 @@ func (s *hotelService) FinalizeBill(
 
 		now := time.Now()
 		// 7️⃣ Create bill
-		bill := &hospitalitymodels.HotelBill{
+		bill := &hotel_models.HotelBill{
 			ID:                 uuid.New(),
 			HotelRoomBookingID: bookingID,
 			HotelID:            hotel.ID,
@@ -218,7 +218,7 @@ func (s *hotelService) FinalizeBill(
 
 		// 8️⃣ Freeze tax snapshot
 		for _, t := range taxResult.Components {
-			bt := &hospitalitymodels.HotelBillTax{
+			bt := &hotel_models.HotelBillTax{
 				ID:            uuid.New(),
 				HotelBillID:   bill.ID,
 				ComponentType: string(t.ComponentType),

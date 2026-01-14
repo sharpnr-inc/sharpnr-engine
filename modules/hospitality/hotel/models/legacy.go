@@ -1,10 +1,11 @@
-package hospitalitymodels
+package hotel_models
 
 import (
 	"time"
 
 	"sharpnr-engine/core/models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
+	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
 
 	"github.com/google/uuid"
 )
@@ -41,9 +42,9 @@ type Hotel struct {
 	// -------------------------
 	FrontDeskOverview *HotelFrontDeskOverview `gorm:"foreignKey:HotelID;constraint:OnDelete:CASCADE"`
 
-	IsKitchen   bool       `gorm:"default:true"`
-	KitchenID   *uuid.UUID `gorm:"type:uuid"`
-	Kitchen     *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;"`
+	IsKitchen   bool                    `gorm:"default:true"`
+	KitchenID   *uuid.UUID              `gorm:"type:uuid"`
+	Kitchen     *kitchen_models.Kitchen `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;"`
 	IsKitchenOn bool
 
 	Address string

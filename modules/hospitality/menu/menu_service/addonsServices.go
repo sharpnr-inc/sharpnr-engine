@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
 )
@@ -21,7 +21,7 @@ func (m *menuService) CreateAddForMenuItem(ctx context.Context, orgid uuid.UUID,
 		return errors.New("organization mismatch")
 	}
 
-	addons := &hospitalitymodels.Addon{
+	addons := &hospitalityMenu_models.Addon{
 		ID:         uuid.New(),
 		MenuItemID: menuItem.ID,
 		MenuItem:   *menuItem,
@@ -39,7 +39,7 @@ func (m *menuService) CreateAddForMenuItem(ctx context.Context, orgid uuid.UUID,
 }
 
 // UpdateAddon implements MenuService.
-func (m *menuService) UpdateAddonOfMenuItem(ctx context.Context, addon *hospitalitymodels.Addon) error {
+func (m *menuService) UpdateAddonOfMenuItem(ctx context.Context, addon *hospitalityMenu_models.Addon) error {
 	panic("unimplemented")
 }
 

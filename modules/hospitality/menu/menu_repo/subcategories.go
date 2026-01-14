@@ -2,17 +2,17 @@ package menurepo
 
 import (
 	"context"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
 )
 
-func (m *menuRepo) CreateSubCategory(ctx context.Context, sub *hospitalitymodels.MenuSubCategory) error {
+func (m *menuRepo) CreateSubCategory(ctx context.Context, sub *hospitalityMenu_models.MenuSubCategory) error {
 	return m.db.WithContext(ctx).Create(sub).Error
 }
 
-func (m *menuRepo) GetSubCategoryByID(ctx context.Context, id uuid.UUID) (*hospitalitymodels.MenuSubCategory, error) {
-	var sub hospitalitymodels.MenuSubCategory
+func (m *menuRepo) GetSubCategoryByID(ctx context.Context, id uuid.UUID) (*hospitalityMenu_models.MenuSubCategory, error) {
+	var sub hospitalityMenu_models.MenuSubCategory
 	err := m.db.WithContext(ctx).
 		Where("id = ?", id).
 		First(&sub).Error

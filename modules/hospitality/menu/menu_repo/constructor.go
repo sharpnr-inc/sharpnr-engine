@@ -2,7 +2,7 @@ package menurepo
 
 import (
 	"context"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -12,7 +12,7 @@ type menuRepo struct {
 	db *gorm.DB
 }
 
-func (r *menuRepo) CreateVariant(ctx context.Context, variant *hospitalitymodels.MenuVariant) error {
+func (r *menuRepo) CreateVariant(ctx context.Context, variant *hospitalityMenu_models.MenuVariant) error {
 	return r.db.WithContext(ctx).Create(&variant).Error
 }
 
@@ -42,37 +42,37 @@ func (m *menuRepo) DeleteVariant(id uuid.UUID) error {
 }
 
 // GetItemsBySubCategory implements MenuRepository.
-func (m *menuRepo) GetItemsBySubCategory(subCatID uuid.UUID) ([]hospitalitymodels.MenuItem, error) {
+func (m *menuRepo) GetItemsBySubCategory(subCatID uuid.UUID) ([]hospitalityMenu_models.MenuItem, error) {
 	panic("unimplemented")
 }
 
 // GetSubCategoriesByCategory implements MenuRepository.
-func (m *menuRepo) GetSubCategoriesByCategory(categoryID uuid.UUID) ([]hospitalitymodels.MenuSubCategory, error) {
+func (m *menuRepo) GetSubCategoriesByCategory(categoryID uuid.UUID) ([]hospitalityMenu_models.MenuSubCategory, error) {
 	panic("unimplemented")
 }
 
 // GetVariantsByItem implements MenuRepository.
-func (m *menuRepo) GetVariantsByItem(itemID uuid.UUID) ([]hospitalitymodels.MenuVariant, error) {
+func (m *menuRepo) GetVariantsByItem(itemID uuid.UUID) ([]hospitalityMenu_models.MenuVariant, error) {
 	panic("unimplemented")
 }
 
 // UpdateCategory implements MenuRepository.
-func (m *menuRepo) UpdateCategory(category *hospitalitymodels.MenuCategory) error {
+func (m *menuRepo) UpdateCategory(category *hospitalityMenu_models.MenuCategory) error {
 	panic("unimplemented")
 }
 
 // UpdateMenuItem implements MenuRepository.
-func (m *menuRepo) UpdateMenuItem(item *hospitalitymodels.MenuItem) error {
+func (m *menuRepo) UpdateMenuItem(item *hospitalityMenu_models.MenuItem) error {
 	panic("unimplemented")
 }
 
 // UpdateSubCategory implements MenuRepository.
-func (m *menuRepo) UpdateSubCategory(subCat *hospitalitymodels.MenuSubCategory) error {
+func (m *menuRepo) UpdateSubCategory(subCat *hospitalityMenu_models.MenuSubCategory) error {
 	panic("unimplemented")
 }
 
 // UpdateVariant implements MenuRepository.
-func (m *menuRepo) UpdateVariant(variant *hospitalitymodels.MenuVariant) error {
+func (m *menuRepo) UpdateVariant(variant *hospitalityMenu_models.MenuVariant) error {
 	panic("unimplemented")
 }
 

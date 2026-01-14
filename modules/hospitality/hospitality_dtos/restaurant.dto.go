@@ -1,7 +1,7 @@
 package hospitalitydtos
 
 import (
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -132,7 +132,7 @@ type Hospitality_Restaurant_CreateSession_REQUEST struct {
 }
 
 type Hospitality_Restaurant_GetBookingSession_Response struct {
-	Session *hospitalitymodels.RestaurantTableBookingSession `json:"session"`
+	Session *restaurant_models.RestaurantTableBookingSession `json:"session"`
 }
 
 type Hospitality_Restaurant_AddOrderItemINTheSession_Request struct {

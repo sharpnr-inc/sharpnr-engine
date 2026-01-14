@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -15,7 +15,7 @@ import (
  * and This section Contain all the operation for KOT *
 ******************************************************/
 
-func (d *kitchenRepository) CreateKitchenTicketDBTx(ctx context.Context, ticket *hospitalitymodels.KitchenTicket) (*hospitalitymodels.KitchenTicket, error) {
+func (d *kitchenRepository) CreateKitchenTicketDBTx(ctx context.Context, ticket *kitchen_models.KitchenTicket) (*kitchen_models.KitchenTicket, error) {
 	if err := d.db.WithContext(ctx).Create(&ticket).Error; err != nil {
 		return nil, err
 	}
@@ -23,19 +23,19 @@ func (d *kitchenRepository) CreateKitchenTicketDBTx(ctx context.Context, ticket 
 	return ticket, nil
 }
 
-func (d *kitchenRepository) CreateKitchenTicketItemDBTx(ctx context.Context, item *hospitalitymodels.KitchenTicketItem) (*hospitalitymodels.KitchenTicketItem, error) {
+func (d *kitchenRepository) CreateKitchenTicketItemDBTx(ctx context.Context, item *kitchen_models.KitchenTicketItem) (*kitchen_models.KitchenTicketItem, error) {
 	if err := d.db.WithContext(ctx).Create(&item).Error; err != nil {
 		return nil, err
 	}
 	return item, nil
 }
 
-func (d *kitchenRepository) GetKitchenTicketByIdDBTx(ctx context.Context, ticketId uuid.UUID) (*hospitalitymodels.KitchenTicket, error) {
-	var ticket hospitalitymodels.KitchenTicket
+func (d *kitchenRepository) GetKitchenTicketByIdDBTx(ctx context.Context, ticketId uuid.UUID) (*kitchen_models.KitchenTicket, error) {
+	var ticket kitchen_models.KitchenTicket
 
 	// Preload all needed relations
 	err := d.db.WithContext(ctx).
-		Model(&hospitalitymodels.KitchenTicket{}).
+		Model(&kitchen_models.KitchenTicket{}).
 		Where("id = ?", ticketId).
 		Preload("Organization").
 		Preload("Kitchen").
@@ -57,9 +57,9 @@ func (d *kitchenRepository) GetKitchenTicketByIdDBTx(ctx context.Context, ticket
 func (d *kitchenRepository) GetKitchenTickets(
 	ctx context.Context,
 	kitchenId uuid.UUID,
-) ([]hospitalitymodels.KitchenTicket, error) {
+) ([]kitchen_models.KitchenTicket, error) {
 
-	var tickets []hospitalitymodels.KitchenTicket
+	var tickets []kitchen_models.KitchenTicket
 
 	err := d.db.WithContext(ctx).
 		Preload("Items").
@@ -78,8 +78,8 @@ func (d *kitchenRepository) GetKitchenTickets(
 
 func (d *kitchenRepository) CreateKitchenTicketItemAddonDBTx(
 	ctx context.Context,
-	addon *hospitalitymodels.KitchenTicketItemAddon,
-) (*hospitalitymodels.KitchenTicketItemAddon, error) {
+	addon *kitchen_models.KitchenTicketItemAddon,
+) (*kitchen_models.KitchenTicketItemAddon, error) {
 
 	if err := d.db.WithContext(ctx).Create(&addon).Error; err != nil {
 		return nil, err

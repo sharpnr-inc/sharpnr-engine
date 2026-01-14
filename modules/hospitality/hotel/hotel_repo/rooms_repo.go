@@ -3,7 +3,7 @@ package hotelrepo
 import (
 	"context"
 	"errors"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -11,13 +11,13 @@ import (
 )
 
 // CreateRoom implements HotelRepository.
-func (h *hotelRepository) CreateRoom(ctx context.Context, room *hospitalitymodels.Room) error {
+func (h *hotelRepository) CreateRoom(ctx context.Context, room *hotel_models.Room) error {
 	return h.db.WithContext(ctx).Create(room).Error
 }
 
 // GetRoomByID implements HotelRepository.
-func (h *hotelRepository) GetRoomByID(ctx context.Context, roomID uuid.UUID) (*hospitalitymodels.Room, error) {
-	var room hospitalitymodels.Room
+func (h *hotelRepository) GetRoomByID(ctx context.Context, roomID uuid.UUID) (*hotel_models.Room, error) {
+	var room hotel_models.Room
 
 	err := h.db.WithContext(ctx).
 		Where("id = ?", roomID).
@@ -32,7 +32,7 @@ func (h *hotelRepository) GetRoomByID(ctx context.Context, roomID uuid.UUID) (*h
 
 func (h *hotelRepository) UpdateRoom(ctx context.Context, fields map[string]interface{}, roomId uuid.UUID) error {
 	return h.db.WithContext(ctx).
-		Model(&hospitalitymodels.Room{}).
+		Model(&hotel_models.Room{}).
 		Where("id = ?", roomId).
 		Updates(fields).Error
 }
@@ -45,7 +45,7 @@ func (h *hotelRepository) UpdateRoomStatus(
 ) error {
 
 	result := h.db.WithContext(ctx).
-		Model(&hospitalitymodels.Room{}).
+		Model(&hotel_models.Room{}).
 		Where("id = ? AND hotel_id = ?", roomId, hotelId).
 		Update("status", status)
 
@@ -67,7 +67,7 @@ func (d *hotelRepository) AddCurrentBookingIdToRoom(
 ) error {
 
 	result := d.db.WithContext(ctx).
-		Model(&hospitalitymodels.Room{}).
+		Model(&hotel_models.Room{}).
 		Where("id = ?", roomId).
 		Updates(map[string]interface{}{
 			"current_booking_id": bookingId,
@@ -85,7 +85,7 @@ func (d *hotelRepository) AddCurrentBookingIdToRoom(
 	return nil
 }
 
-func (h *hotelRepository) CreatePriceForRoom(ctx context.Context, roomPrice *hospitalitymodels.HotelRoomPrice) error {
+func (h *hotelRepository) CreatePriceForRoom(ctx context.Context, roomPrice *hotel_models.HotelRoomPrice) error {
 	// 1️⃣ Basic validation
 	if roomPrice.Price <= 0 {
 		return errors.New("room price must be greater than zero")
@@ -99,7 +99,7 @@ func (h *hotelRepository) CreatePriceForRoom(ctx context.Context, roomPrice *hos
 	var count int64
 
 	err := h.db.WithContext(ctx).
-		Model(&hospitalitymodels.HotelRoomPrice{}).
+		Model(&hotel_models.HotelRoomPrice{}).
 		Where("room_id = ?", roomPrice.RoomID).
 		Where("effective_from <= ?", roomPrice.EffectiveFrom).
 		Where(
@@ -124,9 +124,9 @@ func (h *hotelRepository) CreatePriceForRoom(ctx context.Context, roomPrice *hos
 func (h *hotelRepository) GetRoomPriceByRoomId(
 	ctx context.Context,
 	roomId uuid.UUID,
-) (*hospitalitymodels.HotelRoomPrice, error) {
+) (*hotel_models.HotelRoomPrice, error) {
 
-	var price hospitalitymodels.HotelRoomPrice
+	var price hotel_models.HotelRoomPrice
 	now := time.Now()
 
 	err := h.db.WithContext(ctx).

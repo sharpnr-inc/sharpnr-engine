@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
 )
@@ -26,7 +26,7 @@ func (s *menuService) CreateCategory(ctx context.Context, req *hospitalitydtos.M
 		return fmt.Errorf("this menu group does not belong to your organization")
 	}
 
-	category := &hospitalitymodels.MenuCategory{
+	category := &hospitalityMenu_models.MenuCategory{
 		ID:             uuid.New(),
 		GroupID:        groupUUID,
 		OrganizationID: orgID,

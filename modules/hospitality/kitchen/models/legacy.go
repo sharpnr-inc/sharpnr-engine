@@ -1,9 +1,9 @@
-package hospitalitymodels
+package kitchen_models
 
 import (
-	"time"
-
 	"sharpnr-engine/core/models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -21,7 +21,7 @@ type Kitchen struct {
 	// Optional: you can later group kitchens by type
 	Type string `gorm:"size:50"` // e.g., MAIN, BAR, BAKERY, ROOM_SERVICE
 
-	MenuItems []MenuItem `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;"`
+	MenuItems []hospitalityMenu_models.MenuItem `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

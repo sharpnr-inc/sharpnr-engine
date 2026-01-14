@@ -1,4 +1,4 @@
-package hospitalitymodels
+package hospitalityMenu_models
 
 import (
 	"sharpnr-engine/core/models"
@@ -22,10 +22,6 @@ type MenuGroup struct {
 
 	// Optional — menu context type
 	Type string `gorm:"size:50"` // e.g., "BAR", "HOTEL", "RESTAURANT"
-
-	// Optional — if menu belongs to a specific outlet or branch
-	// OutletID *uuid.UUID `gorm:"type:uuid"`
-	// Outlet   *Outlet     `gorm:"foreignKey:OutletID;constraint:OnDelete:SET NULL;"`
 
 	Categories []MenuCategory `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE;"`
 
@@ -92,9 +88,7 @@ type MenuItem struct {
 	VariantGroups []MenuVariantGroup `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
 	Addons        []Addon            `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
 
-	// Optional Kitchen link
 	KitchenID *uuid.UUID `gorm:"type:uuid"`
-	Kitchen   *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;"`
 
 	ServedBy string `gorm:"size:50;default:'KITCHEN'" json:"served_by"`
 	Unit     string `gorm:"default:'plate'"`

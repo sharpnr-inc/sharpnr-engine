@@ -3,15 +3,15 @@ package restaurantrepo
 import (
 	"context"
 	"fmt"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 
 	"github.com/google/uuid"
 )
 
-func (r *restaurantRepo) UpdateRestaurant(ctx context.Context, restaurant *hospitalitymodels.Restaurant) error {
+func (r *restaurantRepo) UpdateRestaurant(ctx context.Context, restaurant *restaurant_models.Restaurant) error {
 	// Only update fields that should be editable
 	result := r.db.WithContext(ctx).
-		Model(&hospitalitymodels.Restaurant{}).
+		Model(&restaurant_models.Restaurant{}).
 		Where("id = ?", restaurant.ID).
 		Select(
 			"legal_name",
@@ -45,7 +45,7 @@ func (r *restaurantRepo) UpdateRestaurant(ctx context.Context, restaurant *hospi
 
 func (r *restaurantRepo) UpdateTable(ctx context.Context, tableId uuid.UUID, updates map[string]any) error {
 	return r.db.WithContext(ctx).
-		Model(&hospitalitymodels.RestaurantTable{}).
+		Model(&restaurant_models.RestaurantTable{}).
 		Where("id = ?", tableId).
 		Updates(updates).
 		Error

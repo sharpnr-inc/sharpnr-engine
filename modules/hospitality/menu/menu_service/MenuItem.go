@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
 )
@@ -31,7 +31,7 @@ func (s *menuService) CreateMenuItem(
 		return nil, fmt.Errorf("subcategory does not belong to your organization")
 	}
 
-	item := &hospitalitymodels.MenuItem{
+	item := &hospitalityMenu_models.MenuItem{
 		ID:             uuid.New(),
 		SubCategoryID:  &subID,
 		OrganizationID: orgID,

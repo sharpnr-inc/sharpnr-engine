@@ -1,9 +1,10 @@
-package hospitalitymodels
+package restaurant_models
 
 import (
 	"time"
 
 	"sharpnr-engine/core/models"
+	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
 
 	"github.com/google/uuid"
 )
@@ -23,9 +24,9 @@ type Restaurant struct {
 	ClosingTime string            `gorm:"size:5" json:"closing_time"` // e.g., "22:00"
 	Floors      []RestaurantFloor `gorm:"foreignKey:RestaurantID;constraint:OnDelete:CASCADE;" json:"floors,omitempty"`
 
-	IsKitchen bool       `gorm:"default:true" json:"is_kitchen"`
-	KitchenID *uuid.UUID `gorm:"type:uuid;index" json:"kitchen_id,omitempty"`
-	Kitchen   *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;" json:"kitchen,omitempty"`
+	IsKitchen bool                    `gorm:"default:true" json:"is_kitchen"`
+	KitchenID *uuid.UUID              `gorm:"type:uuid;index" json:"kitchen_id,omitempty"`
+	Kitchen   *kitchen_models.Kitchen `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;" json:"kitchen,omitempty"`
 
 	// Legal & Business Info
 	LegalName   string `gorm:"size:255" json:"legal_name"`
@@ -102,13 +103,12 @@ type RestaurantTableBookingSession struct {
 	// -----------------------------------------------------
 	// 🔗 Customer (Optional until closing the session)
 	// -----------------------------------------------------
-	HospitalityCustomerAndGuestID *uuid.UUID                   `gorm:"type:uuid" json:"hospitality_customer_and_guest_id,omitempty"`
-	CustomerAndGuest              *HospitalityCustomerAndGuest `gorm:"foreignKey:HospitalityCustomerAndGuestID" json:"customer_and_guest,omitempty"`
+	HospitalityCustomerAndGuestID *uuid.UUID `gorm:"type:uuid" json:"hospitality_customer_and_guest_id,omitempty"`
 
 	// -----------------------------------------------------
 	// 🔗 Orders for the session
 	// -----------------------------------------------------
-	KOTs []KitchenTicket `gorm:"foreignKey:RestaurantTableBookingSessionID"`
+	KOTs []kitchen_models.KitchenTicket `gorm:"foreignKey:RestaurantTableBookingSessionID"`
 
 	// -----------------------------------------------------
 	// 🕒 Session Timing

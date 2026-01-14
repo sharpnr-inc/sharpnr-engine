@@ -3,11 +3,11 @@ package restaurantrepo
 import (
 	"context"
 	"fmt"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 )
 
 // CreateRestaurant implements RestaurantRepository.
-func (r *restaurantRepo) CreateRestaurant(ctx context.Context, res *hospitalitymodels.Restaurant) error {
+func (r *restaurantRepo) CreateRestaurant(ctx context.Context, res *restaurant_models.Restaurant) error {
 	if res == nil {
 		return fmt.Errorf("restaurant data is nil")
 	}
@@ -21,7 +21,7 @@ func (r *restaurantRepo) CreateRestaurant(ctx context.Context, res *hospitalitym
 
 // -----------------------------------------------------------------------------------------------------------------------------------//
 func (r *restaurantRepo) CreateOrAddTablesInRestuarant(ctx context.Context,
-	tables []*hospitalitymodels.RestaurantTable,
+	tables []*restaurant_models.RestaurantTable,
 ) error {
 
 	return r.db.WithContext(ctx).Create(&tables).Error
@@ -31,7 +31,7 @@ func (r *restaurantRepo) CreateOrAddTablesInRestuarant(ctx context.Context,
 
 func (r *restaurantRepo) CreateOrAddFloorInRestaurant(
 	ctx context.Context,
-	floor *hospitalitymodels.RestaurantFloor,
+	floor *restaurant_models.RestaurantFloor,
 ) error {
 
 	return r.db.WithContext(ctx).Create(floor).Error

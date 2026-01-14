@@ -1,8 +1,8 @@
 package menu_sere_adapter
 
 import (
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	menurepo "sharpnr-engine/modules/hospitality/menu/menu_repo"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 	"sharpnr-engine/sere"
 	"time"
 
@@ -40,7 +40,7 @@ func barDefaultMenuSetup(
 		// ------------------------------------------------
 		// 2️⃣ Create BAR menu
 		// ------------------------------------------------
-		barMenu := &hospitalitymodels.MenuGroup{
+		barMenu := &hospitalityMenu_models.MenuGroup{
 			ID:             uuid.New(),
 			OrganizationID: orgID,
 			Name:           "Bar Menu",
@@ -84,7 +84,7 @@ func hotelDefaultMenuSetup(menuRepo menurepo.MenuRepositoryInterface) sere.Workf
 		// ------------------------------------------------
 		orgID := wf.Data["org_id"].(uuid.UUID)
 
-		hotelMenu := &hospitalitymodels.MenuGroup{
+		hotelMenu := &hospitalityMenu_models.MenuGroup{
 			ID:             uuid.New(),
 			OrganizationID: orgID,
 			Name:           "Hotel Menu",
@@ -133,7 +133,7 @@ func restaurantDefaultMenuSetup(
 		// ------------------------------------------------
 		// 2️⃣ Create RESTAURANT menu
 		// ------------------------------------------------
-		restaurantMenu := &hospitalitymodels.MenuGroup{
+		restaurantMenu := &hospitalityMenu_models.MenuGroup{
 			ID:             uuid.New(),
 			OrganizationID: orgID,
 			Name:           "Restaurant Menu",

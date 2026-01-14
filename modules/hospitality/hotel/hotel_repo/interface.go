@@ -2,8 +2,8 @@ package hotelrepo
 
 import (
 	"context"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -18,9 +18,9 @@ type HotelRepositoryInterface interface {
 	//--------------------------------------------------------------
 	// Hotel
 	//--------------------------------------------------------------
-	CreateHotel(ctx context.Context, hotel *hospitalitymodels.Hotel) error
-	GetHotelByID(ctx context.Context, id uuid.UUID) (*hospitalitymodels.Hotel, error)
-	GetHotelByOrgID(ctx context.Context, orgid uuid.UUID) (*hospitalitymodels.Hotel, error)
+	CreateHotel(ctx context.Context, hotel *hotel_models.Hotel) error
+	GetHotelByID(ctx context.Context, id uuid.UUID) (*hotel_models.Hotel, error)
+	GetHotelByOrgID(ctx context.Context, orgid uuid.UUID) (*hotel_models.Hotel, error)
 
 	UpdateHotelFields(
 		ctx context.Context,
@@ -32,41 +32,41 @@ type HotelRepositoryInterface interface {
 	//   Floors
 	// ------------------------------------------------------------
 
-	CreateFloorInHotel(ctx context.Context, floor *hospitalitymodels.HotelFloor) error
-	GetFloorByID(ctx context.Context, id string) (*hospitalitymodels.HotelFloor, error)
+	CreateFloorInHotel(ctx context.Context, floor *hotel_models.HotelFloor) error
+	GetFloorByID(ctx context.Context, id string) (*hotel_models.HotelFloor, error)
 	GetAllRoomInFloor()
-	GetFloorsByHotel(ctx context.Context, hotelID uuid.UUID) ([]hospitalitymodels.HotelFloor, error)
-	UpdateFloor(ctx context.Context, floor *hospitalitymodels.HotelFloor) error
+	GetFloorsByHotel(ctx context.Context, hotelID uuid.UUID) ([]hotel_models.HotelFloor, error)
+	UpdateFloor(ctx context.Context, floor *hotel_models.HotelFloor) error
 	DeleteFloor(ctx context.Context, floorID uuid.UUID) error
 
 	//-------------------------------------------------------------
 	//   Rooms
 	// ------------------------------------------------------------
-	CreateRoom(ctx context.Context, room *hospitalitymodels.Room) error
-	GetRoomByID(ctx context.Context, roomID uuid.UUID) (*hospitalitymodels.Room, error)
+	CreateRoom(ctx context.Context, room *hotel_models.Room) error
+	GetRoomByID(ctx context.Context, roomID uuid.UUID) (*hotel_models.Room, error)
 	UpdateRoom(ctx context.Context, fields map[string]interface{}, roomId uuid.UUID) error
 	UpdateRoomStatus(ctx context.Context, hotelId, roomId uuid.UUID, status string) error
 	DeleteRoom(ctx context.Context, roomID uuid.UUID) error
 	AddCurrentBookingIdToRoom(ctx context.Context, roomId, bookingId uuid.UUID) error
-	CreatePriceForRoom(ctx context.Context, roomPrice *hospitalitymodels.HotelRoomPrice) error
-	GetRoomPriceByRoomId(ctx context.Context, roomId uuid.UUID) (*hospitalitymodels.HotelRoomPrice, error)
+	CreatePriceForRoom(ctx context.Context, roomPrice *hotel_models.HotelRoomPrice) error
+	GetRoomPriceByRoomId(ctx context.Context, roomId uuid.UUID) (*hotel_models.HotelRoomPrice, error)
 
 	//-------------------------------------------------------------
 	//   Guests
 	// ------------------------------------------------------------
-	CreatePrimaryGuest(ctx context.Context, guest *hospitalitymodels.HotelGuest) error
-	GetHotelGuests(ctx context.Context, hotelId uuid.UUID) ([]hospitalitymodels.HotelGuest, error)
-	SearchHotelGuest(ctx context.Context, hotelId uuid.UUID, qry string) ([]hospitalitymodels.HotelGuest, error)
-	GetHotelGuestById(ctx context.Context, guestId uuid.UUID) (hospitalitymodels.HotelGuest, error)
-	CreateBookingGuest(ctx context.Context, bookingGuest *hospitalitymodels.BookingGuest) error
+	CreatePrimaryGuest(ctx context.Context, guest *hotel_models.HotelGuest) error
+	GetHotelGuests(ctx context.Context, hotelId uuid.UUID) ([]hotel_models.HotelGuest, error)
+	SearchHotelGuest(ctx context.Context, hotelId uuid.UUID, qry string) ([]hotel_models.HotelGuest, error)
+	GetHotelGuestById(ctx context.Context, guestId uuid.UUID) (hotel_models.HotelGuest, error)
+	CreateBookingGuest(ctx context.Context, bookingGuest *hotel_models.BookingGuest) error
 
 	//-------------------------------------------------------------
 	//   Booking
 	// ------------------------------------------------------------
-	CreateRoomBooking(ctx context.Context, booking *hospitalitymodels.HotelRoomBooking) error
-	CreateOrAddBookingPayment(ctx context.Context, bookingPayment *hospitalitymodels.HotelRoomBookingPayment) error
-	CreateCharges(ctx context.Context, charges *hospitalitymodels.HotelBookingCharge) error
-	GetBookingByBookingId(ctx context.Context, bookingId uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error)
+	CreateRoomBooking(ctx context.Context, booking *hotel_models.HotelRoomBooking) error
+	CreateOrAddBookingPayment(ctx context.Context, bookingPayment *hotel_models.HotelRoomBookingPayment) error
+	CreateCharges(ctx context.Context, charges *hotel_models.HotelBookingCharge) error
+	GetBookingByBookingId(ctx context.Context, bookingId uuid.UUID) (*hotel_models.HotelRoomBooking, error)
 	UpdateBookingStatus(
 		ctx context.Context,
 		bookingID uuid.UUID,
@@ -79,19 +79,19 @@ type HotelRepositoryInterface interface {
 	GetChargesByBookingID(
 		ctx context.Context,
 		bookingId uuid.UUID,
-	) ([]hospitalitymodels.HotelBookingCharge, error)
+	) ([]hotel_models.HotelBookingCharge, error)
 
 	AddChargesInBooking(
 		ctx context.Context,
-		charges *hospitalitymodels.HotelBookingCharge,
+		charges *hotel_models.HotelBookingCharge,
 	) error
 
 	//-------------------------------------------------------------
 	//   Bills
 	// ------------------------------------------------------------
-	GetBillByBookingId(ctx context.Context, bookingId uuid.UUID) (*hospitalitymodels.HotelBill, error)
+	GetBillByBookingId(ctx context.Context, bookingId uuid.UUID) (*hotel_models.HotelBill, error)
 
-	CreateBookingBill(ctx context.Context, bill *hospitalitymodels.HotelBill) error
+	CreateBookingBill(ctx context.Context, bill *hotel_models.HotelBill) error
 
 	//-------------------------------------------------------------
 	//   Payments
@@ -99,11 +99,11 @@ type HotelRepositoryInterface interface {
 	GetPaymentsByBookingId(
 		ctx context.Context,
 		bookingId uuid.UUID,
-	) ([]hospitalitymodels.HotelRoomBookingPayment, error)
+	) ([]hotel_models.HotelRoomBookingPayment, error)
 
 	AddPaymentsInBooking(
 		ctx context.Context,
-		payemnt *hospitalitymodels.HotelRoomBookingPayment,
+		payemnt *hotel_models.HotelRoomBookingPayment,
 	) error
 
 	//-------------------------------------------------------------
@@ -111,12 +111,12 @@ type HotelRepositoryInterface interface {
 	// ------------------------------------------------------------
 	CreateTaxRuleOfHotel(
 		ctx context.Context,
-		taxRule *hospitalitymodels.HotelTaxRule,
+		taxRule *hotel_models.HotelTaxRule,
 	) error
 
 	AddTaxComponentInTaxRule(
 		ctx context.Context,
-		taxComp *hospitalitymodels.HotelTaxComponent,
+		taxComp *hotel_models.HotelTaxComponent,
 	) error
 
 	GetActiveTaxRulesByHotelAndType(
@@ -124,22 +124,22 @@ type HotelRepositoryInterface interface {
 		hotelId uuid.UUID,
 		taxtype hospitalityconstants.TaxType,
 		time time.Time,
-	) ([]hospitalitymodels.HotelTaxRule, error)
+	) ([]hotel_models.HotelTaxRule, error)
 
 	GetTaxComponentsByRuleID(
 		ctx context.Context,
 		taxRuleId uuid.UUID,
-	) ([]hospitalitymodels.HotelTaxComponent, error)
+	) ([]hotel_models.HotelTaxComponent, error)
 
 	//-------------------------------------------------------------
 	//    Hotel Bill Tax
 	// ------------------------------------------------------------
 
-	CreateHotelBillTax(ctx context.Context, hotelBillTax *hospitalitymodels.HotelBillTax) error
+	CreateHotelBillTax(ctx context.Context, hotelBillTax *hotel_models.HotelBillTax) error
 	GetBillTaxes(
 		ctx context.Context,
 		billID uuid.UUID,
-	) ([]hospitalitymodels.HotelBillTax, error)
+	) ([]hotel_models.HotelBillTax, error)
 }
 
 /*******************************************

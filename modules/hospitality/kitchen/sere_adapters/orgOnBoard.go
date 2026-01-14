@@ -1,8 +1,8 @@
 package kitchen_sere_adapters
 
 import (
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
+	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
 	"sharpnr-engine/sere"
 	"time"
 
@@ -16,7 +16,7 @@ func createDefaultKitchen(
 
 		orgId := w.Data["org_id"].(uuid.UUID)
 
-		defaultKitchen := &hospitalitymodels.Kitchen{
+		defaultKitchen := &kitchen_models.Kitchen{
 			ID:             uuid.New(),
 			Name:           "Default system Kitchen",
 			Description:    "some thing",

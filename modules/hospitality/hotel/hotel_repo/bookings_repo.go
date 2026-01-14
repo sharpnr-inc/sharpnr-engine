@@ -3,28 +3,28 @@ package hotelrepo
 import (
 	"context"
 	"errors"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-func (d *hotelRepository) CreateRoomBooking(ctx context.Context, booking *hospitalitymodels.HotelRoomBooking) error {
+func (d *hotelRepository) CreateRoomBooking(ctx context.Context, booking *hotel_models.HotelRoomBooking) error {
 	if err := d.db.WithContext(ctx).Create(booking).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (d *hotelRepository) CreateOrAddBookingPayment(ctx context.Context, bookingPayment *hospitalitymodels.HotelRoomBookingPayment) error {
+func (d *hotelRepository) CreateOrAddBookingPayment(ctx context.Context, bookingPayment *hotel_models.HotelRoomBookingPayment) error {
 	if err := d.db.WithContext(ctx).Create(bookingPayment).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (d *hotelRepository) CreateCharges(ctx context.Context, charges *hospitalitymodels.HotelBookingCharge) error {
+func (d *hotelRepository) CreateCharges(ctx context.Context, charges *hotel_models.HotelBookingCharge) error {
 	if err := d.db.WithContext(ctx).Create(charges).Error; err != nil {
 		return err
 	}
@@ -34,9 +34,9 @@ func (d *hotelRepository) CreateCharges(ctx context.Context, charges *hospitalit
 func (d *hotelRepository) GetBookingDetailsByRoomId(
 	ctx context.Context,
 	roomId uuid.UUID,
-) (*hospitalitymodels.HotelRoomBooking, error) {
+) (*hotel_models.HotelRoomBooking, error) {
 
-	var booking hospitalitymodels.HotelRoomBooking
+	var booking hotel_models.HotelRoomBooking
 
 	err := d.db.WithContext(ctx).
 		Preload("Room").
@@ -58,8 +58,8 @@ func (d *hotelRepository) GetBookingDetailsByRoomId(
 	return &booking, nil
 }
 
-func (d *hotelRepository) GetBookingByBookingId(ctx context.Context, bookingId uuid.UUID) (*hospitalitymodels.HotelRoomBooking, error) {
-	var booking hospitalitymodels.HotelRoomBooking
+func (d *hotelRepository) GetBookingByBookingId(ctx context.Context, bookingId uuid.UUID) (*hotel_models.HotelRoomBooking, error) {
+	var booking hotel_models.HotelRoomBooking
 
 	err := d.db.WithContext(ctx).
 		Where("id = ?", bookingId).
@@ -82,7 +82,7 @@ func (h *hotelRepository) UpdateBookingStatus(
 ) error {
 
 	return h.db.WithContext(ctx).
-		Model(&hospitalitymodels.HotelRoomBooking{}).
+		Model(&hotel_models.HotelRoomBooking{}).
 		Where("id = ?", bookingID).
 		Update("status", status).
 		Error

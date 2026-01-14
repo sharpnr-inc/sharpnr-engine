@@ -2,8 +2,8 @@ package hotelservices
 
 import (
 	"context"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 
 	"github.com/google/uuid"
 )
@@ -51,7 +51,7 @@ func (s *hotelService) CreateGuestInHotel(
 		return err
 	}
 
-	guest := &hospitalitymodels.HotelGuest{
+	guest := &hotel_models.HotelGuest{
 		ID:        uuid.New(),
 		HotelId:   hotel.ID,
 		OrgId:     orgId,

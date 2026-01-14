@@ -1,8 +1,8 @@
 package hotel_sere_adapter
 
 import (
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 	"sharpnr-engine/sere"
 
 	"github.com/google/uuid"
@@ -41,7 +41,7 @@ func defaultHotelHandler(
 		// 2️⃣ Idempotency via registry table
 		// ------------------------------------------------
 
-		defaultHotel := &hospitalitymodels.Hotel{
+		defaultHotel := &hotel_models.Hotel{
 			ID:             uuid.New(),
 			OrganizationID: orgId,
 			Name:           "system Created Default",

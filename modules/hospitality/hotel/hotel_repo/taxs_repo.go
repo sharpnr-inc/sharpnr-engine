@@ -3,14 +3,14 @@ package hotelrepo
 import (
 	"context"
 	"errors"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 	"time"
 
 	"github.com/google/uuid"
 )
 
-func (h *hotelRepository) CreateTaxRuleOfHotel(ctx context.Context, taxRule *hospitalitymodels.HotelTaxRule) error {
+func (h *hotelRepository) CreateTaxRuleOfHotel(ctx context.Context, taxRule *hotel_models.HotelTaxRule) error {
 
 	// Ensure ID exists
 	if taxRule.ID == uuid.Nil {
@@ -37,7 +37,7 @@ func (h *hotelRepository) CreateTaxRuleOfHotel(ctx context.Context, taxRule *hos
 
 func (h *hotelRepository) AddTaxComponentInTaxRule(
 	ctx context.Context,
-	taxComp *hospitalitymodels.HotelTaxComponent,
+	taxComp *hotel_models.HotelTaxComponent,
 ) error {
 
 	// Validate required FK
@@ -66,9 +66,9 @@ func (h *hotelRepository) GetActiveTaxRulesByHotelAndType(
 	hotelId uuid.UUID,
 	taxType hospitalityconstants.TaxType,
 	at time.Time,
-) ([]hospitalitymodels.HotelTaxRule, error) {
+) ([]hotel_models.HotelTaxRule, error) {
 
-	var rules []hospitalitymodels.HotelTaxRule
+	var rules []hotel_models.HotelTaxRule
 
 	err := h.db.
 		WithContext(ctx).
@@ -95,9 +95,9 @@ func (h *hotelRepository) GetActiveTaxRulesByHotelAndType(
 func (h *hotelRepository) GetTaxComponentsByRuleID(
 	ctx context.Context,
 	taxRuleId uuid.UUID,
-) ([]hospitalitymodels.HotelTaxComponent, error) {
+) ([]hotel_models.HotelTaxComponent, error) {
 
-	var components []hospitalitymodels.HotelTaxComponent
+	var components []hotel_models.HotelTaxComponent
 
 	err := h.db.
 		WithContext(ctx).
@@ -112,7 +112,7 @@ func (h *hotelRepository) GetTaxComponentsByRuleID(
 	return components, nil
 }
 
-func (h *hotelRepository) CreateHotelBillTax(ctx context.Context, hotelBillTax *hospitalitymodels.HotelBillTax) error {
+func (h *hotelRepository) CreateHotelBillTax(ctx context.Context, hotelBillTax *hotel_models.HotelBillTax) error {
 	if hotelBillTax == nil {
 		return errors.New("hotel bill tax cannot be nil")
 	}
@@ -123,9 +123,9 @@ func (h *hotelRepository) CreateHotelBillTax(ctx context.Context, hotelBillTax *
 func (h *hotelRepository) GetBillTaxes(
 	ctx context.Context,
 	billID uuid.UUID,
-) ([]hospitalitymodels.HotelBillTax, error) {
+) ([]hotel_models.HotelBillTax, error) {
 
-	var taxes []hospitalitymodels.HotelBillTax
+	var taxes []hotel_models.HotelBillTax
 
 	err := h.db.WithContext(ctx).
 		Where("hotel_bill_id = ?", billID).

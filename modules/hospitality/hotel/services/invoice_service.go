@@ -3,17 +3,17 @@ package hotelservices
 import (
 	"context"
 	"fmt"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 	"strings"
 	"time"
 )
 
 func (s *hotelService) buildInvoiceDTO(
 	ctx context.Context,
-	booking *hospitalitymodels.HotelRoomBooking,
-	bill *hospitalitymodels.HotelBill,
+	booking *hotel_models.HotelRoomBooking,
+	bill *hotel_models.HotelBill,
 ) (*hoteldtos.HotelInvoiceDTO, error) {
 
 	hotel, _ := s.hotelRepo.GetHotelByID(ctx, booking.HotelID)
@@ -64,7 +64,7 @@ func (s *hotelService) buildInvoiceDTO(
 }
 
 func mapChargesToInvoiceItems(
-	charges []hospitalitymodels.HotelBookingCharge,
+	charges []hotel_models.HotelBookingCharge,
 ) []hoteldtos.HotelInvoiceItemDTO {
 
 	items := make([]hoteldtos.HotelInvoiceItemDTO, 0, len(charges))
@@ -111,7 +111,7 @@ func humanizeChargeType(ct hospitalityconstants.HotelChargeType) string {
 	}
 }
 
-func calculateNightsForInvoice(booking *hospitalitymodels.HotelRoomBooking) int {
+func calculateNightsForInvoice(booking *hotel_models.HotelRoomBooking) int {
 
 	checkIn := booking.CheckInDate.Truncate(24 * time.Hour)
 	checkOut := booking.CheckOutDate.Truncate(24 * time.Hour)
@@ -125,7 +125,7 @@ func calculateNightsForInvoice(booking *hospitalitymodels.HotelRoomBooking) int 
 	return nights
 }
 
-func generateInvoiceNo(bill *hospitalitymodels.HotelBill) string {
+func generateInvoiceNo(bill *hotel_models.HotelBill) string {
 
 	datePart := bill.CreatedAt.Format("20060102")
 
@@ -137,7 +137,7 @@ func generateInvoiceNo(bill *hospitalitymodels.HotelBill) string {
 }
 
 func mapPaymentsToDTO(
-	payments []hospitalitymodels.HotelRoomBookingPayment,
+	payments []hotel_models.HotelRoomBookingPayment,
 ) ([]hoteldtos.HotelInvoicePaymentDTO, float64) {
 
 	result := make([]hoteldtos.HotelInvoicePaymentDTO, 0, len(payments))
@@ -158,7 +158,7 @@ func mapPaymentsToDTO(
 }
 
 func mapBillTaxesToDTO(
-	taxes []hospitalitymodels.HotelBillTax,
+	taxes []hotel_models.HotelBillTax,
 ) []hoteldtos.HotelInvoiceTaxDTO {
 
 	result := make([]hoteldtos.HotelInvoiceTaxDTO, 0, len(taxes))

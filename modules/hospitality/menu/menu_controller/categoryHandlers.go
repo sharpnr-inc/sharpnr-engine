@@ -5,7 +5,7 @@ import (
 	"net/http"
 	dto "sharpnr-engine/core/dtos"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -150,7 +150,7 @@ func (c *menuController) UpdateCategoryInMenu(ctx *gin.Context) {
 		return
 	}
 
-	var category hospitalitymodels.MenuCategory
+	var category hospitalityMenu_models.MenuCategory
 	if err := ctx.ShouldBindJSON(&category); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

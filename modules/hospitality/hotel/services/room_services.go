@@ -3,11 +3,11 @@ package hotelservices
 import (
 	"context"
 	"errors"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
 	hotelevents "sharpnr-engine/modules/hospitality/hotel/hotel_events"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 	"strings"
 	"time"
 
@@ -20,7 +20,7 @@ func (h *hotelService) CreateRoomInHotel(
 	orgID uuid.UUID,
 	req hoteldtos.CreateRoomInFloor_REQ) error {
 
-	var room *hospitalitymodels.Room
+	var room *hotel_models.Room
 
 	err := h.hotelRepo.WithTx(ctx, func(txRepo hotelrepo.HotelRepositoryInterface) error {
 		// -------------------------
@@ -59,7 +59,7 @@ func (h *hotelService) CreateRoomInHotel(
 		// -------------------------
 		// Create Room (DISABLED first)
 		// -------------------------
-		room = &hospitalitymodels.Room{
+		room = &hotel_models.Room{
 			ID:             uuid.New(),
 			FloorID:        floor.ID,
 			HotelID:        hotel.ID,
@@ -79,7 +79,7 @@ func (h *hotelService) CreateRoomInHotel(
 		// -------------------------
 		// Create Initial Room Price
 		// -------------------------
-		roomPrice := &hospitalitymodels.HotelRoomPrice{
+		roomPrice := &hotel_models.HotelRoomPrice{
 			ID:            uuid.New(),
 			RoomID:        room.ID,
 			HotelID:       hotel.ID,

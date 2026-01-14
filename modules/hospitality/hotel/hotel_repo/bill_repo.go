@@ -3,7 +3,7 @@ package hotelrepo
 import (
 	"context"
 	"errors"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -12,9 +12,9 @@ import (
 func (d *hotelRepository) GetBillByBookingId(
 	ctx context.Context,
 	bookingId uuid.UUID,
-) (*hospitalitymodels.HotelBill, error) {
+) (*hotel_models.HotelBill, error) {
 
-	var bill hospitalitymodels.HotelBill
+	var bill hotel_models.HotelBill
 
 	err := d.db.WithContext(ctx).
 		Where("hotel_room_booking_id = ?", bookingId).
@@ -30,7 +30,7 @@ func (d *hotelRepository) GetBillByBookingId(
 	return &bill, nil
 }
 
-func (d *hotelRepository) CreateBookingBill(ctx context.Context, bill *hospitalitymodels.HotelBill) error {
+func (d *hotelRepository) CreateBookingBill(ctx context.Context, bill *hotel_models.HotelBill) error {
 	if bill == nil {
 		return errors.New("bill cannot be nil")
 	}

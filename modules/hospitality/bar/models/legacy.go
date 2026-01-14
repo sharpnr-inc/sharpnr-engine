@@ -1,9 +1,11 @@
-package hospitalitymodels
+package bar_models
 
 import (
 	"time"
 
 	"sharpnr-engine/core/models"
+	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
 )
@@ -23,9 +25,9 @@ type Bar struct {
 	// Optional: If bar has multiple floors (e.g., rooftop bar)
 	Floors []BarFloor `gorm:"foreignKey:BarID;constraint:OnDelete:CASCADE;" json:"floors"`
 
-	IsKitchen bool       `gorm:"default:true" json:"is_kitchen"`
-	KitchenID *uuid.UUID `gorm:"type:uuid" json:"kitchen_id"`
-	Kitchen   *Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;" json:"kitchen"`
+	IsKitchen bool                    `gorm:"default:true" json:"is_kitchen"`
+	KitchenID *uuid.UUID              `gorm:"type:uuid" json:"kitchen_id"`
+	Kitchen   *kitchen_models.Kitchen `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;" json:"kitchen"`
 
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -92,8 +94,7 @@ type BarTableSession struct {
 	BarID      uuid.UUID
 	Bar        *Bar
 
-	HospitalityCustomerAndGuestID *uuid.UUID                   `gorm:"type:uuid"`
-	CustomerAndGuest              *HospitalityCustomerAndGuest `gorm:"foreignKey:HospitalityCustomerAndGuestID"`
+	HospitalityCustomerAndGuestID *uuid.UUID `gorm:"type:uuid"`
 
 	FromTime time.Time  `gorm:"type:timestamp;not null"` // When session started
 	ToTime   *time.Time `gorm:"type:timestamp"`          // When closed (null until closing)
@@ -110,20 +111,20 @@ type BarTablesSessionOrder struct {
 	BarTableSessionId uuid.UUID
 	BarTableSession   *BarTableSession
 
-	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
-	MenuItem   MenuItem  `gorm:"foreignKey:MenuItemID"`
+	MenuItemID uuid.UUID                       `gorm:"type:uuid;not null"`
+	MenuItem   hospitalityMenu_models.MenuItem `gorm:"foreignKey:MenuItemID"`
 
 	// -----------------------------------------------------
 	// 🔗 Variant (Optional - because not all menu items have variants)
 	// -----------------------------------------------------
-	VariantID *uuid.UUID   `gorm:"type:uuid"`
-	Variant   *MenuVariant `gorm:"foreignKey:VariantID"`
+	VariantID *uuid.UUID                          `gorm:"type:uuid"`
+	Variant   *hospitalityMenu_models.MenuVariant `gorm:"foreignKey:VariantID"`
 
 	// -----------------------------------------------------
 	// 🔗 Addons (Optional)
 	// -----------------------------------------------------
-	AddonID *uuid.UUID `gorm:"type:uuid"`
-	Addon   *Addon     `gorm:"foreignKey:AddonID"`
+	AddonID *uuid.UUID                    `gorm:"type:uuid"`
+	Addon   *hospitalityMenu_models.Addon `gorm:"foreignKey:AddonID"`
 
 	Quantity int    `gorm:"not null;default:1"`
 	Notes    string `gorm:"type:text"`

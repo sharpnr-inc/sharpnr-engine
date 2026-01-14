@@ -2,8 +2,8 @@ package bar_sere_adapters
 
 import (
 	hospitality_org_factory_repository "sharpnr-engine/core/hospitality-org-factory/repository"
+	bar_models "sharpnr-engine/modules/hospitality/bar/models"
 	barrepo "sharpnr-engine/modules/hospitality/bar/repo"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/sere"
 	"time"
 
@@ -39,7 +39,7 @@ func defaultBarHandler(
 		orgID := wf.Data["org_id"].(uuid.UUID)
 		kitchenID := wf.Data["kitchen_id"].(uuid.UUID)
 
-		defaultBar := &hospitalitymodels.Bar{
+		defaultBar := &bar_models.Bar{
 			ID:             uuid.New(),
 			Name:           "Default System Created",
 			OrganizationID: orgID,

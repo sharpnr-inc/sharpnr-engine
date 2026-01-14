@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
 
 	"strconv"
 	"strings"
@@ -14,7 +14,7 @@ import (
 )
 
 // CreateKitchen inserts a new kitchen record into the database
-func (d *kitchenRepository) CreateKitchen(ctx context.Context, kitchen *hospitalitymodels.Kitchen) error {
+func (d *kitchenRepository) CreateKitchen(ctx context.Context, kitchen *kitchen_models.Kitchen) error {
 	// Use WithContext to respect request timeouts and cancellations
 	if err := d.db.WithContext(ctx).Create(kitchen).Error; err != nil {
 		return err
@@ -25,9 +25,9 @@ func (d *kitchenRepository) CreateKitchen(ctx context.Context, kitchen *hospital
 func (d *kitchenRepository) GetKitchenByOrgId(
 	ctx context.Context,
 	orgId uuid.UUID,
-) (*hospitalitymodels.Kitchen, error) {
+) (*kitchen_models.Kitchen, error) {
 
-	var kitchen hospitalitymodels.Kitchen
+	var kitchen kitchen_models.Kitchen
 
 	err := d.db.WithContext(ctx).
 		Where("organization_id = ?", orgId).

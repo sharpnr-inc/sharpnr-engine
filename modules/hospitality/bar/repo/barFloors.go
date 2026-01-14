@@ -2,13 +2,13 @@ package barrepo
 
 import (
 	"context"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	bar_models "sharpnr-engine/modules/hospitality/bar/models"
 
 	"github.com/google/uuid"
 )
 
-func (r *barRepository) GetFloorById(ctx context.Context, floorId uuid.UUID) (*hospitalitymodels.BarFloor, error) {
-	var floor hospitalitymodels.BarFloor
+func (r *barRepository) GetFloorById(ctx context.Context, floorId uuid.UUID) (*bar_models.BarFloor, error) {
+	var floor bar_models.BarFloor
 
 	err := r.db.WithContext(ctx).
 		Where("id = ?", floorId).

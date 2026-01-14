@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"math"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -55,7 +55,7 @@ func (s *hotelService) CreateTaxRule(ctx context.Context, orgId uuid.UUID, req h
 			return errors.New("sum of tax components must equal total tax rate")
 		}
 
-		taxRule := &hospitalitymodels.HotelTaxRule{
+		taxRule := &hotel_models.HotelTaxRule{
 			ID:            uuid.New(),
 			HotelID:       hotel.ID,
 			RuleName:      req.RuleName,
@@ -76,7 +76,7 @@ func (s *hotelService) CreateTaxRule(ctx context.Context, orgId uuid.UUID, req h
 		}
 
 		for _, comp := range req.Components {
-			taxComp := &hospitalitymodels.HotelTaxComponent{
+			taxComp := &hotel_models.HotelTaxComponent{
 				ID:             uuid.New(),
 				HotelTaxRuleID: taxRule.ID,
 				ComponentType:  comp.ComponentType,

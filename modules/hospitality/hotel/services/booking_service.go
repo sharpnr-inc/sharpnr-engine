@@ -4,12 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
 	hotelevents "sharpnr-engine/modules/hospitality/hotel/hotel_events"
 	"sharpnr-engine/modules/hospitality/hotel/hotel_events_names"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -28,8 +28,8 @@ func (r *hotelService) CreateBookingForRoom(
 	req *hoteldtos.RoomBookingRequest_dto,
 ) error {
 
-	var booking *hospitalitymodels.HotelRoomBooking
-	var charges *hospitalitymodels.HotelBookingCharge
+	var booking *hotel_models.HotelRoomBooking
+	var charges *hotel_models.HotelBookingCharge
 
 	err := r.hotelRepo.WithTx(ctx, func(txRepo hotelrepo.HotelRepositoryInterface) error {
 
@@ -52,7 +52,7 @@ func (r *hotelService) CreateBookingForRoom(
 		}
 
 		// Step 4: Create booking
-		booking = &hospitalitymodels.HotelRoomBooking{
+		booking = &hotel_models.HotelRoomBooking{
 			ID:             uuid.New(),
 			HotelID:        hotel.ID,
 			RoomID:         room.ID,
@@ -70,7 +70,7 @@ func (r *hotelService) CreateBookingForRoom(
 
 		// Step 5: Create booking guests (optional)
 		for _, bg := range req.BookingGuests {
-			bookingGuest := &hospitalitymodels.BookingGuest{
+			bookingGuest := &hotel_models.BookingGuest{
 				ID:                 uuid.New(),
 				HotelID:            hotel.ID,
 				HotelGuestID:       guest.ID,
@@ -100,7 +100,7 @@ func (r *hotelService) CreateBookingForRoom(
 
 		nights := calculateNights(booking.CheckInDate, booking.CheckOutDate)
 
-		charges = &hospitalitymodels.HotelBookingCharge{
+		charges = &hotel_models.HotelBookingCharge{
 			ID:                 uuid.New(),
 			HotelRoomBookingID: booking.ID,
 			ChargeType:         hospitalityconstants.RoomRent,
@@ -233,7 +233,7 @@ func (r *hotelService) GetRoomBookingDetails(ctx context.Context, roomId, orgID 
 	return resp, nil
 }
 
-func mapCharges(charges []hospitalitymodels.HotelBookingCharge) []hoteldtos.ChargeDTO {
+func mapCharges(charges []hotel_models.HotelBookingCharge) []hoteldtos.ChargeDTO {
 	out := make([]hoteldtos.ChargeDTO, 0, len(charges))
 	for _, c := range charges {
 		out = append(out, hoteldtos.ChargeDTO{
@@ -247,7 +247,7 @@ func mapCharges(charges []hospitalitymodels.HotelBookingCharge) []hoteldtos.Char
 	return out
 }
 
-func mapPayments(payments []hospitalitymodels.HotelRoomBookingPayment) []hoteldtos.PaymentDTO {
+func mapPayments(payments []hotel_models.HotelRoomBookingPayment) []hoteldtos.PaymentDTO {
 	out := make([]hoteldtos.PaymentDTO, 0, len(payments))
 	for _, p := range payments {
 		out = append(out, hoteldtos.PaymentDTO{
@@ -261,7 +261,7 @@ func mapPayments(payments []hospitalitymodels.HotelRoomBookingPayment) []hoteldt
 	return out
 }
 
-func mapBill(bill *hospitalitymodels.HotelBill) *hoteldtos.BillDTO {
+func mapBill(bill *hotel_models.HotelBill) *hoteldtos.BillDTO {
 	if bill == nil {
 		return nil
 	}

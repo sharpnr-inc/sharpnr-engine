@@ -2,9 +2,9 @@ package barrepo
 
 import (
 	"context"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	bar_models "sharpnr-engine/modules/hospitality/bar/models"
 )
 
-func (r *barRepository) CreateTable(ctx context.Context, barTable *hospitalitymodels.BarTable) error {
+func (r *barRepository) CreateTable(ctx context.Context, barTable *bar_models.BarTable) error {
 	return r.db.WithContext(ctx).Create(barTable).Error
 }

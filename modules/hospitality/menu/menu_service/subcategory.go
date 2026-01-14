@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
 )
@@ -31,7 +31,7 @@ func (s *menuService) CreateSubCategory(
 	}
 
 	// 2️⃣ Create SubCategory
-	sub := &hospitalitymodels.MenuSubCategory{
+	sub := &hospitalityMenu_models.MenuSubCategory{
 		ID:             uuid.New(),
 		CategoryID:     catID,
 		OrganizationID: orgID,

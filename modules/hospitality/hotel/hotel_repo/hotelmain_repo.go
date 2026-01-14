@@ -3,13 +3,13 @@ package hotelrepo
 import (
 	"context"
 	"errors"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-func (h *hotelRepository) CreateHotel(ctx context.Context, hotel *hospitalitymodels.Hotel) error {
+func (h *hotelRepository) CreateHotel(ctx context.Context, hotel *hotel_models.Hotel) error {
 	// Example logic:
 	if err := h.db.WithContext(ctx).Create(hotel).Error; err != nil {
 		return err
@@ -19,8 +19,8 @@ func (h *hotelRepository) CreateHotel(ctx context.Context, hotel *hospitalitymod
 }
 
 // GetHotelByID implements HotelRepository.
-func (h *hotelRepository) GetHotelByID(ctx context.Context, id uuid.UUID) (*hospitalitymodels.Hotel, error) {
-	var hotel hospitalitymodels.Hotel
+func (h *hotelRepository) GetHotelByID(ctx context.Context, id uuid.UUID) (*hotel_models.Hotel, error) {
+	var hotel hotel_models.Hotel
 
 	err := h.db.WithContext(ctx).
 		Preload("Floors").
@@ -40,8 +40,8 @@ func (h *hotelRepository) GetHotelByID(ctx context.Context, id uuid.UUID) (*hosp
 }
 
 // GetHotelByID implements HotelRepository.
-func (h *hotelRepository) GetHotelByOrgID(ctx context.Context, orgid uuid.UUID) (*hospitalitymodels.Hotel, error) {
-	var hotel hospitalitymodels.Hotel
+func (h *hotelRepository) GetHotelByOrgID(ctx context.Context, orgid uuid.UUID) (*hotel_models.Hotel, error) {
+	var hotel hotel_models.Hotel
 
 	err := h.db.WithContext(ctx).
 		Preload("Organization").
@@ -71,7 +71,7 @@ func (r *hotelRepository) UpdateHotelFields(
 
 	return r.db.
 		WithContext(ctx).
-		Model(&hospitalitymodels.Hotel{}).
+		Model(&hotel_models.Hotel{}).
 		Where("id = ?", hotelID).
 		Updates(updates).
 		Error

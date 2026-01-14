@@ -2,7 +2,7 @@ package restaurant_sere_adapters
 
 import (
 	hospitality_org_factory_repository "sharpnr-engine/core/hospitality-org-factory/repository"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 	"sharpnr-engine/modules/hospitality/restaurant/restaurantrepo"
 	"sharpnr-engine/sere"
 	"time"
@@ -39,7 +39,7 @@ func createDefaultRestaurant(
 		orgID := wf.Data["org_id"].(uuid.UUID)
 		kitchenID := wf.Data["kitchen_id"].(uuid.UUID)
 
-		defaultRes := &hospitalitymodels.Restaurant{
+		defaultRes := &restaurant_models.Restaurant{
 			ID:             uuid.New(),
 			Name:           "Default Restaurant",
 			OrganizationID: orgID,

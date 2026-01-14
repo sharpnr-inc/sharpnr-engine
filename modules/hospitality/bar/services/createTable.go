@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	bar_models "sharpnr-engine/modules/hospitality/bar/models"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"time"
 
 	"github.com/google/uuid"
@@ -34,7 +34,7 @@ func (s *barServices) CreateTablesInBar(ctx context.Context, orgId uuid.UUID, re
 	// 3️⃣ Create tables inside this floor
 	for _, tbl := range req.TableList {
 
-		table := &hospitalitymodels.BarTable{
+		table := &bar_models.BarTable{
 			ID:        uuid.New(),
 			FloorID:   req.FloorId,
 			Floor:     floor,

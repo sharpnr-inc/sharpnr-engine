@@ -3,9 +3,9 @@ package hotelservices
 import (
 	"context"
 	"errors"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -27,7 +27,7 @@ func (c *hotelService) AddPaymentForBooking(ctx context.Context, orgID uuid.UUID
 		return errors.New("booking does not belong to hotel")
 	}
 
-	payment := &hospitalitymodels.HotelRoomBookingPayment{
+	payment := &hotel_models.HotelRoomBookingPayment{
 		ID:                 uuid.New(),
 		HotelRoomBookingID: booking.ID,
 		Amount:             req.Amount,

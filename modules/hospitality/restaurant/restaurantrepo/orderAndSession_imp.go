@@ -4,14 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-func (d *restaurantRepo) CreateRes_TableSession(ctx context.Context, session *hospitalitymodels.RestaurantTableBookingSession) error {
+func (d *restaurantRepo) CreateRes_TableSession(ctx context.Context, session *restaurant_models.RestaurantTableBookingSession) error {
 	// If you're passing zero UUIDs or missing required fields,
 	// GORM won't magically fix your life. So validate as needed.
 	if session == nil {
@@ -36,9 +36,9 @@ func (d *restaurantRepo) CreateRes_TableSession(ctx context.Context, session *ho
 func (d *restaurantRepo) GetBookingSessionByTableId(
 	ctx context.Context,
 	tableId uuid.UUID,
-) (*hospitalitymodels.RestaurantTableBookingSession, error) {
+) (*restaurant_models.RestaurantTableBookingSession, error) {
 
-	var session hospitalitymodels.RestaurantTableBookingSession
+	var session restaurant_models.RestaurantTableBookingSession
 
 	err := d.db.WithContext(ctx).
 		Preload("RestaurantTable").
@@ -60,9 +60,9 @@ func (d *restaurantRepo) GetBookingSessionByTableId(
 func (d *restaurantRepo) GetBookingSessionById(
 	ctx context.Context,
 	sessionId uuid.UUID,
-) (*hospitalitymodels.RestaurantTableBookingSession, error) {
+) (*restaurant_models.RestaurantTableBookingSession, error) {
 
-	var session hospitalitymodels.RestaurantTableBookingSession
+	var session restaurant_models.RestaurantTableBookingSession
 
 	err := d.db.WithContext(ctx).
 		Preload("CustomerAndGuest").

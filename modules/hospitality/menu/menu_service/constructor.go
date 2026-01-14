@@ -1,8 +1,8 @@
 package menuservice
 
 import (
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	menurepo "sharpnr-engine/modules/hospitality/menu/menu_repo"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
 )
@@ -12,7 +12,7 @@ type menuService struct {
 }
 
 // CreateVariant implements MenuService.
-func (m *menuService) CreateVariant(variant *hospitalitymodels.MenuVariant) error {
+func (m *menuService) CreateVariant(variant *hospitalityMenu_models.MenuVariant) error {
 	panic("unimplemented")
 }
 
@@ -42,57 +42,57 @@ func (m *menuService) DeleteVariant(id uuid.UUID) error {
 }
 
 // GetCategoryByID implements MenuService.
-func (m *menuService) GetCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuCategory, error) {
+func (m *menuService) GetCategoryByID(id uuid.UUID) (*hospitalityMenu_models.MenuCategory, error) {
 	panic("unimplemented")
 }
 
 // GetItemsBySubCategory implements MenuService.
-func (m *menuService) GetItemsBySubCategory(subCatID uuid.UUID) ([]hospitalitymodels.MenuItem, error) {
+func (m *menuService) GetItemsBySubCategory(subCatID uuid.UUID) ([]hospitalityMenu_models.MenuItem, error) {
 	panic("unimplemented")
 }
 
 // GetMenuGroupByID implements MenuService.
-func (m *menuService) GetMenuGroupByID(id uuid.UUID) (*hospitalitymodels.MenuGroup, error) {
+func (m *menuService) GetMenuGroupByID(id uuid.UUID) (*hospitalityMenu_models.MenuGroup, error) {
 	panic("unimplemented")
 }
 
 // GetMenuItemByID implements MenuService.
-func (m *menuService) GetMenuItemByID(id uuid.UUID) (*hospitalitymodels.MenuItem, error) {
+func (m *menuService) GetMenuItemByID(id uuid.UUID) (*hospitalityMenu_models.MenuItem, error) {
 	panic("unimplemented")
 }
 
 // GetSubCategoriesByCategory implements MenuService.
-func (m *menuService) GetSubCategoriesByCategory(categoryID uuid.UUID) ([]hospitalitymodels.MenuSubCategory, error) {
+func (m *menuService) GetSubCategoriesByCategory(categoryID uuid.UUID) ([]hospitalityMenu_models.MenuSubCategory, error) {
 	panic("unimplemented")
 }
 
 // GetSubCategoryByID implements MenuService.
-func (m *menuService) GetSubCategoryByID(id uuid.UUID) (*hospitalitymodels.MenuSubCategory, error) {
+func (m *menuService) GetSubCategoryByID(id uuid.UUID) (*hospitalityMenu_models.MenuSubCategory, error) {
 	panic("unimplemented")
 }
 
 // UpdateCategory implements MenuService.
-func (m *menuService) UpdateCategory(category *hospitalitymodels.MenuCategory) error {
+func (m *menuService) UpdateCategory(category *hospitalityMenu_models.MenuCategory) error {
 	panic("unimplemented")
 }
 
 // UpdateMenuGroup implements MenuService.
-func (m *menuService) UpdateMenuGroup(group *hospitalitymodels.MenuGroup) error {
+func (m *menuService) UpdateMenuGroup(group *hospitalityMenu_models.MenuGroup) error {
 	panic("unimplemented")
 }
 
 // UpdateMenuItem implements MenuService.
-func (m *menuService) UpdateMenuItem(item *hospitalitymodels.MenuItem) error {
+func (m *menuService) UpdateMenuItem(item *hospitalityMenu_models.MenuItem) error {
 	panic("unimplemented")
 }
 
 // UpdateSubCategory implements MenuService.
-func (m *menuService) UpdateSubCategory(subCat *hospitalitymodels.MenuSubCategory) error {
+func (m *menuService) UpdateSubCategory(subCat *hospitalityMenu_models.MenuSubCategory) error {
 	panic("unimplemented")
 }
 
 // UpdateVariant implements MenuService.
-func (m *menuService) UpdateVariant(variant *hospitalitymodels.MenuVariant) error {
+func (m *menuService) UpdateVariant(variant *hospitalityMenu_models.MenuVariant) error {
 	panic("unimplemented")
 }
 

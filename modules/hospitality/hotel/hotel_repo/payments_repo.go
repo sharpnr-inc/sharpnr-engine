@@ -3,7 +3,7 @@ package hotelrepo
 import (
 	"context"
 	"errors"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -12,9 +12,9 @@ import (
 func (d *hotelRepository) GetPaymentsByBookingId(
 	ctx context.Context,
 	bookingId uuid.UUID,
-) ([]hospitalitymodels.HotelRoomBookingPayment, error) {
+) ([]hotel_models.HotelRoomBookingPayment, error) {
 
-	var payments []hospitalitymodels.HotelRoomBookingPayment
+	var payments []hotel_models.HotelRoomBookingPayment
 
 	err := d.db.WithContext(ctx).
 		Where("hotel_room_booking_id = ?", bookingId).
@@ -30,7 +30,7 @@ func (d *hotelRepository) GetPaymentsByBookingId(
 
 func (d *hotelRepository) AddPaymentsInBooking(
 	ctx context.Context,
-	payment *hospitalitymodels.HotelRoomBookingPayment,
+	payment *hotel_models.HotelRoomBookingPayment,
 ) error {
 
 	if payment == nil {

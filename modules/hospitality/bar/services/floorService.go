@@ -3,8 +3,8 @@ package barservices
 import (
 	"context"
 	"errors"
+	bar_models "sharpnr-engine/modules/hospitality/bar/models"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 
 	"github.com/google/uuid"
 )
@@ -31,7 +31,7 @@ func (s *barServices) CreateFloor(ctx context.Context, orgId uuid.UUID, req hosp
 	}
 
 	// 4️⃣ Create new floor object
-	newFloor := &hospitalitymodels.BarFloor{
+	newFloor := &bar_models.BarFloor{
 		ID:             uuid.New(),
 		BarID:          bar.ID,
 		OrganizationID: orgId,

@@ -8,7 +8,11 @@ import (
 	hospitality_org_models "sharpnr-engine/core/hospitality-org-factory/models"
 	"sharpnr-engine/core/models"
 	"sharpnr-engine/modules/accounting/accounting_models"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	bar_models "sharpnr-engine/modules/hospitality/bar/models"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
+	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
+	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 	sharphr_models "sharpnr-engine/modules/hr/hrModels"
 
 	"gorm.io/driver/postgres"
@@ -85,64 +89,64 @@ func MigrateDB(db *gorm.DB) error {
 		// 🏨 HOSPITALITY MODELS
 		// -------------------------------
 		// ────────────── CORE HOTEL STRUCTURE ──────────────
-		&hospitalitymodels.Hotel{},
-		&hospitalitymodels.HotelFloor{},
-		&hospitalitymodels.Room{},
-		&hospitalitymodels.HotelRoomPrice{},
+		&hotel_models.Hotel{},
+		&hotel_models.HotelFloor{},
+		&hotel_models.Room{},
+		&hotel_models.HotelRoomPrice{},
 
 		// ────────────── GUESTS ──────────────
-		&hospitalitymodels.HotelGuest{},
+		&hotel_models.HotelGuest{},
 
 		// ────────────── BOOKINGS (PARENT) ──────────────
-		&hospitalitymodels.HotelRoomBooking{},
+		&hotel_models.HotelRoomBooking{},
 
 		// ────────────── BOOKING CHILD TABLES ──────────────
-		&hospitalitymodels.BookingGuest{},
-		&hospitalitymodels.HotelRoomBookingPayment{},
-		&hospitalitymodels.HotelBookingCharge{},
+		&hotel_models.BookingGuest{},
+		&hotel_models.HotelRoomBookingPayment{},
+		&hotel_models.HotelBookingCharge{},
 
 		// ────────────── SERVICES ──────────────
-		&hospitalitymodels.HotelService{},
-		&hospitalitymodels.HotelServiceItem{},
+		&hotel_models.HotelService{},
+		&hotel_models.HotelServiceItem{},
 
 		// ────────────── TAX ──────────────
-		&hospitalitymodels.HotelTaxRule{},
-		&hospitalitymodels.HotelTaxComponent{},
+		&hotel_models.HotelTaxRule{},
+		&hotel_models.HotelTaxComponent{},
 
 		// ────────────── BILLING ──────────────
-		&hospitalitymodels.HotelBill{},
-		&hospitalitymodels.HotelBillTax{},
+		&hotel_models.HotelBill{},
+		&hotel_models.HotelBillTax{},
 
 		// Hospitality --> Bar
-		&hospitalitymodels.Bar{},
-		&hospitalitymodels.BarFloor{},
-		&hospitalitymodels.BarTable{},
+		&bar_models.Bar{},
+		&bar_models.BarFloor{},
+		&bar_models.BarTable{},
 		// Bar-orders
-		&hospitalitymodels.BarTableSession{},
-		&hospitalitymodels.BarTablesSessionOrder{},
+		&bar_models.BarTableSession{},
+		&bar_models.BarTablesSessionOrder{},
 
 		// Hospitality --> Restaurant
-		&hospitalitymodels.Restaurant{},
-		&hospitalitymodels.RestaurantFloor{},
-		&hospitalitymodels.RestaurantTable{},
-		&hospitalitymodels.RestaurantTableBookingSession{},
+		&restaurant_models.Restaurant{},
+		&restaurant_models.RestaurantFloor{},
+		&restaurant_models.RestaurantTable{},
+		&restaurant_models.RestaurantTableBookingSession{},
 
 		//Hospitality --> Kitchen
-		&hospitalitymodels.Kitchen{},
-		&hospitalitymodels.KitchenTicket{},
-		&hospitalitymodels.KitchenTicketItem{},
-		&hospitalitymodels.KitchenTicketItemAddon{},
+		&kitchen_models.Kitchen{},
+		&kitchen_models.KitchenTicket{},
+		&kitchen_models.KitchenTicketItem{},
+		&kitchen_models.KitchenTicketItemAddon{},
 
 		//---------------------------------------------------
 
 		// ✅ MENU SYSTEM
-		&hospitalitymodels.MenuGroup{},
-		&hospitalitymodels.MenuCategory{},
-		&hospitalitymodels.MenuSubCategory{},
-		&hospitalitymodels.MenuItem{},
-		&hospitalitymodels.MenuVariant{},
-		&hospitalitymodels.MenuVariantGroup{},
-		&hospitalitymodels.Addon{},
+		&hospitalityMenu_models.MenuGroup{},
+		&hospitalityMenu_models.MenuCategory{},
+		&hospitalityMenu_models.MenuSubCategory{},
+		&hospitalityMenu_models.MenuItem{},
+		&hospitalityMenu_models.MenuVariant{},
+		&hospitalityMenu_models.MenuVariantGroup{},
+		&hospitalityMenu_models.Addon{},
 
 		// -------------------------------
 		// 💰 Hospitality Customer & Guest MODELS

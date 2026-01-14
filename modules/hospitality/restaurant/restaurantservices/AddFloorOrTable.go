@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 
 	"github.com/google/uuid"
 )
@@ -36,11 +36,11 @@ func (r *restaurantService) CreateOrAddTable(ctx context.Context, orgid uuid.UUI
 	}
 
 	// 3️⃣ Convert DTO → Model list
-	var tables []*hospitalitymodels.RestaurantTable
+	var tables []*restaurant_models.RestaurantTable
 
 	for _, t := range req.Tables {
 
-		tables = append(tables, &hospitalitymodels.RestaurantTable{
+		tables = append(tables, &restaurant_models.RestaurantTable{
 			ID:           uuid.New(),
 			FloorID:      req.FloorId,
 			RestaurantID: restaurant.ID,

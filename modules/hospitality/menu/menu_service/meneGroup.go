@@ -3,13 +3,13 @@ package menuservice
 import (
 	"context"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
 )
 
 // CreateMenuGroup implements MenuService.
-func (m *menuService) CreateMenuGroup(ctx context.Context, group *hospitalitymodels.MenuGroup) error {
+func (m *menuService) CreateMenuGroup(ctx context.Context, group *hospitalityMenu_models.MenuGroup) error {
 	panic("unimplemented")
 }
 

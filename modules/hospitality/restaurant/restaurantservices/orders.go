@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -52,12 +52,11 @@ func (s *restaurantService) CreateTableBookingSession(
 		return errors.New("table does not belong to this restaurant")
 	}
 
-	session := &hospitalitymodels.RestaurantTableBookingSession{
+	session := &restaurant_models.RestaurantTableBookingSession{
 		ID:                            uuid.New(),
 		RestaurantTableID:             restaurant.ID,
 		RestaurantTable:               *table,
 		HospitalityCustomerAndGuestID: nil,
-		CustomerAndGuest:              nil,
 		FromTime:                      time.Now(),
 		CreatedAt:                     time.Now(),
 		UpdatedAt:                     time.Now(),
@@ -100,7 +99,7 @@ func (s *restaurantService) AddItemInBookingSession(
 	// }
 
 	// // 3️⃣ Create Kitchen Ticket
-	// orderTicket := &hospitalitymodels.KitchenTicket{
+	// orderTicket := &restaurant_models.KitchenTicket{
 	// 	ID:                              uuid.New(),
 	// 	OrganizationID:                  orgId,
 	// 	Organization:                    *restaurant.Organization,
@@ -122,7 +121,7 @@ func (s *restaurantService) AddItemInBookingSession(
 	// for _, items := range request.Order {
 
 	// 	// 4.1 → Insert item
-	// 	item := &hospitalitymodels.KitchenTicketItem{
+	// 	item := &restaurant_models.KitchenTicketItem{
 	// 		ID:              uuid.New(),
 	// 		KitchenTicketID: kot.ID,
 	// 		MenuItemID:      items.MenuItemId,
@@ -143,7 +142,7 @@ func (s *restaurantService) AddItemInBookingSession(
 	// 	// 4.2 → Add addon rows
 	// 	if items.AddonOnId != nil {
 	// 		for _, addon := range *items.AddonOnId {
-	// 			addonModel := &hospitalitymodels.KitchenTicketItemAddon{
+	// 			addonModel := &restaurant_models.KitchenTicketItemAddon{
 	// 				ID:                  uuid.New(),
 	// 				KitchenTicketItemID: item.ID,
 	// 				AddOnID:             addon.AddOnId,

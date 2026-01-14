@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
 )
@@ -16,7 +16,7 @@ func (s *menuService) CreateVariantGroup(
 ) error {
 
 	// 1️⃣ Create Variant Group Model
-	group := &hospitalitymodels.MenuVariantGroup{
+	group := &hospitalityMenu_models.MenuVariantGroup{
 		ID:         uuid.New(),
 		MenuItemID: menuItemId,
 		Name:       req.VariantName,
@@ -32,7 +32,7 @@ func (s *menuService) CreateVariantGroup(
 
 	// 3️⃣ Create each variant
 	for _, v := range req.Variant {
-		variant := &hospitalitymodels.MenuVariant{
+		variant := &hospitalityMenu_models.MenuVariant{
 			ID:         uuid.New(),
 			GroupID:    groupID,
 			MenuItemID: menuItemId,

@@ -3,8 +3,8 @@ package hotelservices
 import (
 	"context"
 	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 
 	"github.com/google/uuid"
 )
@@ -79,7 +79,7 @@ type HotelService interface {
 		ctx context.Context,
 		orgID uuid.UUID,
 		bookingID uuid.UUID,
-	) (*hospitalitymodels.HotelBill, error)
+	) (*hotel_models.HotelBill, error)
 
 	FinalizeBillAndGetInvoice(
 		ctx context.Context,

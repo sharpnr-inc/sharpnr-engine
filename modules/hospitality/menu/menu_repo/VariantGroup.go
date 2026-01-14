@@ -2,21 +2,21 @@ package menurepo
 
 import (
 	"context"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
 )
 
-func (r *menuRepo) CreateVariantGroup(ctx context.Context, variantGroup *hospitalitymodels.MenuVariantGroup) error {
+func (r *menuRepo) CreateVariantGroup(ctx context.Context, variantGroup *hospitalityMenu_models.MenuVariantGroup) error {
 	return r.db.WithContext(ctx).Create(&variantGroup).Error
 }
 
-func (r *menuRepo) UpdateVariantGroup(ctx context.Context, variant *hospitalitymodels.MenuVariantGroup) error {
+func (r *menuRepo) UpdateVariantGroup(ctx context.Context, variant *hospitalityMenu_models.MenuVariantGroup) error {
 	panic("Unimplmented")
 }
 
-func (r *menuRepo) GetVariantGroupsByMenuItemID(ctx context.Context, menuId uuid.UUID) ([]hospitalitymodels.MenuVariantGroup, error) {
-	var groups []hospitalitymodels.MenuVariantGroup
+func (r *menuRepo) GetVariantGroupsByMenuItemID(ctx context.Context, menuId uuid.UUID) ([]hospitalityMenu_models.MenuVariantGroup, error) {
+	var groups []hospitalityMenu_models.MenuVariantGroup
 
 	err := r.db.WithContext(ctx).
 		Preload("Variants").

@@ -2,7 +2,7 @@ package menurepo
 
 import (
 	"context"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
 )
@@ -11,58 +11,58 @@ type MenuRepositoryInterface interface {
 	// -------------------------------
 	// 🌐 MENU GROUPS
 	// -------------------------------
-	CreateMenuGroup(ctx context.Context, group *hospitalitymodels.MenuGroup) error
-	GetAllMenuGroups(ctx context.Context, orgID uuid.UUID) ([]hospitalitymodels.MenuGroup, error)
-	GetMenuGroupByID(ctx context.Context, groupID uuid.UUID) (*hospitalitymodels.MenuGroup, error)
-	UpdateMenuGroup(group *hospitalitymodels.MenuGroup) error
+	CreateMenuGroup(ctx context.Context, group *hospitalityMenu_models.MenuGroup) error
+	GetAllMenuGroups(ctx context.Context, orgID uuid.UUID) ([]hospitalityMenu_models.MenuGroup, error)
+	GetMenuGroupByID(ctx context.Context, groupID uuid.UUID) (*hospitalityMenu_models.MenuGroup, error)
+	UpdateMenuGroup(group *hospitalityMenu_models.MenuGroup) error
 	DeleteMenuGroup(id uuid.UUID) error
 
 	// -------------------------------
 	// 🗂️ MENU CATEGORIES
 	// -------------------------------
-	CreateCategory(ctx context.Context, category *hospitalitymodels.MenuCategory) error
-	GetCategoriesByGroup(ctx context.Context, groupID uuid.UUID) ([]hospitalitymodels.MenuCategory, error)
-	GetCategoryByID(ctx context.Context, id uuid.UUID) (*hospitalitymodels.MenuCategory, error)
-	UpdateCategory(category *hospitalitymodels.MenuCategory) error
+	CreateCategory(ctx context.Context, category *hospitalityMenu_models.MenuCategory) error
+	GetCategoriesByGroup(ctx context.Context, groupID uuid.UUID) ([]hospitalityMenu_models.MenuCategory, error)
+	GetCategoryByID(ctx context.Context, id uuid.UUID) (*hospitalityMenu_models.MenuCategory, error)
+	UpdateCategory(category *hospitalityMenu_models.MenuCategory) error
 	DeleteCategory(id uuid.UUID) error
 
 	// -------------------------------
 	// 📂 MENU SUBCATEGORIES
 	// -------------------------------
-	CreateSubCategory(ctx context.Context, sub *hospitalitymodels.MenuSubCategory) error
-	GetSubCategoriesByCategory(categoryID uuid.UUID) ([]hospitalitymodels.MenuSubCategory, error)
-	GetSubCategoryByID(ctx context.Context, id uuid.UUID) (*hospitalitymodels.MenuSubCategory, error)
-	UpdateSubCategory(subCat *hospitalitymodels.MenuSubCategory) error
+	CreateSubCategory(ctx context.Context, sub *hospitalityMenu_models.MenuSubCategory) error
+	GetSubCategoriesByCategory(categoryID uuid.UUID) ([]hospitalityMenu_models.MenuSubCategory, error)
+	GetSubCategoryByID(ctx context.Context, id uuid.UUID) (*hospitalityMenu_models.MenuSubCategory, error)
+	UpdateSubCategory(subCat *hospitalityMenu_models.MenuSubCategory) error
 	DeleteSubCategory(id uuid.UUID) error
 
 	// -------------------------------
 	// 🍽️ MENU ITEMS
 	// -------------------------------
-	CreateMenuItem(ctx context.Context, item *hospitalitymodels.MenuItem) error
-	GetItemsBySubCategory(subCatID uuid.UUID) ([]hospitalitymodels.MenuItem, error)
-	GetMenuItemByID(ctx context.Context, id uuid.UUID) (*hospitalitymodels.MenuItem, error)
-	UpdateMenuItem(item *hospitalitymodels.MenuItem) error
+	CreateMenuItem(ctx context.Context, item *hospitalityMenu_models.MenuItem) error
+	GetItemsBySubCategory(subCatID uuid.UUID) ([]hospitalityMenu_models.MenuItem, error)
+	GetMenuItemByID(ctx context.Context, id uuid.UUID) (*hospitalityMenu_models.MenuItem, error)
+	UpdateMenuItem(item *hospitalityMenu_models.MenuItem) error
 	DeleteMenuItem(id uuid.UUID) error
 
 	// -------------------------------
 	// 🧩 VARIANTS
 	// -------------------------------
-	CreateVariant(ctx context.Context, variant *hospitalitymodels.MenuVariant) error
-	GetVariantsByItem(itemID uuid.UUID) ([]hospitalitymodels.MenuVariant, error)
-	UpdateVariant(variant *hospitalitymodels.MenuVariant) error
+	CreateVariant(ctx context.Context, variant *hospitalityMenu_models.MenuVariant) error
+	GetVariantsByItem(itemID uuid.UUID) ([]hospitalityMenu_models.MenuVariant, error)
+	UpdateVariant(variant *hospitalityMenu_models.MenuVariant) error
 	DeleteVariant(id uuid.UUID) error
 
 	// -------------------------------
 	// 🧩 VARIANTS GROUP
 	// -------------------------------
-	CreateVariantGroup(ctx context.Context, variant *hospitalitymodels.MenuVariantGroup) error
-	GetVariantGroupsByMenuItemID(ctx context.Context, menuId uuid.UUID) ([]hospitalitymodels.MenuVariantGroup, error)
-	UpdateVariantGroup(ctx context.Context, variant *hospitalitymodels.MenuVariantGroup) error
+	CreateVariantGroup(ctx context.Context, variant *hospitalityMenu_models.MenuVariantGroup) error
+	GetVariantGroupsByMenuItemID(ctx context.Context, menuId uuid.UUID) ([]hospitalityMenu_models.MenuVariantGroup, error)
+	UpdateVariantGroup(ctx context.Context, variant *hospitalityMenu_models.MenuVariantGroup) error
 
 	// -------------------------------
 	// 🧀 ADDONS
 	// -------------------------------
-	CreateAddon(ctx context.Context, addon *hospitalitymodels.Addon) error
-	UpdateAddon(addon *hospitalitymodels.Addon) error
+	CreateAddon(ctx context.Context, addon *hospitalityMenu_models.Addon) error
+	UpdateAddon(addon *hospitalityMenu_models.Addon) error
 	DeleteAddon(id uuid.UUID) error
 }

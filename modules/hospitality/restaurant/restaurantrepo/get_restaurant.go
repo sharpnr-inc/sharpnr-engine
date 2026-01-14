@@ -2,13 +2,13 @@ package restaurantrepo
 
 import (
 	"context"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 
 	"github.com/google/uuid"
 )
 
-func (r *restaurantRepo) GetRestaurantByOrgId(ctx context.Context, orgId uuid.UUID) (*hospitalitymodels.Restaurant, error) {
-	var restaurant hospitalitymodels.Restaurant
+func (r *restaurantRepo) GetRestaurantByOrgId(ctx context.Context, orgId uuid.UUID) (*restaurant_models.Restaurant, error) {
+	var restaurant restaurant_models.Restaurant
 
 	err := r.db.WithContext(ctx).
 		Preload("Organization"). // <-- load organization
@@ -28,9 +28,9 @@ func (r *restaurantRepo) GetRestaurantByOrgId(ctx context.Context, orgId uuid.UU
 func (r *restaurantRepo) GetRestaurantFloorById(
 	ctx context.Context,
 	floorId uuid.UUID,
-) (*hospitalitymodels.RestaurantFloor, error) {
+) (*restaurant_models.RestaurantFloor, error) {
 
-	var floor hospitalitymodels.RestaurantFloor
+	var floor restaurant_models.RestaurantFloor
 
 	err := r.db.WithContext(ctx).
 		Where("id = ?", floorId).
@@ -43,9 +43,9 @@ func (r *restaurantRepo) GetRestaurantFloorById(
 	return &floor, nil
 }
 
-func (d *restaurantRepo) GetTableById(ctx context.Context, tableId uuid.UUID) (*hospitalitymodels.RestaurantTable, error) {
+func (d *restaurantRepo) GetTableById(ctx context.Context, tableId uuid.UUID) (*restaurant_models.RestaurantTable, error) {
 
-	var table hospitalitymodels.RestaurantTable
+	var table restaurant_models.RestaurantTable
 
 	err := d.db.WithContext(ctx).First(&table, "id = ?", tableId).Error
 	if err != nil {

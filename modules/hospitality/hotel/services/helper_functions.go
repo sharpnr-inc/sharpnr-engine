@@ -2,8 +2,8 @@ package hotelservices
 
 import (
 	"context"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -50,7 +50,7 @@ func (s *hotelService) CalculateTaxForBooking(
 	}
 
 	// 3️⃣ Pick matching slab
-	var matchedRule *hospitalitymodels.HotelTaxRule
+	var matchedRule *hotel_models.HotelTaxRule
 
 	for _, rule := range rules {
 

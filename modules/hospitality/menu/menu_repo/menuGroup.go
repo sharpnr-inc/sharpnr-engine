@@ -2,13 +2,13 @@ package menurepo
 
 import (
 	"context"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
+	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
 )
 
 // CreateMenuGroup implements MenuRepository.
-func (m *menuRepo) CreateMenuGroup(ctx context.Context, group *hospitalitymodels.MenuGroup) error {
+func (m *menuRepo) CreateMenuGroup(ctx context.Context, group *hospitalityMenu_models.MenuGroup) error {
 	// Ensure ID is set
 	if group.ID == uuid.Nil {
 		group.ID = uuid.New()
@@ -23,8 +23,8 @@ func (m *menuRepo) CreateMenuGroup(ctx context.Context, group *hospitalitymodels
 }
 
 // GetAllMenuGroups implements MenuRepository.
-func (m *menuRepo) GetAllMenuGroups(ctx context.Context, orgID uuid.UUID) ([]hospitalitymodels.MenuGroup, error) {
-	var groups []hospitalitymodels.MenuGroup
+func (m *menuRepo) GetAllMenuGroups(ctx context.Context, orgID uuid.UUID) ([]hospitalityMenu_models.MenuGroup, error) {
+	var groups []hospitalityMenu_models.MenuGroup
 
 	err := m.db.WithContext(ctx).
 		Where("organization_id = ?", orgID).
@@ -40,8 +40,8 @@ func (m *menuRepo) GetAllMenuGroups(ctx context.Context, orgID uuid.UUID) ([]hos
 }
 
 // Add helper to get MenuGroup for org validation
-func (m *menuRepo) GetMenuGroupByID(ctx context.Context, groupID uuid.UUID) (*hospitalitymodels.MenuGroup, error) {
-	var group hospitalitymodels.MenuGroup
+func (m *menuRepo) GetMenuGroupByID(ctx context.Context, groupID uuid.UUID) (*hospitalityMenu_models.MenuGroup, error) {
+	var group hospitalityMenu_models.MenuGroup
 	err := m.db.WithContext(ctx).
 		Where("id = ?", groupID).
 		First(&group).Error
@@ -53,6 +53,6 @@ func (m *menuRepo) GetMenuGroupByID(ctx context.Context, groupID uuid.UUID) (*ho
 }
 
 // UpdateMenuGroup implements MenuRepository.
-func (m *menuRepo) UpdateMenuGroup(group *hospitalitymodels.MenuGroup) error {
+func (m *menuRepo) UpdateMenuGroup(group *hospitalityMenu_models.MenuGroup) error {
 	panic("unimplemented")
 }
