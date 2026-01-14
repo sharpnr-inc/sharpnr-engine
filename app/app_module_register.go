@@ -1,6 +1,7 @@
 package app
 
 import (
+	orchestrator_service "sharpnr-engine/core/orchestrator/service"
 	org_signup_services "sharpnr-engine/core/org-signup/services"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr-identity/services"
 	"sharpnr-engine/modules/accounting/accounting_service"
@@ -8,13 +9,18 @@ import (
 )
 
 type AppModules struct {
-	orgSignupService org_signup_services.OrgSignUpServiceInterface
-	sharpAuthService sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
+	orgSignupService    org_signup_services.OrgSignUpServiceInterface
+	sharpAuthService    sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
+	orchestratorService orchestrator_service.OrchestratorServiceInterface
 
 	hospitality *HospitalityDomain
 
 	hrService         hr_employee_services.HrEmployeeServiceInterface
 	accountingService accounting_service.AccountingServiceInterface
+}
+
+func (m *AppModules) SharpnrOrchestrator() orchestrator_service.OrchestratorServiceInterface {
+	return m.orchestratorService
 }
 
 func (m *AppModules) Hospitality() *HospitalityDomain {

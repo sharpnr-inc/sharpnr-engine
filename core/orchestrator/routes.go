@@ -4,6 +4,7 @@ import (
 	"sharpnr-engine/app"
 	"sharpnr-engine/cookieManager"
 	dbtx "sharpnr-engine/core/dbTx"
+	orchestrator_controllers "sharpnr-engine/core/orchestrator/controllers"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
 
@@ -19,9 +20,15 @@ func RegisterOrchestratorRoutes(
 	sharpModules app.ModulesProvider,
 ) {
 
+	orchestService := sharpModules.SharpnrOrchestrator()
+	orchestController := orchestrator_controllers.NewOrchestratorController(orchestService)
+
 	org := webV1.Group("/orchestrator")
 	{
-		org.GET("/overview")
+		orgHospitality := org.Group("/hospitality")
+		{
+			orgHospitality.GET("/overview", orchestController.GetOrgOverview)
+		}
 	}
 
 }
