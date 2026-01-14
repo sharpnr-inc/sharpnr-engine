@@ -2,7 +2,6 @@ package org_signup_services
 
 import (
 	"context"
-	"sharpnr-engine/core/constants"
 	dbtx "sharpnr-engine/core/dbTx"
 	"sharpnr-engine/core/models"
 	org_signup_dtos "sharpnr-engine/core/org-signup/dtos"
@@ -40,13 +39,13 @@ func (c *orgSignUpService) StartOrgOnBoarding(
 		}
 
 		org := &models.Organization{
-			ID:               uuid.New(),
-			Name:             stagingOrg.Name,
-			SharpnrID:        newSharpID,
-			OrgOperationType: constants.OrgType(req.OrgSector),
-			Status:           "CREATED",
-			RootEmail:        stagingOrg.Email,
-			CreatedAt:        time.Now(),
+			ID:        uuid.New(),
+			Name:      stagingOrg.Name,
+			SharpnrID: newSharpID,
+			// OrgOperationType: constants.OrgType(req.OrgSector),
+			Status:    "CREATED",
+			RootEmail: stagingOrg.Email,
+			CreatedAt: time.Now(),
 		}
 
 		if err := c.mainOrgSignUpRepo.CreateOrganization(txCtx, org); err != nil {

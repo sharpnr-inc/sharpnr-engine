@@ -1,40 +1,34 @@
 package models
 
 import (
-	"sharpnr-engine/core/constants"
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
-
-type OrganizationSignUpStaging struct {
-	ID       uuid.UUID
-	Name     string
-	Email    string
-	Phone    string
-	Otp      string
-	Password string
-}
 
 /***********************************************************
  * This Table is Master Organization                       *
  * this table should be considered as Root or Orchestrator *
  ***********************************************************/
 type Organization struct {
-	ID        uuid.UUID `gorm:"not null;primaryKey"`
+	ID        uuid.UUID `gorm:"not null;primaryKey;index"`
 	Name      string    `gorm:"size:100;not null"`
 	SharpnrID string    `gorm:"not null;unique"`
 
-	OrgOperationType constants.OrgType `gorm:"type:varchar(20);not null"`
-	Status           string            // CREATED, ACTIVE, SUSPENDED
-	RootEmail        string
+	Status    string // CREATED, ACTIVE, SUSPENDED
+	RootEmail string
 
 	// Timestamps
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
+}
+
+type OrganizationOnBoardingStage struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+	Status         string // SEED, // DOMAIN_ADDED // MODULE_ADDED
 }
 
 type OrganizationOffice struct {
@@ -78,20 +72,6 @@ type OrganizationContact struct {
 	CreatedAt time.Time
 }
 
-type OrganizationSubscription struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	OrganizationID uuid.UUID `gorm:"index"`
-
-	PlanCode string
-	Status   string // ACTIVE, PAUSED, CANCELLED
-
-	RenewsAt time.Time
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
 type OrganizationVerification struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -107,15 +87,5 @@ type OrganizationVerification struct {
 	VerifiedBy *uuid.UUID // admin / system
 
 	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
-type OrganizationSetting struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	OrganizationID uuid.UUID `gorm:"type:uuid;uniqueIndex"`
-
-	Settings datatypes.JSON `gorm:"type:jsonb;default:'{}'"`
-
 	UpdatedAt time.Time
 }
