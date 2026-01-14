@@ -9,5 +9,4 @@ func RegisterRestaurantWorkFlow(
 	s *sere.SERE,
 	restaurantRepo restaurantrepo.RestaurantRepository,
 ) {
-	s.SubscribeWorkflow("ORG_ONBOARD_WORKFLOW", createDefaultRestaurant(restaurantRepo))
 }

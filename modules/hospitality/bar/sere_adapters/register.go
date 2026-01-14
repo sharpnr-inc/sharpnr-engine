@@ -9,5 +9,5 @@ func RegisterBarWorkFlow(
 	s *sere.SERE,
 	barRepo barrepo.BarRepository,
 ) {
-	s.SubscribeWorkflow("ORG_ONBOARD_WORKFLOW", defaultBarHandler(barRepo))
+	// Here Register the subscription of workflows
 }

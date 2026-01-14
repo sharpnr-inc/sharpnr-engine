@@ -5,14 +5,20 @@ import (
 	"sharpnr-engine/sere"
 )
 
-func RegisterHospitalityBarMenuWorkflow(s *sere.SERE, menuRepo menurepo.MenuRepositoryInterface) {
-	s.SubscribeWorkflow("ORG_ONBOARD_WORKFLOW", barDefaultMenuSetup(menuRepo))
+func RegisterHospitalityBarMenuWorkflow(
+	s *sere.SERE,
+	menuRepo menurepo.MenuRepositoryInterface,
+) {
 }
 
-func RegisterHospitalityRestaurantMenuWorkflow(s *sere.SERE, menuRepo menurepo.MenuRepositoryInterface) {
-	s.SubscribeWorkflow("ORG_ONBOARD_WORKFLOW", restaurantDefaultMenuSetup(menuRepo))
+func RegisterHospitalityRestaurantMenuWorkflow(
+	s *sere.SERE,
+	menuRepo menurepo.MenuRepositoryInterface,
+) {
 }
 
-func RegisterHospitalityHotelMenuWorkflow(s *sere.SERE, menuRepo menurepo.MenuRepositoryInterface) {
-	s.SubscribeWorkflow("ORG_ONBOARD_WORKFLOW", hotelDefaultMenuSetup(menuRepo))
+func RegisterHospitalityHotelMenuWorkflow(
+	s *sere.SERE,
+	menuRepo menurepo.MenuRepositoryInterface,
+) {
 }
