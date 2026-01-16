@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type HrEmployeeServiceInterface interface {
+type EmployeeServiceInterface interface {
 	// AddEmployeeInOrg creates a new employee for the given organization.
 	// Returns the created employee and an error, if any.
 	AddEmployeeInOrg(ctx context.Context, sharpnr_id string) error

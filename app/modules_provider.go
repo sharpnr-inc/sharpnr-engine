@@ -17,6 +17,6 @@ type ModulesProvider interface {
 	OrgSignUpService() org_signup_services.OrgSignUpServiceInterface
 	SharpAuthService() sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
 
-	HrService() hr_employee_services.HrEmployeeServiceInterface
+	HrService() hr_employee_services.EmployeeServiceInterface
 	AccountingService() accounting_service.AccountingServiceInterface
 }

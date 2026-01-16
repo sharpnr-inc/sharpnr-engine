@@ -9,7 +9,7 @@ import (
 )
 
 // CreateDefaultSuperAdmin implements HrEmployeeServiceInterface.
-func (h *hrEmployeeService) CreateDefaultSuperAdmin(
+func (h *employeeService) CreateDefaultSuperAdmin(
 	ctx context.Context,
 	orgId uuid.UUID,
 	rootEmail string,

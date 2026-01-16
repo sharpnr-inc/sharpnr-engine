@@ -9,7 +9,7 @@ import (
 
 // This is the function for creating
 func hrEmployeeOnboardHandler(
-	hrService hr_employee_services.HrEmployeeServiceInterface,
+	hrService hr_employee_services.EmployeeServiceInterface,
 ) sere.WorkflowHandler {
 
 	return func(wf *sere.Workflow) error {

@@ -27,7 +27,7 @@ import (
 func RegisterAllWorkFlow(
 	sere *sere.SERE,
 
-	hrEmployeeService hr_employee_services.HrEmployeeServiceInterface,
+	hrEmployeeService hr_employee_services.EmployeeServiceInterface,
 	sharpnrIdSvc sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface,
 	kitchenRepo kitchenrepo.KitchenRepositoryInterface,
 	hotelRepo hotelrepo.HotelRepositoryInterface,

@@ -1,9 +1,9 @@
-package hr_employee_controllers
+package employee_controllers
 
 import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *hrEmployeeController) AddEmployeeInOrg(ctx *gin.Context) {
+func (c *employeeController) AddEmployeeInOrg(ctx *gin.Context) {
 
 }

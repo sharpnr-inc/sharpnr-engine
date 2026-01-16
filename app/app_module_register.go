@@ -17,7 +17,7 @@ type AppModules struct {
 
 	hospitality *HospitalityDomain
 
-	hrService         hr_employee_services.HrEmployeeServiceInterface
+	hrService         hr_employee_services.EmployeeServiceInterface
 	accountingService accounting_service.AccountingServiceInterface
 }
 
@@ -39,7 +39,7 @@ func (m *AppModules) SharpAuthService() sharpnr_identity_auth_services.SharpnrId
 	return m.sharpAuthService
 }
 
-func (m *AppModules) HrService() hr_employee_services.HrEmployeeServiceInterface {
+func (m *AppModules) HrService() hr_employee_services.EmployeeServiceInterface {
 	return m.hrService
 }
 

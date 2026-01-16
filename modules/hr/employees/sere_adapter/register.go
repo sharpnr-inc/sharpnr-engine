@@ -5,6 +5,6 @@ import (
 	"sharpnr-engine/sere"
 )
 
-func RegisterHREmployeeWorkflows(s *sere.SERE, hrService hr_employee_services.HrEmployeeServiceInterface) {
+func RegisterHREmployeeWorkflows(s *sere.SERE, hrService hr_employee_services.EmployeeServiceInterface) {
 	s.SubscribeWorkflow("ORG_ONBOARD_WORKFLOW", hrEmployeeOnboardHandler(hrService))
 }
