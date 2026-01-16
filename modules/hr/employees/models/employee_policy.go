@@ -1,4 +1,4 @@
-package sharphr_models
+package employee_models
 
 import (
 	"time"

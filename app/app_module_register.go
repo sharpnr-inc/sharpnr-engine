@@ -2,6 +2,7 @@ package app
 
 import (
 	orchestrator_service "sharpnr-engine/core/orchestrator/service"
+	org_property_services "sharpnr-engine/core/org_property/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
 	"sharpnr-engine/modules/accounting/accounting_service"
@@ -11,6 +12,7 @@ import (
 type AppModules struct {
 	orgSignupService    org_signup_services.OrgSignUpServiceInterface
 	sharpAuthService    sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
+	orgPropertyService  org_property_services.OrganizationPropertyServicesInterfaces
 	orchestratorService orchestrator_service.OrchestratorServiceInterface
 
 	hospitality *HospitalityDomain
@@ -43,4 +45,8 @@ func (m *AppModules) HrService() hr_employee_services.HrEmployeeServiceInterface
 
 func (m *AppModules) OrgSignUpService() org_signup_services.OrgSignUpServiceInterface {
 	return m.orgSignupService
+}
+
+func (m *AppModules) OrgPropertyService() org_property_services.OrganizationPropertyServicesInterfaces {
+	return m.orgPropertyService
 }

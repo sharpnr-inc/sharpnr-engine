@@ -2,7 +2,7 @@ package hr_employee_repo
 
 import (
 	"context"
-	sharphr_models "sharpnr-engine/modules/hr/hrModels"
+	employee_models "sharpnr-engine/modules/hr/employees/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -12,8 +12,8 @@ import (
 // This file implements all the methods of EmployeeVerificationRepositoryInterface
 /*
 type EmployeeVerificationRepositoryInterface interface {
-	Create(ctx context.Context, v *sharphr_models.EmployeeVerification) error
-	GetByTokenHash(ctx context.Context, hash string) (*sharphr_models.EmployeeVerification, error)
+	Create(ctx context.Context, v *employee_models.EmployeeVerification) error
+	GetByTokenHash(ctx context.Context, hash string) (*employee_models.EmployeeVerification, error)
 	MarkVerified(ctx context.Context, id uuid.UUID, at time.Time) error
 }
 */
@@ -30,7 +30,7 @@ func NewEmployeeVerificationRepo(db *gorm.DB) *employeeVerificationRepo {
 
 func (r *employeeVerificationRepo) Create(
 	ctx context.Context,
-	v *sharphr_models.EmployeeVerification,
+	v *employee_models.EmployeeVerification,
 ) error {
 
 	if v.ID == uuid.Nil {
@@ -43,9 +43,9 @@ func (r *employeeVerificationRepo) Create(
 func (r *employeeVerificationRepo) GetByTokenHash(
 	ctx context.Context,
 	hash string,
-) (*sharphr_models.EmployeeVerification, error) {
+) (*employee_models.EmployeeVerification, error) {
 
-	var verification sharphr_models.EmployeeVerification
+	var verification employee_models.EmployeeVerification
 
 	err := r.db.
 		WithContext(ctx).
@@ -68,7 +68,7 @@ func (r *employeeVerificationRepo) MarkVerified(
 
 	return r.db.
 		WithContext(ctx).
-		Model(&sharphr_models.EmployeeVerification{}).
+		Model(&employee_models.EmployeeVerification{}).
 		Where("id = ?", id).
 		Updates(map[string]interface{}{
 			"verified_at": at,

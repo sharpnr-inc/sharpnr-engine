@@ -2,7 +2,7 @@ package hr_employee_repo
 
 import (
 	"context"
-	sharphr_models "sharpnr-engine/modules/hr/hrModels"
+	employee_models "sharpnr-engine/modules/hr/employees/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -21,7 +21,7 @@ func NewEmployeePolicyRuleRepository(
 
 func (r *employeePolicyRuleRepo) Create(
 	ctx context.Context,
-	rule *sharphr_models.EmployeePolicyRule,
+	rule *employee_models.EmployeePolicyRule,
 ) error {
 
 	if rule.ID == uuid.Nil {
@@ -34,9 +34,9 @@ func (r *employeePolicyRuleRepo) Create(
 func (r *employeePolicyRuleRepo) ListByPolicyID(
 	ctx context.Context,
 	policyID uuid.UUID,
-) ([]*sharphr_models.EmployeePolicyRule, error) {
+) ([]*employee_models.EmployeePolicyRule, error) {
 
-	var rules []*sharphr_models.EmployeePolicyRule
+	var rules []*employee_models.EmployeePolicyRule
 
 	if err := r.db.
 		WithContext(ctx).
@@ -57,6 +57,6 @@ func (r *employeePolicyRuleRepo) DeleteByPolicyID(
 	return r.db.
 		WithContext(ctx).
 		Where("employee_policy_id = ?", policyID).
-		Delete(&sharphr_models.EmployeePolicyRule{}).
+		Delete(&employee_models.EmployeePolicyRule{}).
 		Error
 }

@@ -2,7 +2,7 @@ package hr_employee_services
 
 import (
 	"context"
-	sharphr_models "sharpnr-engine/modules/hr/hrModels"
+	employee_models "sharpnr-engine/modules/hr/employees/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,7 +16,7 @@ func (h *hrEmployeeService) CreateDefaultSuperAdmin(
 	hashPass string,
 ) (uuid.UUID, error) {
 
-	employee := &sharphr_models.Employee{
+	employee := &employee_models.Employee{
 		ID:             uuid.New(),
 		Email:          rootEmail,
 		OrganizationID: orgId,
@@ -29,7 +29,7 @@ func (h *hrEmployeeService) CreateDefaultSuperAdmin(
 	}
 
 	// 2️⃣ Create Auth (password provisioning can be deferred)
-	auth := &sharphr_models.EmployeeAuth{
+	auth := &employee_models.EmployeeAuth{
 		ID:                 uuid.New(),
 		EmployeeID:         employee.ID,
 		Email:              rootEmail,
@@ -46,7 +46,7 @@ func (h *hrEmployeeService) CreateDefaultSuperAdmin(
 		return uuid.Nil, err
 	}
 
-	onboarding := &sharphr_models.EmployeeOnboarding{
+	onboarding := &employee_models.EmployeeOnboarding{
 		ID:         uuid.New(),
 		EmployeeID: employee.ID,
 		Status:     "COMPLETED",
@@ -58,7 +58,7 @@ func (h *hrEmployeeService) CreateDefaultSuperAdmin(
 	}
 
 	// 4️⃣ Create OWNER policy
-	policy := &sharphr_models.EmployeePolicy{
+	policy := &employee_models.EmployeePolicy{
 		ID:             uuid.New(),
 		OrganizationID: orgId,
 		Code:           "OWNER",

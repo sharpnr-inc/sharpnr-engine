@@ -24,6 +24,7 @@ func BootstrapModules(
 	identityService := bootstrapIdentity(db, hr)
 	hospitality := bootstrapHospitality(db, sereEngine)
 	accountingModule := bootstrapAccounting(db)
+	orgPropertyService := bootstrapOrgProperty(db)
 
 	sereEngine.UseTxExecutor(func(ctx context.Context, fn func(ctx context.Context) error) error {
 		return txManager.WithTx(ctx, func(tx *gorm.DB) error {
@@ -57,11 +58,12 @@ func BootstrapModules(
 	RegisterSereEventHandler(sereEngine, accountingModule.Repo)
 
 	return &AppModules{
-		orgSignupService:  orgSignupService,
-		hrService:         hr.Service,
-		accountingService: accountingModule.Service,
-		sharpAuthService:  identityService,
-		hospitality:       hospitality,
+		orgSignupService:   orgSignupService,
+		orgPropertyService: orgPropertyService,
+		hrService:          hr.Service,
+		accountingService:  accountingModule.Service,
+		sharpAuthService:   identityService,
+		hospitality:        hospitality,
 	}
 
 }

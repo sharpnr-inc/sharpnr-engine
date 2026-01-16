@@ -2,9 +2,8 @@ package hr_employee_services
 
 import (
 	"context"
+	employee_models "sharpnr-engine/modules/hr/employees/models"
 	hr_employee_repo "sharpnr-engine/modules/hr/employees/repo"
-	sharphr_models "sharpnr-engine/modules/hr/hrModels"
-	sharphrdtos "sharpnr-engine/modules/hr/hr_dtos"
 
 	"github.com/google/uuid"
 )
@@ -36,12 +35,12 @@ type hrEmployeeService struct {
 }
 
 // AddEmployeeInOrg implements HrEmployeeServiceInterface.
-func (h *hrEmployeeService) AddEmployeeInOrg(ctx context.Context, sharpnr_id string, req sharphrdtos.CreateEmployeeInOrganization_RequestDTO) (*sharphrdtos.CreateEmployeeInOrganizationResponseDTO, error) {
+func (h *hrEmployeeService) AddEmployeeInOrg(ctx context.Context, sharpnr_id string) error {
 	panic("unimplemented")
 }
 
 // CreateNewEmployee implements HrEmployeeServiceInterface.
-func (h *hrEmployeeService) CreateNewEmployee(ctx context.Context, orgID uuid.UUID, req sharphrdtos.CreateEmployeeInOrganization_RequestDTO) error {
+func (h *hrEmployeeService) CreateNewEmployee(ctx context.Context, orgID uuid.UUID) error {
 	panic("unimplemented")
 }
 
@@ -51,7 +50,7 @@ func (h *hrEmployeeService) RemoveEmployeeInOrg(ctx context.Context, orgID uuid.
 }
 
 // UpdateEmployeeDetails implements HrEmployeeServiceInterface.
-func (h *hrEmployeeService) UpdateEmployeeDetails(ctx context.Context, orgID uuid.UUID, emp *sharphr_models.Employee) (*sharphr_models.Employee, error) {
+func (h *hrEmployeeService) UpdateEmployeeDetails(ctx context.Context, orgID uuid.UUID, emp *employee_models.Employee) (*employee_models.Employee, error) {
 	panic("unimplemented")
 }
 

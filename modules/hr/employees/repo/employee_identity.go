@@ -2,7 +2,7 @@ package hr_employee_repo
 
 import (
 	"context"
-	sharphr_models "sharpnr-engine/modules/hr/hrModels"
+	employee_models "sharpnr-engine/modules/hr/employees/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -22,7 +22,7 @@ func NewEmployeeIdentityRepository(db *gorm.DB) *hrEmployeeRepo {
 
 func (r *hrEmployeeRepo) Create(
 	ctx context.Context,
-	emp *sharphr_models.Employee,
+	emp *employee_models.Employee,
 ) error {
 
 	if emp.ID == uuid.Nil {
@@ -35,9 +35,9 @@ func (r *hrEmployeeRepo) Create(
 func (r *hrEmployeeRepo) GetByID(
 	ctx context.Context,
 	empID uuid.UUID,
-) (*sharphr_models.Employee, error) {
+) (*employee_models.Employee, error) {
 
-	var emp sharphr_models.Employee
+	var emp employee_models.Employee
 
 	err := r.db.
 		WithContext(ctx).
@@ -55,9 +55,9 @@ func (r *hrEmployeeRepo) GetByID(
 func (r *hrEmployeeRepo) GetByEmail(
 	ctx context.Context,
 	email string,
-) (*sharphr_models.Employee, error) {
+) (*employee_models.Employee, error) {
 
-	var emp sharphr_models.Employee
+	var emp employee_models.Employee
 
 	err := r.db.
 		WithContext(ctx).
@@ -75,9 +75,9 @@ func (r *hrEmployeeRepo) GetByEmail(
 func (r *hrEmployeeRepo) ListByOrg(
 	ctx context.Context,
 	orgID uuid.UUID,
-) ([]*sharphr_models.Employee, error) {
+) ([]*employee_models.Employee, error) {
 
-	var employees []*sharphr_models.Employee
+	var employees []*employee_models.Employee
 
 	err := r.db.
 		WithContext(ctx).

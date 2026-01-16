@@ -2,7 +2,7 @@ package hr_employee_repo
 
 import (
 	"context"
-	sharphr_models "sharpnr-engine/modules/hr/hrModels"
+	employee_models "sharpnr-engine/modules/hr/employees/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -12,10 +12,10 @@ import (
 
 /*
 type EmployeePolicyRepositoryInterface interface {
-	Create(ctx context.Context, policy *sharphr_models.EmployeePolicy) error
-	GetByID(ctx context.Context, id uuid.UUID) (*sharphr_models.EmployeePolicy, error)
-	GetByCode(ctx context.Context, orgID uuid.UUID, code string) (*sharphr_models.EmployeePolicy, error)
-	ListByOrganization(ctx context.Context, orgID uuid.UUID) ([]*sharphr_models.EmployeePolicy, error)
+	Create(ctx context.Context, policy *employee_models.EmployeePolicy) error
+	GetByID(ctx context.Context, id uuid.UUID) (*employee_models.EmployeePolicy, error)
+	GetByCode(ctx context.Context, orgID uuid.UUID, code string) (*employee_models.EmployeePolicy, error)
+	ListByOrganization(ctx context.Context, orgID uuid.UUID) ([]*employee_models.EmployeePolicy, error)
 }
 */
 // Implements the Methods for all the from EmployeePolicyRepositoryInterface
@@ -31,7 +31,7 @@ func NewEmployeePolicyRepo(db *gorm.DB) *empPolicyRepo {
 
 func (r *empPolicyRepo) Create(
 	ctx context.Context,
-	policy *sharphr_models.EmployeePolicy,
+	policy *employee_models.EmployeePolicy,
 ) error {
 
 	if policy.ID == uuid.Nil {
@@ -44,9 +44,9 @@ func (r *empPolicyRepo) Create(
 func (r *empPolicyRepo) GetByID(
 	ctx context.Context,
 	id uuid.UUID,
-) (*sharphr_models.EmployeePolicy, error) {
+) (*employee_models.EmployeePolicy, error) {
 
-	var policy sharphr_models.EmployeePolicy
+	var policy employee_models.EmployeePolicy
 
 	if err := r.db.
 		WithContext(ctx).
@@ -63,9 +63,9 @@ func (r *empPolicyRepo) GetByCode(
 	ctx context.Context,
 	orgID uuid.UUID,
 	code string,
-) (*sharphr_models.EmployeePolicy, error) {
+) (*employee_models.EmployeePolicy, error) {
 
-	var policy sharphr_models.EmployeePolicy
+	var policy employee_models.EmployeePolicy
 
 	if err := r.db.
 		WithContext(ctx).
@@ -81,9 +81,9 @@ func (r *empPolicyRepo) GetByCode(
 func (r *empPolicyRepo) ListByOrganization(
 	ctx context.Context,
 	orgID uuid.UUID,
-) ([]*sharphr_models.EmployeePolicy, error) {
+) ([]*employee_models.EmployeePolicy, error) {
 
-	var policies []*sharphr_models.EmployeePolicy
+	var policies []*employee_models.EmployeePolicy
 
 	if err := r.db.
 		WithContext(ctx).

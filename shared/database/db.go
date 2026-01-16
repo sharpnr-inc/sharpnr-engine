@@ -12,7 +12,7 @@ import (
 	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
 	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
-	sharphr_models "sharpnr-engine/modules/hr/hrModels"
+	employee_models "sharpnr-engine/modules/hr/employees/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -59,26 +59,26 @@ func MigrateDB(db *gorm.DB) error {
 		// Employee Models
 		// -------------------------------
 
-		&sharphr_models.Employee{},
-		&sharphr_models.EmployeeOnboarding{},
-		&sharphr_models.EmployeeVerification{},
-		&sharphr_models.EmployeeAuth{},
-		&sharphr_models.EmployeePrivilegePolicy{},
-		&sharphr_models.EmployeeSession{},
-		&sharphr_models.EmployeeProfile{},
-		&sharphr_models.EmployeeBankAccount{},
-		&sharphr_models.EmployeeDocument{},
-		&sharphr_models.EmployeeReporting{},
-		&sharphr_models.EmployeeEmployment{},
-		&sharphr_models.EmployeeCompensation{},
-		&sharphr_models.EmployeeSalaryComponent{},
-		&sharphr_models.EmployeeLeaveType{},
-		&sharphr_models.EmployeeLeaveBalance{},
-		&sharphr_models.EmployeeLeaveRequest{},
+		&employee_models.Employee{},
+		&employee_models.EmployeeOnboarding{},
+		&employee_models.EmployeeVerification{},
+		&employee_models.EmployeeAuth{},
+		&employee_models.EmployeePrivilegePolicy{},
+		&employee_models.EmployeeSession{},
+		&employee_models.EmployeeProfile{},
+		&employee_models.EmployeeBankAccount{},
+		&employee_models.EmployeeDocument{},
+		&employee_models.EmployeeReporting{},
+		&employee_models.EmployeeEmployment{},
+		&employee_models.EmployeeCompensation{},
+		&employee_models.EmployeeSalaryComponent{},
+		&employee_models.EmployeeLeaveType{},
+		&employee_models.EmployeeLeaveBalance{},
+		&employee_models.EmployeeLeaveRequest{},
 
-		&sharphr_models.EmployeePolicy{},
-		&sharphr_models.EmployeePolicyRule{},
-		&sharphr_models.EmployeePrivilegePolicy{},
+		&employee_models.EmployeePolicy{},
+		&employee_models.EmployeePolicyRule{},
+		&employee_models.EmployeePrivilegePolicy{},
 
 		// -------------------------------
 		// 🏨 HOSPITALITY MODELS

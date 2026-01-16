@@ -92,3 +92,15 @@ type HotelService interface {
 	// ------------------
 	AddPaymentForBooking(ctx context.Context, orgID uuid.UUID, req hoteldtos.AddPaymentsForBookingRequest_dto) error
 }
+
+type HotelInternalServices interface {
+	CreateSysHotel(
+		ctx context.Context,
+		orgId uuid.UUID,
+		propertyId *uuid.UUID,
+	) error
+
+	CreateFloors(
+		ctx context.Context,
+	) error
+}

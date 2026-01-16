@@ -2,8 +2,7 @@ package hr_employee_services
 
 import (
 	"context"
-	sharphr_models "sharpnr-engine/modules/hr/hrModels"
-	sharphrdtos "sharpnr-engine/modules/hr/hr_dtos"
+	employee_models "sharpnr-engine/modules/hr/employees/models"
 
 	"github.com/google/uuid"
 )
@@ -11,7 +10,7 @@ import (
 type HrEmployeeServiceInterface interface {
 	// AddEmployeeInOrg creates a new employee for the given organization.
 	// Returns the created employee and an error, if any.
-	AddEmployeeInOrg(ctx context.Context, sharpnr_id string, req sharphrdtos.CreateEmployeeInOrganization_RequestDTO) (*sharphrdtos.CreateEmployeeInOrganizationResponseDTO, error)
+	AddEmployeeInOrg(ctx context.Context, sharpnr_id string) error
 
 	// RemoveEmployeeInOrg removes an employee from the organization by employee ID.
 	// Ensures tenant isolation by requiring the organization ID.
@@ -19,12 +18,11 @@ type HrEmployeeServiceInterface interface {
 
 	// UpdateEmployeeDetails updates an existing employee's details within the organization.
 	// Returns the updated employee object and an error, if any.
-	UpdateEmployeeDetails(ctx context.Context, orgID uuid.UUID, emp *sharphr_models.Employee) (*sharphr_models.Employee, error)
+	UpdateEmployeeDetails(ctx context.Context, orgID uuid.UUID, emp *employee_models.Employee) (*employee_models.Employee, error)
 
 	CreateNewEmployee(
 		ctx context.Context,
 		orgID uuid.UUID,
-		req sharphrdtos.CreateEmployeeInOrganization_RequestDTO,
 	) error
 
 	CreateDefaultSuperAdmin(
