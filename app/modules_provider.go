@@ -2,8 +2,8 @@ package app
 
 import (
 	orchestrator_service "sharpnr-engine/core/orchestrator/service"
-	org_signup_services "sharpnr-engine/core/org-signup/services"
-	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr-identity/services"
+	org_signup_services "sharpnr-engine/core/org_signup/services"
+	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
 	"sharpnr-engine/modules/accounting/accounting_service"
 	hr_employee_services "sharpnr-engine/modules/hr/employees/services"
 )

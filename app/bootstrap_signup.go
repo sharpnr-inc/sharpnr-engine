@@ -2,10 +2,10 @@ package app
 
 import (
 	dbtx "sharpnr-engine/core/dbTx"
-	org_signup_repositories "sharpnr-engine/core/org-signup/repositories"
-	org_signup_services "sharpnr-engine/core/org-signup/services"
+	org_signup_repositories "sharpnr-engine/core/org_signup/repositories"
+	org_signup_services "sharpnr-engine/core/org_signup/services"
 	"sharpnr-engine/sere"
-	sharp_mailer_engine "sharpnr-engine/sharp-mailer-engine"
+	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"

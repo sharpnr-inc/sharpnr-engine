@@ -4,7 +4,7 @@ import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
 	"sharpnr-engine/core/models"
-	org_signup_dtos "sharpnr-engine/core/org-signup/dtos"
+	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
 	"sharpnr-engine/shared/utils"
 	"time"
 

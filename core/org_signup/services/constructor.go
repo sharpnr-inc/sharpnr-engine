@@ -2,9 +2,9 @@ package org_signup_services
 
 import (
 	dbtx "sharpnr-engine/core/dbTx"
-	org_signup_repositories "sharpnr-engine/core/org-signup/repositories"
+	org_signup_repositories "sharpnr-engine/core/org_signup/repositories"
 	"sharpnr-engine/sere"
-	sharp_mailer_engine "sharpnr-engine/sharp-mailer-engine"
+	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 )
 
 type orgSignUpService struct {

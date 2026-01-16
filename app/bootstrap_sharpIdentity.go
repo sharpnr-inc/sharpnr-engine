@@ -1,8 +1,8 @@
 package app
 
 import (
-	sharpnr_identity_auth_repositories "sharpnr-engine/core/sharpnr-identity/repositories"
-	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr-identity/services"
+	sharpnr_identity_auth_repositories "sharpnr-engine/core/sharpnr_identity/repositories"
+	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
 
 	"gorm.io/gorm"
 )

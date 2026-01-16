@@ -12,7 +12,7 @@ import (
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
 	"sharpnr-engine/shared/database"
-	sharp_mailer_engine "sharpnr-engine/sharp-mailer-engine"
+	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
 	_ "sharpnr-engine/docs"
 

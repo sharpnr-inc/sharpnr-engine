@@ -2,7 +2,7 @@ package org_signup_controllers
 
 import (
 	"net/http"
-	org_signup_dtos "sharpnr-engine/core/org-signup/dtos"
+	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
 	webMiddleware "sharpnr-engine/middlewares/web"
 
 	"github.com/gin-gonic/gin"

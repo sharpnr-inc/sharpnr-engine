@@ -3,7 +3,7 @@ package sharpnr_identity_auth_services
 import (
 	"context"
 	"errors"
-	sharpnr_identity_auth_dtos "sharpnr-engine/core/sharpnr-identity/dtos"
+	sharpnr_identity_auth_dtos "sharpnr-engine/core/sharpnr_identity/dtos"
 	"sharpnr-engine/shared/utils"
 )
 

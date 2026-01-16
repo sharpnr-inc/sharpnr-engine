@@ -3,7 +3,7 @@ package org_signup
 import (
 	"sharpnr-engine/app"
 	"sharpnr-engine/cookieManager"
-	org_signup_controllers "sharpnr-engine/core/org-signup/controllers"
+	org_signup_controllers "sharpnr-engine/core/org_signup/controllers"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 

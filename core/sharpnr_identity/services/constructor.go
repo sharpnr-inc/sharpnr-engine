@@ -2,7 +2,7 @@ package sharpnr_identity_auth_services
 
 import (
 	"context"
-	sharpnr_identity_auth_repositories "sharpnr-engine/core/sharpnr-identity/repositories"
+	sharpnr_identity_auth_repositories "sharpnr-engine/core/sharpnr_identity/repositories"
 	hr_employee_repo "sharpnr-engine/modules/hr/employees/repo"
 
 	"github.com/google/uuid"

@@ -1,7 +1,7 @@
 package app
 
 import (
-	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr-identity/services"
+	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
 	"sharpnr-engine/modules/accounting/acc_sere_wf_adapters"
 	"sharpnr-engine/modules/accounting/accounting_repo"
 	"sharpnr-engine/modules/accounting/accounting_service"

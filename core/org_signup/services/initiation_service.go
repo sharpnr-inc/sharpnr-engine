@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"sharpnr-engine/core/models"
-	org_signup_dtos "sharpnr-engine/core/org-signup/dtos"
+	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
 	"sharpnr-engine/shared/utils"
-	sharp_mailer_engine "sharpnr-engine/sharp-mailer-engine"
+	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
 	"github.com/google/uuid"
 )

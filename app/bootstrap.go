@@ -5,7 +5,7 @@ import (
 
 	dbtx "sharpnr-engine/core/dbTx"
 	"sharpnr-engine/sere"
-	sharp_mailer_engine "sharpnr-engine/sharp-mailer-engine"
+	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"

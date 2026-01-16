@@ -2,7 +2,7 @@ package org_signup_controllers
 
 import (
 	"sharpnr-engine/cookieManager"
-	org_signup_services "sharpnr-engine/core/org-signup/services"
+	org_signup_services "sharpnr-engine/core/org_signup/services"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"testing"
 

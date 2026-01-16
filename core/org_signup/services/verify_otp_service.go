@@ -3,7 +3,7 @@ package org_signup_services
 import (
 	"context"
 	"errors"
-	org_signup_dtos "sharpnr-engine/core/org-signup/dtos"
+	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
 )
 
 func (s *orgSignUpService) VerifyOtp(

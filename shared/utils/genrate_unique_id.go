@@ -6,7 +6,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"math/big"
-	org_signup_repositories "sharpnr-engine/core/org-signup/repositories"
+	org_signup_repositories "sharpnr-engine/core/org_signup/repositories"
 	"strings"
 )
 

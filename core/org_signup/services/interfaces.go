@@ -2,7 +2,7 @@ package org_signup_services
 
 import (
 	"context"
-	org_signup_dtos "sharpnr-engine/core/org-signup/dtos"
+	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
 )
 
 type OrgSignUpServiceInterface interface {
