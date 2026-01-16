@@ -28,6 +28,11 @@ func RegisterOrchestratorRoutes(
 		orgHospitality := org.Group("/hospitality")
 		{
 			orgHospitality.GET("/overview", orchestController.GetOrgOverview)
+
+			hotelConfigs := orgHospitality.Group("/hotel")
+			{
+				hotelConfigs.GET("/overview")
+			}
 		}
 	}
 

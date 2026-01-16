@@ -14,3 +14,11 @@ const (
 	ScopeOrganization SettingScope = "ORGANIZATION"
 	ScopeUnit         SettingScope = "UNIT" // hotel / hospital / store
 )
+
+type HospitalityDomainModuleType string
+
+const (
+	HospitalityDomainBar        HospitalityDomainModuleType = "BAR"
+	HospitalityDomainRestaurant HospitalityDomainModuleType = "RESTAURANT"
+	HospitalityDomainHotel      HospitalityDomainModuleType = "Hotel"
+)

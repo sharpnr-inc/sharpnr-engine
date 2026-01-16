@@ -13,3 +13,11 @@ type OrganizationDomain struct {
 	Status         string // ENABLED, DISABLED
 	CreatedAt      time.Time
 }
+
+type OrganizationDomainModules struct {
+	ID                   uuid.UUID
+	OrganizationID       uuid.UUID
+	OrganizationDomainID uuid.UUID
+	Module               HospitalityDomainModuleType // Bar, Restaurant, Hotel
+	Status               string
+}

@@ -70,15 +70,5 @@ func (h *hrEmployeeService) CreateDefaultSuperAdmin(
 		return uuid.Nil, err
 	}
 
-	// // 6️⃣ Assign policy to employee
-	// assignment := &sharphr_models.EmployeePrivilegePolicy{
-	// 	ID:               uuid.New(),
-	// 	EmployeeID:       employee.ID,
-	// 	EmployeePolicyID: policy.ID,
-	// 	OrganizationID:   orgId,
-	// 	Domain:           "HOSPITALITY",
-	// 	AssignedAt:       time.Now(),
-	// }
-
 	return employee.ID, nil
 }
