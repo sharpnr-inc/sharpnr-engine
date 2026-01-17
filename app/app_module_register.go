@@ -6,7 +6,7 @@ import (
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
 	"sharpnr-engine/modules/accounting/accounting_service"
-	hr_employee_services "sharpnr-engine/modules/hr/employees/services"
+	employee_services "sharpnr-engine/modules/hr/employees/services"
 )
 
 type AppModules struct {
@@ -17,7 +17,7 @@ type AppModules struct {
 
 	hospitality *HospitalityDomain
 
-	hrService         hr_employee_services.EmployeeServiceInterface
+	hrService         employee_services.EmployeeServiceInterface
 	accountingService accounting_service.AccountingServiceInterface
 }
 
@@ -39,7 +39,7 @@ func (m *AppModules) SharpAuthService() sharpnr_identity_auth_services.SharpnrId
 	return m.sharpAuthService
 }
 
-func (m *AppModules) HrService() hr_employee_services.EmployeeServiceInterface {
+func (m *AppModules) HrService() employee_services.EmployeeServiceInterface {
 	return m.hrService
 }
 

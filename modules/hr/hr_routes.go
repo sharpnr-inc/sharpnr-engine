@@ -10,8 +10,8 @@ import (
 
 func RegisterHRRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) {
 
-	hrEmployeeService := modules.HrService()
-	newHrEmpController := hr_employee_controllers.NewHREmployeeController(hrEmployeeService)
+	employeeService := modules.HrService()
+	newHrEmpController := hr_employee_controllers.NewEmployeeController(employeeService)
 
 	hr := v1.Group("/sharp-hr")
 

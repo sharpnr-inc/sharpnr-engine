@@ -2,13 +2,13 @@ package app
 
 import (
 	employee_repo "sharpnr-engine/modules/hr/employees/repo"
-	hr_employee_services "sharpnr-engine/modules/hr/employees/services"
+	employee_services "sharpnr-engine/modules/hr/employees/services"
 
 	"gorm.io/gorm"
 )
 
 type hrBootstrap struct {
-	Service hr_employee_services.EmployeeServiceInterface
+	Service employee_services.EmployeeServiceInterface
 
 	EmpIdentityRepo employee_repo.EmployeeIdentityRepositoryInterface
 	EmpAuthRepo     employee_repo.EmployeeAuthRepositoryInterface
@@ -26,7 +26,7 @@ func bootstrapHR(db *gorm.DB) *hrBootstrap {
 	policyRuleRepo := employee_repo.NewEmployeePolicyRuleRepository(db)
 	privilegePolicyRepo := employee_repo.NewEmployeePrivilegePolicyRepository(db)
 
-	service := hr_employee_services.NewHrEmployeeService(
+	service := employee_services.NewHrEmployeeService(
 		empIdentityRepo,
 		empAuthRepo,
 		empOnboardingRepo,

@@ -20,14 +20,14 @@ import (
 	"sharpnr-engine/modules/hospitality/restaurant/restaurantservices"
 	restaurant_sere_adapters "sharpnr-engine/modules/hospitality/restaurant/sere_adapters"
 	employee_sere_adapter "sharpnr-engine/modules/hr/employees/sere_adapter"
-	hr_employee_services "sharpnr-engine/modules/hr/employees/services"
+	employee_services "sharpnr-engine/modules/hr/employees/services"
 	"sharpnr-engine/sere"
 )
 
 func RegisterAllWorkFlow(
 	sere *sere.SERE,
 
-	hrEmployeeService hr_employee_services.EmployeeServiceInterface,
+	hrEmployeeService employee_services.EmployeeServiceInterface,
 	sharpnrIdSvc sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface,
 	kitchenRepo kitchenrepo.KitchenRepositoryInterface,
 	hotelRepo hotelrepo.HotelRepositoryInterface,

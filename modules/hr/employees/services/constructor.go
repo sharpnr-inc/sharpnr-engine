@@ -1,4 +1,4 @@
-package hr_employee_services
+package employee_services
 
 import (
 	"context"
