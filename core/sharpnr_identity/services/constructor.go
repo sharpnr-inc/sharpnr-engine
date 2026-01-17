@@ -6,7 +6,8 @@ import (
 	"github.com/google/uuid"
 )
 
-type sharpnrIdentityAuthService struct{}
+type sharpnrIdentityAuthService struct {
+}
 
 // GetProfile implements SharpnrIdentityAuthServiceInterface.
 func (s *sharpnrIdentityAuthService) GetProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) error {

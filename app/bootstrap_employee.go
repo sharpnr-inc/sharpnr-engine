@@ -14,7 +14,7 @@ type hrBootstrap struct {
 	EmpAuthRepo     employee_repo.EmployeeAuthRepositoryInterface
 }
 
-func bootstrapHR(db *gorm.DB) *hrBootstrap {
+func bootstrapEmployee(db *gorm.DB) *hrBootstrap {
 	empIdentityRepo := employee_repo.NewEmployeeIdentityRepository(db)
 	empAuthRepo := employee_repo.NewEmployeeAuthRepository(db)
 	empOnboardingRepo := employee_repo.NewEmployeeOnboardingRepository(db)

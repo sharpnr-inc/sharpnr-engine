@@ -11,7 +11,7 @@ func UnifiedCORSMiddleware() gin.HandlerFunc {
 	webCORS := cors.New(cors.Config{
 		AllowOrigins: []string{
 			"http://localhost:5173",
-			"http://192.168.1.33:5173",
+			"http://192.168.1.35:5173",
 		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "X-CSRF-TOKEN"},

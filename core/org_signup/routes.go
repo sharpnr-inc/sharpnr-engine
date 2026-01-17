@@ -16,10 +16,9 @@ func OrgSignUpRoute(
 	jwtmgr jwt_manager.Manager,
 	modules app.ModulesProvider,
 ) {
-	orgSignUpsvc := modules.OrgSignUpService()
+	// orgSignUpsvc := modules.OrgSignUpService()
 
 	controller := org_signup_controllers.NewOrgSignController(
-		orgSignUpsvc,
 		cookies,
 		jwtmgr,
 	)

@@ -2,8 +2,6 @@ package employee_models
 
 import (
 	"sharpnr-engine/core/constants"
-	"sharpnr-engine/core/organization/models"
-	hr_emp_constants "sharpnr-engine/modules/hr/employees/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -11,15 +9,15 @@ import (
 )
 
 type Employee struct {
-	ID          uuid.UUID `gorm:"type:uuid;primaryKey"`
-	FirstName   string    `gorm:"size:50;not null"`
-	NickName    string
-	LastName    string `gorm:"size:50"`
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
+
+	FirstName string `gorm:"size:50;not null"`
+	LastName  string `gorm:"size:50"`
+	NickName  string
+
 	Email       string `gorm:"not null"`
 	PhoneNumber string `gorm:"size:20"`
-
-	OrganizationID uuid.UUID           `gorm:"type:uuid;not null;index"`
-	Organization   models.Organization `gorm:"foreignKey:OrganizationID"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -29,20 +27,6 @@ type Employee struct {
 
 	// Need to Add constants
 	Status string
-}
-
-type EmployeeOnboarding struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	EmployeeID uuid.UUID `gorm:"type:uuid;uniqueIndex"`
-
-	Status hr_emp_constants.EmployeeOnboardingStatus `gorm:"type:varchar(50);not null"`
-
-	LastUpdatedBy *uuid.UUID
-	Notes         *string
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
 }
 
 type EmployeeVerification struct {
@@ -59,26 +43,6 @@ type EmployeeVerification struct {
 	VerifiedAt *time.Time
 
 	CreatedAt time.Time
-}
-
-type EmployeeAuth struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	EmployeeID uuid.UUID `gorm:"uniqueIndex"`
-
-	Username string `gorm:"uniqueIndex"`
-	Email    string `gorm:"uniqueIndex"`
-
-	PasswordHash string
-
-	IsActive      bool
-	IsProvisioned bool
-
-	CanAccessMobile    bool
-	CanAccessDashboard bool
-	CanAccessPOS       bool
-
-	LastLoginAt *time.Time
 }
 
 type EmployeeProfile struct {

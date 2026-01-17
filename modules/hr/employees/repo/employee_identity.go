@@ -10,17 +10,17 @@ import (
 
 // This file Implements all the Methods of EmployeeIdentityRepositoryInterface
 
-type hrEmployeeRepo struct {
+type employeeRepo struct {
 	db *gorm.DB
 }
 
-func NewEmployeeIdentityRepository(db *gorm.DB) *hrEmployeeRepo {
-	return &hrEmployeeRepo{
+func NewEmployeeIdentityRepository(db *gorm.DB) *employeeRepo {
+	return &employeeRepo{
 		db: db,
 	}
 }
 
-func (r *hrEmployeeRepo) Create(
+func (r *employeeRepo) Create(
 	ctx context.Context,
 	emp *employee_models.Employee,
 ) error {
@@ -32,7 +32,7 @@ func (r *hrEmployeeRepo) Create(
 	return r.db.WithContext(ctx).Create(emp).Error
 }
 
-func (r *hrEmployeeRepo) GetByID(
+func (r *employeeRepo) GetByID(
 	ctx context.Context,
 	empID uuid.UUID,
 ) (*employee_models.Employee, error) {
@@ -52,7 +52,7 @@ func (r *hrEmployeeRepo) GetByID(
 	return &emp, nil
 }
 
-func (r *hrEmployeeRepo) GetByEmail(
+func (r *employeeRepo) GetByEmail(
 	ctx context.Context,
 	email string,
 ) (*employee_models.Employee, error) {
@@ -72,7 +72,7 @@ func (r *hrEmployeeRepo) GetByEmail(
 	return &emp, nil
 }
 
-func (r *hrEmployeeRepo) ListByOrg(
+func (r *employeeRepo) ListByOrg(
 	ctx context.Context,
 	orgID uuid.UUID,
 ) ([]*employee_models.Employee, error) {

@@ -32,3 +32,13 @@ type EmployeeServiceInterface interface {
 		hasPass string,
 	) (uuid.UUID, error)
 }
+
+// Employee Public Service Interface
+// This interface is expose internal method for employee
+/*
+
+ */
+type EmployeePublicServiceInterface interface {
+	CheckEmpExistByEmail(ctx context.Context, orgId uuid.UUID, email string) error
+	GetEmpByEmail(ctx context.Context, email string) (interface{}, error)
+}

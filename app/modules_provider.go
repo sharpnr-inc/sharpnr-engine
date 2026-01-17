@@ -14,9 +14,9 @@ type ModulesProvider interface {
 	Hospitality() *HospitalityDomain
 	OrgPropertyService() org_property_services.OrganizationPropertyServicesInterfaces
 
-	OrgSignUpService() org_signup_services.OrgSignUpServiceInterface
+	OrgSignUpService() org_signup_services.OrganizationSignUpServiceInterfaces
 	SharpAuthService() sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
 
-	HrService() employee_services.EmployeeServiceInterface
+	EmployeeService() employee_services.EmployeeServiceInterface
 	AccountingService() accounting_service.AccountingServiceInterface
 }

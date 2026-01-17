@@ -10,7 +10,7 @@ import (
 )
 
 type AppModules struct {
-	orgSignupService    org_signup_services.OrgSignUpServiceInterface
+	orgSignupService    org_signup_services.OrganizationSignUpServiceInterfaces
 	sharpAuthService    sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
 	orgPropertyService  org_property_services.OrganizationPropertyServicesInterfaces
 	orchestratorService orchestrator_service.OrchestratorServiceInterface
@@ -39,11 +39,11 @@ func (m *AppModules) SharpAuthService() sharpnr_identity_auth_services.SharpnrId
 	return m.sharpAuthService
 }
 
-func (m *AppModules) HrService() employee_services.EmployeeServiceInterface {
+func (m *AppModules) EmployeeService() employee_services.EmployeeServiceInterface {
 	return m.hrService
 }
 
-func (m *AppModules) OrgSignUpService() org_signup_services.OrgSignUpServiceInterface {
+func (m *AppModules) OrgSignUpService() org_signup_services.OrganizationSignUpServiceInterfaces {
 	return m.orgSignupService
 }
 
