@@ -2,8 +2,8 @@ package app
 
 import (
 	dbtx "sharpnr-engine/core/dbTx"
-	org_signup_repositories "sharpnr-engine/core/org_signup/repositories"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
+	organization_repo "sharpnr-engine/core/organization/repo"
 	"sharpnr-engine/sere"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
@@ -19,8 +19,8 @@ func bootstrapOrgSignup(
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 ) org_signup_services.OrgSignUpServiceInterface {
 
-	tempRepo := org_signup_repositories.NewTempOrgSignUpRepository(redis)
-	mainRepo := org_signup_repositories.NewOrgMainSignUpRepository(db)
+	tempRepo := organization_repo.NewTempOrgSignUpRepository(redis)
+	mainRepo := organization_repo.NewOrgMainSignUpRepository(db)
 
 	return org_signup_services.NewOrgSignUpService(
 		txManager,

@@ -3,8 +3,8 @@ package org_signup_services
 import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
-	"sharpnr-engine/core/models"
 	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
+	"sharpnr-engine/core/organization/models"
 	"sharpnr-engine/shared/utils"
 	"time"
 

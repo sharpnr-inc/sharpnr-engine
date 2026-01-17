@@ -1,8 +1,8 @@
-package org_signup_repositories
+package organization_repo
 
 import (
 	"context"
-	"sharpnr-engine/core/models"
+	"sharpnr-engine/core/organization/models"
 
 	"github.com/google/uuid"
 )

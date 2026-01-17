@@ -6,7 +6,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"math/big"
-	org_signup_repositories "sharpnr-engine/core/org_signup/repositories"
+	organization_repo "sharpnr-engine/core/organization/repo"
 	"strings"
 )
 
@@ -25,7 +25,7 @@ func generateRandomString(length int) (string, error) {
 	return sb.String(), nil
 }
 
-func GenerateUniqueSharpnrOrgID(ctx context.Context, repo org_signup_repositories.MainOrgSignUpRepositoryInterface) (string, error) {
+func GenerateUniqueSharpnrOrgID(ctx context.Context, repo organization_repo.MainOrgSignUpRepositoryInterface) (string, error) {
 	for {
 		randomPart, err := generateRandomString(13)
 		if err != nil {

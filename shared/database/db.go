@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"sharpnr-engine/config"
-	"sharpnr-engine/core/models"
+	"sharpnr-engine/core/organization/models"
 	"sharpnr-engine/modules/accounting/accounting_models"
 	bar_models "sharpnr-engine/modules/hospitality/bar/models"
 	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"

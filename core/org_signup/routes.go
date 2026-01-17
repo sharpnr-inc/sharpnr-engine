@@ -36,7 +36,5 @@ func OrgSignUpRoute(
 		protectedSignup.GET("/verify-token", controller.GetSignUpDetails)
 
 		protectedSignup.GET("/resend-otp", controller.ResendOtp)
-
-		protectedSignup.POST("/onBoarding", controller.OnBoardOrganization)
 	}
 }

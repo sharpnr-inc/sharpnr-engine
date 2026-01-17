@@ -1,10 +1,11 @@
-package org_signup_repositories
+package organization_repo
 
 import (
 	"context"
 	"encoding/json"
 	"errors"
-	"sharpnr-engine/core/models"
+	"sharpnr-engine/core/organization/models"
+
 	"strings"
 	"time"
 

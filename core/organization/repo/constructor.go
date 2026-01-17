@@ -1,4 +1,4 @@
-package org_signup_repositories
+package organization_repo
 
 import (
 	"github.com/redis/go-redis/v9"
