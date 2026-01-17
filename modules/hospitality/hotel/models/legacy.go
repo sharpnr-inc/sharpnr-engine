@@ -3,7 +3,7 @@ package hotel_models
 import (
 	"time"
 
-	"sharpnr-engine/core/models"
+	"sharpnr-engine/core/organization/models"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
 

@@ -2,7 +2,7 @@ package employee_models
 
 import (
 	"sharpnr-engine/core/constants"
-	"sharpnr-engine/core/models"
+	"sharpnr-engine/core/organization/models"
 	hr_emp_constants "sharpnr-engine/modules/hr/employees/constants"
 	"time"
 

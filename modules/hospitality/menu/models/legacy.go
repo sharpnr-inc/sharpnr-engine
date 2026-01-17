@@ -1,7 +1,7 @@
 package hospitalityMenu_models
 
 import (
-	"sharpnr-engine/core/models"
+	"sharpnr-engine/core/organization/models"
 	"time"
 
 	"github.com/google/uuid"

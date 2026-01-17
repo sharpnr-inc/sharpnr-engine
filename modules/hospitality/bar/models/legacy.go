@@ -3,7 +3,7 @@ package bar_models
 import (
 	"time"
 
-	"sharpnr-engine/core/models"
+	"sharpnr-engine/core/organization/models"
 	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
 	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 

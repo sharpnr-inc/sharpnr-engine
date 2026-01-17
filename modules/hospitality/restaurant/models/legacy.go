@@ -3,7 +3,7 @@ package restaurant_models
 import (
 	"time"
 
-	"sharpnr-engine/core/models"
+	"sharpnr-engine/core/organization/models"
 	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
 
 	"github.com/google/uuid"

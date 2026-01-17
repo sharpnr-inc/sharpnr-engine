@@ -1,7 +1,7 @@
 package kitchen_models
 
 import (
-	"sharpnr-engine/core/models"
+	"sharpnr-engine/core/organization/models"
 	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 	"time"
 
