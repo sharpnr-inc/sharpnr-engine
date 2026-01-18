@@ -39,10 +39,10 @@ type APIError struct {
 Global API Response
 ========================
 */
-type Response_[T any] struct {
+type Response_ struct {
 	Success   bool      `json:"success"`
 	Message   string    `json:"message,omitempty"`
-	Data      T         `json:"data,omitempty"`
+	Data      any       `json:"data,omitempty"`
 	Error     *APIError `json:"error,omitempty"`
 	Timestamp time.Time `json:"timestamp"`
 	Token     string    `json:"token,omitempty"`
@@ -53,16 +53,22 @@ type Response_[T any] struct {
 Success Response
 ========================
 */
-func Success[T any](
+func Success(
 	ctx *gin.Context,
 	status int,
 	message string,
-	data T,
+	data ...any,
 ) {
-	ctx.JSON(status, Response_[T]{
+	var payload any
+
+	if len(data) > 0 {
+		payload = data[0]
+	}
+
+	ctx.JSON(status, Response_{
 		Success:   true,
 		Message:   message,
-		Data:      data,
+		Data:      payload,
 		Timestamp: time.Now(),
 	})
 }
@@ -83,7 +89,7 @@ func Failure(
 		msg = err.Error()
 	}
 
-	ctx.JSON(status, Response_[any]{
+	ctx.JSON(status, Response_{
 		Success: false,
 		Error: &APIError{
 			HTTPStatus: status,
@@ -108,7 +114,7 @@ func ValidationError(ctx *gin.Context, err error) {
 		}
 	}
 
-	ctx.JSON(http.StatusBadRequest, Response_[map[string]string]{
+	ctx.JSON(http.StatusBadRequest, Response_{
 		Success: false,
 		Error: &APIError{
 			HTTPStatus: http.StatusBadRequest,

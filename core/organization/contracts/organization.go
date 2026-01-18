@@ -8,3 +8,9 @@ type OrganizationResult struct {
 	Name      string
 	RootEmail string
 }
+
+type DraftOrganizationInput struct {
+	Email    string
+	Mobile   *string
+	Password string
+}

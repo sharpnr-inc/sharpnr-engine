@@ -1,6 +1,8 @@
 package org_signup_controllers
 
 import (
+	"net/http"
+	"sharpnr-engine/cookieManager"
 	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
 	"sharpnr-engine/shared/utils"
 
@@ -20,6 +22,15 @@ func (c *orgSignUpController) InitiateNewOrgRegistration(ctx *gin.Context) {
 		return
 	}
 
-	c.signUpSvc.InitiateRegistration(ctx.Request.Context(), req)
+	slug, err := c.signUpSvc.InitiateRegistration(ctx.Request.Context(), req)
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadGateway, "", err)
+		return
+	}
+
+	jwt, _ := c.jwtMgr.IssueSignup(slug)
+	c.cookies.Set(ctx, cookieManager.Signup, jwt)
+
+	utils.Success(ctx, 200, "Otp Sent successfully")
 
 }

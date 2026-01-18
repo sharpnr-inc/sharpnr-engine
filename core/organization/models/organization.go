@@ -24,12 +24,6 @@ type Organization struct {
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
-type OrganizationOnBoardingStage struct {
-	ID             uuid.UUID
-	OrganizationID uuid.UUID
-	Status         string // SEED, // DOMAIN_ADDED // MODULE_ADDED
-}
-
 type OrganizationContact struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 

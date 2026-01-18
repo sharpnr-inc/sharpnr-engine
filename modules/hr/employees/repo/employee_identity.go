@@ -72,6 +72,22 @@ func (r *employeeRepo) GetByEmail(
 	return &emp, nil
 }
 
+func (r *employeeRepo) ExistsByEmail(
+	ctx context.Context,
+	email string,
+) (bool, error) {
+
+	var count int64
+
+	err := r.db.WithContext(ctx).
+		Model(&employee_models.Employee{}).
+		Where("email = ?", email).
+		Count(&count).
+		Error
+
+	return count > 0, err
+}
+
 func (r *employeeRepo) ListByOrg(
 	ctx context.Context,
 	orgID uuid.UUID,

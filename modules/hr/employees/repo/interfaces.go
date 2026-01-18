@@ -9,10 +9,30 @@ import (
 )
 
 type EmployeeIdentityRepositoryInterface interface {
-	Create(ctx context.Context, emp *employee_models.Employee) error
-	GetByID(ctx context.Context, empID uuid.UUID) (*employee_models.Employee, error)
-	GetByEmail(ctx context.Context, email string) (*employee_models.Employee, error)
-	ListByOrg(ctx context.Context, orgID uuid.UUID) ([]*employee_models.Employee, error)
+	Create(
+		ctx context.Context,
+		emp *employee_models.Employee,
+	) error
+
+	GetByID(
+		ctx context.Context,
+		empID uuid.UUID,
+	) (*employee_models.Employee, error)
+
+	GetByEmail(
+		ctx context.Context,
+		email string,
+	) (*employee_models.Employee, error)
+
+	ExistsByEmail(
+		ctx context.Context,
+		email string,
+	) (bool, error)
+
+	ListByOrg(
+		ctx context.Context,
+		orgID uuid.UUID,
+	) ([]*employee_models.Employee, error)
 }
 
 type EmployeeAuthRepositoryInterface interface {

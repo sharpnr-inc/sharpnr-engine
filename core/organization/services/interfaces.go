@@ -25,6 +25,7 @@ type OrganizationServiceInterface interface {
 	IsOrgExists(
 		ctx context.Context,
 		rootEmail string,
+		rootMobile string,
 	) (bool, error)
 
 	GetOrgHQ()
@@ -39,4 +40,9 @@ type OrganizationServiceInterface interface {
 		ctx context.Context,
 		input interface{},
 	) error
+
+	CreateDraftOrgForSignup(
+		ctx context.Context,
+		input organization_contracts.DraftOrganizationInput,
+	) (string, string, error)
 }

@@ -17,12 +17,9 @@ type EmployeeServiceInterface interface {
 		hasPass string,
 	) (uuid.UUID, error)
 
+	// This simply Tells if user exist or not
 	IsUserExists(
 		ctx context.Context,
-		employee string,
+		employeeEmail string,
 	) (bool, error)
-
-	AddEmployeeProvision()
-
-	CreateSharpnrIdentityProfile(ctx context.Context, empID uuid.UUID) error
 }

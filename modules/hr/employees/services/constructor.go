@@ -1,10 +1,7 @@
 package employee_services
 
 import (
-	"context"
 	employee_repo "sharpnr-engine/modules/hr/employees/repo"
-
-	"github.com/google/uuid"
 )
 
 // employeeService is the orchestration layer for
@@ -31,16 +28,6 @@ type employeeService struct {
 	policyRepo           employee_repo.EmployeePolicyRepositoryInterface
 	policyRuleRepo       employee_repo.EmployeePolicyRuleRepositoryInterface
 	policyAssignmentRepo employee_repo.EmployeePrivilegePolicyRepositoryInterface
-}
-
-// CreateSharpnrIdentityProfile implements EmployeeServiceInterface.
-func (h *employeeService) CreateSharpnrIdentityProfile(ctx context.Context, empID uuid.UUID) error {
-	panic("unimplemented")
-}
-
-// AddEmployeeProvision implements EmployeeServiceInterface.
-func (h *employeeService) AddEmployeeProvision() {
-	panic("unimplemented")
 }
 
 // NewHrEmployeeService constructs a new employeeService.
