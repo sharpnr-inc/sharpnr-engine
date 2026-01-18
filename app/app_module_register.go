@@ -16,7 +16,7 @@ type AppModules struct {
 
 	// This is the Organization service which includes both repo
 	// Redis and Main Pgsql DB
-	organizationService organization_services.OrganizationPublicServiceInterface
+	organizationService organization_services.OrganizationServiceInterface
 
 	orgLegalEntityService org_legal_entity_service.OrgLegalEntityServiceInterface
 	//Signup service
@@ -62,7 +62,7 @@ func (m *AppModules) OrgPropertyService() org_property_services.OrganizationProp
 	return m.orgPropertyService
 }
 
-func (m *AppModules) OrganizationService() organization_services.OrganizationPublicServiceInterface {
+func (m *AppModules) OrganizationService() organization_services.OrganizationServiceInterface {
 	return m.organizationService
 }
 

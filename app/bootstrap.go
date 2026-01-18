@@ -24,7 +24,15 @@ func BootstrapModules(
 	orgLegalEntityService := bootstrapOrgLegalEntity(db)
 
 	employeeService := bootstrapEmployee(db)
-	orgSignupService := bootstrapOrgSignup(db, redis, txManager, sereEngine, mailerEngine, employeeService)
+
+	orgSignupService := bootstrapOrgSignup(
+		txManager,
+		sereEngine,
+		mailerEngine,
+		employeeService,
+		organizationService,
+	)
+
 	identityService := bootstrapIdentity(db)
 
 	hospitality := bootstrapHospitality(db, sereEngine)

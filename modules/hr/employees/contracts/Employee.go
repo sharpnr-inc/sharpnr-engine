@@ -8,7 +8,7 @@ type EmployeeReader struct {
 	OrganizationID uuid.UUID
 }
 
-type DefaultSuperAdminEmployee struct {
+type DefaultSuperAdminEmployeeInput struct {
 	Name           *string
 	Email          string
 	OrgID          uuid.UUID

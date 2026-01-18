@@ -12,7 +12,7 @@ import (
 )
 
 type ModulesProvider interface {
-	OrganizationService() organization_services.OrganizationPublicServiceInterface
+	OrganizationService() organization_services.OrganizationServiceInterface
 	SharpnrOrchestrator() orchestrator_service.OrchestratorServiceInterface
 	OrgSetupWiz() org_setup_wizard_services.OrgSetupWizardServiceInterface
 	Hospitality() *HospitalityDomain

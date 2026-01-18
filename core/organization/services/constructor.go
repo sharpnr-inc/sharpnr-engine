@@ -25,11 +25,6 @@ func (r *organizationService) GetOrgHQ() {
 	panic("unimplemented")
 }
 
-// IsOrgExists implements OrganizationPublicServiceInterface.
-func (r *organizationService) IsOrgExists(ctx context.Context, rootEmail string) (bool, error) {
-	panic("unimplemented")
-}
-
 func NewOrganizationService(
 	orgRedisRepo organization_repo.RedisOrganizationRepositoryInterface,
 	orgMainRepo organization_repo.OrganizationRepositoryInterface,

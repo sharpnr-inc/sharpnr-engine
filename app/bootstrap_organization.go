@@ -11,7 +11,7 @@ import (
 func bootstrapOrganization(
 	db *gorm.DB,
 	redis *redis.Client,
-) organization_services.OrganizationPublicServiceInterface {
+) organization_services.OrganizationServiceInterface {
 	organizationRepo := organization_repo.NewOrganizationRepository(db)
 	organizationRedisRepo := organization_repo.NewRedisOrganizationRepository(redis)
 

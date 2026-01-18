@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type OrganizationPublicServiceInterface interface {
+type OrganizationServiceInterface interface {
 
 	// This method gets the Organization By ID
 	GetOrgByID(
@@ -28,9 +28,6 @@ type OrganizationPublicServiceInterface interface {
 	) (bool, error)
 
 	GetOrgHQ()
-}
-
-type OrganizationInternalServiceInterface interface {
 
 	// This is Creates a base organization
 	CreateOrganization(
@@ -43,6 +40,3 @@ type OrganizationInternalServiceInterface interface {
 		input interface{},
 	) error
 }
-
-var _ OrganizationPublicServiceInterface = (*organizationService)(nil)
-var _ OrganizationInternalServiceInterface = (*organizationService)(nil)

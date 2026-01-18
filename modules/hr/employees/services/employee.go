@@ -2,6 +2,7 @@ package employee_services
 
 import (
 	"context"
+	"errors"
 	employee_models "sharpnr-engine/modules/hr/employees/models"
 	"time"
 
@@ -58,4 +59,15 @@ func (h *employeeService) CreateDefaultSuperAdmin(
 	}
 
 	return employee.ID, nil
+}
+
+// IsUserExists implements EmployeeServiceInterface.
+func (h *employeeService) IsUserExists(ctx context.Context, employeeEmail string) (bool, error) {
+
+	_, err := h.empIdentityRepo.GetByEmail(ctx, employeeEmail)
+	if err != nil {
+		return true, errors.New("employee already exists")
+	}
+
+	return false, nil
 }
