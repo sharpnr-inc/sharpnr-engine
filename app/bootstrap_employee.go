@@ -7,14 +7,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type employeeBootstrap struct {
-	Service employee_services.EmployeeServiceInterface
+// This is bootstrap
+//
 
-	EmpIdentityRepo employee_repo.EmployeeIdentityRepositoryInterface
-	EmpAuthRepo     employee_repo.EmployeeAuthRepositoryInterface
-}
+// type employeeBootstrap struct {
+// 	Service employee_services.EmployeeServiceInterface
 
-func bootstrapEmployee(db *gorm.DB) *employeeBootstrap {
+// 	EmpIdentityRepo employee_repo.EmployeeIdentityRepositoryInterface
+// 	EmpAuthRepo     employee_repo.EmployeeAuthRepositoryInterface
+// }
+
+func bootstrapEmployee(db *gorm.DB) employee_services.EmployeeServiceInterface {
 	empIdentityRepo := employee_repo.NewEmployeeIdentityRepository(db)
 	empAuthRepo := employee_repo.NewEmployeeAuthRepository(db)
 	empOnboardingRepo := employee_repo.NewEmployeeOnboardingRepository(db)
@@ -26,7 +29,7 @@ func bootstrapEmployee(db *gorm.DB) *employeeBootstrap {
 	policyRuleRepo := employee_repo.NewEmployeePolicyRuleRepository(db)
 	privilegePolicyRepo := employee_repo.NewEmployeePrivilegePolicyRepository(db)
 
-	service := employee_services.NewHrEmployeeService(
+	return employee_services.NewEmployeeService(
 		empIdentityRepo,
 		empAuthRepo,
 		empOnboardingRepo,
@@ -38,9 +41,4 @@ func bootstrapEmployee(db *gorm.DB) *employeeBootstrap {
 		privilegePolicyRepo,
 	)
 
-	return &employeeBootstrap{
-		Service:         service,
-		EmpIdentityRepo: empIdentityRepo,
-		EmpAuthRepo:     empAuthRepo,
-	}
 }

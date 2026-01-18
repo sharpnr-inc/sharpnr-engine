@@ -42,19 +42,10 @@ func bootstrapHospitality(
 	restaurantService := restaurantservices.NewRestaurantService(restaurantRepo)
 
 	return NewHospitalityDomain(
-		hotelRepo,
 		hotelService,
-
-		barRepo,
 		barService,
-
-		restaurantRepo,
 		restaurantService,
-
-		kitchenRepo,
 		kitchenService,
-
-		menuRepo,
 		menuService,
 	)
 }

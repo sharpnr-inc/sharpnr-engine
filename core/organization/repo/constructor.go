@@ -9,7 +9,7 @@ type organizationRepo struct {
 	db *gorm.DB
 }
 
-func NewOrgMainSignUpRepository(db *gorm.DB) *organizationRepo {
+func NewOrganizationRepository(db *gorm.DB) *organizationRepo {
 	return &organizationRepo{
 		db: db,
 	}
@@ -19,7 +19,7 @@ type organizationRedisRepo struct {
 	redis *redis.Client
 }
 
-func NewTempOrgSignUpRepository(redis *redis.Client) *organizationRedisRepo {
+func NewRedisOrganizationRepository(redis *redis.Client) *organizationRedisRepo {
 	return &organizationRedisRepo{
 		redis: redis,
 	}

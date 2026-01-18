@@ -35,7 +35,7 @@ type employeeService struct {
 // All repositories are required.
 // If you don’t need one yet, pass nil ONLY if the method
 // using it is not called (documented per method).
-func NewHrEmployeeService(
+func NewEmployeeService(
 	empIdentityRepo employee_repo.EmployeeIdentityRepositoryInterface,
 	empAuthRepo employee_repo.EmployeeAuthRepositoryInterface,
 	empOnboardingRepo employee_repo.EmployeeOnboardingRepositoryInterface,

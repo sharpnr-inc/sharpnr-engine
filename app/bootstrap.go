@@ -19,12 +19,19 @@ func BootstrapModules(
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 ) *AppModules {
 
-	emp := bootstrapEmployee(db)
-	orgSignupService := bootstrapOrgSignup(db, redis, txManager, sereEngine, mailerEngine, emp.)
-	identityService := bootstrapIdentity(db)
-	hospitality := bootstrapHospitality(db, sereEngine)
-	accountingModule := bootstrapAccounting(db)
+	organizationService := bootstrapOrganization(db, redis)
 	orgPropertyService := bootstrapOrgProperty(db)
+	orgLegalEntityService := bootstrapOrgLegalEntity(db)
+
+	employeeService := bootstrapEmployee(db)
+	orgSignupService := bootstrapOrgSignup(db, redis, txManager, sereEngine, mailerEngine, employeeService)
+	identityService := bootstrapIdentity(db)
+
+	hospitality := bootstrapHospitality(db, sereEngine)
+	accountingService := bootstrapAccounting(db)
+
+	orgSetupWizardService := bootstrapOrgSetupWizard(db)
+	orchestratorService := bootstrapSharpnrOrchestrator()
 
 	sereEngine.UseTxExecutor(func(ctx context.Context, fn func(ctx context.Context) error) error {
 		return txManager.WithTx(ctx, func(tx *gorm.DB) error {
@@ -35,35 +42,21 @@ func BootstrapModules(
 
 	RegisterAllWorkFlow(
 		sereEngine,
-		hr.Service,
-		identityService,
-
-		hospitality.KitchenRepo(),
-		hospitality.HotelRepo(),
-		hospitality.HotelService(),
-
-		hospitality.BarRepo(),
-		hospitality.BarService(),
-
-		hospitality.RestaurantRepo(),
-		hospitality.RestaurantService(),
-
-		hospitality.MenuRepo(),
-		hospitality.MenuService(),
-
-		accountingModule.Repo,
-		accountingModule.Service,
 	)
 
-	RegisterSereEventHandler(sereEngine, accountingModule.Repo)
+	RegisterSereEventHandler(sereEngine)
 
 	return &AppModules{
-		orgSignupService:   orgSignupService,
-		orgPropertyService: orgPropertyService,
-		hrService:          hr.Service,
-		accountingService:  accountingModule.Service,
-		sharpAuthService:   identityService,
-		hospitality:        hospitality,
+		organizationService:   organizationService,
+		orgSignupService:      orgSignupService,
+		orgPropertyService:    orgPropertyService,
+		orgLegalEntityService: orgLegalEntityService,
+		employeeService:       employeeService,
+		accountingService:     accountingService,
+		sharpAuthService:      identityService,
+		hospitality:           hospitality,
+		orchestratorService:   orchestratorService,
+		orgSetupWizard:        orgSetupWizardService,
 	}
 
 }

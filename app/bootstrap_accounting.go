@@ -7,17 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type accountingBootstrap struct {
-	Repo    accounting_repo.AccountingRepositoryInterface
-	Service accounting_service.AccountingServiceInterface
-}
-
-func bootstrapAccounting(db *gorm.DB) *accountingBootstrap {
+func bootstrapAccounting(db *gorm.DB) accounting_service.AccountingServiceInterface {
 	repo := accounting_repo.NewAccountingRepository(db)
-	service := accounting_service.NewAccountingService(repo)
-
-	return &accountingBootstrap{
-		Repo:    repo,
-		Service: service,
-	}
+	return accounting_service.NewAccountingService(repo)
 }

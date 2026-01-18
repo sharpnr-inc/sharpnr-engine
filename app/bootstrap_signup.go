@@ -17,7 +17,7 @@ func bootstrapOrgSignup(
 	txManager dbtx.TxManager,
 	sereEngine *sere.SERE,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-	employeeSvc employee_services.EmployeePublicServiceInterface,
+	employeeSvc employee_services.EmployeeServiceInterface,
 ) org_signup_services.OrganizationSignUpServiceInterfaces {
 
 	return org_signup_services.NewOrgSignUpService(

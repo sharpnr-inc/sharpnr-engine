@@ -1,9 +1,9 @@
 package app
 
-import "gorm.io/gorm"
+import (
+	orchestrator_service "sharpnr-engine/core/orchestrator/service"
+)
 
-func bootstrapSharpnrOrchestrator(
-	db *gorm.DB,
-) {
-
+func bootstrapSharpnrOrchestrator() orchestrator_service.OrchestratorServiceInterface {
+	return orchestrator_service.NewSharpnrOrchestratorService()
 }

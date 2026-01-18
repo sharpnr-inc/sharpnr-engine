@@ -43,3 +43,6 @@ type OrganizationInternalServiceInterface interface {
 		input interface{},
 	) error
 }
+
+var _ OrganizationPublicServiceInterface = (*organizationService)(nil)
+var _ OrganizationInternalServiceInterface = (*organizationService)(nil)

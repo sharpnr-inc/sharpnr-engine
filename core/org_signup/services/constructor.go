@@ -11,14 +11,14 @@ type orgSignUpService struct {
 	txManager    dbtx.TxManager
 	sere         *sere.SERE
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine
-	employeeSvc  employee_services.EmployeePublicServiceInterface
+	employeeSvc  employee_services.EmployeeServiceInterface
 }
 
 func NewOrgSignUpService(
 	txManager dbtx.TxManager,
 	sere *sere.SERE,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-	employeeSvc employee_services.EmployeePublicServiceInterface,
+	employeeSvc employee_services.EmployeeServiceInterface,
 ) *orgSignUpService {
 	return &orgSignUpService{
 		txManager:    txManager,

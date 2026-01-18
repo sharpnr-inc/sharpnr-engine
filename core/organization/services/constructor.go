@@ -1,18 +1,41 @@
 package organization_services
 
-import organization_repo "sharpnr-engine/core/organization/repo"
+import (
+	"context"
+	organization_repo "sharpnr-engine/core/organization/repo"
+)
 
 type organizationService struct {
-	orgTempRepo organization_repo.RedisOrganizationRepositoryInterface
-	orgMainRepo organization_repo.OrganizationRepositoryInterface
+	orgRedisRepo organization_repo.RedisOrganizationRepositoryInterface
+	orgMainRepo  organization_repo.OrganizationRepositoryInterface
+}
+
+// AddHQ implements OrganizationInternalServiceInterface.
+func (r *organizationService) AddHQ(ctx context.Context, input interface{}) error {
+	panic("unimplemented")
+}
+
+// CreateOrganization implements OrganizationInternalServiceInterface.
+func (r *organizationService) CreateOrganization(ctx context.Context, input interface{}) error {
+	panic("unimplemented")
+}
+
+// GetOrgHQ implements OrganizationPublicServiceInterface.
+func (r *organizationService) GetOrgHQ() {
+	panic("unimplemented")
+}
+
+// IsOrgExists implements OrganizationPublicServiceInterface.
+func (r *organizationService) IsOrgExists(ctx context.Context, rootEmail string) (bool, error) {
+	panic("unimplemented")
 }
 
 func NewOrganizationService(
-	orgTempRepo organization_repo.RedisOrganizationRepositoryInterface,
+	orgRedisRepo organization_repo.RedisOrganizationRepositoryInterface,
 	orgMainRepo organization_repo.OrganizationRepositoryInterface,
 ) *organizationService {
 	return &organizationService{
-		orgTempRepo: orgTempRepo,
-		orgMainRepo: orgMainRepo,
+		orgRedisRepo: orgRedisRepo,
+		orgMainRepo:  orgMainRepo,
 	}
 }

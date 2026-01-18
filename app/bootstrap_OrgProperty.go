@@ -11,7 +11,6 @@ func bootstrapOrgProperty(
 	db *gorm.DB,
 ) org_property_services.OrganizationPropertyServicesInterfaces {
 	orgPropertyRepo := org_property_repo.NewOrganizationPropertyRepo(db)
-	// orgPropertyService := org_property_services.NewOrganizationPropertyService(orgPropertyRepo)
 	return org_property_services.NewOrganizationPropertyService(orgPropertyRepo)
 
 }
