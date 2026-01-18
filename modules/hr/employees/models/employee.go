@@ -45,45 +45,6 @@ type EmployeeVerification struct {
 	CreatedAt time.Time
 }
 
-type EmployeeProfile struct {
-	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
-	EmployeeID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex"`
-
-	Gender      string
-	DateOfBirth *time.Time
-
-	Address          string
-	EmergencyContact string
-	BloodGroup       string
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
-type EmployeeBankAccount struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	EmployeeID uuid.UUID `gorm:"type:uuid;uniqueIndex"`
-
-	BankName      string
-	AccountNumber string
-	IFSC          string
-	UPI           string
-
-	IsPrimary bool
-}
-
-type EmployeeDocument struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	EmployeeID uuid.UUID
-
-	Type string // ID_PROOF, CONTRACT
-	URL  string
-
-	Verified bool
-}
-
 type EmployeeReporting struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -93,77 +54,6 @@ type EmployeeReporting struct {
 	Level int // 1=manager, 2=skip-level
 
 	CreatedAt time.Time
-}
-
-type EmployeeEmployment struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	EmployeeID uuid.UUID `gorm:"type:uuid;uniqueIndex"`
-
-	EmploymentType string // FULL_TIME, PART_TIME, CONTRACT
-	Designation    string
-
-	ConfirmationDate *time.Time
-
-	CreatedAt time.Time
-}
-
-type EmployeeCompensation struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	EmployeeID uuid.UUID `gorm:"type:uuid;index"`
-
-	BaseSalary float64
-	Currency   string
-
-	EffectiveFrom time.Time
-	EffectiveTo   *time.Time
-}
-
-type EmployeeSalaryComponent struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	CompensationID uuid.UUID
-
-	Component string // BASIC, HRA, BONUS, PF
-	Amount    float64
-}
-
-//-------------------------------------------------//
-
-/*********************************************
- * All the Tables Related to Employee Leaves *
- *********************************************/
-
-type EmployeeLeaveType struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	OrganizationID uuid.UUID
-	Name           string // Casual, Sick, Paid
-}
-
-type EmployeeLeaveBalance struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	EmployeeID  uuid.UUID
-	LeaveTypeID uuid.UUID
-
-	Balance float64
-}
-
-type EmployeeLeaveRequest struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	EmployeeID  uuid.UUID
-	LeaveTypeID uuid.UUID
-
-	FromDate time.Time
-	ToDate   time.Time
-
-	Status string // PENDING, APPROVED, REJECTED
-
-	ApprovedBy *uuid.UUID // Manager
-	ApprovedAt *time.Time
 }
 
 //-------------------------------------------------//

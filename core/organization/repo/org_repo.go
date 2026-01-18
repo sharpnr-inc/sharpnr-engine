@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (r *orgMainSignUpRepo) ExistsByEmail(
+func (r *organizationRepo) ExistsByEmail(
 	ctx context.Context,
 	email string,
 ) (bool, error) {
@@ -23,7 +23,7 @@ func (r *orgMainSignUpRepo) ExistsByEmail(
 	return r.exists(ctx, "root_email", normalizedEmail)
 }
 
-func (r *orgMainSignUpRepo) ExistsByPhone(
+func (r *organizationRepo) ExistsByPhone(
 	ctx context.Context,
 	phone string,
 ) (bool, error) {
@@ -36,7 +36,7 @@ func (r *orgMainSignUpRepo) ExistsByPhone(
 	return r.exists(ctx, "phone", phone)
 }
 
-func (r *orgMainSignUpRepo) ExistsBySlug(
+func (r *organizationRepo) ExistsBySlug(
 	ctx context.Context,
 	slug string,
 ) (bool, error) {
@@ -49,7 +49,7 @@ func (r *orgMainSignUpRepo) ExistsBySlug(
 	return r.exists(ctx, "slug", normalizedSlug)
 }
 
-func (r *orgMainSignUpRepo) exists(
+func (r *organizationRepo) exists(
 	ctx context.Context,
 	column string,
 	value string,
@@ -71,7 +71,7 @@ func (r *orgMainSignUpRepo) exists(
 	return count > 0, nil
 }
 
-func (r *orgMainSignUpRepo) CreateOrganization(
+func (r *organizationRepo) CreateOrganization(
 	ctx context.Context,
 	org *models.Organization,
 ) error {
@@ -91,22 +91,22 @@ func (r *orgMainSignUpRepo) CreateOrganization(
 }
 
 // AddOrgOfficeAddress implements MainOrgSignUpRepositoryInterface.
-func (d *orgMainSignUpRepo) AddOrgOfficeAddress(ctx context.Context, Addr *models.OrganizationOffice) error {
+func (d *organizationRepo) AddOrgOfficeAddress(ctx context.Context, Addr *models.OrganizationOffice) error {
 	return d.db.WithContext(ctx).Create(Addr).Error
 }
 
 // AddOrgVerificationDetails implements MainOrgSignUpRepositoryInterface.
-func (d *orgMainSignUpRepo) AddOrgVerificationDetails(ctx context.Context, orgVerification *models.OrganizationVerification) error {
+func (d *organizationRepo) AddOrgVerificationDetails(ctx context.Context, orgVerification *models.OrganizationVerification) error {
 	return d.db.WithContext(ctx).Create(orgVerification).Error
 }
 
 // CreateOrgSubscription implements MainOrgSignUpRepositoryInterface.
-func (d *orgMainSignUpRepo) CreateOrgSubscription(ctx context.Context, orgSub *models.OrganizationSubscription) error {
+func (d *organizationRepo) CreateOrgSubscription(ctx context.Context, orgSub *models.OrganizationSubscription) error {
 	return d.db.WithContext(ctx).Create(orgSub).Error
 }
 
 // FindOrgBySharpnrID implements MainOrgSignUpRepositoryInterface.
-func (d *orgMainSignUpRepo) FindOrgBySharpnrID(
+func (d *organizationRepo) FindOrgBySharpnrID(
 	ctx context.Context,
 	id string,
 ) (models.Organization, bool, error) {
@@ -130,6 +130,6 @@ func (d *orgMainSignUpRepo) FindOrgBySharpnrID(
 }
 
 // GetOrgSubscriptionPlan implements MainOrgSignUpRepositoryInterface.
-func (d *orgMainSignUpRepo) GetOrgSubscriptionPlan(ctx context.Context, orgId uuid.UUID) (*models.OrganizationSubscription, error) {
+func (d *organizationRepo) GetOrgSubscriptionPlan(ctx context.Context, orgId uuid.UUID) (*models.OrganizationSubscription, error) {
 	panic("unimplemented")
 }

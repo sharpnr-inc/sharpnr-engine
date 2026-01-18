@@ -1,42 +1,23 @@
 package org_signup_controllers
 
 import (
+	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
+	"sharpnr-engine/shared/utils"
+
 	"github.com/gin-gonic/gin"
 )
 
+// ! Swagger is Remaining
+// response it returns is nothing only err or 200 response
+// This part of the OrgSignUp Module
 func (c *orgSignUpController) InitiateNewOrgRegistration(ctx *gin.Context) {
 
-	// // Step 1. Verify Request body and Check if All fields are present
-	// var signupRequest org_signup_dtos.InitiateOrgSignUpRequest_Dto
+	// This Controller First need to check Request is Correct and comes properly
+	var req org_signup_dtos.OrganizationRegistrationDTO
 
-	// if err := ctx.ShouldBindJSON(&signupRequest); err != nil {
-	// 	ctx.JSON(http.StatusBadRequest, gin.H{"error": "Bad Request"})
-	// 	return
-	// }
-
-	// // ! Deprecation
-	// // *1 this is controller implement the service
-	// // *2
-	// signupSessionID, err := c.orgSvc.InitiateSignup(
-	// 	ctx.Request.Context(),
-	// 	signupRequest,
-	// )
-	// if err != nil {
-	// 	// map domain errors
-	// 	ctx.JSON(http.StatusInternalServerError, gin.H{
-	// 		"status":  "error",
-	// 		"message": err.Error(),
-	// 	})
-	// 	return
-	// }
-
-	// signupToken, _ := c.jwtMgr.IssueSignup(signupSessionID)
-
-	// c.cookies.SetSignup(ctx, signupToken)
-
-	// ctx.JSON(http.StatusOK, gin.H{
-	// 	"status":  "success",
-	// 	"message": "OTP sent to registered email",
-	// })
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.ValidationError(ctx, err)
+		return
+	}
 
 }

@@ -19,8 +19,8 @@ func BootstrapModules(
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 ) *AppModules {
 
-	orgSignupService := bootstrapOrgSignup(db, redis, txManager, sereEngine, mailerEngine)
-	hr := bootstrapEmployee(db)
+	emp := bootstrapEmployee(db)
+	orgSignupService := bootstrapOrgSignup(db, redis, txManager, sereEngine, mailerEngine, emp.)
 	identityService := bootstrapIdentity(db)
 	hospitality := bootstrapHospitality(db, sereEngine)
 	accountingModule := bootstrapAccounting(db)

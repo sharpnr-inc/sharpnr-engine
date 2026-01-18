@@ -13,7 +13,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func (rd *orgTempSignUpRepo) Create(
+func (rd *organizationRedisRepo) Create(
 	ctx context.Context,
 	tempOrg *models.OrganizationSignUpStaging,
 ) error {
@@ -106,7 +106,7 @@ func (rd *orgTempSignUpRepo) Create(
 //	}
 //
 //	// Proceed with organization creation
-func (rd *orgTempSignUpRepo) Get(
+func (rd *organizationRedisRepo) Get(
 	ctx context.Context,
 	signupID string,
 ) (*models.OrganizationSignUpStaging, error) {
@@ -133,49 +133,7 @@ func (rd *orgTempSignUpRepo) Get(
 	return &tempOrg, nil
 }
 
-// Existence check (used before OTP resend, etc.)
-func (rd *orgTempSignUpRepo) Exists(
-	ctx context.Context,
-	signupID string,
-) (bool, models.OrganizationSignUpStaging, error) {
-
-	var staging models.OrganizationSignUpStaging
-
-	if signupID == "" {
-		return false, staging, errors.New("signupID is required")
-	}
-
-	key := "org:signup:staging:" + signupID
-
-	// 1️⃣ Check existence
-	exists, err := rd.redis.Exists(ctx, key).Result()
-	if err != nil {
-		return false, staging, err
-	}
-
-	if exists == 0 {
-		return false, staging, nil
-	}
-
-	// 2️⃣ Fetch value
-	val, err := rd.redis.Get(ctx, key).Result()
-	if err != nil {
-		if err == redis.Nil {
-			// Key vanished between EXISTS and GET (rare but possible)
-			return false, staging, nil
-		}
-		return false, staging, err
-	}
-
-	// 3️⃣ Deserialize
-	if err := json.Unmarshal([]byte(val), &staging); err != nil {
-		return true, staging, err
-	}
-
-	return true, staging, nil
-}
-
-func (rd *orgTempSignUpRepo) Delete(
+func (rd *organizationRedisRepo) Delete(
 	ctx context.Context,
 	signupID string,
 ) error {
@@ -189,7 +147,7 @@ func (rd *orgTempSignUpRepo) Delete(
 	return rd.redis.Del(ctx, key).Err()
 }
 
-func (rd *orgTempSignUpRepo) GetByEmailOrPhone(
+func (rd *organizationRedisRepo) GetByEmailOrPhone(
 	ctx context.Context,
 	email string,
 	phone string,

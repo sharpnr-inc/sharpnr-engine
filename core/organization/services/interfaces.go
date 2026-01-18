@@ -2,12 +2,44 @@ package organization_services
 
 import (
 	"context"
+	organization_contracts "sharpnr-engine/core/organization/contracts"
 
 	"github.com/google/uuid"
 )
 
-type OrganizationServiceInterface interface {
-	GetOrgByID(ctx context.Context, orgId uuid.UUID)
-	GetAllOrgProperty()
-	GetOrgPropertyByID()
+type OrganizationPublicServiceInterface interface {
+
+	// This method gets the Organization By ID
+	GetOrgByID(
+		ctx context.Context,
+		orgId uuid.UUID,
+	) (organization_contracts.OrganizationResult, error)
+
+	//
+	GetOrgBySharpID(
+		ctx context.Context,
+		sharpID string,
+	) (organization_contracts.OrganizationResult, error)
+
+	//
+	IsOrgExists(
+		ctx context.Context,
+		rootEmail string,
+	) (bool, error)
+
+	GetOrgHQ()
+}
+
+type OrganizationInternalServiceInterface interface {
+
+	// This is Creates a base organization
+	CreateOrganization(
+		ctx context.Context,
+		input interface{},
+	) error
+
+	AddHQ(
+		ctx context.Context,
+		input interface{},
+	) error
 }

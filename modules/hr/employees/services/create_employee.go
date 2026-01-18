@@ -57,18 +57,5 @@ func (h *employeeService) CreateDefaultSuperAdmin(
 		return uuid.Nil, err
 	}
 
-	// 4️⃣ Create OWNER policy
-	policy := &employee_models.EmployeePolicy{
-		ID:             uuid.New(),
-		OrganizationID: orgId,
-		Code:           "OWNER",
-		Name:           "Organization Owner",
-		Type:           "SYSTEM",
-	}
-
-	if err := h.policyRepo.Create(ctx, policy); err != nil {
-		return uuid.Nil, err
-	}
-
 	return employee.ID, nil
 }

@@ -7,3 +7,10 @@ type EmployeeReader struct {
 	Name           string
 	OrganizationID uuid.UUID
 }
+
+type DefaultSuperAdminEmployee struct {
+	Name           *string
+	Email          string
+	OrgID          uuid.UUID
+	HashedPassword string
+}

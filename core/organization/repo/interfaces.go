@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type TempOrgSignUpRepositoryInterface interface {
+type RedisOrganizationRepositoryInterface interface {
 	// Store temp org with TTL
 	Create(
 		ctx context.Context,
@@ -20,11 +20,6 @@ type TempOrgSignUpRepositoryInterface interface {
 		signupID string,
 	) (*models.OrganizationSignUpStaging, error)
 
-	// Existence check (used before OTP resend, etc.)
-	Exists(
-		ctx context.Context,
-		signupID string,
-	) (bool, models.OrganizationSignUpStaging, error)
 	// Remove after success or expiry
 	Delete(
 		ctx context.Context,
@@ -38,7 +33,7 @@ type TempOrgSignUpRepositoryInterface interface {
 	) (bool, error)
 }
 
-type MainOrgSignUpRepositoryInterface interface {
+type OrganizationRepositoryInterface interface {
 	// ─────────────── Existence Checks ───────────────
 
 	// Check if an organization already exists by email

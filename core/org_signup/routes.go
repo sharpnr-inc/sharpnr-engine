@@ -16,11 +16,12 @@ func OrgSignUpRoute(
 	jwtmgr jwt_manager.Manager,
 	modules app.ModulesProvider,
 ) {
-	// orgSignUpsvc := modules.OrgSignUpService()
+	orgSignUpsvc := modules.OrgSignUpService()
 
 	controller := org_signup_controllers.NewOrgSignController(
 		cookies,
 		jwtmgr,
+		orgSignUpsvc,
 	)
 
 	publicSignup := v1.Group("/signup")
@@ -32,7 +33,6 @@ func OrgSignUpRoute(
 	protectedSignup.Use(webMiddleware.SignupGuardMiddleware(jwtmgr))
 	{
 		protectedSignup.POST("/verify-otp", controller.VerifyOtpForSignup)
-		protectedSignup.GET("/verify-token", controller.GetSignUpDetails)
 
 		protectedSignup.GET("/resend-otp", controller.ResendOtp)
 	}

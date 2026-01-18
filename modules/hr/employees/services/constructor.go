@@ -1,11 +1,7 @@
 package employee_services
 
 import (
-	"context"
-	employee_models "sharpnr-engine/modules/hr/employees/models"
 	employee_repo "sharpnr-engine/modules/hr/employees/repo"
-
-	"github.com/google/uuid"
 )
 
 // employeeService is the orchestration layer for
@@ -32,26 +28,6 @@ type employeeService struct {
 	policyRepo           employee_repo.EmployeePolicyRepositoryInterface
 	policyRuleRepo       employee_repo.EmployeePolicyRuleRepositoryInterface
 	policyAssignmentRepo employee_repo.EmployeePrivilegePolicyRepositoryInterface
-}
-
-// AddEmployeeInOrg implements HrEmployeeServiceInterface.
-func (h *employeeService) AddEmployeeInOrg(ctx context.Context, sharpnr_id string) error {
-	panic("unimplemented")
-}
-
-// CreateNewEmployee implements HrEmployeeServiceInterface.
-func (h *employeeService) CreateNewEmployee(ctx context.Context, orgID uuid.UUID) error {
-	panic("unimplemented")
-}
-
-// RemoveEmployeeInOrg implements HrEmployeeServiceInterface.
-func (h *employeeService) RemoveEmployeeInOrg(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) error {
-	panic("unimplemented")
-}
-
-// UpdateEmployeeDetails implements HrEmployeeServiceInterface.
-func (h *employeeService) UpdateEmployeeDetails(ctx context.Context, orgID uuid.UUID, emp *employee_models.Employee) (*employee_models.Employee, error) {
-	panic("unimplemented")
 }
 
 // NewHrEmployeeService constructs a new employeeService.

@@ -3,6 +3,7 @@ package app
 import (
 	dbtx "sharpnr-engine/core/dbTx"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
+	employee_services "sharpnr-engine/modules/hr/employees/services"
 	"sharpnr-engine/sere"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
@@ -16,11 +17,13 @@ func bootstrapOrgSignup(
 	txManager dbtx.TxManager,
 	sereEngine *sere.SERE,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
+	employeeSvc employee_services.EmployeePublicServiceInterface,
 ) org_signup_services.OrganizationSignUpServiceInterfaces {
 
 	return org_signup_services.NewOrgSignUpService(
 		txManager,
 		sereEngine,
 		mailerEngine,
+		employeeSvc,
 	)
 }
