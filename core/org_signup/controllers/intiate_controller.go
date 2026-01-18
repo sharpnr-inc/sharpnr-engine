@@ -20,4 +20,6 @@ func (c *orgSignUpController) InitiateNewOrgRegistration(ctx *gin.Context) {
 		return
 	}
 
+	c.signUpSvc.InitiateRegistration(ctx.Request.Context(), req)
+
 }
