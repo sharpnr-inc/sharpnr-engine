@@ -19,7 +19,7 @@ func BootstrapModules(
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 ) *AppModules {
 
-	organizationService := bootstrapOrganization(db, redis)
+	organizationService := bootstrapOrganization(db, redis, mailerEngine)
 	orgPropertyService := bootstrapOrgProperty(db)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db)
 
@@ -38,8 +38,17 @@ func BootstrapModules(
 	hospitality := bootstrapHospitality(db, sereEngine)
 	accountingService := bootstrapAccounting(db)
 
-	orgSetupWizardService := bootstrapOrgSetupWizard(db)
-	orchestratorService := bootstrapSharpnrOrchestrator()
+	orgSetupWizardService := bootstrapOrgSetupWizard(
+		db,
+		orgLegalEntityService,
+		orgPropertyService,
+		organizationService,
+	)
+	orchestratorService := bootstrapSharpnrOrchestrator(
+		organizationService,
+		orgPropertyService,
+		orgSetupWizardService,
+	)
 
 	sereEngine.UseTxExecutor(func(ctx context.Context, fn func(ctx context.Context) error) error {
 		return txManager.WithTx(ctx, func(tx *gorm.DB) error {

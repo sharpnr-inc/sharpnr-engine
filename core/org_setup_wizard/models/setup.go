@@ -10,7 +10,7 @@ import (
 type OrganizationSetup struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	OrganizationID uuid.UUID `gorm:"type:uuid;uniqueIndex;not null"`
+	OrganizationID uuid.UUID `gorm:"type:uuid;index;not null"`
 
 	// High-level state
 	Status string
