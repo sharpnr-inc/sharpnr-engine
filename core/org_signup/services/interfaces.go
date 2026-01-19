@@ -23,7 +23,7 @@ type OrganizationSignUpServiceInterfaces interface {
 
 	// This is method simple verify the slug or token in cookie
 	// which was set by the *org_sign_controller*
-	VerifyInitiationRegCookie(ctx context.Context, tmpOrgId uuid.UUID) error
+	VerifyInitiationRegCookie(ctx context.Context, tmpOrgId uuid.UUID) (string, error)
 
 	// This method simply Verify the Otp
 	// After Verify the Otp
@@ -31,7 +31,7 @@ type OrganizationSignUpServiceInterfaces interface {
 	// and then we remove the cookie which was set by InitiateRegistration()
 	// and set the New Cookie
 	// Then from here things will be move on the orchestrator
-	VerifyOtp()
+	VerifyOtp(ctx context.Context, otp string, slug uuid.UUID) (orgID uuid.UUID, empID uuid.UUID, err error)
 
 	// It simply resend the Otp but it need the Slug set by the
 	/*

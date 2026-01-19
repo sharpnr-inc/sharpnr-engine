@@ -3,9 +3,6 @@ package restaurantcontrollers
 import (
 	"fmt"
 	"net/http"
-	dto "sharpnr-engine/core/dtos"
-	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -14,32 +11,32 @@ import (
 func (c *restaurantController) CreateSession(ctx *gin.Context) {
 
 	// ✅ Get OrgUUID from context (set by middleware)
-	orgUUID, exists := ctx.Get("OrgUUID")
-	if !exists {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
-		return
-	}
-	orgID, ok := orgUUID.(uuid.UUID)
-	if !ok {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
-		return
-	}
+	// orgUUID, exists := ctx.Get("OrgUUID")
+	// if !exists {
+	// 	ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
+	// 	return
+	// }
+	// orgID, ok := orgUUID.(uuid.UUID)
+	// if !ok {
+	// 	ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
+	// 	return
+	// }
 
-	fmt.Println(orgID)
+	// fmt.Println(orgID)
 
-	var req hospitalitydtos.Hospitality_Restaurant_CreateSession_REQUEST
+	// var req hospitalitydtos.Hospitality_Restaurant_CreateSession_REQUEST
 
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Bad Request"})
-		return
-	}
+	// if err := ctx.ShouldBindJSON(&req); err != nil {
+	// 	ctx.JSON(http.StatusBadRequest, gin.H{"error": "Bad Request"})
+	// 	return
+	// }
 
-	if err := c.resSvc.CreateTableBookingSession(ctx, orgID, req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Bad Request"})
-		return
-	}
+	// if err := c.resSvc.CreateTableBookingSession(ctx, orgID, req); err != nil {
+	// 	ctx.JSON(http.StatusBadRequest, gin.H{"error": "Bad Request"})
+	// 	return
+	// }
 
-	ctx.JSON(http.StatusOK, gin.H{"success": "Booking session Created"})
+	// ctx.JSON(http.StatusOK, gin.H{"success": "Booking session Created"})
 
 }
 
@@ -47,78 +44,78 @@ func (c *restaurantController) CreateSession(ctx *gin.Context) {
 
 func (c *restaurantController) AddOrdersInSession(ctx *gin.Context) {
 
-	orgUUID, exists := ctx.Get("OrgUUID")
-	if !exists {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
-		return
-	}
-	orgID, ok := orgUUID.(uuid.UUID)
-	if !ok {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
-		return
-	}
+	// orgUUID, exists := ctx.Get("OrgUUID")
+	// if !exists {
+	// 	ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
+	// 	return
+	// }
+	// orgID, ok := orgUUID.(uuid.UUID)
+	// if !ok {
+	// 	ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
+	// 	return
+	// }
 
-	fmt.Println(orgID)
+	// fmt.Println(orgID)
 
-	sessionIdParam := ctx.Param("id")
-	if sessionIdParam == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "Table ID not provided",
-		})
-		return
-	}
+	// sessionIdParam := ctx.Param("id")
+	// if sessionIdParam == "" {
+	// 	ctx.JSON(http.StatusBadRequest, gin.H{
+	// 		"error": "Table ID not provided",
+	// 	})
+	// 	return
+	// }
 
-	sessionID, err := uuid.Parse(sessionIdParam)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid session ID format",
-		})
-		return
-	}
+	// sessionID, err := uuid.Parse(sessionIdParam)
+	// if err != nil {
+	// 	ctx.JSON(http.StatusBadRequest, gin.H{
+	// 		"error": "Invalid session ID format",
+	// 	})
+	// 	return
+	// }
 
-	var req hospitalitydtos.Hospitality_Restaurant_AddOrderItemINTheSession_Request
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		res := dto.Response[any]{
-			StatusCode: http.StatusOK,
-			Message:    "Error Creating the Order",
-			Error: dto.ErrorResponse{
-				Message: err.Error(),
-				IsError: true,
-			},
-			Data:      nil,
-			Timestamp: time.Now(),
-		}
-		ctx.JSON(http.StatusOK, res)
-		return
-	}
+	// var req hospitalitydtos.Hospitality_Restaurant_AddOrderItemINTheSession_Request
+	// if err := ctx.ShouldBindJSON(&req); err != nil {
+	// 	res := dto.Response[any]{
+	// 		StatusCode: http.StatusOK,
+	// 		Message:    "Error Creating the Order",
+	// 		Error: dto.ErrorResponse{
+	// 			Message: err.Error(),
+	// 			IsError: true,
+	// 		},
+	// 		Data:      nil,
+	// 		Timestamp: time.Now(),
+	// 	}
+	// 	ctx.JSON(http.StatusOK, res)
+	// 	return
+	// }
 
-	// it need sessionId and ReqBody
-	if err := c.resSvc.AddItemInBookingSession(ctx, orgID, sessionID, req); err != nil {
-		response := dto.Response[any]{
-			StatusCode: http.StatusOK,
-			Message:    "There was an Error",
-			Error: dto.ErrorResponse{
-				Message: err.Error(),
-				IsError: true,
-			},
-			Data:      nil,
-			Timestamp: time.Now(),
-		}
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
+	// // it need sessionId and ReqBody
+	// if err := c.resSvc.AddItemInBookingSession(ctx, orgID, sessionID, req); err != nil {
+	// 	response := dto.Response[any]{
+	// 		StatusCode: http.StatusOK,
+	// 		Message:    "There was an Error",
+	// 		Error: dto.ErrorResponse{
+	// 			Message: err.Error(),
+	// 			IsError: true,
+	// 		},
+	// 		Data:      nil,
+	// 		Timestamp: time.Now(),
+	// 	}
+	// 	ctx.JSON(http.StatusBadRequest, response)
+	// 	return
+	// }
 
-	response := dto.Response[any]{
-		StatusCode: http.StatusOK,
-		Message:    "Order Sent to Kitchen successfully",
-		Error: dto.ErrorResponse{
-			Message: "",
-			IsError: false,
-		},
-		Data:      nil,
-		Timestamp: time.Now(),
-	}
-	ctx.JSON(http.StatusCreated, response)
+	// response := dto.Response[any]{
+	// 	StatusCode: http.StatusOK,
+	// 	Message:    "Order Sent to Kitchen successfully",
+	// 	Error: dto.ErrorResponse{
+	// 		Message: "",
+	// 		IsError: false,
+	// 	},
+	// 	Data:      nil,
+	// 	Timestamp: time.Now(),
+	// }
+	// ctx.JSON(http.StatusCreated, response)
 }
 
 func (c *restaurantController) CreateInvoiceForSession(ctx *gin.Context) {}

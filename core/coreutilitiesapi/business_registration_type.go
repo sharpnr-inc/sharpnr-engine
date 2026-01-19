@@ -2,9 +2,9 @@ package coreutilitiesapi
 
 import (
 	"net/http"
+
 	"sharpnr-engine/core/constants"
-	dto "sharpnr-engine/core/dtos"
-	"time"
+	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,22 +23,15 @@ func GetBusinessRegistrationType(c *gin.Context) {
 		constants.Society,
 	}
 
-	// ✅ Wrap inside a JSON object key
+	// Wrap inside a JSON object key (if frontend expects this shape)
 	wrappedData := map[string]any{
 		"BUSINESS_REGISTRATION_TYPE": businessRegType,
 	}
 
-	// ✅ Build standardized response
-	res := dto.Response[map[string]any]{
-		StatusCode: http.StatusOK,
-		Message:    "List of All Business Registration Types",
-		Error: dto.ErrorResponse{
-			Message: "",
-			IsError: false,
-		},
-		Data:      &wrappedData, // pointer to map
-		Timestamp: time.Now(),
-	}
-
-	c.JSON(http.StatusOK, res)
+	utils.Success(
+		c,
+		http.StatusOK,
+		"List of All Business Registration Types",
+		wrappedData,
+	)
 }

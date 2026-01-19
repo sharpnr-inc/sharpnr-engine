@@ -14,3 +14,15 @@ type DraftOrganizationInput struct {
 	Mobile   *string
 	Password string
 }
+
+type InputDataForOrgAndEmp struct {
+	Email      string
+	HashedPass string
+	Phone      string
+}
+
+type InputForCreateDefaultEmployee struct {
+	OrgID      uuid.UUID
+	Email      string
+	HashedPass string
+}

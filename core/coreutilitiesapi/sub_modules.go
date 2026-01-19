@@ -1,10 +1,10 @@
 package coreutilitiesapi
 
 import (
+	"errors"
 	"net/http"
-	"time"
 
-	dto "sharpnr-engine/core/dtos"
+	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -52,30 +52,36 @@ func GetSubModules(c *gin.Context) {
 
 	case "education":
 		data = []SubModule{
-			{ID: "1", ModuleName: "SCHOOL", Description: "School management module"},
-			{ID: "2", ModuleName: "COLLEGE", Description: "College operations module"},
+			{
+				ID:          "1",
+				ModuleName:  "SCHOOL",
+				Description: "School management module",
+			},
+			{
+				ID:          "2",
+				ModuleName:  "COLLEGE",
+				Description: "College operations module",
+			},
 		}
 
 	default:
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "module not found",
-		})
+		utils.Failure(
+			c,
+			http.StatusNotFound,
+			utils.CodeNotFound,
+			errors.New("module not found"),
+		)
 		return
 	}
 
-	res := dto.Response[map[string]any]{
-		StatusCode: http.StatusOK,
-		Message:    "List of All SubModules",
-		Error: dto.ErrorResponse{
-			Message: "",
-			IsError: false,
-		},
-		Data: &map[string]any{
+	// Unified success response
+	utils.Success(
+		c,
+		http.StatusOK,
+		"List of All SubModules",
+		map[string]any{
 			"module":     module,
 			"submodules": data,
 		},
-		Timestamp: time.Now(),
-	}
-
-	c.JSON(http.StatusOK, res)
+	)
 }

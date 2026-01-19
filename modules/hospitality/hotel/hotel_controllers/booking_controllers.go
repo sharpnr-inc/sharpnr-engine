@@ -1,97 +1,91 @@
 package hotelcontrollers
 
 import (
-	"net/http"
-	dto "sharpnr-engine/core/dtos"
-	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
-	"time"
-
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 func (c *HotelController) GetBookingDetails(ctx *gin.Context) {
-	orgUUID, exists := ctx.Get("OrgUUID")
-	if !exists {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
-		return
-	}
+	// orgUUID, exists := ctx.Get("OrgUUID")
+	// if !exists {
+	// 	ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
+	// 	return
+	// }
 
-	orgID, ok := orgUUID.(uuid.UUID)
-	if !ok {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
-		return
-	}
+	// orgID, ok := orgUUID.(uuid.UUID)
+	// if !ok {
+	// 	ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
+	// 	return
+	// }
 
-	roomId := ctx.Param("roomId")
-	roomUUID, err := uuid.Parse(roomId)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid room UUID"})
-		return
-	}
+	// roomId := ctx.Param("roomId")
+	// roomUUID, err := uuid.Parse(roomId)
+	// if err != nil {
+	// 	ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid room UUID"})
+	// 	return
+	// }
 
-	booking, err := c.hotelService.GetRoomBookingDetails(ctx, roomUUID, orgID)
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-		return
-	}
+	// booking, err := c.hotelService.GetRoomBookingDetails(ctx, roomUUID, orgID)
+	// if err != nil {
+	// 	ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+	// 	return
+	// }
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"booking": booking,
-	})
+	// ctx.JSON(http.StatusOK, gin.H{
+	// 	"success": true,
+	// 	"booking": booking,
+	// })
 }
 
 func (c *HotelController) CreateBooking(ctx *gin.Context) {
 
-	orgUUID, exists := ctx.Get("OrgUUID")
-	if !exists {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
-		return
-	}
+	// orgUUID, exists := ctx.Get("OrgUUID")
+	// if !exists {
+	// 	ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Organization UUID missing"})
+	// 	return
+	// }
 
-	orgID, ok := orgUUID.(uuid.UUID)
-	if !ok {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
-		return
-	}
+	// orgID, ok := orgUUID.(uuid.UUID)
+	// if !ok {
+	// 	ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid organization UUID format"})
+	// 	return
+	// }
 
-	var req hoteldtos.RoomBookingRequest_dto
+	// var req hoteldtos.RoomBookingRequest_dto
 
-	// Bind JSON request body
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error":   "Invalid or missing fields",
-			"details": err.Error(),
-		})
-		return
-	}
+	// // Bind JSON request body
+	// if err := ctx.ShouldBindJSON(&req); err != nil {
+	// 	ctx.JSON(http.StatusBadRequest, gin.H{
+	// 		"error":   "Invalid or missing fields",
+	// 		"details": err.Error(),
+	// 	})
+	// 	return
+	// }
 
-	// Call service
-	if err := c.hotelService.CreateBookingForRoom(ctx, orgID, &req); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
+	// // Call service
+	// if err := c.hotelService.CreateBookingForRoom(ctx, orgID, &req); err != nil {
+	// 	ctx.JSON(http.StatusInternalServerError, gin.H{
+	// 		"error": err.Error(),
+	// 	})
+	// 	return
+	// }
 
-	ctx.JSON(http.StatusCreated, gin.H{
-		"message": "Room booked successfully",
-	})
+	// ctx.JSON(http.StatusCreated, gin.H{
+	// 	"message": "Room booked successfully",
+	// })
 
 }
 
 func (s *HotelController) GetHotelsBookings(ctx *gin.Context) {
-	resData := dto.Response[any]{
-		StatusCode: http.StatusOK,
-		Message:    "This will fetch the Data for the Creating",
-		Error: dto.ErrorResponse{
-			Message: "",
-			IsError: false,
-		},
-		Data:      nil,
-		Timestamp: time.Now(),
-	}
+	// resData := dto.Response[any]{
+	// 	StatusCode: http.StatusOK,
+	// 	Message:    "This will fetch the Data for the Creating",
+	// 	Error: dto.ErrorResponse{
+	// 		Message: "",
+	// 		IsError: false,
+	// 	},
+	// 	Data:      nil,
+	// 	Timestamp: time.Now(),
+	// }
 
-	ctx.JSON(http.StatusOK, resData)
+	// ctx.JSON(http.StatusOK, resData)
 }

@@ -11,16 +11,6 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *organizationService) GetOrgByID(
-	ctx context.Context,
-	orgId uuid.UUID,
-) (organization_contracts.OrganizationResult, error)
-
-func (r *organizationService) GetOrgBySharpID(
-	ctx context.Context,
-	sharpID string,
-) (organization_contracts.OrganizationResult, error)
-
 // This return tell org Exist or not
 func (r *organizationService) IsOrgExists(
 	ctx context.Context,
@@ -88,4 +78,36 @@ func (r *organizationService) CreateDraftOrgForSignup(
 	}
 
 	return stagingID.String(), otp, nil
+}
+
+func (r *organizationService) CreateNewOrganization(
+	ctx context.Context,
+	input organization_contracts.InputDataForOrgAndEmp,
+) (output organization_contracts.InputForCreateDefaultEmployee, err error) {
+
+	// 1. Generate OrgID (SOURCE OF TRUTH)
+	orgID := uuid.New()
+
+	// 2. Build organization model
+	org := &models.Organization{
+		ID:        orgID,
+		Name:      "Default Organization", // or derive from email later
+		SharpnrID: orgID.String(),         // or your own generator
+		Status:    "CREATED",
+		RootEmail: input.Email,
+	}
+
+	// 3. Persist organization
+	if err := r.orgMainRepo.CreateOrganization(ctx, org); err != nil {
+		return output, err
+	}
+
+	// 4. Prepare data for employee creation
+	output = organization_contracts.InputForCreateDefaultEmployee{
+		OrgID:      orgID,
+		Email:      input.Email,
+		HashedPass: input.HashedPass,
+	}
+
+	return output, nil
 }

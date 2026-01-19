@@ -33,6 +33,7 @@ func OrgSignUpRoute(
 	protectedSignup.Use(webMiddleware.SignupGuardMiddleware(jwtmgr))
 	{
 		protectedSignup.POST("/verify-otp", controller.VerifyOtpForSignup)
+		protectedSignup.GET("/verify-slug", controller.VerifySlug)
 
 		protectedSignup.GET("/resend-otp", controller.ResendOtp)
 	}

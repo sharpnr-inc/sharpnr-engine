@@ -1,43 +1,83 @@
 package org_signup_controllers
 
 import (
+	"errors"
+	"net/http"
+	webMiddleware "sharpnr-engine/middlewares/web"
+	"sharpnr-engine/shared/utils"
+
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func (c *orgSignUpController) VerifyOtpForSignup(ctx *gin.Context) {
 
-	// // 1️⃣ Extract signup user ID from context
-	// userIDVal, exists := ctx.Get(webMiddleware.SignupUserIDContextKey)
-	// if !exists {
-	// 	ctx.JSON(http.StatusForbidden, gin.H{
-	// 		"message": "Signup context missing or expired",
-	// 	})
-	// 	return
-	// }
+	// This is Create the Employee and Org
+	slug, exist := ctx.Get(webMiddleware.SignupUserIDContextKey)
+	if !exist {
+		utils.Failure(
+			ctx,
+			http.StatusForbidden,
+			utils.CodeUnauthorized,
+			errors.New("signup context missing or expired"),
+		)
+	}
 
-	// userID, ok := userIDVal.(string)
-	// if !ok || userID == "" {
-	// 	ctx.JSON(http.StatusForbidden, gin.H{
-	// 		"message": "Invalid signup context",
-	// 	})
-	// 	return
-	// }
+	// Type assert to uuid.UUID
+	sluguuid, ok := slug.(uuid.UUID)
+	if !ok || slug == uuid.Nil {
+		utils.Failure(
+			ctx,
+			http.StatusForbidden,
+			utils.CodeUnauthorized,
+			errors.New("invalid signup context"),
+		)
+		return
+	}
 
-	// var req org_signup_dtos.VerifyOtpRequest_Dto
-	// if err := ctx.ShouldBindJSON(&req); err != nil {
-	// 	ctx.JSON(http.StatusBadRequest, gin.H{
-	// 		"message": "Invalid request payload",
-	// 	})
-	// 	return
-	// }
+	c.signUpSvc.VerifyOtp(ctx, "000000", sluguuid)
 
-	// if err := c.orgSvc.VerifyOtp(ctx.Request.Context(), userID, req); err != nil {
-	// 	ctx.JSON(http.StatusUnauthorized, gin.H{"Otp": "Doest not Match"})
-	// 	return
-	// }
+}
 
-	// ctx.JSON(http.StatusOK, gin.H{
-	// 	"message": "OTP verified successfully",
-	// })
+func (c *orgSignUpController) VerifySlug(ctx *gin.Context) {
 
+	userIDVal, exists := ctx.Get(webMiddleware.SignupUserIDContextKey)
+	if !exists {
+		utils.Failure(
+			ctx,
+			http.StatusForbidden,
+			utils.CodeUnauthorized,
+			errors.New("signup context missing or expired"),
+		)
+		return
+	}
+
+	// Type assert to uuid.UUID
+	slug, ok := userIDVal.(uuid.UUID)
+	if !ok || slug == uuid.Nil {
+		utils.Failure(
+			ctx,
+			http.StatusForbidden,
+			utils.CodeUnauthorized,
+			errors.New("invalid signup context"),
+		)
+		return
+	}
+
+	// Call service
+	email, err := c.signUpSvc.VerifyInitiationRegCookie(
+		ctx.Request.Context(),
+		slug,
+	)
+	if err != nil {
+		utils.Failure(
+			ctx,
+			http.StatusBadRequest,
+			utils.CodeUnauthorized,
+			err,
+		)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Signup slug verified", email)
 }

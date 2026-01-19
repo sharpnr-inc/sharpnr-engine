@@ -45,4 +45,19 @@ type OrganizationServiceInterface interface {
 		ctx context.Context,
 		input organization_contracts.DraftOrganizationInput,
 	) (string, string, error)
+
+	GetSignupSlug(
+		ctx context.Context, tempId uuid.UUID,
+	) (string, error)
+
+	VerifySlugCreateDefaultOrg(
+		ctx context.Context,
+		otp string,
+		slugID uuid.UUID,
+	) (output organization_contracts.InputDataForOrgAndEmp, err error)
+
+	CreateNewOrganization(
+		ctx context.Context,
+		input organization_contracts.InputDataForOrgAndEmp,
+	) (output organization_contracts.InputForCreateDefaultEmployee, err error)
 }
