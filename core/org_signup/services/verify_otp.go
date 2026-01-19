@@ -25,7 +25,10 @@ func (r *orgSignUpService) VerifyOtp(
 		return uuid.Nil, uuid.Nil, err
 	}
 
-	r.employeeSvc.CreateDefaultSuperAdmin(ctx, output.OrgID, output.Email, output.HashedPass)
+	empId, err := r.employeeSvc.CreateDefaultSuperAdmin(ctx, output.OrgID, output.Email, output.HashedPass)
+	if err != nil {
+		return uuid.Nil, uuid.Nil, err
+	}
 
-	return uuid.Nil, uuid.Nil, err
+	return output.OrgID, empId, err
 }

@@ -27,15 +27,6 @@ func (r *organizationService) IsOrgExists(
 		return true, nil
 	}
 
-	// phoneExist, err := r.orgMainRepo.ExistsByPhone(ctx, mobile)
-	// if err != nil {
-	// 	return false, err
-	// }
-
-	// if phoneExist {
-	// 	return true, nil
-	// }
-
 	return false, nil
 }
 
@@ -89,12 +80,16 @@ func (r *organizationService) CreateNewOrganization(
 
 	// 1. Generate OrgID (SOURCE OF TRUTH)
 	orgID := uuid.New()
+	sharpID, err := utils.GenerateUniqueSharpnrOrgID(ctx, r.orgMainRepo)
+	if err != nil {
+		return output, err
+	}
 
 	// 2. Build organization model
 	org := &models.Organization{
 		ID:        orgID,
-		Name:      "Default Organization", // or derive from email later
-		SharpnrID: orgID.String(),         // or your own generator
+		Name:      "Default Organization",
+		SharpnrID: sharpID,
 		Status:    "CREATED",
 		RootEmail: input.Email,
 	}
@@ -107,7 +102,7 @@ func (r *organizationService) CreateNewOrganization(
 	// 4. Prepare data for employee creation
 	output = organization_contracts.InputForCreateDefaultEmployee{
 		OrgID:      orgID,
-		Email:      input.Email,
+		Email:      org.RootEmail,
 		HashedPass: input.HashedPass,
 	}
 
