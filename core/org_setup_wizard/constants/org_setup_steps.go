@@ -5,7 +5,7 @@ package org_setup_wizards_constants
 type SetupStatus string
 
 const (
-	SetupNotStarted SetupStatus = "NOT_STARTED"
+	SetupPending    SetupStatus = "PENDING"
 	SetupInProgress SetupStatus = "IN_PROGRESS"
 	SetupCompleted  SetupStatus = "COMPLETED"
 	SetupBlocked    SetupStatus = "BLOCKED"

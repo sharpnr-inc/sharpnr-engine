@@ -27,14 +27,14 @@ func (r *organizationService) IsOrgExists(
 		return true, nil
 	}
 
-	phoneExist, err := r.orgMainRepo.ExistsByPhone(ctx, mobile)
-	if err != nil {
-		return false, err
-	}
+	// phoneExist, err := r.orgMainRepo.ExistsByPhone(ctx, mobile)
+	// if err != nil {
+	// 	return false, err
+	// }
 
-	if phoneExist {
-		return true, nil
-	}
+	// if phoneExist {
+	// 	return true, nil
+	// }
 
 	return false, nil
 }
@@ -79,6 +79,8 @@ func (r *organizationService) CreateDraftOrgForSignup(
 
 	return stagingID.String(), otp, nil
 }
+
+//----------------------------------------------------------------------------------------------------------------//
 
 func (r *organizationService) CreateNewOrganization(
 	ctx context.Context,

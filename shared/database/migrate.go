@@ -41,5 +41,9 @@ func MigrateDB(db *gorm.DB) error {
 		return err
 	}
 
+	if err := migrateSetupWizard(db); err != nil {
+		return err
+	}
+
 	return nil
 }

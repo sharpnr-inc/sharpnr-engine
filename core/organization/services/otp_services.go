@@ -9,6 +9,7 @@ import (
 )
 
 // VerifySlugCreateDefaultOrg implements OrganizationServiceInterface.
+// !! Remind to change the name of this method to VerifySlugAndOtp
 func (r *organizationService) VerifySlugCreateDefaultOrg(
 	ctx context.Context,
 	otp string,
@@ -38,6 +39,10 @@ func (r *organizationService) VerifySlugCreateDefaultOrg(
 		Email:      staging.Email,
 		HashedPass: staging.Password,
 		Phone:      staging.Phone,
+	}
+
+	if err := r.orgRedisRepo.Delete(ctx, slug); err != nil {
+		return output, err
 	}
 
 	return output, nil

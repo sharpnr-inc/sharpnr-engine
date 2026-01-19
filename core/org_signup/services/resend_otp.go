@@ -1,3 +1,3 @@
 package org_signup_services
 
-func (r *orgSignUpService) ResendOtp()
+// func (r *orgSignUpService) ResendOtp()

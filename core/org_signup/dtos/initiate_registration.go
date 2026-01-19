@@ -7,4 +7,5 @@ type OrganizationRegistrationDTO struct {
 }
 
 type VerifyOtpRequestDTO struct {
+	Otp string `json:"otp" binding:"required,len=6,numeric"`
 }

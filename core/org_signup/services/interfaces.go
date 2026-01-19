@@ -37,5 +37,5 @@ type OrganizationSignUpServiceInterfaces interface {
 	/*
 		InitiateRegistration()
 	*/
-	ResendOtp()
+	// ResendOtp()
 }

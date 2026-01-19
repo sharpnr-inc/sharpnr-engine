@@ -10,16 +10,16 @@ import (
 type OrganizationServiceInterface interface {
 
 	// This method gets the Organization By ID
-	GetOrgByID(
-		ctx context.Context,
-		orgId uuid.UUID,
-	) (organization_contracts.OrganizationResult, error)
+	// GetOrgByID(
+	// 	ctx context.Context,
+	// 	orgId uuid.UUID,
+	// ) (organization_contracts.OrganizationResult, error)
 
-	//
-	GetOrgBySharpID(
-		ctx context.Context,
-		sharpID string,
-	) (organization_contracts.OrganizationResult, error)
+	// //
+	// GetOrgBySharpID(
+	// 	ctx context.Context,
+	// 	sharpID string,
+	// ) (organization_contracts.OrganizationResult, error)
 
 	//
 	IsOrgExists(

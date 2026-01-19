@@ -3,6 +3,7 @@ package org_signup_controllers
 import (
 	"errors"
 	"net/http"
+	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	"sharpnr-engine/shared/utils"
 
@@ -13,7 +14,7 @@ import (
 func (c *orgSignUpController) VerifyOtpForSignup(ctx *gin.Context) {
 
 	// This is Create the Employee and Org
-	slug, exist := ctx.Get(webMiddleware.SignupUserIDContextKey)
+	slugId, exist := ctx.Get(webMiddleware.SignupUserIDContextKey)
 	if !exist {
 		utils.Failure(
 			ctx,
@@ -24,8 +25,8 @@ func (c *orgSignUpController) VerifyOtpForSignup(ctx *gin.Context) {
 	}
 
 	// Type assert to uuid.UUID
-	sluguuid, ok := slug.(uuid.UUID)
-	if !ok || slug == uuid.Nil {
+	userIDStr, ok := slugId.(string)
+	if !ok || userIDStr == "" {
 		utils.Failure(
 			ctx,
 			http.StatusForbidden,
@@ -35,7 +36,28 @@ func (c *orgSignUpController) VerifyOtpForSignup(ctx *gin.Context) {
 		return
 	}
 
-	c.signUpSvc.VerifyOtp(ctx, "000000", sluguuid)
+	slug, err := uuid.Parse(userIDStr)
+	if err != nil || slug == uuid.Nil {
+		utils.Failure(
+			ctx,
+			http.StatusForbidden,
+			utils.CodeUnauthorized,
+			errors.New("invalid signup context"),
+		)
+		return
+	}
+
+	var req org_signup_dtos.VerifyOtpRequestDTO
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.ValidationError(ctx, err)
+		return
+	}
+
+	_, _, err = c.signUpSvc.VerifyOtp(ctx, req.Otp, slug)
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadGateway, utils.CodeInternalError, err)
+		return
+	}
 
 }
 
@@ -53,8 +75,19 @@ func (c *orgSignUpController) VerifySlug(ctx *gin.Context) {
 	}
 
 	// Type assert to uuid.UUID
-	slug, ok := userIDVal.(uuid.UUID)
-	if !ok || slug == uuid.Nil {
+	userIDStr, ok := userIDVal.(string)
+	if !ok || userIDStr == "" {
+		utils.Failure(
+			ctx,
+			http.StatusForbidden,
+			utils.CodeUnauthorized,
+			errors.New("invalid signup context"),
+		)
+		return
+	}
+
+	slug, err := uuid.Parse(userIDStr)
+	if err != nil || slug == uuid.Nil {
 		utils.Failure(
 			ctx,
 			http.StatusForbidden,

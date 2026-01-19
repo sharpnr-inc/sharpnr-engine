@@ -39,7 +39,7 @@ type APIError struct {
 Global API Response
 ========================
 */
-type Response_ struct {
+type Response struct {
 	Success   bool      `json:"success"`
 	Message   string    `json:"message,omitempty"`
 	Data      any       `json:"data,omitempty"`
@@ -65,7 +65,7 @@ func Success(
 		payload = data[0]
 	}
 
-	ctx.JSON(status, Response_{
+	ctx.JSON(status, Response{
 		Success:   true,
 		Message:   message,
 		Data:      payload,
@@ -89,7 +89,7 @@ func Failure(
 		msg = err.Error()
 	}
 
-	ctx.JSON(status, Response_{
+	ctx.JSON(status, Response{
 		Success: false,
 		Error: &APIError{
 			HTTPStatus: status,
@@ -114,7 +114,7 @@ func ValidationError(ctx *gin.Context, err error) {
 		}
 	}
 
-	ctx.JSON(http.StatusBadRequest, Response_{
+	ctx.JSON(http.StatusBadRequest, Response{
 		Success: false,
 		Error: &APIError{
 			HTTPStatus: http.StatusBadRequest,
