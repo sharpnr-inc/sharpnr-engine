@@ -2,7 +2,7 @@ package accounting
 
 import (
 	"sharpnr-engine/app"
-	"sharpnr-engine/modules/accounting/accounting_controllers"
+	accounting_controllers "sharpnr-engine/modules/accounting/controllers"
 
 	"github.com/gin-gonic/gin"
 )

@@ -7,27 +7,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// Account represents an individual ledger account within an AccountGroup.
-//
-// An Account is the smallest and most important unit in the accounting system.
-// All financial movements are ultimately recorded against Accounts via
-// JournalLines.
-//
-// Examples of Accounts:
-//   - Cash
-//   - Bank - HDFC
-//   - Accounts Receivable
-//   - Room Revenue - Deluxe
-//   - Food Revenue
-//   - Electricity Expense
-//
-// Each Account:
-//   - Belongs to exactly one AccountGroup
-//   - Inherits its AccountType from the parent AccountGroup
-//   - Is referenced directly by JournalLines
-//
-// Accounts should be treated as stable entities; renaming is allowed,
-// but changing the accounting nature (type) is not.
 type Account struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 

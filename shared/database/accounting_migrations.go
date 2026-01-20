@@ -1,12 +1,18 @@
 package database
 
 import (
-	"sharpnr-engine/modules/accounting/accounting_models"
+	accounting_models "sharpnr-engine/modules/accounting/models"
 
 	"gorm.io/gorm"
 )
 
 func migrateAccounting(db *gorm.DB) error {
+
+	if err := db.Exec(
+		`CREATE SCHEMA IF NOT EXISTS accounting`,
+	).Error; err != nil {
+		return err
+	}
 	return db.AutoMigrate(
 		&accounting_models.AccountingBook{},
 		&accounting_models.AccountingBookSetting{},
@@ -18,5 +24,12 @@ func migrateAccounting(db *gorm.DB) error {
 		&accounting_models.JournalEntry{},
 		&accounting_models.JournalLine{},
 		&accounting_models.LedgerBalance{},
+
+		// Payables & Expenses
+		&accounting_models.Supplier{},
+		&accounting_models.PurchaseBill{},
+		&accounting_models.PurchaseBillItem{},
+		&accounting_models.SupplierPayment{},
+		&accounting_models.Expense{},
 	)
 }

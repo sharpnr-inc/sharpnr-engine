@@ -7,13 +7,16 @@ import (
 )
 
 func migrateOrgLegalEntity(db *gorm.DB) error {
+
 	return db.AutoMigrate(
 		&org_legal_entity_models.OrganizationLegalEntity{},
 		&org_legal_entity_models.PropertyLegalEntity{},
-		&org_legal_entity_models.LegalEntityTaxCategory{},
 		&org_legal_entity_models.LegalEntityAddress{},
 		&org_legal_entity_models.LegalEntityTaxRegistration{},
 		&org_legal_entity_models.ModuleLegalEntity{},
 		&org_legal_entity_models.LegalEntityCompliance{},
+		&org_legal_entity_models.LegalEntityAccountingMapping{},
+		&org_legal_entity_models.LegalEntityTaxCategory{},
+		&org_legal_entity_models.LegalEntityTaxRule{},
 	)
 }

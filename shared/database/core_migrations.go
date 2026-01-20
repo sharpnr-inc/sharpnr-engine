@@ -7,6 +7,7 @@ import (
 )
 
 func migrateCore(db *gorm.DB) error {
+
 	return db.AutoMigrate(
 		&models.Organization{},
 		&models.OrganizationSubscription{},
