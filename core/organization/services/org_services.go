@@ -3,6 +3,7 @@ package organization_services
 import (
 	"context"
 	"errors"
+	organization_constants "sharpnr-engine/core/organization/constants"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
 	"sharpnr-engine/core/organization/models"
 	"sharpnr-engine/shared/utils"
@@ -91,7 +92,7 @@ func (r *organizationService) CreateNewOrganization(
 		ID:        orgID,
 		Name:      "Default Organization",
 		SharpnrID: sharpID,
-		Status:    "CREATED",
+		Status:    string(organization_constants.OrgNotConfigured),
 		RootEmail: input.Email,
 	}
 

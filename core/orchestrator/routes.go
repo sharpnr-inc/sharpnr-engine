@@ -24,9 +24,8 @@ func RegisterOrchestratorRoutes(
 	orchestService := sharpModules.SharpnrOrchestrator()
 	orchestController := orchestrator_controllers.NewOrchestratorController(orchestService)
 
-	orchestrator_routes.RegisterSetupWizardRoutes(webV1, orchestController)
-
 	org := webV1.Group("/orchestrator")
+	orchestrator_routes.RegisterSetupWizardRoutes(org, orchestController)
 
 	{
 		orgHospitality := org.Group("/hospitality")

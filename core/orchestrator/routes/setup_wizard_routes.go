@@ -10,5 +10,6 @@ func RegisterSetupWizardRoutes(webV1 *gin.RouterGroup, controller *orchestrator_
 
 	setupWiz := webV1.Group("/setup-wiz")
 
-	setupWiz.GET("/progress", controller.GetOrgOverview)
+	setupWiz.GET("/progress", controller.GetSetupProgress)
+
 }
