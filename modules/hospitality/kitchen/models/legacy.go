@@ -1,50 +1,47 @@
 package kitchen_models
 
 import (
-	"sharpnr-engine/core/organization/models"
-	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 	"time"
 
 	"github.com/google/uuid"
 )
 
-// -------------------------------------------
-// 1️⃣ Kitchen
-// -------------------------------------------
 type Kitchen struct {
-	ID             uuid.UUID           `gorm:"type:uuid;primaryKey"`
-	Name           string              `gorm:"size:100;not null"`
-	Description    string              `gorm:"size:255"`
-	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
-	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	// Optional: you can later group kitchens by type
-	Type string `gorm:"size:50"` // e.g., MAIN, BAR, BAKERY, ROOM_SERVICE
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null"`
+	PropertyID     uuid.UUID `gorm:"type:uuid;not null"`
 
-	MenuItems []hospitalityMenu_models.MenuItem `gorm:"foreignKey:KitchenID;constraint:OnDelete:SET NULL;"`
+	Name        string `gorm:"size:100;not null"`
+	Description string
+	Type        string `gorm:"size:50"` // e.g., MAIN, BAR, BAKERY, ROOM_SERVICE
+	IsActive    bool
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-// -------------------------------------------
-// 2️⃣ KitchenTicket (KOT)
-// -------------------------------------------
-// When an order is placed, one or more KOTs are generated.
-// Each KOT is assigned to a specific Kitchen.
-type KitchenTicket struct {
-	ID             uuid.UUID           `gorm:"type:uuid;primaryKey"`
-	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
-	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
+type KitchenMenuItem struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	KitchenID uuid.UUID `gorm:"type:uuid;not null"`
-	Kitchen   Kitchen   `gorm:"foreignKey:KitchenID;constraint:OnDelete:CASCADE;"`
+	KitchenID  uuid.UUID `gorm:"type:uuid;index;not null"`
+	MenuItemID uuid.UUID `gorm:"type:uuid;index;not null"`
+
+	IsActive bool `gorm:"default:true"`
+
+	CreatedAt time.Time
+}
+
+type KitchenTicket struct {
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null"`
+	PropertyID     uuid.UUID
+
+	KitchenID      uuid.UUID `gorm:"type:uuid;not null"`
+	ServicePointID uuid.UUID `gorm:"type:uuid;index;not null"`
 
 	Status   string `gorm:"size:20;default:'PENDING'"`
 	TicketNo string `gorm:"size:50;uniqueIndex"`
-
-	Items                           []KitchenTicketItem `gorm:"foreignKey:KitchenTicketID;constraint:OnDelete:CASCADE;"`
-	RestaurantTableBookingSessionID *uuid.UUID          `gorm:"type:uuid"`
 
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -56,30 +53,24 @@ type KitchenTicket struct {
 // -------------------------------------------
 // Each line in a KOT corresponds to an OrderItem
 type KitchenTicketItem struct {
-	ID              uuid.UUID     `gorm:"type:uuid;primaryKey"`
-	KitchenTicketID uuid.UUID     `gorm:"type:uuid;not null"`
-	Ticket          KitchenTicket `gorm:"foreignKey:KitchenTicketID;constraint:OnDelete:CASCADE;"`
+	ID              uuid.UUID `gorm:"type:uuid;primaryKey"`
+	KitchenTicketID uuid.UUID `gorm:"type:uuid;not null"`
 
 	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
-	VariantId  *uuid.UUID
-	AddOns     []KitchenTicketItemAddon `gorm:"foreignKey:KitchenTicketItemID;constraint:OnDelete:CASCADE"`
+	VariantID  *uuid.UUID
 
 	Quantity  int    `gorm:"not null"`
 	Remarks   string `gorm:"size:255"`
 	IsPrinted bool   `gorm:"default:false"`
 
-	OrderType string `gorm:"size:20;not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
 type KitchenTicketItemAddon struct {
-	ID                  uuid.UUID         `gorm:"type:uuid;primaryKey"`
-	KitchenTicketItemID uuid.UUID         `gorm:"type:uuid;not null"`
-	KitchenTicketItem   KitchenTicketItem `gorm:"foreignKey:KitchenTicketItemID;constraint:OnDelete:CASCADE;"`
-
-	AddOnID  uuid.UUID `gorm:"type:uuid;not null"`
-	Quantity int       `gorm:"not null;default:0"`
-
-	CreatedAt time.Time
+	ID                  uuid.UUID `gorm:"type:uuid;primaryKey"`
+	KitchenTicketItemID uuid.UUID `gorm:"type:uuid;not null"`
+	AddOnID             uuid.UUID `gorm:"type:uuid;not null"`
+	Quantity            int       `gorm:"not null;default:0"`
+	CreatedAt           time.Time
 }
