@@ -1,8 +1,8 @@
 package app
 
 import (
-	"sharpnr-engine/modules/accounting/accounting_repo"
-	"sharpnr-engine/modules/accounting/accounting_service"
+	accounting_repo "sharpnr-engine/sharp_services/accounting_engine/repository"
+	accounting_service "sharpnr-engine/sharp_services/accounting_engine/services"
 
 	"gorm.io/gorm"
 )

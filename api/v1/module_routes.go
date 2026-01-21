@@ -2,7 +2,8 @@ package v1
 
 import (
 	"sharpnr-engine/app"
-	"sharpnr-engine/modules/accounting"
+	accounting "sharpnr-engine/sharp_services/accounting_engine"
+
 	"sharpnr-engine/modules/hospitality"
 	"sharpnr-engine/modules/hr"
 

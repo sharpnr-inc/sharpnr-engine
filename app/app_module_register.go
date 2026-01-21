@@ -8,8 +8,8 @@ import (
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
-	"sharpnr-engine/modules/accounting/accounting_service"
 	employee_services "sharpnr-engine/modules/hr/employees/services"
+	accounting_service "sharpnr-engine/sharp_services/accounting_engine/services"
 )
 
 type AppModules struct {

@@ -1,9 +1,9 @@
 package app
 
 import (
-	"sharpnr-engine/modules/accounting/accounting_sere_handlers"
 	"sharpnr-engine/modules/hospitality/hotel/hotel_sere_handlers"
 	"sharpnr-engine/sere"
+	accounting_sere_handlers "sharpnr-engine/sharp_services/accounting_engine/sere_handlers"
 )
 
 func RegisterSereEventHandler(
