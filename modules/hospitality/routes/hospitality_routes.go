@@ -1,4 +1,4 @@
-package hospitality
+package hospitality_routes
 
 import (
 	"sharpnr-engine/app"
