@@ -24,7 +24,6 @@ type RestaurantRepositoryInterface interface {
 	CreateTables(ctx context.Context, resTables *restaurant_models.RestaurantTable) error
 	UpdateTableStatus(ctx context.Context, tableID uuid.UUID, status string) error
 	GetTableById(ctx context.Context, tableId uuid.UUID) (*restaurant_models.RestaurantTable, error)
-	GetAllTablesInFloor(ctx context.Context, floorID uuid.UUID) ([]*restaurant_models.RestaurantTable, error)
 	GetTablesByStatus(ctx context.Context, restaurantID uuid.UUID, status string) ([]*restaurant_models.RestaurantTable, error)
 	GetAllTablesOfFloor(ctx context.Context, floorID uuid.UUID) ([]*restaurant_models.RestaurantTable, error)
 
