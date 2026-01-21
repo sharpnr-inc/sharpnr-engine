@@ -1,4 +1,4 @@
-package accounting
+package accounting_engine_routes
 
 import (
 	"sharpnr-engine/app"

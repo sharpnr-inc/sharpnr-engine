@@ -2,7 +2,7 @@ package v1
 
 import (
 	"sharpnr-engine/app"
-	accounting "sharpnr-engine/sharp_services/accounting_engine"
+	accounting_engine_routes "sharpnr-engine/sharp_services/accounting_engine/routes"
 
 	"sharpnr-engine/modules/hospitality"
 	"sharpnr-engine/modules/hr"
@@ -17,6 +17,6 @@ func RegisterModuleRoutes(
 ) {
 	// base.RegisterBaseModuleRoutes(v1, modules)
 	hospitality.RegisterHotelModuleRoutes(v1, modules)
-	accounting.RegisterAccountingRoutes(v1, modules)
+	accounting_engine_routes.RegisterAccountingRoutes(v1, modules)
 	hr.RegisterHRRoutes(v1, modules)
 }
