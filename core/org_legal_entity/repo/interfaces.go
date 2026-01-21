@@ -8,28 +8,18 @@ import (
 )
 
 type OrgLegalEntityRepoInterface interface {
+	CreateLegalEntity(ctx context.Context, legalEntity *org_legal_entity_models.OrganizationLegalEntity) error
+	GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) ([]*org_legal_entity_models.OrganizationLegalEntity, error)
+	GetLegalEntityByID(ctx context.Context, legalEntityID uuid.UUID) (*org_legal_entity_models.OrganizationLegalEntity, error)
+	UpdateLegalEntityStatus(ctx context.Context, legalEntityID uuid.UUID, isActive bool) error
 
-	// this method creates the legal entity
-	CreateLegalEntity(
-		ctx context.Context,
-		legalEntity org_legal_entity_models.OrganizationLegalEntity,
-	) error
+	AddAddressInLegalEntity(ctx context.Context, address *org_legal_entity_models.LegalEntityAddress) error
+	GetAddressOfLegalEntity(ctx context.Context, legalEntityID uuid.UUID) (*org_legal_entity_models.LegalEntityAddress, error)
+	UpdateLegalEntityAddress(ctx context.Context, addressID uuid.UUID, updates map[string]interface{}) error
 
-	// This method returns the slices of all the entity
-	// of organization if there is no legal entity it will
-	// return empty [] slices
-	GetLegalEntityByOrgID(
-		ctx context.Context,
-		orgID uuid.UUID,
-	) ([]org_legal_entity_models.OrganizationLegalEntity, error)
+	CreateLegalEntityCompliance(ctx context.Context, compliance *org_legal_entity_models.LegalEntityCompliance) error
+	GetLegalCompliancesByLegalEntityID(ctx context.Context, legalEntityID uuid.UUID) ([]*org_legal_entity_models.LegalEntityCompliance, error)
 
-	// this method return the legal entity By Id
-	GetLegalEntityByID(
-		ctx context.Context,
-		legalEntityID uuid.UUID,
-	) (org_legal_entity_models.OrganizationLegalEntity, error)
-
-	AddAddressInLegalEntity(
-		ctx context.Context,
-	) error
+	// Binding Tables
+	AddPropertyInLegalEntity(ctx context.Context, propertyLegalEntityRelation *org_legal_entity_models.PropertyLegalEntity) error
 }
