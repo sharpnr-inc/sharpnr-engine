@@ -7,11 +7,6 @@ import (
 )
 
 func migrateCore(db *gorm.DB) error {
-	if err := db.Exec(
-		`CREATE SCHEMA IF NOT EXISTS core`,
-	).Error; err != nil {
-		return err
-	}
 
 	return db.AutoMigrate(
 		&models.Organization{},

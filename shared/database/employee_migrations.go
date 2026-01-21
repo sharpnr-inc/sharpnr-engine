@@ -7,11 +7,6 @@ import (
 )
 
 func migrateEmployee(db *gorm.DB) error {
-	if err := db.Exec(
-		`CREATE SCHEMA IF NOT EXISTS employee`,
-	).Error; err != nil {
-		return err
-	}
 	return db.AutoMigrate(
 		&employee_models.Employee{},
 		&employee_models.EmployeeOnboarding{},
