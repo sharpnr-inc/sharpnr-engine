@@ -9,7 +9,6 @@ import (
 )
 
 func (r *barRepository) GetBar(ctx context.Context, barId uuid.UUID, orgId uuid.UUID) (*bar_models.Bar, error) {
-
 	panic("unimplemented")
 }
 

@@ -95,9 +95,9 @@ func resolveProgress(
 	}
 }
 
-func (r *orgSetupWizardService) UpdateCurrentStepStatus(
-	ctx context.Context,
-	orgID uuid.UUID,
-	stepID uuid.UUID,
-	status string,
-) error
+// func (r *orgSetupWizardService) UpdateCurrentStepStatus(
+// 	ctx context.Context,
+// 	orgID uuid.UUID,
+// 	stepID uuid.UUID,
+// 	status string,
+// ) error

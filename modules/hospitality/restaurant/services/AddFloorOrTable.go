@@ -2,48 +2,6 @@ package restaurantservices
 
 import (
 	"context"
-	"fmt"
-	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
-
-	"github.com/google/uuid"
 )
 
 func (r *restaurantService) CreateFloor(ctx context.Context) {}
-
-func (r *restaurantService) CreateOrAddTable(ctx context.Context, orgid uuid.UUID, req hospitalitydtos.Restaurant_CreateOrAddTables_Request) error {
-
-	fmt.Println("---- BEFORE SERVICE ----")
-
-	// 1️⃣ Check restaurant owned by this org
-	restaurant, err := r.restaurantRepo.GetRestaurantByOrgId(ctx, orgid)
-	if err != nil {
-		return fmt.Errorf("restaurant not found: %w", err)
-	}
-	// Optional validation
-	if restaurant.ID != req.RestaurantId {
-		return fmt.Errorf("restaurant mismatch")
-	}
-
-	// 2️⃣ Validate floor exists
-	floor, err := r.restaurantRepo.GetRestaurantFloorById(ctx, req.FloorId)
-	if err != nil {
-		return fmt.Errorf("floor not found: %w", err)
-	}
-
-	if floor.RestaurantID != restaurant.ID {
-		return fmt.Errorf("floor does not belong to the restaurant")
-	}
-
-	// 3️⃣ Convert DTO → Model list
-	var tables []*restaurant_models.RestaurantTable
-
-	fmt.Println(tables)
-
-	// 4️⃣ Save all tables (bulk insert)
-	if err := r.restaurantRepo.CreateOrAddTablesInRestuarant(ctx, tables); err != nil {
-		return fmt.Errorf("failed to create tables: %w", err)
-	}
-
-	return nil
-}

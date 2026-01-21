@@ -7,56 +7,37 @@ import (
 	"github.com/google/uuid"
 )
 
-type RestaurantRepository interface {
-	CreateRestaurant(ctx context.Context, res *restaurant_models.Restaurant) error
+type RestaurantRepositoryInterface interface {
 
-	GetRestaurantByOrgId(ctx context.Context, orgId uuid.UUID) (*restaurant_models.Restaurant, error)
+	//Restaurant
+	CreateRestaurant(ctx context.Context, restaurant *restaurant_models.Restaurant) error
+	GetRestaurantByID(ctx context.Context, restaurantID uuid.UUID) (*restaurant_models.Restaurant, error)
+	GetRestaurantByOrgID(ctx context.Context, orgId uuid.UUID) ([]*restaurant_models.Restaurant, error)
+	GetRestaurantByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]*restaurant_models.Restaurant, error)
 
-	UpdateRestaurant(ctx context.Context, restaurant *restaurant_models.Restaurant) error
+	// Restaurant--> Floors
+	CreateFloor(ctx context.Context, floors *restaurant_models.RestaurantFloor) error
+	GetFloorByID(ctx context.Context, floorID uuid.UUID) (*restaurant_models.RestaurantFloor, error)
+	GetAllFloorOfRestaurant(ctx context.Context, restaurantID uuid.UUID) ([]*restaurant_models.RestaurantFloor, error)
 
-	CreateOrAddFloorInRestaurant(ctx context.Context, floor *restaurant_models.RestaurantFloor) error
-
-	CreateOrAddTablesInRestuarant(ctx context.Context,
-		tables []*restaurant_models.RestaurantTable,
-	) error
-
-	GetRestaurantFloorById(
-		ctx context.Context,
-		floorId uuid.UUID,
-	) (*restaurant_models.RestaurantFloor, error)
-
-	/*********************
-	 * Tables Operations *
-	 *********************/
-
-	// GetTableOfRestaurantByRestaurantId()
+	// Restaurant --> Floors --> tables
+	CreateTables(ctx context.Context, resTables *restaurant_models.RestaurantTable) error
+	UpdateTableStatus(ctx context.Context, tableID uuid.UUID, status string) error
 	GetTableById(ctx context.Context, tableId uuid.UUID) (*restaurant_models.RestaurantTable, error)
-	// GetAllTablesInFloors()
-	UpdateTable(ctx context.Context, tableId uuid.UUID, updates map[string]any) error
-	// GetTableBookingSessionByID()
+	GetAllTablesInFloor(ctx context.Context, floorID uuid.UUID) ([]*restaurant_models.RestaurantTable, error)
+	GetTablesByStatus(ctx context.Context, restaurantID uuid.UUID, status string) ([]*restaurant_models.RestaurantTable, error)
+	GetAllTablesOfFloor(ctx context.Context, floorID uuid.UUID) ([]*restaurant_models.RestaurantTable, error)
 
-	/*********************
-	 * Order Operations *
-	*********************/
+	// Restaurant -- Floors --> Tables --> Dining Session
+	CreateRestaurantDiningSession(ctx context.Context, diningSession *restaurant_models.RestaurantDiningSession) error
+	UpdateDiningSessionStatus(ctx context.Context, diningSessionID uuid.UUID, status string) error
+	GetDiningSessionByStatus(ctx context.Context, restaurantID uuid.UUID, status string) ([]*restaurant_models.RestaurantDiningSession, error)
 
-	CreateRes_TableSession(ctx context.Context, session *restaurant_models.RestaurantDiningSession) error
+	// Dining Session payments
+	CreateSessionPayment(ctx context.Context, sessionPayment *restaurant_models.RestaurantSessionPayment) error
+	GetAllPaymentsOfDiningSession(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantSessionPayment, error)
 
-	GetBookingSessionByTableId(
-		ctx context.Context,
-		tableId uuid.UUID,
-	) (*restaurant_models.RestaurantDiningSession, error)
-
-	GetBookingSessionById(
-		ctx context.Context,
-		sessionId uuid.UUID,
-	) (*restaurant_models.RestaurantDiningSession, error)
-
-	UpdateRestaurantOrderItemKotReference(
-		ctx context.Context,
-		orderItemID uuid.UUID,
-		ticketID uuid.UUID,
-		ticketItemID uuid.UUID,
-	) error
-
-	// WithTransaction(ctx context.Context, fn func(tx RestaurantRepository) error) error
+	// Charges
+	CreateCharges(ctx context.Context, charges *restaurant_models.RestaurantCharge) error
+	GetAllChargesOfSession(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantCharge, error)
 }

@@ -3,7 +3,7 @@ package hotel_events
 import (
 	"encoding/json"
 	"errors"
-	"sharpnr-engine/modules/accounting/accounting_models"
+	accounting_models "sharpnr-engine/modules/accounting/models"
 	hotelevents "sharpnr-engine/modules/hospitality/hotel/hotel_events"
 	"sharpnr-engine/sere"
 

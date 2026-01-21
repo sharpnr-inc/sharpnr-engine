@@ -7,6 +7,11 @@ import (
 )
 
 func migrateOrgProperty(db *gorm.DB) error {
+	if err := db.Exec(
+		`CREATE SCHEMA IF NOT EXISTS organization_property`,
+	).Error; err != nil {
+		return err
+	}
 	return db.AutoMigrate(
 		&org_property_models.OrganizationProperty{},
 		&org_property_models.OrganizationPropertyAddress{},

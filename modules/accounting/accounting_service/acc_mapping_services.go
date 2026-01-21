@@ -3,7 +3,7 @@ package accounting_service
 import (
 	"context"
 	accountingdtos "sharpnr-engine/modules/accounting/accounting_dtos"
-	"sharpnr-engine/modules/accounting/accounting_models"
+	accounting_models "sharpnr-engine/modules/accounting/models"
 	"time"
 
 	"github.com/google/uuid"

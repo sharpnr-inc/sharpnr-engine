@@ -3,7 +3,7 @@ package kitchen_sere_handlers
 import (
 	"fmt"
 	hotelevents "sharpnr-engine/modules/hospitality/hotel/hotel_events"
-	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
+	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/repos"
 	"sharpnr-engine/sere"
 )
 

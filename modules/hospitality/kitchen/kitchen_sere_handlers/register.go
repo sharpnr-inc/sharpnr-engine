@@ -1,7 +1,7 @@
 package kitchen_sere_handlers
 
 import (
-	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
+	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/repos"
 	"sharpnr-engine/sere"
 )
 

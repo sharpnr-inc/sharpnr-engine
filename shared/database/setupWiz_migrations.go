@@ -7,6 +7,11 @@ import (
 )
 
 func migrateSetupWizard(db *gorm.DB) error {
+	if err := db.Exec(
+		`CREATE SCHEMA IF NOT EXISTS setup_wizard`,
+	).Error; err != nil {
+		return err
+	}
 	return db.AutoMigrate(
 		&org_setup_wizard_models.OrganizationSetup{},
 		// &org_setup_wizard_models.OrganizationSetupStep{},

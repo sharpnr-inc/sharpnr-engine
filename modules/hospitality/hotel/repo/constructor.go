@@ -2,12 +2,24 @@ package hotelrepo
 
 import (
 	"context"
+	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type hotelRepository struct {
 	db *gorm.DB
+}
+
+// GetFloorsByHotel implements HotelRepositoryInterface.
+func (h *hotelRepository) GetFloorsByHotel(ctx context.Context, hotelID uuid.UUID) ([]hotel_models.HotelFloor, error) {
+	panic("unimplemented")
+}
+
+// GetHotelByOrgID implements HotelRepositoryInterface.
+func (h *hotelRepository) GetHotelByOrgID(ctx context.Context, orgid uuid.UUID) ([]*hotel_models.Hotel, error) {
+	panic("unimplemented")
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------//
@@ -24,52 +36,6 @@ func NewHotelRepository(db *gorm.DB) *hotelRepository {
 	return &hotelRepository{
 		db: db,
 	}
-}
-
-// WithTx runs multiple repository operations inside a single database transaction.
-//
-// What this does:
-//   - Starts a database transaction
-//   - Provides a transaction-scoped repository to the caller
-//   - Commits the transaction if the function returns nil
-//   - Rolls back the transaction if the function returns an error
-//
-// Why this is needed:
-//
-//	Some business operations require inserting or updating multiple tables
-//	together (for example: booking + guest + payment).
-//	Using a transaction guarantees that either ALL changes are saved,
-//	or NONE of them are saved.
-//
-// How to use:
-//
-//	err := repo.WithTx(ctx, func(txRepo HotelRepositoryTransactions) error {
-//	    if err := txRepo.CreateRoom(ctx, room); err != nil {
-//	        return err // triggers rollback
-//	    }
-//
-//	    if err := txRepo.CreateRoomPrice(ctx, price); err != nil {
-//	        return err // triggers rollback
-//	    }
-//
-//	    return nil // commits the transaction
-//	})
-//
-// Important notes:
-//   - Do NOT start or commit transactions manually inside services
-//   - All operations inside the callback MUST use txRepo
-//   - Returning an error automatically rolls back the transaction
-//   - Returning nil commits the transaction
-func (r *hotelRepository) WithTx(
-	ctx context.Context,
-	fn func(txRepo HotelRepositoryInterface) error,
-) error {
-
-	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		// Create a new repository instance bound to the transaction
-		txRepo := &hotelRepository{db: tx}
-		return fn(txRepo)
-	})
 }
 
 // -----------------------------------------------------------------------------------------------------------------------------------//

@@ -3,7 +3,7 @@ package accounting_repo
 import (
 	"context"
 	"errors"
-	"sharpnr-engine/modules/accounting/accounting_models"
+	accounting_models "sharpnr-engine/modules/accounting/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

@@ -5,12 +5,14 @@ import (
 )
 
 type restaurantService struct {
-	restaurantRepo restaurantrepo.RestaurantRepository
+	restaurantRepo restaurantrepo.RestaurantRepositoryInterface
 }
 
-func NewRestaurantService(restaurantRepo restaurantrepo.RestaurantRepository) *restaurantService {
+func NewRestaurantService(restaurantRepo restaurantrepo.RestaurantRepositoryInterface) *restaurantService {
 	return &restaurantService{
 		restaurantRepo: restaurantRepo,
 	}
 
 }
+
+// Right now Restaurant Service only implements the restaurant repository

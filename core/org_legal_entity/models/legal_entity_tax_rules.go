@@ -29,6 +29,10 @@ type LegalEntityTaxRegistration struct {
 	CreatedAt time.Time
 }
 
+func (LegalEntityTaxRegistration) TableName() string {
+	return "legal_entity.legal_entity_tax_registration"
+}
+
 type LegalEntityTaxCategory struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -40,6 +44,10 @@ type LegalEntityTaxCategory struct {
 	Description string
 
 	IsActive bool
+}
+
+func (LegalEntityTaxCategory) TableName() string {
+	return "legal_entity.legal_entity_tax_category"
 }
 
 type LegalEntityTaxRule struct {
@@ -59,4 +67,8 @@ type LegalEntityTaxRule struct {
 	EffectiveTo   *time.Time
 
 	IsActive bool
+}
+
+func (LegalEntityTaxRule) TableName() string {
+	return "legal_entity.legal_entity_tax_rule"
 }

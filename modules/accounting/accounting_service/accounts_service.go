@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	accountingdtos "sharpnr-engine/modules/accounting/accounting_dtos"
-	"sharpnr-engine/modules/accounting/accounting_models"
 	"sharpnr-engine/modules/accounting/accounting_repo"
+	accounting_models "sharpnr-engine/modules/accounting/models"
 	"time"
 
 	"github.com/google/uuid"

@@ -8,7 +8,14 @@ import (
 
 func migrateOrgLegalEntity(db *gorm.DB) error {
 
+	if err := db.Exec(
+		`CREATE SCHEMA IF NOT EXISTS legal_entity`,
+	).Error; err != nil {
+		return err
+	}
+
 	return db.AutoMigrate(
+
 		&org_legal_entity_models.OrganizationLegalEntity{},
 		&org_legal_entity_models.PropertyLegalEntity{},
 		&org_legal_entity_models.LegalEntityAddress{},

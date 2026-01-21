@@ -64,7 +64,7 @@ func (d *hotelRepository) GetHotelGuestById(ctx context.Context, guestId uuid.UU
 	return guest, nil
 }
 
-func (d *hotelRepository) CreateBookingGuest(ctx context.Context, bookingGuest *hotel_models.BookingGuest) error {
+func (d *hotelRepository) CreateBookingGuest(ctx context.Context, bookingGuest *hotel_models.HotelGuest) error {
 	if err := d.db.WithContext(ctx).Create(bookingGuest).Error; err != nil {
 		return err
 	}

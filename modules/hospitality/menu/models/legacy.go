@@ -86,6 +86,9 @@ type MenuItem struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
+	// ServedBy       ServicePointType
+	ServicePointID uuid.UUID
+
 	// This is Menu item have many variant group
 	// this is Menu item have many Addon group
 }

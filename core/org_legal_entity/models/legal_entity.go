@@ -27,6 +27,10 @@ type OrganizationLegalEntity struct {
 	UpdatedAt time.Time
 }
 
+func (OrganizationLegalEntity) TableName() string {
+	return "legal_entity.organization_legal_entity"
+}
+
 type LegalEntityAddress struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -44,6 +48,10 @@ type LegalEntityAddress struct {
 	IsPrimary bool
 }
 
+func (LegalEntityAddress) TableName() string {
+	return "legal_entity.legal_entity_address"
+}
+
 type PropertyLegalEntity struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -58,6 +66,10 @@ type PropertyLegalEntity struct {
 	CreatedAt time.Time
 }
 
+func (PropertyLegalEntity) TableName() string {
+	return "legal_entity.property_legal_entity"
+}
+
 type ModuleLegalEntity struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -66,6 +78,10 @@ type ModuleLegalEntity struct {
 	OrganizationLegalEntityID uuid.UUID `gorm:"type:uuid;index"`
 
 	CreatedAt time.Time
+}
+
+func (ModuleLegalEntity) TableName() string {
+	return "legal_entity.module_legal_entity"
 }
 
 type LegalEntityCompliance struct {
@@ -92,4 +108,8 @@ type LegalEntityCompliance struct {
 	IsActive bool
 
 	CreatedAt time.Time
+}
+
+func (LegalEntityCompliance) TableName() string {
+	return "legal_entity.legal_entity_compliance"
 }

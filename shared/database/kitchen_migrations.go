@@ -7,6 +7,12 @@ import (
 )
 
 func migrateKitchen(db *gorm.DB) error {
+
+	if err := db.Exec(
+		`CREATE SCHEMA IF NOT EXISTS hospitality`,
+	).Error; err != nil {
+		return err
+	}
 	return db.AutoMigrate(
 		//Hospitality --> Kitchen
 		&kitchen_models.Kitchen{},

@@ -7,13 +7,22 @@ import (
 )
 
 func migrateBar(db *gorm.DB) error {
+
+	if err := db.Exec(
+		`CREATE SCHEMA IF NOT EXISTS hospitality`,
+	).Error; err != nil {
+		return err
+	}
 	return db.AutoMigrate(
-		// Hospitality --> Bar
+
 		&bar_models.Bar{},
 		&bar_models.BarFloor{},
 		&bar_models.BarTable{},
-		// Bar-orders
+		&bar_models.BarCharge{},
 		&bar_models.BarTableSession{},
-		&bar_models.BarTablesSessionOrder{},
+		&bar_models.BarTicket{},
+		&bar_models.BarTicketItem{},
+		&bar_models.BarOrderTicketLink{},
+		&bar_models.BarPayment{},
 	)
 }

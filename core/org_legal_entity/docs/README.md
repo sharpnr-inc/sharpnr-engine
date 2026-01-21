@@ -1,0 +1,1 @@
+So this is legal entity of the organization, it can also be referred as the Tax Engine in sharpnr, the module decide what tax to applied on what product, on service

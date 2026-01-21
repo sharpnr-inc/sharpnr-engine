@@ -84,7 +84,7 @@ func Hospitalityhotelroutes(
 
 	hotelTax := hotel_routes.Group("/tax")
 	{
-		hotelTax.POST("/create-rule", newHotelController.CreateTaxRule)
+		hotelTax.POST("/create-rule")
 	}
 
 	hotelBill := hotel_routes.Group("/billing")

@@ -7,8 +7,14 @@ import (
 )
 
 func migrateHospitalityMenu(db *gorm.DB) error {
+
+	if err := db.Exec(
+		`CREATE SCHEMA IF NOT EXISTS hospitality`,
+	).Error; err != nil {
+		return err
+	}
 	return db.AutoMigrate(
-		// ✅ MENU SYSTEM
+
 		&hospitalityMenu_models.MenuGroup{},
 		&hospitalityMenu_models.MenuCategory{},
 		&hospitalityMenu_models.MenuSubCategory{},

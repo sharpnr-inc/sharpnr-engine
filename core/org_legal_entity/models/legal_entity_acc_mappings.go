@@ -16,3 +16,7 @@ type LegalEntityAccountingMapping struct {
 
 	IsActive bool
 }
+
+func (LegalEntityAccountingMapping) TableName() string {
+	return "legal_entity.legal_entity_accounting_mapping"
+}
