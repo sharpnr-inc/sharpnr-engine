@@ -38,20 +38,6 @@ func (r *restaurantService) CreateOrAddTable(ctx context.Context, orgid uuid.UUI
 	// 3️⃣ Convert DTO → Model list
 	var tables []*restaurant_models.RestaurantTable
 
-	for _, t := range req.Tables {
-
-		tables = append(tables, &restaurant_models.RestaurantTable{
-			ID:           uuid.New(),
-			FloorID:      req.FloorId,
-			RestaurantID: restaurant.ID,
-			Restaurant:   restaurant,
-			Floor:        floor,
-			Name:         t.TableName,
-			Capacity:     t.TableCapacity,
-			Status:       "AVAILABLE",
-		})
-	}
-
 	fmt.Println(tables)
 
 	// 4️⃣ Save all tables (bulk insert)

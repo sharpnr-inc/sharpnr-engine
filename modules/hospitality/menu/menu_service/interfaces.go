@@ -67,6 +67,6 @@ type MenuService interface {
 	// 🧀 ADDONS
 	// -------------------------------
 	CreateAddForMenuItem(ctx context.Context, orgid uuid.UUID, req hospitalitydtos.Menu_CreateAddonsInMenu_REQUEST) error
-	UpdateAddonOfMenuItem(ctx context.Context, addon *hospitalityMenu_models.Addon) error
+	UpdateAddonOfMenuItem(ctx context.Context, addon *hospitalityMenu_models.MenuItemAddon) error
 	DeleteAddonOfMenuItem(ctx context.Context, id uuid.UUID) error
 }

@@ -1,6 +1,6 @@
 package restaurantcontrollers
 
-import "sharpnr-engine/modules/hospitality/restaurant/restaurantservices"
+import restaurantservices "sharpnr-engine/modules/hospitality/restaurant/services"
 
 type restaurantController struct {
 	resSvc restaurantservices.RestaurantService

@@ -8,7 +8,7 @@ import (
 )
 
 // CreateAddon implements MenuRepository.
-func (m *menuRepo) CreateAddon(ctx context.Context, addon *hospitalityMenu_models.Addon) error {
+func (m *menuRepo) CreateAddon(ctx context.Context, addon *hospitalityMenu_models.MenuItemAddon) error {
 	return m.db.WithContext(ctx).Create(addon).Error
 }
 
@@ -18,6 +18,6 @@ func (m *menuRepo) DeleteAddon(id uuid.UUID) error {
 }
 
 // UpdateAddon implements MenuRepository.
-func (m *menuRepo) UpdateAddon(addon *hospitalityMenu_models.Addon) error {
+func (m *menuRepo) UpdateAddon(addon *hospitalityMenu_models.MenuItemAddon) error {
 	panic("unimplemented")
 }

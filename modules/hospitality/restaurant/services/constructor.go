@@ -1,7 +1,7 @@
 package restaurantservices
 
 import (
-	"sharpnr-engine/modules/hospitality/restaurant/restaurantrepo"
+	restaurantrepo "sharpnr-engine/modules/hospitality/restaurant/repo"
 )
 
 type restaurantService struct {

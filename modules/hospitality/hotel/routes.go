@@ -2,7 +2,7 @@ package hotel
 
 import (
 	"sharpnr-engine/app"
-	hotelcontrollers "sharpnr-engine/modules/hospitality/hotel/hotel_controllers"
+	hotelcontrollers "sharpnr-engine/modules/hospitality/hotel/controllers"
 
 	"github.com/gin-gonic/gin"
 )

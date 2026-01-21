@@ -2,7 +2,7 @@ package kitchen
 
 import (
 	"sharpnr-engine/app"
-	kitchencontrollers "sharpnr-engine/modules/hospitality/kitchen/kitchenControllers"
+	kitchencontrollers "sharpnr-engine/modules/hospitality/kitchen/controllers"
 
 	"github.com/gin-gonic/gin"
 )

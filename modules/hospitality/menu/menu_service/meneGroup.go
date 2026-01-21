@@ -28,7 +28,6 @@ func (m *menuService) GetAllMenuGroups(ctx context.Context, orgID uuid.UUID) ([]
 		result = append(result, hospitalitydtos.Menu_GetAllMenuGroup_RESPONSE{
 			Id:          g.ID,
 			Name:        g.Name,
-			Type:        g.Type,
 			Description: g.Description,
 		})
 	}

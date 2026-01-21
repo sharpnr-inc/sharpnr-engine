@@ -1,51 +1,24 @@
 package hotel_models
 
-// import (
-// 	"github.com/google/uuid"
-// )
+import (
+	"time"
 
-// // type Hotel struct {
-// // 	ID             uuid.UUID
-// // 	OrganizationID uuid.UUID
+	"github.com/google/uuid"
+)
 
-// // 	Name      string
-// // 	IsActive  bool
-// // 	CreatedAt time.Time
-// // }
+type Hotel struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-// type HotelAddress struct {
-// 	ID          uuid.UUID
-// 	HotelID     uuid.UUID
-// 	AddressLine string
-// 	City        string
-// 	State       string
-// 	Country     string
-// 	Pincode     string
-// }
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null"`
+	PropertyID     uuid.UUID `gorm:"type:uuid;index;not null"`
+	LegalEntityID  uuid.UUID `gorm:"type:uuid;index;not null"`
 
-// type HotelCompliances struct {
-// 	ID      uuid.UUID
-// 	HotelID uuid.UUID
-// 	GST     string
-// 	CIN     string
-// 	// Add more later
-// }
+	Name         string `gorm:"size:100"`
+	CheckInTime  string `gorm:"default:10:00"`
+	CheckOutTime string `gorm:"default:13:00"`
 
-// type HotelFeatures struct {
-// 	ID        uuid.UUID
-// 	HotelID   uuid.UUID
-// 	Feature   string
-// 	IsEnabled bool
-// }
+	IsActive bool `gorm:"default:true"`
 
-// type HotelConfiguration struct {
-// 	ID      uuid.UUID
-// 	HotelID uuid.UUID
-// }
-
-// // Floors
-
-// type HotelFloors struct {
-// 	ID      uuid.UUID
-// 	HotelID uuid.UUID
-// }
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}

@@ -39,17 +39,17 @@ type RestaurantRepository interface {
 	 * Order Operations *
 	*********************/
 
-	CreateRes_TableSession(ctx context.Context, session *restaurant_models.RestaurantTableBookingSession) error
+	CreateRes_TableSession(ctx context.Context, session *restaurant_models.RestaurantDiningSession) error
 
 	GetBookingSessionByTableId(
 		ctx context.Context,
 		tableId uuid.UUID,
-	) (*restaurant_models.RestaurantTableBookingSession, error)
+	) (*restaurant_models.RestaurantDiningSession, error)
 
 	GetBookingSessionById(
 		ctx context.Context,
 		sessionId uuid.UUID,
-	) (*restaurant_models.RestaurantTableBookingSession, error)
+	) (*restaurant_models.RestaurantDiningSession, error)
 
 	UpdateRestaurantOrderItemKotReference(
 		ctx context.Context,

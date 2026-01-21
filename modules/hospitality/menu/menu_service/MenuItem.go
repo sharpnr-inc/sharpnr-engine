@@ -33,13 +33,11 @@ func (s *menuService) CreateMenuItem(
 
 	item := &hospitalityMenu_models.MenuItem{
 		ID:             uuid.New(),
-		SubCategoryID:  &subID,
 		OrganizationID: orgID,
 		Name:           req.Name,
 		Description:    req.Description,
 		IsVeg:          req.IsVeg,
 		BasePrice:      req.BasePrice,
-		ServedBy:       req.ServedBy,
 	}
 
 	if err := s.menuRepo.CreateMenuItem(ctx, item); err != nil {
@@ -47,14 +45,12 @@ func (s *menuService) CreateMenuItem(
 	}
 
 	res := hospitalitydtos.Menu_CreateMenuItem_RES{
-		ID:            item.ID.String(),
-		CategoryID:    item.ID.String(),
-		SubCategoryID: item.SubCategoryID.String(),
-		Name:          item.Name,
-		Description:   item.Description,
-		IsVeg:         item.IsVeg,
-		BasePrice:     item.BasePrice,
-		ServedBy:      item.ServedBy,
+		ID:          item.ID.String(),
+		CategoryID:  item.ID.String(),
+		Name:        item.Name,
+		Description: item.Description,
+		IsVeg:       item.IsVeg,
+		BasePrice:   item.BasePrice,
 	}
 
 	return &res, nil

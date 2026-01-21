@@ -1,7 +1,7 @@
 package kitchenservices
 
 import (
-	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/kitchenRepo"
+	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/repos"
 )
 
 type kitchenService struct {

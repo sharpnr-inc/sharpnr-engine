@@ -3,9 +3,9 @@ package app
 import (
 	barservices "sharpnr-engine/modules/hospitality/bar/services"
 	hotelservices "sharpnr-engine/modules/hospitality/hotel/services"
-	kitchenservices "sharpnr-engine/modules/hospitality/kitchen/kitchenServices"
+	kitchenservices "sharpnr-engine/modules/hospitality/kitchen/services"
 	menuservice "sharpnr-engine/modules/hospitality/menu/menu_service"
-	restaurantservices "sharpnr-engine/modules/hospitality/restaurant/restaurantservices"
+	restaurantservices "sharpnr-engine/modules/hospitality/restaurant/services"
 )
 
 type HospitalityDomain struct {

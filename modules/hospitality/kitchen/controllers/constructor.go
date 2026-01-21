@@ -1,6 +1,6 @@
 package kitchencontrollers
 
-import kitchenservices "sharpnr-engine/modules/hospitality/kitchen/kitchenServices"
+import kitchenservices "sharpnr-engine/modules/hospitality/kitchen/services"
 
 type kitchenController struct {
 	kitchenService kitchenservices.KitchenServiceInterface

@@ -132,7 +132,7 @@ type Hospitality_Restaurant_CreateSession_REQUEST struct {
 }
 
 type Hospitality_Restaurant_GetBookingSession_Response struct {
-	Session *restaurant_models.RestaurantTableBookingSession `json:"session"`
+	Session *restaurant_models.RestaurantDiningSession `json:"session"`
 }
 
 type Hospitality_Restaurant_AddOrderItemINTheSession_Request struct {

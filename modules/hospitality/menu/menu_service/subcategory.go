@@ -15,25 +15,24 @@ func (s *menuService) CreateSubCategory(
 	orgID uuid.UUID,
 ) error {
 
-	catID, err := uuid.Parse(req.CategoryID)
-	if err != nil {
-		return fmt.Errorf("invalid category id: %w", err)
-	}
+	// catID, err := uuid.Parse(req.CategoryID)
+	// if err != nil {
+	// 	return fmt.Errorf("invalid category id: %w", err)
+	// }
 
-	// 1️⃣ Validate category exists and belongs to this org
-	category, err := s.menuRepo.GetCategoryByID(ctx, catID)
-	if err != nil {
-		return fmt.Errorf("category not found: %w", err)
-	}
+	// // 1️⃣ Validate category exists and belongs to this org
+	// category, err := s.menuRepo.GetCategoryByID(ctx, catID)
+	// if err != nil {
+	// 	return fmt.Errorf("category not found: %w", err)
+	// }
 
-	if category.OrganizationID != orgID {
-		return fmt.Errorf("category does not belong to your organization")
-	}
+	// if category.OrganizationID != orgID {
+	// 	return fmt.Errorf("category does not belong to your organization")
+	// }
 
 	// 2️⃣ Create SubCategory
 	sub := &hospitalityMenu_models.MenuSubCategory{
 		ID:             uuid.New(),
-		CategoryID:     catID,
 		OrganizationID: orgID,
 		Name:           req.SubCategoryName,
 		Description:    req.SubCategoryDesc,

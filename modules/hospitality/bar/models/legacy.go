@@ -123,8 +123,8 @@ type BarTablesSessionOrder struct {
 	// -----------------------------------------------------
 	// 🔗 Addons (Optional)
 	// -----------------------------------------------------
-	AddonID *uuid.UUID                    `gorm:"type:uuid"`
-	Addon   *hospitalityMenu_models.Addon `gorm:"foreignKey:AddonID"`
+	AddonID *uuid.UUID                            `gorm:"type:uuid"`
+	Addon   *hospitalityMenu_models.MenuItemAddon `gorm:"foreignKey:AddonID"`
 
 	Quantity int    `gorm:"not null;default:1"`
 	Notes    string `gorm:"type:text"`

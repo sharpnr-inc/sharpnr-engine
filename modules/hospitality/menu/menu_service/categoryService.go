@@ -27,11 +27,9 @@ func (s *menuService) CreateCategory(ctx context.Context, req *hospitalitydtos.M
 	}
 
 	category := &hospitalityMenu_models.MenuCategory{
-		ID:             uuid.New(),
-		GroupID:        groupUUID,
-		OrganizationID: orgID,
-		Name:           req.CategoryName,
-		Description:    req.CategoryDescription,
+		ID:          uuid.New(),
+		Name:        req.CategoryName,
+		Description: req.CategoryDescription,
 	}
 
 	if err := s.menuRepo.CreateCategory(ctx, category); err != nil {
@@ -57,84 +55,84 @@ func (s *menuService) GetCategoriesByGroup(
 		return nil, fmt.Errorf("this menu group does not belong to your organization")
 	}
 
-	categories, err := s.menuRepo.GetCategoriesByGroup(ctx, groupID)
-	if err != nil {
-		return nil, err
-	}
+	// categories, err := s.menuRepo.GetCategoriesByGroup(ctx, groupID)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	resp := make([]hospitalitydtos.Menu_Category_RESPONSE, 0)
 
-	for _, c := range categories {
+	// for _, c := range categories {
 
-		cat := hospitalitydtos.Menu_Category_RESPONSE{
-			Id:          c.ID,
-			Name:        c.Name,
-			Description: c.Description,
-		}
+	// 	cat := hospitalitydtos.Menu_Category_RESPONSE{
+	// 		Id:          c.ID,
+	// 		Name:        c.Name,
+	// 		Description: c.Description,
+	// 	}
 
-		// SUBCATEGORIES
-		for _, sub := range c.SubCategories {
+	// 	// SUBCATEGORIES
+	// 	for _, sub := range c.SubCategories {
 
-			subDto := hospitalitydtos.Menu_SubCategory_RESPONSE{
-				Id:          sub.ID,
-				Name:        sub.Name,
-				Description: sub.Description,
-			}
+	// 		subDto := hospitalitydtos.Menu_SubCategory_RESPONSE{
+	// 			Id:          sub.ID,
+	// 			Name:        sub.Name,
+	// 			Description: sub.Description,
+	// 		}
 
-			// MENU ITEMS
-			for _, item := range sub.MenuItems {
+	// 		// MENU ITEMS
+	// 		for _, item := range sub.MenuItems {
 
-				itemDto := hospitalitydtos.Menu_Item_RESPONSE{
-					Id:          item.ID,
-					Name:        item.Name,
-					Description: item.Description,
-					Price:       float32(item.BasePrice),
-				}
+	// 			itemDto := hospitalitydtos.Menu_Item_RESPONSE{
+	// 				Id:          item.ID,
+	// 				Name:        item.Name,
+	// 				Description: item.Description,
+	// 				Price:       float32(item.BasePrice),
+	// 			}
 
-				// ----------------------------------------
-				// VARIANT GROUPS
-				// ----------------------------------------
-				for _, vg := range item.VariantGroups {
+	// 			// ----------------------------------------
+	// 			// VARIANT GROUPS
+	// 			// ----------------------------------------
+	// 			for _, vg := range item.VariantGroups {
 
-					vgDto := hospitalitydtos.Menu_VariantGroup_RESPONSE{
-						Id:            vg.ID,
-						Name:          vg.Name,
-						IsMultiSelect: vg.IsMultiSelect,
-					}
+	// 				vgDto := hospitalitydtos.Menu_VariantGroup_RESPONSE{
+	// 					Id:            vg.ID,
+	// 					Name:          vg.Name,
+	// 					IsMultiSelect: vg.IsMultiSelect,
+	// 				}
 
-					// VARIANTS
-					for _, v := range vg.Variants {
-						vgDto.Variants = append(
-							vgDto.Variants,
-							hospitalitydtos.Menu_Variant_RESPONSE{
-								Id:    v.ID,
-								Name:  v.Name,
-								Price: v.Price,
-							},
-						)
-					}
+	// 				// VARIANTS
+	// 				for _, v := range vg.Variants {
+	// 					vgDto.Variants = append(
+	// 						vgDto.Variants,
+	// 						hospitalitydtos.Menu_Variant_RESPONSE{
+	// 							Id:    v.ID,
+	// 							Name:  v.Name,
+	// 							Price: v.Price,
+	// 						},
+	// 					)
+	// 				}
 
-					itemDto.VariantGroups = append(itemDto.VariantGroups, vgDto)
-				}
+	// 				itemDto.VariantGroups = append(itemDto.VariantGroups, vgDto)
+	// 			}
 
-				for _, ads := range item.Addons {
-					adsDTO := hospitalitydtos.Menu_AddOns{
-						ID:    ads.ID,
-						Name:  ads.Name,
-						Price: ads.Price,
-					}
+	// 			for _, ads := range item.Addons {
+	// 				adsDTO := hospitalitydtos.Menu_AddOns{
+	// 					ID:    ads.ID,
+	// 					Name:  ads.Name,
+	// 					Price: ads.Price,
+	// 				}
 
-					itemDto.AddOns = append(itemDto.AddOns, adsDTO)
-				}
+	// 				itemDto.AddOns = append(itemDto.AddOns, adsDTO)
+	// 			}
 
-				subDto.MenuItems = append(subDto.MenuItems, itemDto)
-			}
+	// 			subDto.MenuItems = append(subDto.MenuItems, itemDto)
+	// 		}
 
-			cat.SubCategories = append(cat.SubCategories, subDto)
-		}
+	// 		cat.SubCategories = append(cat.SubCategories, subDto)
+	// 	}
 
-		resp = append(resp, cat)
-	}
+	// 	resp = append(resp, cat)
+	// }
 
 	return resp, nil
 }

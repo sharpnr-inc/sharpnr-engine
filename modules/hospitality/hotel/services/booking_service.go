@@ -8,8 +8,8 @@ import (
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
 	hotelevents "sharpnr-engine/modules/hospitality/hotel/hotel_events"
 	"sharpnr-engine/modules/hospitality/hotel/hotel_events_names"
-	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
 	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
+	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
 	"time"
 
 	"github.com/google/uuid"

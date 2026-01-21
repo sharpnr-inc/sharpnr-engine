@@ -1,7 +1,6 @@
 package hospitalityMenu_models
 
 import (
-	"sharpnr-engine/core/organization/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -11,19 +10,19 @@ import (
 // 0️⃣ MENU GROUP (Context: Bar, Restaurant, Room Service, etc.)
 // -------------------------------
 type MenuGroup struct {
-	ID             uuid.UUID           `gorm:"type:uuid;primaryKey"`
-	OrganizationID uuid.UUID           `gorm:"type:uuid;not null"`
-	Organization   models.Organization `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE;"`
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null"`
+	PropertyID     uuid.UUID
 
 	// e.g., "Restaurant Menu", "Bar Menu", "Room Service Menu"
-	Name string `gorm:"size:100;not null"`
-
+	Name        string `gorm:"size:100;not null"`
 	Description string `gorm:"size:255"`
 
-	// Optional — menu context type
-	Type string `gorm:"size:50"` // e.g., "BAR", "HOTEL", "RESTAURANT"
+	OwnerModule string
+	// RESTAURANT, BAR, HOTEL, HOUSEKEEPING, CONCIERGE
 
-	Categories []MenuCategory `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE;"`
+	OwnerID uuid.UUID
+	// restaurant_id, hotel_id, property_id
 
 	IsActive  bool `gorm:"default:true"`
 	CreatedAt time.Time
@@ -34,17 +33,12 @@ type MenuGroup struct {
 // 1️⃣ MENU CATEGORY
 // -------------------------------
 type MenuCategory struct {
-	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
-	GroupID        uuid.UUID `gorm:"type:uuid;not null"`
-	Group          MenuGroup `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE;"`
-	OrganizationID uuid.UUID `gorm:"type:uuid;not null"`
-	Organization   models.Organization
+	ID          uuid.UUID `gorm:"type:uuid;primaryKey"`
+	MenuGroupID uuid.UUID `gorm:"type:uuid;not null"`
 
 	// e.g., "Main Course", "Appetizers", "Desserts"
 	Name        string `gorm:"size:100;not null"`
 	Description string `gorm:"size:255"`
-
-	SubCategories []MenuSubCategory `gorm:"foreignKey:CategoryID;constraint:OnDelete:CASCADE;"`
 
 	IsActive  bool `gorm:"default:true"`
 	CreatedAt time.Time
@@ -55,14 +49,13 @@ type MenuCategory struct {
 // 1.5️⃣ MENU SUBCATEGORY
 // -------------------------------
 type MenuSubCategory struct {
-	ID             uuid.UUID    `gorm:"type:uuid;primaryKey"`
-	CategoryID     uuid.UUID    `gorm:"type:uuid;not null"`
-	Category       MenuCategory `gorm:"foreignKey:CategoryID;constraint:OnDelete:CASCADE;"`
-	OrganizationID uuid.UUID    `gorm:"type:uuid;not null"`
-	Organization   models.Organization
-	Name           string     `gorm:"size:100;not null"`
-	Description    string     `gorm:"size:255"`
-	MenuItems      []MenuItem `gorm:"foreignKey:SubCategoryID;constraint:OnDelete:CASCADE;"`
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	MenuCategoryID uuid.UUID `gorm:"type:uuid;not null"`
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null"`
+
+	Name        string `gorm:"size:100;not null"`
+	Description string `gorm:"size:255"`
 
 	IsActive  bool `gorm:"default:true"`
 	CreatedAt time.Time
@@ -73,69 +66,73 @@ type MenuSubCategory struct {
 // 2️⃣ MENU ITEM
 // -------------------------------
 type MenuItem struct {
-	ID             uuid.UUID        `gorm:"type:uuid;primaryKey"`
-	SubCategoryID  *uuid.UUID       `gorm:"type:uuid"`
-	SubCategory    *MenuSubCategory `gorm:"foreignKey:SubCategoryID;constraint:OnDelete:SET NULL;"`
-	OrganizationID uuid.UUID        `gorm:"type:uuid;not null"`
-	Organization   models.Organization
+	ID                uuid.UUID `gorm:"type:uuid;primaryKey"`
+	MenuSubCategoryID uuid.UUID `gorm:"type:uuid"`
+	OrganizationID    uuid.UUID `gorm:"type:uuid;not null"`
 
-	Name        string  `gorm:"size:100;not null"`
-	Description string  `gorm:"size:255"`
-	IsVeg       bool    `gorm:"default:true"`
+	Name        string `gorm:"size:100;not null"`
+	Description string `gorm:"size:255"`
+	IsVeg       bool   `gorm:"default:true"`
+
 	BasePrice   float64 `gorm:"not null"`
 	IsAvailable bool    `gorm:"default:true"`
 
-	VariantGroups []MenuVariantGroup `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
-	Addons        []Addon            `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
+	TaxCategoryCode string
+	// FOOD, ALCOHOL, ROOM_SERVICE, LAUNDRY, CONCIERGE
 
-	KitchenID *uuid.UUID `gorm:"type:uuid"`
-
-	ServedBy string `gorm:"size:50;default:'KITCHEN'" json:"served_by"`
-	Unit     string `gorm:"default:'plate'"`
+	Unit string `gorm:"default:'plate'"`
 
 	IsActive  bool `gorm:"default:true"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+
+	// This is Menu item have many variant group
+	// this is Menu item have many Addon group
 }
 
 type MenuVariantGroup struct {
-	ID            uuid.UUID     `gorm:"primaryKey"`
-	MenuItemID    uuid.UUID     `gorm:"not null"`
-	MenuItem      MenuItem      `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
-	Name          string        `gorm:"size:50;not null"` // e.g., "Size", "Crust", "Spice Level"
-	IsMultiSelect bool          `gorm:"default:false"`    // user can pick multiple? (e.g., toppings)
-	Variants      []MenuVariant `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE;"`
-	IsActive      bool          `gorm:"default:true"`
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	ID         uuid.UUID `gorm:"primaryKey"`
+	MenuItemID uuid.UUID `gorm:"not null"`
+
+	Name          string `gorm:"size:50;not null"` // e.g., "Size", "Crust", "Spice Level"
+	IsMultiSelect bool   `gorm:"default:false"`    // user can pick multiple? (e.g., toppings)
+
+	IsActive bool `gorm:"default:true"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+
+	// This tables is collection of variants
 }
 
 // -------------------------------
 // 3️⃣ MENU VARIANT
 // -------------------------------
 type MenuVariant struct {
-	ID         uuid.UUID        `gorm:"type:uuid;primaryKey"`
-	GroupID    uuid.UUID        `gorm:"type:uuid;not null"`
-	Group      MenuVariantGroup `gorm:"constraint:OnDelete:CASCADE;"`
-	MenuItemID uuid.UUID        `gorm:"type:uuid;not null"` // FIXED (was MenuItemId without gorm tag)
-	Name       string           `gorm:"size:50;not null"`
-	Price      float64          `gorm:"not null"`
-	IsActive   bool             `gorm:"default:true"`
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	ID                 uuid.UUID `gorm:"type:uuid;primaryKey"`
+	MenuVariantGroupID uuid.UUID `gorm:"type:uuid;not null"`
+	MenuItemID         uuid.UUID `gorm:"type:uuid;not null"` // FIXED (was MenuItemId without gorm tag)
+
+	Name     string  `gorm:"size:50;not null"`
+	Price    float64 `gorm:"not null"`
+	IsActive bool    `gorm:"default:true"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 // -------------------------------
 // 5️⃣ ADDONS
 // -------------------------------
-type Addon struct {
+type MenuItemAddon struct {
 	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
 	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
-	MenuItem   MenuItem  `gorm:"foreignKey:MenuItemID;constraint:OnDelete:CASCADE;"`
-	Name       string    `gorm:"size:100;not null"`
-	Price      float64   `gorm:"not null"`
-	IsVeg      bool      `gorm:"default:true"`
-	IsActive   bool      `gorm:"default:true"`
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+
+	Name  string  `gorm:"size:100;not null"`
+	Price float64 `gorm:"not null"`
+	IsVeg bool    `gorm:"default:true"`
+
+	IsActive  bool `gorm:"default:true"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

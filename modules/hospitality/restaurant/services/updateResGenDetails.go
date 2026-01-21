@@ -37,21 +37,6 @@ func (r *restaurantService) UpdateRestaurantGeneralDetails(
 		return false, fmt.Errorf("restaurant does not belong to organization")
 	}
 
-	// Step 4: Update only provided fields (nil fields are skipped)
-	updateStringIfPresent(&restaurant.LegalName, req.RestaurantLegalName)
-	updateStringIfPresent(&restaurant.DisplayName, req.RestaurantDisplayName)
-	updateStringIfPresent(&restaurant.FSSAINumber, req.FSSAINumber)
-	updateStringIfPresent(&restaurant.GSTNumber, req.GSTNumber)
-	updateStringIfPresent(&restaurant.CINNumber, req.CINNumber)
-	updateStringIfPresent(&restaurant.Address, req.AddressLine)
-	updateStringIfPresent(&restaurant.City, req.City)
-	updateStringIfPresent(&restaurant.State, req.State)
-	updateStringIfPresent(&restaurant.Country, req.Country)
-	updateStringIfPresent(&restaurant.Pincode, req.Pincode)
-	updateStringIfPresent(&restaurant.ContactEmail, req.EmailAddress)
-	updateStringIfPresent(&restaurant.ContactNumber, req.ContactNumber)
-	updateStringIfPresent(&restaurant.ManagerName, req.ManagerName)
-
 	// Step 5: Save changes to database
 	err = r.restaurantRepo.UpdateRestaurant(ctx, restaurant)
 	if err != nil {

@@ -11,6 +11,8 @@ func migrateRestaurant(db *gorm.DB) error {
 		&restaurant_models.Restaurant{},
 		&restaurant_models.RestaurantFloor{},
 		&restaurant_models.RestaurantTable{},
-		&restaurant_models.RestaurantTableBookingSession{},
+		&restaurant_models.RestaurantDiningSession{},
+		&restaurant_models.RestaurantCharge{},
+		&restaurant_models.RestaurantSessionPayment{},
 	)
 }

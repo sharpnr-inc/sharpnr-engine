@@ -28,13 +28,11 @@ func (s *menuService) CreateVariantGroup(
 	}
 
 	// Now group.ID contains the newly created VariantGroupID
-	var groupID = group.ID
 
 	// 3️⃣ Create each variant
 	for _, v := range req.Variant {
 		variant := &hospitalityMenu_models.MenuVariant{
 			ID:         uuid.New(),
-			GroupID:    groupID,
 			MenuItemID: menuItemId,
 			Name:       v.Name,
 			Price:      v.Price,
@@ -64,33 +62,33 @@ func (m *menuService) GetVariantGroupByMenuId(
 	}
 
 	// Fetch all groups
-	groups, err := m.menuRepo.GetVariantGroupsByMenuItemID(ctx, menuItemId)
-	if err != nil {
-		return nil, err
-	}
+	// groups, err := m.menuRepo.GetVariantGroupsByMenuItemID(ctx, menuItemId)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// Create response list
 	resp := make([]hospitalitydtos.Menu_VariantGroup_RESPONSE, 0)
 
-	for _, g := range groups {
-		grpDto := hospitalitydtos.Menu_VariantGroup_RESPONSE{
-			Id:            g.ID,
-			Name:          g.Name,
-			IsMultiSelect: g.IsMultiSelect,
-			Variants:      []hospitalitydtos.Menu_Variant_RESPONSE{},
-		}
+	// for _, g := range groups {
+	// 	grpDto := hospitalitydtos.Menu_VariantGroup_RESPONSE{
+	// 		Id:            g.ID,
+	// 		Name:          g.Name,
+	// 		IsMultiSelect: g.IsMultiSelect,
+	// 		Variants:      []hospitalitydtos.Menu_Variant_RESPONSE{},
+	// 	}
 
-		// Add variants
-		for _, v := range g.Variants {
-			grpDto.Variants = append(grpDto.Variants, hospitalitydtos.Menu_Variant_RESPONSE{
-				Id:    v.ID,
-				Name:  v.Name,
-				Price: v.Price,
-			})
-		}
+	// 	// Add variants
+	// 	for _, v := range g.Variants {
+	// 		grpDto.Variants = append(grpDto.Variants, hospitalitydtos.Menu_Variant_RESPONSE{
+	// 			Id:    v.ID,
+	// 			Name:  v.Name,
+	// 			Price: v.Price,
+	// 		})
+	// 	}
 
-		resp = append(resp, grpDto)
-	}
+	// 	resp = append(resp, grpDto)
+	// }
 
 	return resp, nil
 }

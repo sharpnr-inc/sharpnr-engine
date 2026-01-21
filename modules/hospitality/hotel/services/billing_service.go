@@ -5,8 +5,8 @@ import (
 	"errors"
 	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
-	hotelrepo "sharpnr-engine/modules/hospitality/hotel/hotel_repo"
 	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
+	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
 	"time"
 
 	"github.com/google/uuid"

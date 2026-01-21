@@ -62,7 +62,7 @@ type MenuRepositoryInterface interface {
 	// -------------------------------
 	// 🧀 ADDONS
 	// -------------------------------
-	CreateAddon(ctx context.Context, addon *hospitalityMenu_models.Addon) error
-	UpdateAddon(addon *hospitalityMenu_models.Addon) error
+	CreateAddon(ctx context.Context, addon *hospitalityMenu_models.MenuItemAddon) error
+	UpdateAddon(addon *hospitalityMenu_models.MenuItemAddon) error
 	DeleteAddon(id uuid.UUID) error
 }

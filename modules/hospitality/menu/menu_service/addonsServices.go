@@ -21,10 +21,9 @@ func (m *menuService) CreateAddForMenuItem(ctx context.Context, orgid uuid.UUID,
 		return errors.New("organization mismatch")
 	}
 
-	addons := &hospitalityMenu_models.Addon{
+	addons := &hospitalityMenu_models.MenuItemAddon{
 		ID:         uuid.New(),
 		MenuItemID: menuItem.ID,
-		MenuItem:   *menuItem,
 		Name:       req.Name,
 		Price:      float64(req.Price),
 		IsVeg:      true,
@@ -39,7 +38,7 @@ func (m *menuService) CreateAddForMenuItem(ctx context.Context, orgid uuid.UUID,
 }
 
 // UpdateAddon implements MenuService.
-func (m *menuService) UpdateAddonOfMenuItem(ctx context.Context, addon *hospitalityMenu_models.Addon) error {
+func (m *menuService) UpdateAddonOfMenuItem(ctx context.Context, addon *hospitalityMenu_models.MenuItemAddon) error {
 	panic("unimplemented")
 }
 
