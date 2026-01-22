@@ -39,6 +39,7 @@ type APIError struct {
 Global API Response
 ========================
 */
+// @Description Global API Response Wrapper
 type Response struct {
 	Success   bool      `json:"success"`
 	Message   string    `json:"message,omitempty"`

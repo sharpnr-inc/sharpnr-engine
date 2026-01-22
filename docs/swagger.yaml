@@ -15,6 +15,30 @@ definitions:
     - mobile
     - password
     type: object
+  utils.APIError:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  utils.Response:
+    description: Global API Response Wrapper
+    properties:
+      data: {}
+      error:
+        $ref: '#/definitions/utils.APIError'
+      message:
+        type: string
+      success:
+        type: boolean
+      timestamp:
+        type: string
+      token:
+        type: string
+    type: object
 host: 192.168.1.35:8080
 info:
   contact:
@@ -86,8 +110,21 @@ paths:
           $ref: '#/definitions/org_signup_dtos.OrganizationRegistrationDTO'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: Successfully initiated registration
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/utils.Response'
       summary: Initiate Organization Registration
       tags:
-      - signup  <-- This groups it under "core-signup"
+      - signup
 swagger: "2.0"

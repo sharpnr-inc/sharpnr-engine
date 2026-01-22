@@ -16,7 +16,9 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        registration  body      org_signup_dtos.OrganizationRegistrationDTO  true  "Details"
-// @Router       /org/register [post]
+// @Success      200  {object}  utils.Response{data=string} "Successfully initiated registration"
+// @Failure      400  {object}  utils.Response "Validation Error"
+// @Router       /signup/initiate [post]
 func (c *orgSignUpController) InitiateNewOrgRegistration(ctx *gin.Context) {
 
 	// This Controller First need to check Request is Correct and comes properly
