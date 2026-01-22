@@ -10,67 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func (r *organizationRepo) ExistsByEmail(
-	ctx context.Context,
-	email string,
-) (bool, error) {
-
-	if email == "" {
-		return false, errors.New("email is required")
-	}
-
-	normalizedEmail := strings.ToLower(strings.TrimSpace(email))
-	return r.exists(ctx, "root_email", normalizedEmail)
-}
-
-func (r *organizationRepo) ExistsByPhone(
-	ctx context.Context,
-	phone string,
-) (bool, error) {
-
-	if phone == "" {
-		return false, errors.New("phone is required")
-	}
-
-	// Phone should already be normalized (E.164) at service layer
-	return r.exists(ctx, "phone", phone)
-}
-
-func (r *organizationRepo) ExistsBySlug(
-	ctx context.Context,
-	slug string,
-) (bool, error) {
-
-	if slug == "" {
-		return false, errors.New("slug is required")
-	}
-
-	normalizedSlug := strings.ToLower(strings.TrimSpace(slug))
-	return r.exists(ctx, "slug", normalizedSlug)
-}
-
-func (r *organizationRepo) exists(
-	ctx context.Context,
-	column string,
-	value string,
-) (bool, error) {
-
-	var count int64
-
-	err := r.db.
-		WithContext(ctx).
-		Model(&models.Organization{}).
-		Where(column+" = ?", value).
-		Limit(1).
-		Count(&count).Error
-
-	if err != nil {
-		return false, err
-	}
-
-	return count > 0, nil
-}
-
 func (r *organizationRepo) CreateOrganization(
 	ctx context.Context,
 	org *models.Organization,
@@ -90,7 +29,78 @@ func (r *organizationRepo) CreateOrganization(
 		Error
 }
 
-// AddOrgOfficeAddress implements MainOrgSignUpRepositoryInterface.
+func (r *organizationRepo) GetOrganizationByID(ctx context.Context, orgID uuid.UUID) (*models.Organization, error) {
+	var organization models.Organization
+
+	// .First() searches by the primary key (ID).
+	// It automatically adds "LIMIT 1" to the SQL query.
+	err := r.db.WithContext(ctx).
+		Where("id = ?", orgID).
+		First(&organization).Error
+
+	if err != nil {
+		// If no record is found, GORM returns gorm.ErrRecordNotFound.
+		// We return the error so the service layer can decide the HTTP status (e.g., 404).
+		return nil, err
+	}
+
+	return &organization, nil
+}
+
+func (r *organizationRepo) GetOrganizationBySharpID(ctx context.Context, sharpID string) (*models.Organization, error) {
+	var organization models.Organization
+
+	// Convert input to uppercase to match the database format
+	normalizedID := strings.ToUpper(strings.TrimSpace(sharpID))
+
+	err := r.db.WithContext(ctx).
+		Where("sharpnr_id = ?", normalizedID).
+		First(&organization).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &organization, nil
+}
+
+func (r *organizationRepo) GetOrganizationByEmail(ctx context.Context, rootEmail string) (*models.Organization, error) {
+	var organization models.Organization
+
+	// We filter by the root_email field.
+	// Using .First() ensures we get one record and returns an error if not found.
+	err := r.db.WithContext(ctx).
+		Where("root_email = ?", rootEmail).
+		First(&organization).Error
+
+	if err != nil {
+		// Returns nil and gorm.ErrRecordNotFound if the email isn't registered
+		return nil, err
+	}
+
+	return &organization, nil
+}
+
+func (r *organizationRepo) UpdateOrganizationStatus(ctx context.Context, orgID uuid.UUID, status string) error {
+	// We target the Organization model and filter by its Primary Key
+	// .Update() only changes the specified column and updates the 'updated_at' timestamp
+	result := r.db.WithContext(ctx).
+		Model(&models.Organization{}).
+		Where("id = ?", orgID).
+		Update("status", strings.ToUpper(status)) // Ensuring status follows your CAPS convention
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	// Check if the record actually existed
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return nil
+}
+
 func (d *organizationRepo) AddOrgOfficeAddress(ctx context.Context, Addr *models.OrganizationOffice) error {
 	return d.db.WithContext(ctx).Create(Addr).Error
 }
@@ -105,31 +115,20 @@ func (d *organizationRepo) CreateOrgSubscription(ctx context.Context, orgSub *mo
 	return d.db.WithContext(ctx).Create(orgSub).Error
 }
 
-// FindOrgBySharpnrID implements MainOrgSignUpRepositoryInterface.
-func (d *organizationRepo) FindOrgBySharpnrID(
-	ctx context.Context,
-	id string,
-) (models.Organization, bool, error) {
+func (d *organizationRepo) GetOrgSubscriptionPlan(ctx context.Context, orgID uuid.UUID) (*models.OrganizationSubscription, error) {
+	var subscription models.OrganizationSubscription
 
-	var org models.Organization
-
-	err := d.db.
-		WithContext(ctx).
-		Where("sharpnr_id = ?", id).
-		First(&org).
-		Error
+	// We filter by organization_id.
+	// We order by 'created_at DESC' to ensure we get the most recent
+	// subscription record if the history is kept in the same table.
+	err := d.db.WithContext(ctx).
+		Where("organization_id = ?", orgID).
+		Order("created_at DESC").
+		First(&subscription).Error
 
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return models.Organization{}, false, nil
-		}
-		return models.Organization{}, false, err
+		return nil, err
 	}
 
-	return org, true, nil
-}
-
-// GetOrgSubscriptionPlan implements MainOrgSignUpRepositoryInterface.
-func (d *organizationRepo) GetOrgSubscriptionPlan(ctx context.Context, orgId uuid.UUID) (*models.OrganizationSubscription, error) {
-	panic("unimplemented")
+	return &subscription, nil
 }

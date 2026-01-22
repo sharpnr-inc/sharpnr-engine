@@ -34,40 +34,11 @@ type RedisOrganizationRepositoryInterface interface {
 }
 
 type OrganizationRepositoryInterface interface {
-	// ─────────────── Existence Checks ───────────────
-
-	// Check if an organization already exists by email
-	ExistsByEmail(
-		ctx context.Context,
-		email string,
-	) (bool, error)
-
-	// Check if an organization already exists by phone
-	ExistsByPhone(
-		ctx context.Context,
-		phone string,
-	) (bool, error)
-
-	// Optional: check by slug / subdomain
-	ExistsBySlug(
-		ctx context.Context,
-		slug string,
-	) (bool, error)
-
-	// ─────────────── Creation ───────────────
-
-	// Create the organization (final step after OTP verification)
-	CreateOrganization(
-		ctx context.Context,
-		org *models.Organization,
-	) error
-
-	FindOrgBySharpnrID(
-		ctx context.Context,
-		Id string,
-	) (models.Organization, bool, error)
-
-	//_-__-_-__-_-__-_-_-_-_-__-_-___
+	CreateOrganization(ctx context.Context, org *models.Organization) error
+	GetOrganizationByID(ctx context.Context, orgID uuid.UUID) (*models.Organization, error)
+	GetOrganizationBySharpID(ctx context.Context, sharpID string) (*models.Organization, error)
+	GetOrganizationByEmail(ctx context.Context, rootEmail string) (*models.Organization, error)
+	UpdateOrganizationStatus(ctx context.Context, orgID uuid.UUID, status string) error
 
 	CreateOrgSubscription(
 		ctx context.Context,

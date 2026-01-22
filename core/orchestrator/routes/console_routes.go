@@ -1,5 +1,17 @@
 package orchestrator_routes
 
-func registerConsoleRoutes() string {
-	return "This is nothing"
+import (
+	orchestrator_controllers "sharpnr-engine/core/orchestrator/controllers"
+
+	"github.com/gin-gonic/gin"
+)
+
+func registerConsoleRoutes(r *gin.RouterGroup, c *orchestrator_controllers.OrchestratorController) {
+
+	cr := r.Group("/console")
+
+	cr.GET("/setup-status", c.GetOrganizationSetupStatus)
+	cr.GET("/property")
+	cr.GET("/legal-entity")
+
 }

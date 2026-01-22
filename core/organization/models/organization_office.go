@@ -23,6 +23,10 @@ type OrganizationOffice struct {
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
+func (OrganizationOffice) TableName() string {
+	return "core.organization_office"
+}
+
 type OrganizationOfficeAddress struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -43,6 +47,10 @@ type OrganizationOfficeAddress struct {
 	UpdatedAt time.Time
 }
 
+func (OrganizationOfficeAddress) TableName() string {
+	return "core.organization_office_address"
+}
+
 type OrganizationOfficeContact struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -56,6 +64,10 @@ type OrganizationOfficeContact struct {
 	CreatedAt time.Time
 }
 
+func (OrganizationOfficeContact) TableName() string {
+	return "core.organization_office_contact"
+}
+
 type OrganizationOfficeCompliance struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -66,4 +78,8 @@ type OrganizationOfficeCompliance struct {
 
 	EffectiveFrom time.Time
 	EffectiveTo   *time.Time
+}
+
+func (OrganizationOfficeCompliance) TableName() string {
+	return "core.organization_office_compliance"
 }

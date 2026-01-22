@@ -3,6 +3,7 @@ package organization_services
 import (
 	"context"
 	"errors"
+	"fmt"
 	organization_constants "sharpnr-engine/core/organization/constants"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
 	"sharpnr-engine/core/organization/models"
@@ -11,25 +12,26 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // This return tell org Exist or not
-func (r *organizationService) IsOrgExists(
-	ctx context.Context,
-	rootEmail string,
-	mobile string,
-) (bool, error) {
+func (r *organizationService) IsOrgExists(ctx context.Context, rootEmail string) (bool, error) {
+	// 1. Attempt to fetch the organization by email
+	_, err := r.orgMainRepo.GetOrganizationByEmail(ctx, rootEmail)
 
-	emailExist, err := r.orgMainRepo.ExistsByEmail(ctx, rootEmail)
 	if err != nil {
-		return false, err
+		// 2. If the error is "Record Not Found", the org does NOT exist (Return false, nil)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, nil
+		}
+
+		// 3. If it's a real database error (connection, etc.), return the error
+		return false, fmt.Errorf("failed to check organization existence: %w", err)
 	}
 
-	if emailExist {
-		return true, nil
-	}
-
-	return false, nil
+	// 4. If err is nil, it means a record was found
+	return true, nil
 }
 
 func (r *organizationService) CreateDraftOrgForSignup(

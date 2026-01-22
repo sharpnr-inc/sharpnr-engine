@@ -11,7 +11,6 @@ type OrganizationServiceInterface interface {
 	IsOrgExists(
 		ctx context.Context,
 		rootEmail string,
-		rootMobile string,
 	) (bool, error)
 
 	GetOrgHQ()

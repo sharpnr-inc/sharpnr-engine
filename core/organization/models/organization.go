@@ -12,16 +12,24 @@ import (
  * this table should be considered as Root or Orchestrator *
  ***********************************************************/
 type Organization struct {
-	ID        uuid.UUID `gorm:"not null;primaryKey;index"`
-	Name      string    `gorm:"size:100;not null"`
-	SharpnrID string    `gorm:"not null;unique"`
+	ID   uuid.UUID `gorm:"type:uuid;primaryKey;not null"`
+	Name string    `gorm:"size:100;not null"`
 
-	Status    string // CREATED, ACTIVE, SUSPENDED
-	RootEmail string
+	// SharpnrID is usually unique for identification
+	SharpnrID string `gorm:"size:50;not null;uniqueIndex"`
+
+	Status string `gorm:"type:varchar(20);default:'CREATED'"` // CREATED, ACTIVE, SUSPENDED
+
+	// Index added for faster lookups during login/auth
+	RootEmail string `gorm:"size:255;index"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
+}
+
+func (Organization) TableName() string {
+	return "core.organization"
 }
 
 type OrganizationContact struct {
@@ -38,4 +46,8 @@ type OrganizationContact struct {
 	IsPrimary bool `gorm:"default:false"`
 
 	CreatedAt time.Time
+}
+
+func (OrganizationContact) TableName() string {
+	return "core.organization_contact"
 }

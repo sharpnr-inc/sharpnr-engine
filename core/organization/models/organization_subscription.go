@@ -19,3 +19,7 @@ type OrganizationSubscription struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+func (OrganizationSubscription) TableName() string {
+	return "core.organization_subscription"
+}

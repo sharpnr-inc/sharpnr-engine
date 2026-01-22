@@ -23,3 +23,7 @@ type OrganizationVerification struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+func (OrganizationVerification) TableName() string {
+	return "core.organization_verification"
+}

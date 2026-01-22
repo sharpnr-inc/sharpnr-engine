@@ -25,7 +25,7 @@ func RegisterOrchestratorRoutes(
 
 	org := webV1.Group("/orchestrator")
 
-	registerConsoleRoutes()
+	registerConsoleRoutes(org, orchestController)
 	registerSetupWizardRoutes(org, orchestController)
 	registerPropertyRoutes()
 	registerLegalEntityRoutes()

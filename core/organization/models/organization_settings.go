@@ -26,3 +26,7 @@ type OrganizationSetting struct {
 	Version   int
 	UpdatedAt time.Time
 }
+
+func (OrganizationSetting) TableName() string {
+	return "core.organization_setting"
+}

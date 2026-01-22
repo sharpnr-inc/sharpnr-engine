@@ -36,7 +36,7 @@ func BootstrapModules(
 	identityService := bootstrapIdentity(db)
 
 	hospitality := bootstrapHospitality(db, sereEngine)
-	hospitalityOrderEngineService := bootstrapHospitalityOrderEngine(db)
+	// hospitalityOrderEngineService := bootstrapHospitalityOrderEngine(db)
 
 	accountingService := bootstrapAccounting(db)
 

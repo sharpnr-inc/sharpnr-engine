@@ -29,7 +29,7 @@ func (s *orgSignUpService) InitiateRegistration(
 	}
 
 	// Step 2: Check if organization already exists
-	orgExists, err := s.organizationService.IsOrgExists(ctx, req.Email, req.Mobile)
+	orgExists, err := s.organizationService.IsOrgExists(ctx, req.Email)
 	if err != nil {
 		return "", err
 	}
