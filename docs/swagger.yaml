@@ -1,116 +1,19 @@
 basePath: /api/v1
 definitions:
-  constants.OrgType:
-    enum:
-    - HOSPITALITY
-    - RETAIL
-    - SALON
-    type: string
-    x-enum-varnames:
-    - Hotel
-    - Retail
-    - Salon
-  dto.ErrorResponse:
-    properties:
-      isError:
-        type: boolean
-      message:
-        type: string
-    type: object
-  dto.Org_Signup_REQUEST_DTO:
+  org_signup_dtos.OrganizationRegistrationDTO:
+    description: Organization Registration Data
     properties:
       email:
-        description: Email address of the organization for contact and login purposes.
-        example: hotel@example.com
         type: string
       mobile:
-        description: Mobile number of the organization or primary contact person.
-        example: "+911234567890"
         type: string
-      name:
-        description: Name of the organization.
-        example: Sharpnr Hotel
-        type: string
-      org_type:
-        allOf:
-        - $ref: '#/definitions/constants.OrgType'
-        description: |-
-          ORG_TYPE specifies the type of organization.
-          Uses the OrgType constant defined in the constants package.
-        example: HOTEL
       password:
-        description: Password for the organization login.
-        example: supersecure
+        minLength: 8
         type: string
-    type: object
-  dto.Org_Signup_RESPONSE_DTO:
-    properties:
-      email:
-        description: Email of the organization.
-        example: hotel@example.com
-        type: string
-    type: object
-  dto.Org_Verify_Otp_REQUEST_DTO:
-    properties:
-      otp:
-        description: OTP is the one-time password sent to the organization's email
-          or mobile.
-        example: "123456"
-        type: string
-    type: object
-  dto.Org_Verify_Otp_RESPONSE_DTO:
-    properties:
-      email:
-        description: Email of the organization.
-        example: hotel@example.com
-        type: string
-      org_name:
-        description: Name of the organization.
-        example: Sharpnr Hotel
-        type: string
-      org_type:
-        allOf:
-        - $ref: '#/definitions/constants.OrgType'
-        description: ORG_TYPE specifies the type of the organization.
-        example: HOTEL
-      sharpnr_id:
-        description: Sharpnr_Id is the unique identifier assigned to the organization.
-        example: SHRabc123def456
-        type: string
-    type: object
-  dto.Response-any:
-    properties:
-      data:
-        description: <-- pointer here
-      error:
-        $ref: '#/definitions/dto.ErrorResponse'
-      message:
-        type: string
-      statusCode:
-        type: integer
-      timestamp:
-        type: string
-      token:
-        description: ✅ Optional field
-        type: string
-    type: object
-  dto.Response-dto_Org_Verify_Otp_RESPONSE_DTO:
-    properties:
-      data:
-        allOf:
-        - $ref: '#/definitions/dto.Org_Verify_Otp_RESPONSE_DTO'
-        description: <-- pointer here
-      error:
-        $ref: '#/definitions/dto.ErrorResponse'
-      message:
-        type: string
-      statusCode:
-        type: integer
-      timestamp:
-        type: string
-      token:
-        description: ✅ Optional field
-        type: string
+    required:
+    - email
+    - mobile
+    - password
     type: object
 host: 192.168.1.35:8080
 info:
@@ -126,71 +29,6 @@ info:
   title: Sharpnr Engine APIs
   version: "1.0"
 paths:
-  /hospitality-menu/categories:
-    get:
-      consumes:
-      - application/json
-      description: Create Category in linked to the authenticated organization UUID.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Bar details retrieved successfully
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Invalid organization UUID format
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Organization UUID missing
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "404":
-          description: No bar found for this organization
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Failed to fetch bar details
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      security:
-      - ApiKeyAuth: []
-      summary: Create Category In Menu
-      tags:
-      - Hospitality / Menu
-    post:
-      consumes:
-      - application/json
-      description: Create Category linked to the authenticated organization UUID.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Category created successfully
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Invalid organization UUID format
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      security:
-      - ApiKeyAuth: []
-      summary: Create Category In Menu
-      tags:
-      - Hospitality / Menu
   /hospitality/bar:
     get:
       consumes:
@@ -234,67 +72,22 @@ paths:
       summary: Get bar details for the current organization
       tags:
       - Hospitality - Bar
-  /otp-verify:
+  /org/register:
     post:
       consumes:
       - application/json
-      description: Verifies the OTP sent to the organization's email during signup.
+      description: Validates the request and starts the registration process.
       parameters:
-      - description: Bearer token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: OTP verification payload
+      - description: Details
         in: body
-        name: body
+        name: registration
         required: true
         schema:
-          $ref: '#/definitions/dto.Org_Verify_Otp_REQUEST_DTO'
+          $ref: '#/definitions/org_signup_dtos.OrganizationRegistrationDTO'
       produces:
       - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.Response-dto_Org_Verify_Otp_RESPONSE_DTO'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/dto.Response-any'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/dto.Response-any'
-      summary: Verify OTP for organization registration
+      responses: {}
+      summary: Initiate Organization Registration
       tags:
-      - Org SignUp
-  /register:
-    post:
-      consumes:
-      - application/json
-      description: Registers a new organization
-      parameters:
-      - description: Organization signup data
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/dto.Org_Signup_REQUEST_DTO'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.Org_Signup_RESPONSE_DTO'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Create a new organization
-      tags:
-      - Org SignUp
+      - signup  <-- This groups it under "core-signup"
 swagger: "2.0"

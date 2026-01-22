@@ -24,107 +24,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/hospitality-menu/categories": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Create Category in linked to the authenticated organization UUID.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Hospitality / Menu"
-                ],
-                "summary": "Create Category In Menu",
-                "responses": {
-                    "200": {
-                        "description": "Bar details retrieved successfully",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid organization UUID format",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Organization UUID missing",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "No bar found for this organization",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to fetch bar details",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Create Category linked to the authenticated organization UUID.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Hospitality / Menu"
-                ],
-                "summary": "Create Category In Menu",
-                "responses": {
-                    "200": {
-                        "description": "Category created successfully",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid organization UUID format",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/hospitality/bar": {
             "get": {
                 "security": [
@@ -190,9 +89,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/otp-verify": {
+        "/org/register": {
             "post": {
-                "description": "Verifies the OTP sent to the organization's email during signup.",
+                "description": "Validates the request and starts the registration process.",
                 "consumes": [
                     "application/json"
                 ],
@@ -200,251 +99,43 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Org SignUp"
+                    "signup  \u003c-- This groups it under \"core-signup\""
                 ],
-                "summary": "Verify OTP for organization registration",
+                "summary": "Initiate Organization Registration",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "OTP verification payload",
-                        "name": "body",
+                        "description": "Details",
+                        "name": "registration",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.Org_Verify_Otp_REQUEST_DTO"
+                            "$ref": "#/definitions/org_signup_dtos.OrganizationRegistrationDTO"
                         }
                     }
                 ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.Response-dto_Org_Verify_Otp_RESPONSE_DTO"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.Response-any"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/dto.Response-any"
-                        }
-                    }
-                }
-            }
-        },
-        "/register": {
-            "post": {
-                "description": "Registers a new organization",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Org SignUp"
-                ],
-                "summary": "Create a new organization",
-                "parameters": [
-                    {
-                        "description": "Organization signup data",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.Org_Signup_REQUEST_DTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.Org_Signup_RESPONSE_DTO"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
+                "responses": {}
             }
         }
     },
     "definitions": {
-        "constants.OrgType": {
-            "type": "string",
-            "enum": [
-                "HOSPITALITY",
-                "RETAIL",
-                "SALON"
+        "org_signup_dtos.OrganizationRegistrationDTO": {
+            "description": "Organization Registration Data",
+            "type": "object",
+            "required": [
+                "email",
+                "mobile",
+                "password"
             ],
-            "x-enum-varnames": [
-                "Hotel",
-                "Retail",
-                "Salon"
-            ]
-        },
-        "dto.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "isError": {
-                    "type": "boolean"
-                },
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.Org_Signup_REQUEST_DTO": {
-            "type": "object",
             "properties": {
                 "email": {
-                    "description": "Email address of the organization for contact and login purposes.",
-                    "type": "string",
-                    "example": "hotel@example.com"
+                    "type": "string"
                 },
                 "mobile": {
-                    "description": "Mobile number of the organization or primary contact person.",
-                    "type": "string",
-                    "example": "+911234567890"
-                },
-                "name": {
-                    "description": "Name of the organization.",
-                    "type": "string",
-                    "example": "Sharpnr Hotel"
-                },
-                "org_type": {
-                    "description": "ORG_TYPE specifies the type of organization.\nUses the OrgType constant defined in the constants package.",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/constants.OrgType"
-                        }
-                    ],
-                    "example": "HOTEL"
+                    "type": "string"
                 },
                 "password": {
-                    "description": "Password for the organization login.",
                     "type": "string",
-                    "example": "supersecure"
-                }
-            }
-        },
-        "dto.Org_Signup_RESPONSE_DTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "description": "Email of the organization.",
-                    "type": "string",
-                    "example": "hotel@example.com"
-                }
-            }
-        },
-        "dto.Org_Verify_Otp_REQUEST_DTO": {
-            "type": "object",
-            "properties": {
-                "otp": {
-                    "description": "OTP is the one-time password sent to the organization's email or mobile.",
-                    "type": "string",
-                    "example": "123456"
-                }
-            }
-        },
-        "dto.Org_Verify_Otp_RESPONSE_DTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "description": "Email of the organization.",
-                    "type": "string",
-                    "example": "hotel@example.com"
-                },
-                "org_name": {
-                    "description": "Name of the organization.",
-                    "type": "string",
-                    "example": "Sharpnr Hotel"
-                },
-                "org_type": {
-                    "description": "ORG_TYPE specifies the type of the organization.",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/constants.OrgType"
-                        }
-                    ],
-                    "example": "HOTEL"
-                },
-                "sharpnr_id": {
-                    "description": "Sharpnr_Id is the unique identifier assigned to the organization.",
-                    "type": "string",
-                    "example": "SHRabc123def456"
-                }
-            }
-        },
-        "dto.Response-any": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "description": "\u003c-- pointer here"
-                },
-                "error": {
-                    "$ref": "#/definitions/dto.ErrorResponse"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "statusCode": {
-                    "type": "integer"
-                },
-                "timestamp": {
-                    "type": "string"
-                },
-                "token": {
-                    "description": "✅ Optional field",
-                    "type": "string"
-                }
-            }
-        },
-        "dto.Response-dto_Org_Verify_Otp_RESPONSE_DTO": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "description": "\u003c-- pointer here",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/dto.Org_Verify_Otp_RESPONSE_DTO"
-                        }
-                    ]
-                },
-                "error": {
-                    "$ref": "#/definitions/dto.ErrorResponse"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "statusCode": {
-                    "type": "integer"
-                },
-                "timestamp": {
-                    "type": "string"
-                },
-                "token": {
-                    "description": "✅ Optional field",
-                    "type": "string"
+                    "minLength": 8
                 }
             }
         }

@@ -1,5 +1,6 @@
 package org_signup_dtos
 
+// @Description Organization Registration Data
 type OrganizationRegistrationDTO struct {
 	Email    string `json:"email" binding:"required,email"`
 	Mobile   string `json:"mobile" binding:"required,len=10,numeric"`

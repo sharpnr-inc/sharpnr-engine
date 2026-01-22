@@ -9,9 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ! Swagger is Remaining
-// response it returns is nothing only err or 200 response
-// This part of the OrgSignUp Module
+// InitiateNewOrgRegistration godoc
+// @Summary      Initiate Organization Registration
+// @Description  Validates the request and starts the registration process.
+// @Tags         signup
+// @Accept       json
+// @Produce      json
+// @Param        registration  body      org_signup_dtos.OrganizationRegistrationDTO  true  "Details"
+// @Router       /org/register [post]
 func (c *orgSignUpController) InitiateNewOrgRegistration(ctx *gin.Context) {
 
 	// This Controller First need to check Request is Correct and comes properly
