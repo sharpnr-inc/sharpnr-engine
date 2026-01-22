@@ -1,14 +1,13 @@
 package hoteldtos
 
 import (
-	"sharpnr-engine/modules/hospitality/hospitalityconstants"
 	"time"
 )
 
 type CreateHotelTaxRuleRequest struct {
-	RuleName      string                                `json:"rule_name"`
-	TaxType       hospitalityconstants.TaxType          `json:"tax_type"`
-	ConditionType hospitalityconstants.TaxConditionType `json:"condition_type"`
+	RuleName      string `json:"rule_name"`
+	TaxType       string `json:"tax_type"`
+	ConditionType string `json:"condition_type"`
 
 	MinValue *float64 `json:"min_value,omitempty"`
 	MaxValue *float64 `json:"max_value,omitempty"`
@@ -22,6 +21,6 @@ type CreateHotelTaxRuleRequest struct {
 }
 
 type CreateHotelTaxComponent struct {
-	ComponentType hospitalityconstants.TaxComponentType `json:"component_type"`
-	Rate          float64                               `json:"rate"`
+	ComponentType string  `json:"component_type"`
+	Rate          float64 `json:"rate"`
 }
