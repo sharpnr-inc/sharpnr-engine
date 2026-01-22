@@ -26,16 +26,18 @@ In the real world, this could be your registered company, a partnership, or even
 
 ```mermaid
 graph TD
-    subgraph Organization (Your Business Account)
-        LE1[Legal Entity 1<br>(e.g., Hotel Branch<br>GSTIN: ABCDE1234F)]
-        LE2[Legal Entity 2<br>(e.g., Restaurant<br>GSTIN: FGHIJ5678K)]
-        LE3[Legal Entity 3<br>(e.g., Bar<br>GSTIN: LMNOP9101Q)]
+    subgraph ORG["Organization (Your Business Account)"]
+        LE1["Legal Entity 1<br/>(e.g., Hotel Branch<br/>GSTIN: ABCDE1234F)"]
+        LE2["Legal Entity 2<br/>(e.g., Restaurant<br/>GSTIN: FGHIJ5678K)"]
+        LE3["Legal Entity 3<br/>(e.g., Bar<br/>GSTIN: LMNOP9101Q)"]
     end
 
-    style Organization fill:#f3f9ff,stroke:#a4c7e4
+    style ORG fill:#f3f9ff,stroke:#a4c7e4
     style LE1 fill:#e6ffed,stroke:#a8d5b5
     style LE2 fill:#e6ffed,stroke:#a8d5b5
     style LE3 fill:#e6ffed,stroke:#a8d5b5
+
+
 ```
 
 ---
@@ -72,33 +74,40 @@ Modules like `Hotel`, `Restaurant`, or even `Accounting` **NEVER** define or con
 
 ```mermaid
 graph LR
-    subgraph "Business Modules"
-        direction LR
+    subgraph BM["Business Modules"]
         HotelModule[Hotel Module]
         RestaurantModule[Restaurant Module]
         BarModule[Bar Module]
     end
 
-    subgraph "Core Engines"
-        direction LR
+    subgraph CE["Core Engines"]
         AccountingEngine[Accounting Engine]
     end
 
-    subgraph "Legal Entity (Owner of All Tax Logic)"
-        direction TD
-        LE[Legal Entity] --> TR(Tax Registrations)
-        LE --> TC(Tax Categories)
-        LE --> Rules(Tax Rules)
-        LE --> Comp(Tax Components)
-        LE --> AcctMap(Accounting Mapping)
+    subgraph LE_BLOCK["Legal Entity (Owner of All Tax Logic)"]
+        LE[Legal Entity]
+        TR[Tax Registrations]
+        TC[Tax Categories]
+        Rules[Tax Rules]
+        Comp[Tax Components]
+        AcctMap[Accounting Mapping]
+
+        LE --> TR
+        LE --> TC
+        LE --> Rules
+        LE --> Comp
+        LE --> AcctMap
     end
 
-    HotelModule -- "Asks for tax calculation" --> LE
-    RestaurantModule -- "Asks for tax calculation" --> LE
-    BarModule -- "Asks for tax calculation" --> LE
-    LE -- "Provides tax data to" --> AccountingEngine
+    HotelModule -->|Asks for tax calculation| LE
+    RestaurantModule -->|Asks for tax calculation| LE
+    BarModule -->|Asks for tax calculation| LE
+
+    LE -->|Provides tax data to| AccountingEngine
 
     style LE fill:#f9f,stroke:#333,stroke-width:2px
+
+
 ```
 
 ---
