@@ -25,3 +25,7 @@ type FiscalYear struct {
 
 	UpdatedAt time.Time
 }
+
+func (FiscalYear) TableName() string {
+	return "accounting_engine.fiscal_year"
+}

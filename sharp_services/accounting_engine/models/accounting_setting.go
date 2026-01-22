@@ -13,3 +13,7 @@ type AccountingBookSetting struct {
 	Rounding         string
 	DateFormat       string
 }
+
+func (AccountingBookSetting) TableName() string {
+	return "accounting_engine.accounting_book_setting"
+}

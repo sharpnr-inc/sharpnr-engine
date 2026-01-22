@@ -28,6 +28,10 @@ type Supplier struct {
 	CreatedAt time.Time
 }
 
+func (Supplier) TableName() string {
+	return "accounting_engine.supplier"
+}
+
 type SupplierPayment struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -46,4 +50,8 @@ type SupplierPayment struct {
 	Reference string
 
 	CreatedAt time.Time
+}
+
+func (SupplierPayment) TableName() string {
+	return "accounting_engine.supplier_payment"
 }

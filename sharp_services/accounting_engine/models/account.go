@@ -68,3 +68,7 @@ type Account struct {
 	// UpdatedAt is the timestamp when the account was last updated.
 	UpdatedAt time.Time
 }
+
+func (Account) TableName() string {
+	return "accounting_engine.account"
+}

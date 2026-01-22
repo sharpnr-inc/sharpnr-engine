@@ -29,3 +29,7 @@ type JournalEntry struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+func (JournalEntry) TableName() string {
+	return "accounting_engine.journal_entry"
+}

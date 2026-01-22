@@ -29,3 +29,7 @@ type AccountMapping struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+func (AccountMapping) TableName() string {
+	return "accounting_engine.account_mapping"
+}

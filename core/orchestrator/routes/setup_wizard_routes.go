@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterSetupWizardRoutes(webV1 *gin.RouterGroup, controller *orchestrator_controllers.OrchestratorController) {
+func registerSetupWizardRoutes(webV1 *gin.RouterGroup, controller *orchestrator_controllers.OrchestratorController) {
 
 	setupWiz := webV1.Group("/setup-wiz")
 

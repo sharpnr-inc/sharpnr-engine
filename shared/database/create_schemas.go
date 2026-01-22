@@ -7,7 +7,7 @@ func createSchemas(db *gorm.DB) error {
 		"core",
 		"employee",
 		"hospitality",
-		"accounting",
+		"accounting_engine",
 		"organization_property",
 		"setup_wizard",
 		"legal_entity",

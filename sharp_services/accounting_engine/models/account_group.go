@@ -23,3 +23,7 @@ type AccountGroup struct {
 
 	UpdatedAt time.Time
 }
+
+func (AccountGroup) TableName() string {
+	return "accounting_engine.account_group"
+}

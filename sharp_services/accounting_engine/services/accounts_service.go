@@ -25,7 +25,7 @@ func (s *accountingServices) CreateAccount(
 		if err != nil {
 			return err
 		}
-		if book.OrgID != orgID {
+		if book.OrganizationID != orgID {
 			return errors.New("accounting does not belong to organization")
 		}
 

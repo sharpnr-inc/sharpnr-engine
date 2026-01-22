@@ -8,10 +8,9 @@ import (
 )
 
 type AccountingBook struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	OrgID          uuid.UUID `gorm:"type:uuid;not null;index"`
-	OrganizationID uuid.UUID
+	ID                        uuid.UUID `gorm:"type:uuid;primaryKey"`
+	OrganizationID            uuid.UUID `gorm:"type:uuid;not null;index"`
+	OrganizationLegalEntityID uuid.UUID
 
 	Name string `gorm:"not null"`
 
@@ -30,4 +29,8 @@ type AccountingBook struct {
 	CreatedAt time.Time
 
 	UpdatedAt time.Time
+}
+
+func (AccountingBook) TableName() string {
+	return "accounting_engine.accounting_book"
 }

@@ -31,6 +31,10 @@ type Expense struct {
 	CreatedAt time.Time
 }
 
+func (Expense) TableName() string {
+	return "accounting_engine.expense"
+}
+
 type PurchaseBill struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -53,6 +57,10 @@ type PurchaseBill struct {
 	CreatedAt time.Time
 }
 
+func (PurchaseBill) TableName() string {
+	return "accounting_engine.purchase_bill"
+}
+
 type PurchaseBillItem struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -66,4 +74,8 @@ type PurchaseBillItem struct {
 	Amount float64
 
 	ExpenseAccountCode string
+}
+
+func (PurchaseBillItem) TableName() string {
+	return "accounting_engine.purchase_bill_item"
 }

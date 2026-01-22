@@ -24,19 +24,10 @@ func RegisterOrchestratorRoutes(
 	orchestController := orchestrator_controllers.NewOrchestratorController(orchestService)
 
 	org := webV1.Group("/orchestrator")
-	RegisterSetupWizardRoutes(org, orchestController)
 
-	{
-		orgHospitality := org.Group("/hospitality")
-		{
-			orgHospitality.GET("/overview", orchestController.GetOrgOverview)
-
-			hotelConfigs := orgHospitality.Group("/hotel")
-			{
-				hotelConfigs.GET("/overview")
-			}
-		}
-
-	}
+	registerConsoleRoutes()
+	registerSetupWizardRoutes(org, orchestController)
+	registerPropertyRoutes()
+	registerLegalEntityRoutes()
 
 }

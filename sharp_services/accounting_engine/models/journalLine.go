@@ -25,3 +25,7 @@ type JournalLine struct {
 
 	CreatedAt time.Time
 }
+
+func (JournalLine) TableName() string {
+	return "accounting_engine.journal_line"
+}

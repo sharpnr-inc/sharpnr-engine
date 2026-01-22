@@ -28,7 +28,7 @@ func (s *accountingServices) GetTransactions(
 		return nil, 0, err
 	}
 
-	if book.OrgID != orgID {
+	if book.OrganizationID != orgID {
 		return nil, 0, errors.New("unauthorized book access")
 	}
 
@@ -95,7 +95,7 @@ func (s *accountingServices) GetTransactionDetails(
 	if err != nil {
 		return nil, err
 	}
-	if book.OrgID != orgID {
+	if book.OrganizationID != orgID {
 		return nil, errors.New("unauthorized access")
 	}
 
