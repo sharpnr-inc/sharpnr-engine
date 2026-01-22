@@ -46,6 +46,9 @@ type LegalEntityTaxCategory struct {
 	IsActive bool
 }
 
+// *the LegalEntityTaxCategory data the user have to create first
+// * in order to apply
+
 func (LegalEntityTaxCategory) TableName() string {
 	return "legal_entity.legal_entity_tax_category"
 }
@@ -54,7 +57,7 @@ type LegalEntityTaxRule struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
 	OrganizationLegalEntityID uuid.UUID `gorm:"type:uuid;index;not null"`
-	TaxCategoryID             uuid.UUID `gorm:"type:uuid;index;not null"`
+	LegalEntityTaxCategoryID  uuid.UUID `gorm:"type:uuid;index;not null"`
 
 	TaxType string // GST
 
@@ -62,6 +65,9 @@ type LegalEntityTaxRule struct {
 
 	ConditionJSON datatypes.JSON
 	// e.g. { "room_price_gt": 7500 }
+
+	MinValue *float64
+	MaxValue *float64
 
 	EffectiveFrom time.Time
 	EffectiveTo   *time.Time
@@ -71,4 +77,17 @@ type LegalEntityTaxRule struct {
 
 func (LegalEntityTaxRule) TableName() string {
 	return "legal_entity.legal_entity_tax_rule"
+}
+
+type LegalEntityTaxComponent struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	TaxRuleID uuid.UUID `gorm:"type:uuid;index;not null"`
+
+	ComponentCode string `gorm:"size:20;not null"`
+	// CGST, SGST, IGST, VAT
+
+	Rate float64 `gorm:"not null"` // %
+
+	CreatedAt time.Time
 }

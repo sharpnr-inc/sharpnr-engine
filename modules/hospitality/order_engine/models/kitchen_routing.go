@@ -1,4 +1,4 @@
-package order_engine_models
+package hospitality_order_engine_models
 
 import (
 	"time"

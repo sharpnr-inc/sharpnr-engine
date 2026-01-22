@@ -1,4 +1,4 @@
-package order_engine_models
+package hospitality_order_engine_models
 
 import (
 	"time"
@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type Order struct {
+type HospitalityOrder struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
 	OrganizationID uuid.UUID
@@ -28,13 +28,13 @@ type Order struct {
 	UpdatedAt time.Time
 }
 
-type OrderItem struct {
+type HospitalityOrderItem struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
 	OrderID uuid.UUID
 
 	MenuItemID uuid.UUID
-	VariantID  *uuid.UUID
+	BasePrice  float64 // snapshot at order time
 
 	Quantity int
 
@@ -42,6 +42,31 @@ type OrderItem struct {
 
 	Status string
 	// PENDING, PREPARING, SERVED, CANCELLED
+
+	CreatedAt time.Time
+}
+
+type HospitalityOrderItemVariant struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	OrderItemID uuid.UUID `gorm:"type:uuid;index;not null"`
+
+	MenuVariantID uuid.UUID `gorm:"type:uuid;not null"`
+
+	Price float64 // snapshot
+
+	CreatedAt time.Time
+}
+
+type HospitalityOrderItemAddon struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	OrderItemID uuid.UUID `gorm:"type:uuid;index;not null"`
+
+	AddonID uuid.UUID `gorm:"type:uuid;not null"`
+
+	Price    float64 // snapshot per unit
+	Quantity int     // VERY IMPORTANT
 
 	CreatedAt time.Time
 }
