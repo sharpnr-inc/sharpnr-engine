@@ -8,10 +8,7 @@ import (
 )
 
 type OrganizationServiceInterface interface {
-	IsOrgExists(
-		ctx context.Context,
-		rootEmail string,
-	) (bool, error)
+	IsOrgExists(ctx context.Context, rootEmail string) (bool, error)
 
 	GetOrgHQ()
 
