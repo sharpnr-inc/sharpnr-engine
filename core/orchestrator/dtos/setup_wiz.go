@@ -10,3 +10,27 @@ type SetupOrganizationHQAddressReqDTO struct {
 	Longitude   *float64 `json:"longitude,omitempty"`
 	AccuracyM   *int     `json:"accuracy_m,omitempty"`
 }
+
+type SetupOrgPropertyReqDTO struct {
+	Name        string   `json:"name"`
+	AddressLine string   `json:"address_line"`
+	City        string   `json:"city"`
+	State       string   `json:"state"`
+	Country     string   `json:"country"`
+	Pincode     string   `json:"pincode"`
+	Longitude   *float64 `json:"longitude,omitempty"`
+	Latitude    *float64 `json:"latitude,omitempty"`
+	AccuracyM   *int     `json:"accuracy_m,omitempty"`
+}
+
+type SetupLegalEntityReqDTO struct {
+	Name        string   `json:"name"`
+	AddressLine string   `json:"address_line"`
+	City        string   `json:"city"`
+	State       string   `json:"state"`
+	Country     string   `json:"country"`
+	Pincode     string   `json:"pincode"`
+	Longitude   *float64 `json:"longitude,omitempty"`
+	Latitude    *float64 `json:"latitude,omitempty"`
+	AccuracyM   *int     `json:"accuracy_m,omitempty"`
+}

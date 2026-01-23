@@ -8,6 +8,9 @@ import (
 	"github.com/google/uuid"
 )
 
+// These all service uses the Service from the SetupWizard
+// These are service we have to implement the contracts
+
 func (s *orchestratorService) AddOrganizationHQAddress(
 	ctx context.Context,
 	orgID uuid.UUID,
@@ -35,5 +38,24 @@ func (s *orchestratorService) AddOrganizationHQAddress(
 		return err
 	}
 
+	return nil
+}
+
+func (s *orchestratorService) StepTwoProperty(
+	ctx context.Context,
+	orgID uuid.UUID,
+	req *orchestrator_dtos.SetupOrgPropertyReqDTO,
+) error {
+
+	s.orgSetupWizService.Step_two_AddProperty(ctx)
+	return nil
+}
+
+func (s *orchestratorService) StepThreeLegalEntity(
+	ctx context.Context,
+	orgID uuid.UUID,
+	req *orchestrator_dtos.SetupLegalEntityReqDTO,
+) error {
+	s.orgSetupWizService.Step_three_AddLegalEntity(ctx)
 	return nil
 }

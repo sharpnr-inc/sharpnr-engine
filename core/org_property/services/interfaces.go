@@ -1,5 +1,7 @@
 package org_property_services
 
+import "context"
+
 type OrganizationPropertyServicesInterfaces interface {
-	CreateProperty()
+	CreatePropertyDefault(ctx context.Context)
 }
