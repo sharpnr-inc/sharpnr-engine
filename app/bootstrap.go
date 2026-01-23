@@ -24,6 +24,12 @@ func BootstrapModules(
 	orgLegalEntityService := bootstrapOrgLegalEntity(db)
 
 	employeeService := bootstrapEmployee(db)
+	orgSetupWizardService := bootstrapOrgSetupWizard(
+		db,
+		orgLegalEntityService,
+		orgPropertyService,
+		organizationService,
+	)
 
 	orgSignupService := bootstrapOrgSignup(
 		txManager,
@@ -31,6 +37,7 @@ func BootstrapModules(
 		mailerEngine,
 		employeeService,
 		organizationService,
+		orgSetupWizardService,
 	)
 
 	identityService := bootstrapIdentity(db)
@@ -40,12 +47,6 @@ func BootstrapModules(
 
 	accountingService := bootstrapAccounting(db)
 
-	orgSetupWizardService := bootstrapOrgSetupWizard(
-		db,
-		orgLegalEntityService,
-		orgPropertyService,
-		organizationService,
-	)
 	orchestratorService := bootstrapSharpnrOrchestrator(
 		organizationService,
 		orgPropertyService,

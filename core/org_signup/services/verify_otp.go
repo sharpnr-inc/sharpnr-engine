@@ -25,6 +25,13 @@ func (r *orgSignUpService) VerifyOtp(
 		return uuid.Nil, uuid.Nil, err
 	}
 
+	// *This is Add Progress in Setup Wizard
+	// *it Set the Org and put in the In progress so when the user reach the orchestrator
+	// * and fetch the setup progress it will put in the org_set
+	if err := r.setUpWizService.AddStepProgress(ctx, output.OrgID, "ORG_HQ_SETUP", "IN_PROGRESS"); err != nil {
+		return uuid.Nil, uuid.Nil, err
+	}
+
 	empId, err := r.employeeSvc.CreateDefaultSuperAdmin(ctx, output.OrgID, output.Email, output.HashedPass)
 	if err != nil {
 		return uuid.Nil, uuid.Nil, err

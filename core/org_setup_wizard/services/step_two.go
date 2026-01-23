@@ -2,9 +2,8 @@ package org_setup_wizard_services
 
 import (
 	"context"
-	orchestrator_dtos "sharpnr-engine/core/orchestrator/dtos"
-
-	"github.com/google/uuid"
 )
 
-func (s *orgSetupWizardService) StepTwoProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupOrgPropertyReqDTO) error
+func (s *orgSetupWizardService) Step_two_AddProperty(ctx context.Context) error {
+	return nil
+}

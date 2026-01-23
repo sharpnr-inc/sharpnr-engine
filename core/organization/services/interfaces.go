@@ -8,38 +8,14 @@ import (
 )
 
 type OrganizationServiceInterface interface {
+	CreateNewOrganization(ctx context.Context, input organization_contracts.InputDataForOrgAndEmp) (output organization_contracts.InputForCreateDefaultEmployee, err error)
+	CreateDraftOrgForSignup(ctx context.Context, input organization_contracts.DraftOrganizationInput) (string, string, error)
 	IsOrgExists(ctx context.Context, rootEmail string) (bool, error)
+	GetStatus(ctx context.Context, orgID uuid.UUID) (string, error)
 
-	GetOrgHQ()
+	GetSignupSlug(ctx context.Context, tempId uuid.UUID) (string, error)
+	VerifySlugCreateDefaultOrg(ctx context.Context, otp string, slugID uuid.UUID) (output organization_contracts.InputDataForOrgAndEmp, err error)
 
-	// This is Creates a base organization
-	CreateOrganization(
-		ctx context.Context,
-		input interface{},
-	) error
-
-	AddHQ(
-		ctx context.Context,
-		input organization_contracts.OrganizationHQ,
-	) error
-
-	CreateDraftOrgForSignup(
-		ctx context.Context,
-		input organization_contracts.DraftOrganizationInput,
-	) (string, string, error)
-
-	GetSignupSlug(
-		ctx context.Context, tempId uuid.UUID,
-	) (string, error)
-
-	VerifySlugCreateDefaultOrg(
-		ctx context.Context,
-		otp string,
-		slugID uuid.UUID,
-	) (output organization_contracts.InputDataForOrgAndEmp, err error)
-
-	CreateNewOrganization(
-		ctx context.Context,
-		input organization_contracts.InputDataForOrgAndEmp,
-	) (output organization_contracts.InputForCreateDefaultEmployee, err error)
+	AddHQ(ctx context.Context, input organization_contracts.OrganizationHQ) error
+	// GetOrgHQ()
 }

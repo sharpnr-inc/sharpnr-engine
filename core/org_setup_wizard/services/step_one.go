@@ -3,7 +3,11 @@ package org_setup_wizard_services
 import (
 	"context"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
+	org_setup_wizard_models "sharpnr-engine/core/org_setup_wizard/models"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 func (s *orgSetupWizardService) Step_one_AddOrgHqAddrAndGeoLocation(
@@ -33,9 +37,22 @@ func (s *orgSetupWizardService) Step_one_AddOrgHqAddrAndGeoLocation(
 		return err
 	}
 
-	// Here we call the Repo method to update the Setup progress
+	var competedStepTime = time.Now()
+	step := &org_setup_wizard_models.OrganizationSetup{
+		ID:             uuid.New(),
+		OrganizationID: input.OrgID,
+		Status:         "COMPLETE",
+		CurrentStep:    "ORG_HQ_SETUP",
+		Version:        1,
+		StartedAt:      time.Now(),
+		CompletedAt:    &competedStepTime,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+	}
 
-	// !!! Remember to Add the Repo method to Update the Setup progress ///
+	if err := s.orgSetWizRepo.Create(ctx, step); err != nil {
+		return err
+	}
 
 	return nil
 }

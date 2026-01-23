@@ -59,3 +59,8 @@ func (s *orchestratorService) StepThreeLegalEntity(
 	s.orgSetupWizService.Step_three_AddLegalEntity(ctx)
 	return nil
 }
+
+func (s *orchestratorService) SetUpWizProgress(ctx context.Context, orgID uuid.UUID) error {
+	s.orgSetupWizService.Progress(ctx, orgID)
+	return nil
+}

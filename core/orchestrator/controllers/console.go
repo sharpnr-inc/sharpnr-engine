@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// GetOrganizationSetupStatus godoc
+// GetOrganizationStatus godoc
 // @Summary      Short, punchy summary of the action
 // @Description  Detailed explanation of what happens (e.g., database changes, emails sent).
 // @Tags         Orchestrator --> Console
@@ -19,7 +19,7 @@ import (
 // @Failure      401  {object}  utils.Response "Unauthorized"
 // @Failure      500  {object}  utils.Response "Internal Server Error"
 // @Router       /orchestrator/setup-status [get]
-func (c *OrchestratorController) GetOrganizationSetupStatus(ctx *gin.Context) {
+func (c *OrchestratorController) GetOrgStatus(ctx *gin.Context) {
 
 	// *Because we are using middleware and it set the OrgID and it comes in String form
 	// *But we have to convert into the UUID and validate it
@@ -41,7 +41,7 @@ func (c *OrchestratorController) GetOrganizationSetupStatus(ctx *gin.Context) {
 
 	// 3. Call Service (using the Request Context)
 	// We pass ctx.Request.Context() so timeouts/cancellations work.
-	done, err := c.orchestService.GetOrganizationSetupStatus(ctx.Request.Context(), orgID)
+	done, err := c.orchestService.GetOrganizationStatus(ctx.Request.Context(), orgID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Service failure"})
 		return

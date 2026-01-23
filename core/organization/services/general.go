@@ -18,10 +18,6 @@ func (r *organizationService) AddHQ(ctx context.Context, input organization_cont
 		return err
 	}
 
-	// if verifiedOrg != nil {
-
-	// }
-
 	office := &models.OrganizationOffice{
 		ID:             uuid.New(),
 		OrganizationID: verifiedOrg.ID,
@@ -68,4 +64,13 @@ func (r *organizationService) AddHQ(ctx context.Context, input organization_cont
 	}
 
 	return nil
+}
+
+func (r *organizationService) GetStatus(ctx context.Context, orgID uuid.UUID) (string, error) {
+	org, err := r.orgMainRepo.GetOrganizationByID(ctx, orgID)
+	if err != nil {
+		return "", err
+	}
+
+	return org.Status, nil
 }
