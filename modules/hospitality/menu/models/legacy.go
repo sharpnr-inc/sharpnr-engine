@@ -11,131 +11,135 @@ import (
 // -------------------------------
 type MenuGroup struct {
 	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
-	OrganizationID uuid.UUID `gorm:"type:uuid;not null"`
-	PropertyID     uuid.UUID
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
+	PropertyID     uuid.UUID `gorm:"type:uuid;index"`
 
-	// e.g., "Restaurant Menu", "Bar Menu", "Room Service Menu"
-	Name        string `gorm:"size:100;not null"`
-	Description string `gorm:"size:255"`
+	Name        string `gorm:"type:varchar(100);not null"`
+	Description string `gorm:"type:varchar(255)"`
 
-	OwnerModule string
-	// RESTAURANT, BAR, HOTEL, HOUSEKEEPING, CONCIERGE
-
-	OwnerID uuid.UUID
-	// restaurant_id, hotel_id, property_id
+	// Owner: RESTAURANT, BAR, HOTEL, HOUSEKEEPING
+	OwnerModule string    `gorm:"type:varchar(50)"`
+	OwnerID     uuid.UUID `gorm:"type:uuid;index"`
 
 	IsActive  bool `gorm:"default:true"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
+func (MenuGroup) TableName() string { return "hospitality.menu_group" }
+
 // -------------------------------
-// 1️⃣ MENU CATEGORY
+// 1️⃣ MENU CATEGORY (e.g., Starters, Main Course)
 // -------------------------------
 type MenuCategory struct {
 	ID          uuid.UUID `gorm:"type:uuid;primaryKey"`
-	MenuGroupID uuid.UUID `gorm:"type:uuid;not null"`
+	MenuGroupID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	// e.g., "Main Course", "Appetizers", "Desserts"
-	Name        string `gorm:"size:100;not null"`
-	Description string `gorm:"size:255"`
+	Name        string `gorm:"type:varchar(100);not null"`
+	Description string `gorm:"type:varchar(255)"`
 
 	IsActive  bool `gorm:"default:true"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
+func (MenuCategory) TableName() string { return "hospitality.menu_category" }
+
 // -------------------------------
-// 1.5️⃣ MENU SUBCATEGORY
+// 1.5️⃣ MENU SUBCATEGORY (e.g., Soup, Salad)
 // -------------------------------
 type MenuSubCategory struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
+	MenuCategoryID uuid.UUID `gorm:"type:uuid;not null;index"`
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	MenuCategoryID uuid.UUID `gorm:"type:uuid;not null"`
-	OrganizationID uuid.UUID `gorm:"type:uuid;not null"`
-
-	Name        string `gorm:"size:100;not null"`
-	Description string `gorm:"size:255"`
+	Name        string `gorm:"type:varchar(100);not null"`
+	Description string `gorm:"type:varchar(255)"`
 
 	IsActive  bool `gorm:"default:true"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+func (MenuSubCategory) TableName() string { return "hospitality.menu_subcategory" }
 
 // -------------------------------
 // 2️⃣ MENU ITEM
 // -------------------------------
 type MenuItem struct {
 	ID                uuid.UUID `gorm:"type:uuid;primaryKey"`
-	MenuSubCategoryID uuid.UUID `gorm:"type:uuid"`
-	OrganizationID    uuid.UUID `gorm:"type:uuid;not null"`
+	MenuSubCategoryID uuid.UUID `gorm:"type:uuid;index"`
+	OrganizationID    uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	Name        string `gorm:"size:100;not null"`
-	Description string `gorm:"size:255"`
+	Name        string `gorm:"type:varchar(100);not null"`
+	Description string `gorm:"type:varchar(255)"`
 	IsVeg       bool   `gorm:"default:true"`
 
-	BasePrice   float64 `gorm:"not null"`
+	BasePrice   float64 `gorm:"type:decimal(12,2);not null"`
 	IsAvailable bool    `gorm:"default:true"`
 
-	TaxCategoryCode string
-	// FOOD, ALCOHOL, ROOM_SERVICE, LAUNDRY, CONCIERGE
+	// Tax: FOOD, ALCOHOL, ROOM_SERVICE
+	TaxCategoryCode string `gorm:"type:varchar(50)"`
+	Unit            string `gorm:"type:varchar(20);default:'plate'"`
 
-	Unit string `gorm:"default:'plate'"`
+	IsActive       bool      `gorm:"default:true"`
+	ServicePointID uuid.UUID `gorm:"type:uuid;index"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+func (MenuItem) TableName() string { return "hospitality.menu_item" }
+
+// -------------------------------
+// 2.5️⃣ MENU VARIANT GROUP (Size, Crust)
+// -------------------------------
+type MenuVariantGroup struct {
+	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
+	MenuItemID uuid.UUID `gorm:"type:uuid;not null;index"`
+
+	Name          string `gorm:"type:varchar(50);not null"`
+	IsMultiSelect bool   `gorm:"default:false"`
 
 	IsActive  bool `gorm:"default:true"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-
-	// ServedBy       ServicePointType
-	ServicePointID uuid.UUID
-
-	// This is Menu item have many variant group
-	// this is Menu item have many Addon group
 }
 
-type MenuVariantGroup struct {
-	ID         uuid.UUID `gorm:"primaryKey"`
-	MenuItemID uuid.UUID `gorm:"not null"`
-
-	Name          string `gorm:"size:50;not null"` // e.g., "Size", "Crust", "Spice Level"
-	IsMultiSelect bool   `gorm:"default:false"`    // user can pick multiple? (e.g., toppings)
-
-	IsActive bool `gorm:"default:true"`
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
-
-	// This tables is collection of variants
-}
+func (MenuVariantGroup) TableName() string { return "hospitality.menu_variant_group" }
 
 // -------------------------------
-// 3️⃣ MENU VARIANT
+// 3️⃣ MENU VARIANT (Small, Large)
 // -------------------------------
 type MenuVariant struct {
 	ID                 uuid.UUID `gorm:"type:uuid;primaryKey"`
-	MenuVariantGroupID uuid.UUID `gorm:"type:uuid;not null"`
-	MenuItemID         uuid.UUID `gorm:"type:uuid;not null"` // FIXED (was MenuItemId without gorm tag)
+	MenuVariantGroupID uuid.UUID `gorm:"type:uuid;not null;index"`
+	MenuItemID         uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	Name     string  `gorm:"size:50;not null"`
-	Price    float64 `gorm:"not null"`
+	Name     string  `gorm:"type:varchar(50);not null"`
+	Price    float64 `gorm:"type:decimal(12,2);not null"`
 	IsActive bool    `gorm:"default:true"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
+func (MenuVariant) TableName() string { return "hospitality.menu_variant" }
+
 // -------------------------------
-// 5️⃣ ADDONS
+// 5️⃣ ADDONS (Extra Cheese, Toppings)
 // -------------------------------
 type MenuItemAddon struct {
 	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
-	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
+	MenuItemID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	Name  string  `gorm:"size:100;not null"`
-	Price float64 `gorm:"not null"`
+	Name  string  `gorm:"type:varchar(100);not null"`
+	Price float64 `gorm:"type:decimal(12,2);not null"`
 	IsVeg bool    `gorm:"default:true"`
 
 	IsActive  bool `gorm:"default:true"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+func (MenuItemAddon) TableName() string { return "hospitality.menu_item_addon" }

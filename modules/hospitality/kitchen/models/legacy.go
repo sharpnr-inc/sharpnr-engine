@@ -21,6 +21,10 @@ type Kitchen struct {
 	UpdatedAt time.Time
 }
 
+func (Kitchen) TableName() string {
+	return "hospitality.kitchen"
+}
+
 type KitchenMenuItem struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -30,6 +34,10 @@ type KitchenMenuItem struct {
 	IsActive bool `gorm:"default:true"`
 
 	CreatedAt time.Time
+}
+
+func (KitchenMenuItem) TableName() string {
+	return "hospitality.kitchen_menu_item"
 }
 
 type KitchenTicket struct {
@@ -46,6 +54,10 @@ type KitchenTicket struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	CompletedAt *time.Time
+}
+
+func (KitchenTicket) TableName() string {
+	return "hospitality.kitchen_ticket"
 }
 
 // -------------------------------------------
@@ -67,10 +79,18 @@ type KitchenTicketItem struct {
 	UpdatedAt time.Time
 }
 
+func (KitchenTicketItem) TableName() string {
+	return "hospitality.kitchen_ticket_item"
+}
+
 type KitchenTicketItemAddon struct {
 	ID                  uuid.UUID `gorm:"type:uuid;primaryKey"`
 	KitchenTicketItemID uuid.UUID `gorm:"type:uuid;not null"`
 	AddOnID             uuid.UUID `gorm:"type:uuid;not null"`
 	Quantity            int       `gorm:"not null;default:0"`
 	CreatedAt           time.Time
+}
+
+func (KitchenTicketItemAddon) TableName() string {
+	return "hospitality.kitchen_ticket_item_addon"
 }

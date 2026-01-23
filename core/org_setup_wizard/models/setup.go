@@ -30,6 +30,10 @@ type OrganizationSetup struct {
 	UpdatedAt time.Time
 }
 
+func (OrganizationSetup) TableName() string {
+	return "setup_wizard.organization_setup"
+}
+
 // !! This is not migrated yet
 type OrganizationSetupStep struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`

@@ -19,3 +19,7 @@ type OrderKitchenRouting struct {
 
 	CreatedAt time.Time
 }
+
+func (OrderKitchenRouting) TableName() string {
+	return "hospitality.order_kitchen_routing"
+}

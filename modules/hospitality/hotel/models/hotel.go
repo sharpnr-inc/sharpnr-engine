@@ -22,3 +22,7 @@ type Hotel struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+func (Hotel) TableName() string {
+	return "hospitality.hotel"
+}

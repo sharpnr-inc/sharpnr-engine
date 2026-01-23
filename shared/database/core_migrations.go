@@ -15,5 +15,6 @@ func migrateCore(db *gorm.DB) error {
 		&models.OrganizationSetting{},
 		&models.OrganizationVerification{},
 		&models.OrganizationSetupStatus{},
+		&models.OrganizationGeoLocation{},
 	)
 }

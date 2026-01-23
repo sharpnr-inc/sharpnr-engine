@@ -17,6 +17,10 @@ type OrganizationProperty struct {
 	UpdatedAt time.Time
 }
 
+func (OrganizationProperty) TableName() string {
+	return "organization_property.organization_property"
+}
+
 /*
 This table connects Property with a Domain
 Example domains: Hospitality / Medical / Retail
@@ -31,6 +35,10 @@ type OrganizationPropertyDomain struct {
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+func (OrganizationPropertyDomain) TableName() string {
+	return "organization_property.organization_property_domain"
 }
 
 type OrganizationPropertyAddress struct {
@@ -49,6 +57,10 @@ type OrganizationPropertyAddress struct {
 	UpdatedAt time.Time
 }
 
+func (OrganizationPropertyAddress) TableName() string {
+	return "organization_property.organization_property_address"
+}
+
 type OrganizationPropertyTimeZone struct {
 	ID                     uuid.UUID `gorm:"primaryKey"`
 	OrganizationPropertyID uuid.UUID `gorm:"uniqueIndex;not null"`
@@ -57,4 +69,8 @@ type OrganizationPropertyTimeZone struct {
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+func (OrganizationPropertyTimeZone) TableName() string {
+	return "organization_property.organization_property_timezone"
 }

@@ -19,3 +19,7 @@ type OrganizationPropertyGeoLocation struct {
 	CapturedAt time.Time
 	UpdatedAt  time.Time
 }
+
+func (OrganizationPropertyGeoLocation) TableName() string {
+	return "organization_property.organization_property_geo_location"
+}

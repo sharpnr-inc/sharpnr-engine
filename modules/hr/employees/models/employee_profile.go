@@ -6,41 +6,65 @@ import (
 	"github.com/google/uuid"
 )
 
+// -------------------------------
+// 1️⃣ PERSONAL PROFILE
+// -------------------------------
 type EmployeeProfile struct {
 	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
 	EmployeeID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex"`
 
-	Gender      string
-	DateOfBirth *time.Time
+	Gender      string     `gorm:"type:varchar(10)"`
+	DateOfBirth *time.Time `gorm:"type:date"`
 
-	Address          string
-	EmergencyContact string
-	BloodGroup       string
+	Address          string `gorm:"type:text"`
+	EmergencyContact string `gorm:"type:varchar(100)"`
+	BloodGroup       string `gorm:"type:varchar(5)"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-type EmployeeDocument struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	EmployeeID uuid.UUID
-
-	Type string // ID_PROOF, CONTRACT
-	URL  string
-
-	Verified bool
+func (EmployeeProfile) TableName() string {
+	return "employee.employee_profile"
 }
 
+// -------------------------------
+// 2️⃣ DOCUMENTS & COMPLIANCE
+// -------------------------------
+type EmployeeDocument struct {
+	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
+	EmployeeID uuid.UUID `gorm:"type:uuid;index;not null"`
+
+	// Type: ID_PROOF, CONTRACT, VISA, HEALTH_CERTIFICATE
+	Type string `gorm:"type:varchar(50)"`
+	URL  string `gorm:"type:text"`
+
+	Verified bool `gorm:"default:false"`
+
+	CreatedAt time.Time
+}
+
+func (EmployeeDocument) TableName() string {
+	return "employee.employee_document"
+}
+
+// -------------------------------
+// 3️⃣ BANKING & PAYOUTS
+// -------------------------------
 type EmployeeBankAccount struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
+	EmployeeID uuid.UUID `gorm:"type:uuid;uniqueIndex;not null"`
 
-	EmployeeID uuid.UUID `gorm:"type:uuid;uniqueIndex"`
+	BankName      string `gorm:"type:varchar(100)"`
+	AccountNumber string `gorm:"type:varchar(50)"`
+	IFSC          string `gorm:"type:varchar(20)"`
+	UPI           string `gorm:"type:varchar(100)"`
 
-	BankName      string
-	AccountNumber string
-	IFSC          string
-	UPI           string
+	IsPrimary bool `gorm:"default:true"`
 
-	IsPrimary bool
+	CreatedAt time.Time
+}
+
+func (EmployeeBankAccount) TableName() string {
+	return "employee.employee_bank_account"
 }

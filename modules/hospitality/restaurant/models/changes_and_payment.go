@@ -32,6 +32,10 @@ type RestaurantCharge struct {
 	CreatedAt time.Time
 }
 
+func (RestaurantCharge) TableName() string {
+	return "hospitality.restaurant_charge"
+}
+
 type RestaurantSessionPayment struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -53,4 +57,8 @@ type RestaurantSessionPayment struct {
 	Reference string
 
 	ReceivedAt time.Time
+}
+
+func (RestaurantSessionPayment) TableName() string {
+	return "hospitality.restaurant_session_payment"
 }

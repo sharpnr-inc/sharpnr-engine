@@ -16,6 +16,10 @@ type HotelFloor struct {
 	CreatedAt   time.Time
 }
 
+func (HotelFloor) TableName() string {
+	return "hospitality.hotel_floor"
+}
+
 type HotelRoom struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -33,6 +37,10 @@ type HotelRoom struct {
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+func (HotelRoom) TableName() string {
+	return "hospitality.hotel_room"
 }
 
 type HotelRoomDetail struct {
@@ -54,6 +62,10 @@ type HotelRoomDetail struct {
 	UpdatedAt time.Time
 }
 
+func (HotelRoomDetail) TableName() string {
+	return "hospitality.hotel_room_detail"
+}
+
 type HotelRoomRate struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -66,6 +78,10 @@ type HotelRoomRate struct {
 	EffectiveTo   *time.Time
 
 	CreatedAt time.Time
+}
+
+func (HotelRoomRate) TableName() string {
+	return "hospitality.hotel_room_rate"
 }
 
 // !! ----  These tables are not Migrated yet For Hotel Version 2
@@ -84,6 +100,10 @@ type HotelRoomFeature struct {
 	// true  → extra charge
 
 	CreatedAt time.Time
+}
+
+func (HotelRoomFeature) TableName() string {
+	return "hospitality.hotel_room_feature"
 }
 
 type HotelRoomType struct {
@@ -105,6 +125,10 @@ type HotelRoomType struct {
 	UpdatedAt time.Time
 }
 
+func (HotelRoomType) TableName() string {
+	return "hospitality.hotel_room_type"
+}
+
 type HotelRoomTypeFeature struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -119,4 +143,8 @@ type HotelRoomTypeFeature struct {
 	// only if IsIncluded = false
 
 	CreatedAt time.Time
+}
+
+func (HotelRoomTypeFeature) TableName() string {
+	return "hospitality.hotel_room_type_feature"
 }

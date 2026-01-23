@@ -36,6 +36,10 @@ type PropertyServicePoint struct {
 	UpdatedAt time.Time
 }
 
+func (PropertyServicePoint) TableName() string {
+	return "organization_property.property_service_point"
+}
+
 type ServicePointKitchenMapping struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -49,4 +53,8 @@ type ServicePointKitchenMapping struct {
 	IsActive bool `gorm:"default:true"`
 
 	CreatedAt time.Time
+}
+
+func (ServicePointKitchenMapping) TableName() string {
+	return "organization_property.service_point_kitchen_mapping"
 }

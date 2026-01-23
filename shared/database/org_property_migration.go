@@ -17,5 +17,8 @@ func migrateOrgProperty(db *gorm.DB) error {
 		&org_property_models.OrganizationPropertyAddress{},
 		&org_property_models.OrganizationPropertyDomain{},
 		&org_property_models.OrganizationPropertyTimeZone{},
+		&org_property_models.OrganizationPropertyGeoLocation{},
+		&org_property_models.PropertyServicePoint{},
+		&org_property_models.ServicePointKitchenMapping{},
 	)
 }

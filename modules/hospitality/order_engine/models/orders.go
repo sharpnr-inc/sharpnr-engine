@@ -6,67 +6,83 @@ import (
 	"github.com/google/uuid"
 )
 
+// -------------------------------
+// 1️⃣ HOSPITALITY ORDER (The Header)
+// -------------------------------
 type HospitalityOrder struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	OrganizationID uuid.UUID
-	PropertyID     uuid.UUID
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
+	PropertyID     uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	ServicePointID uuid.UUID
-	// table / room / counter / online
+	// Link to Table, Room, or Counter
+	ServicePointID uuid.UUID `gorm:"type:uuid;index;not null"`
 
-	Domain string
-	// HOSPITALITY
+	Domain string `gorm:"type:varchar(50);default:'HOSPITALITY'"`
+	Module string `gorm:"type:varchar(50);index"` // HOTEL, RESTAURANT, BAR
 
-	Module string
-	// HOTEL / RESTAURANT / BAR / CLOUD_KITCHEN
-
-	Status string
-	// CREATED, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED
+	// Status: CREATED, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED
+	Status string `gorm:"type:varchar(20);index;default:'CREATED'"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
+func (HospitalityOrder) TableName() string { return "hospitality.hospitality_order" }
+
+// -------------------------------
+// 2️⃣ ORDER ITEM
+// -------------------------------
 type HospitalityOrderItem struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+	ID      uuid.UUID `gorm:"type:uuid;primaryKey"`
+	OrderID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	OrderID uuid.UUID
+	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
+	BasePrice  float64   `gorm:"type:decimal(12,2);not null"` // Captured snapshot
 
-	MenuItemID uuid.UUID
-	BasePrice  float64 // snapshot at order time
+	Quantity int    `gorm:"not null;default:1"`
+	Notes    string `gorm:"type:text"`
 
-	Quantity int
-
-	Notes string
-
-	Status string
-	// PENDING, PREPARING, SERVED, CANCELLED
+	// Status: PENDING, PREPARING, SERVED, CANCELLED
+	Status string `gorm:"type:varchar(20);index;default:'PENDING'"`
 
 	CreatedAt time.Time
 }
 
-type HospitalityOrderItemVariant struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+func (HospitalityOrderItem) TableName() string { return "hospitality.hospitality_order_item" }
 
+// -------------------------------
+// 3️⃣ ITEM VARIANTS (e.g. Medium/Large snapshot)
+// -------------------------------
+type HospitalityOrderItemVariant struct {
+	ID          uuid.UUID `gorm:"type:uuid;primaryKey"`
 	OrderItemID uuid.UUID `gorm:"type:uuid;index;not null"`
 
 	MenuVariantID uuid.UUID `gorm:"type:uuid;not null"`
-
-	Price float64 // snapshot
+	Price         float64   `gorm:"type:decimal(12,2);not null"` // Captured snapshot
 
 	CreatedAt time.Time
 }
 
-type HospitalityOrderItemAddon struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+func (HospitalityOrderItemVariant) TableName() string {
+	return "hospitality.hospitality_order_item_variant"
+}
 
+// -------------------------------
+// 4️⃣ ITEM ADDONS (e.g. Extra Cheese snapshot)
+// -------------------------------
+type HospitalityOrderItemAddon struct {
+	ID          uuid.UUID `gorm:"type:uuid;primaryKey"`
 	OrderItemID uuid.UUID `gorm:"type:uuid;index;not null"`
 
 	AddonID uuid.UUID `gorm:"type:uuid;not null"`
 
-	Price    float64 // snapshot per unit
-	Quantity int     // VERY IMPORTANT
+	Price    float64 `gorm:"type:decimal(12,2);not null"` // Captured snapshot
+	Quantity int     `gorm:"not null;default:1"`
 
 	CreatedAt time.Time
+}
+
+func (HospitalityOrderItemAddon) TableName() string {
+	return "hospitality.hospitality_order_item_addon"
 }

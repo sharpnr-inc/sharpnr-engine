@@ -26,6 +26,10 @@ type Restaurant struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+func (Restaurant) TableName() string {
+	return "hospitality.restaurant"
+}
+
 type RestaurantFloor struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -35,6 +39,10 @@ type RestaurantFloor struct {
 	FloorNumber int
 
 	CreatedAt time.Time
+}
+
+func (RestaurantFloor) TableName() string {
+	return "hospitality.restaurant_floor"
 }
 
 // ---------------------------
@@ -59,6 +67,10 @@ type RestaurantTable struct {
 	UpdatedAt time.Time
 }
 
+func (RestaurantTable) TableName() string {
+	return "hospitality.restaurant_table"
+}
+
 type RestaurantDiningSession struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -72,4 +84,8 @@ type RestaurantDiningSession struct {
 	ClosedAt  *time.Time
 
 	CreatedAt time.Time
+}
+
+func (RestaurantDiningSession) TableName() string {
+	return "hospitality.restaurant_dining_session"
 }
