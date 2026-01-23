@@ -83,3 +83,21 @@ type OrganizationOfficeCompliance struct {
 func (OrganizationOfficeCompliance) TableName() string {
 	return "core.organization_office_compliance"
 }
+
+type OrganizationGeoLocation struct {
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex"`
+
+	Latitude  float64 `gorm:"type:decimal(9,6);not null"`
+	Longitude float64 `gorm:"type:decimal(9,6);not null"`
+
+	AccuracyM *int   `gorm:"type:int"`
+	Source    string `gorm:"type:varchar(20)"`
+
+	CapturedAt time.Time
+	UpdatedAt  time.Time
+}
+
+func (OrganizationGeoLocation) TableName() string {
+	return "core.organization_geo_location"
+}

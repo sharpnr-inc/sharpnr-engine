@@ -20,7 +20,7 @@ type OrganizationServiceInterface interface {
 
 	AddHQ(
 		ctx context.Context,
-		input interface{},
+		input organization_contracts.OrganizationHQ,
 	) error
 
 	CreateDraftOrgForSignup(

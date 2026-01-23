@@ -40,6 +40,10 @@ type OrganizationRepositoryInterface interface {
 	GetOrganizationByEmail(ctx context.Context, rootEmail string) (*models.Organization, error)
 	UpdateOrganizationStatus(ctx context.Context, orgID uuid.UUID, status string) error
 
+	CreateOrgOffice(ctx context.Context, office *models.OrganizationOffice) error
+	CreateOrgOfficeAddress(ctx context.Context, officeAddr *models.OrganizationOfficeAddress) error
+	CreateOrgOfficeGeoLocation(ctx context.Context, geoLocation *models.OrganizationGeoLocation) error
+
 	CreateOrgSubscription(
 		ctx context.Context,
 		orgSub *models.OrganizationSubscription,

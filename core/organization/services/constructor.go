@@ -12,11 +12,6 @@ type organizationService struct {
 	orgMainRepo  organization_repo.OrganizationRepositoryInterface
 }
 
-// AddHQ implements OrganizationInternalServiceInterface.
-func (r *organizationService) AddHQ(ctx context.Context, input interface{}) error {
-	panic("unimplemented")
-}
-
 // CreateOrganization implements OrganizationInternalServiceInterface.
 func (r *organizationService) CreateOrganization(ctx context.Context, input interface{}) error {
 	panic("unimplemented")

@@ -12,7 +12,7 @@ type OrganizationSignUpServiceInterfaces interface {
 
 	// This is Service Start registration Process
 	// This takes email, hashed password, mobile number
-	// This also service use from Employee and Organization and check both
+	// This method use service from Employee and Organization and check both
 	// if we email exist in any of the repo we return the error
 	// this method also have to return Temporary OrganizationID that will be used to create
 	// slug or token and put in cookie to set by the controller
