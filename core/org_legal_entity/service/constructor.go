@@ -5,11 +5,11 @@ import (
 )
 
 type orgLegalEntity struct {
-	orgLegalEntitySvc org_legal_entity_repo.OrgLegalEntityRepoInterface
+	legalEntityRepo org_legal_entity_repo.OrgLegalEntityRepoInterface
 }
 
-func NewOrgLegalEntityService(orgLegalEntitySvc org_legal_entity_repo.OrgLegalEntityRepoInterface) *orgLegalEntity {
+func NewOrgLegalEntityService(legalEntityRepo org_legal_entity_repo.OrgLegalEntityRepoInterface) *orgLegalEntity {
 	return &orgLegalEntity{
-		orgLegalEntitySvc: orgLegalEntitySvc,
+		legalEntityRepo: legalEntityRepo,
 	}
 }

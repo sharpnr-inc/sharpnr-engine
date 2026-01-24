@@ -2,6 +2,13 @@ package org_legal_entity_contracts
 
 import "github.com/google/uuid"
 
-type OrgLegalEntityInput struct {
-	OrgID uuid.UUID
+type NewLegalEntityInput struct {
+	OrgID       uuid.UUID
+	LegalName   string
+	Type        string
+	AddressLine string
+	City        string
+	State       string
+	Country     string
+	Pincode     string
 }

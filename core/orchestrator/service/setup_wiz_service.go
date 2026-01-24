@@ -2,6 +2,8 @@ package orchestrator_service
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	orchestrator_dtos "sharpnr-engine/core/orchestrator/dtos"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
 
@@ -69,7 +71,37 @@ func (s *orchestratorService) StepThreeLegalEntity(
 	orgID uuid.UUID,
 	req *orchestrator_dtos.SetupLegalEntityReqDTO,
 ) error {
-	s.orgSetupWizService.Step_three_AddLegalEntity(ctx)
+
+	// 1. Check if the Org exists and is verified
+	verified, err := s.organizationService.VerifyOrgByID(ctx, orgID)
+	if err != nil {
+		return err
+	}
+
+	// 2. Explicitly handle the "Not Verified" state
+	if !verified {
+		return errors.New("organization must be verified before adding legal entity details")
+	}
+
+	// 3. Map to the internal contract
+	// Tip: Use a mapper function if this grows larger
+	stepInput := org_setup_wizard_contracts.SetupLegalEntityInput{
+		StepID:      req.StepID,
+		OrgID:       orgID,
+		LegalName:   req.Name,
+		Type:        req.Type,
+		AddressLine: req.AddressLine,
+		City:        req.City,
+		State:       req.State,
+		Country:     req.Country,
+		Pincode:     req.Pincode,
+	}
+
+	// 4. Execute the wizard step
+	if err := s.orgSetupWizService.Step_three_AddLegalEntity(ctx, stepInput); err != nil {
+		return fmt.Errorf("failed to save legal entity: %w", err)
+	}
+
 	return nil
 }
 

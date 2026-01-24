@@ -31,15 +31,14 @@ type SetupOrgPropertyReqDTO struct {
 }
 
 type SetupLegalEntityReqDTO struct {
-	Name        string   `json:"name"`
-	AddressLine string   `json:"address_line"`
-	City        string   `json:"city"`
-	State       string   `json:"state"`
-	Country     string   `json:"country"`
-	Pincode     string   `json:"pincode"`
-	Longitude   *float64 `json:"longitude,omitempty"`
-	Latitude    *float64 `json:"latitude,omitempty"`
-	AccuracyM   *int     `json:"accuracy_m,omitempty"`
+	StepID      uuid.UUID `json:"step_id" binding:"required"`
+	Type        string    `json:"type"`
+	Name        string    `json:"name"`
+	AddressLine string    `json:"address_line"`
+	City        string    `json:"city"`
+	State       string    `json:"state"`
+	Country     string    `json:"country"`
+	Pincode     string    `json:"pincode"`
 }
 
 type SetupProgressResponseDTO struct {
