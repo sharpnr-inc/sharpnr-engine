@@ -2,6 +2,7 @@ package orchestrator_controllers
 
 import (
 	"net/http"
+	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -24,18 +25,17 @@ func (c *OrchestratorController) GetOrgStatus(ctx *gin.Context) {
 	// *Because we are using middleware and it set the OrgID and it comes in String form
 	// *But we have to convert into the UUID and validate it
 	// *Step 1 --> using organization Services we can find the the if organization is Setup is Completed or Not
-	// *!! The DTO is Remaining the in swagger
 
-	val, exists := ctx.Get("OrgID")
+	val, exists := ctx.Get("OrgUUID")
 	if !exists {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized: OrgID missing"})
 		return
 	}
 
 	// 2. Convert and Validate UUID
-	orgID, err := uuid.Parse(val.(string))
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid OrgID format"})
+	orgID, ok := val.(uuid.UUID)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "OrgID has invalid type"})
 		return
 	}
 
@@ -47,11 +47,13 @@ func (c *OrchestratorController) GetOrgStatus(ctx *gin.Context) {
 		return
 	}
 
-	// 4. Final Response
-	ctx.JSON(http.StatusOK, gin.H{
-		"organization_id": orgID,
-		"setup_completed": done,
-		"message":         "Dummy status retrieved successfully",
-	})
+	utils.Success(
+		ctx,
+		http.StatusOK,
+		"Success",
+		gin.H{
+			"setup_completed": done,
+		},
+	)
 
 }

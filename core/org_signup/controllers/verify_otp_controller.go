@@ -15,7 +15,7 @@ import (
 func (c *orgSignUpController) VerifyOtpForSignup(ctx *gin.Context) {
 
 	// 1. Read signup context
-	slugId, exist := ctx.Get(webMiddleware.SignupUserIDContextKey)
+	slugId, exist := ctx.Get(webMiddleware.SignupCookieName)
 	if !exist {
 		utils.Failure(
 			ctx,
