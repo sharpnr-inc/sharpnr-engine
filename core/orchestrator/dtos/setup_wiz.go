@@ -1,5 +1,11 @@
 package orchestrator_dtos
 
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
 type SetupOrganizationHQAddressReqDTO struct {
 	AddressLine string   `json:"address_line" binding:"required"`
 	City        string   `json:"city" binding:"required"`
@@ -33,4 +39,21 @@ type SetupLegalEntityReqDTO struct {
 	Longitude   *float64 `json:"longitude,omitempty"`
 	Latitude    *float64 `json:"latitude,omitempty"`
 	AccuracyM   *int     `json:"accuracy_m,omitempty"`
+}
+
+type SetupProgressResponseDTO struct {
+	OverallStatus string                         `json:"overall_status"`
+	CurrentStep   *string                        `json:"current_step,omitempty"`
+	ProgressPct   int                            `json:"progress_pct"`
+	IsCompleted   bool                           `json:"is_completed"`
+	Steps         []SetupStepProgressResponseDTO `json:"steps"`
+}
+
+type SetupStepProgressResponseDTO struct {
+	ID          uuid.UUID  `json:"id"`
+	Step        string     `json:"step"`
+	Status      string     `json:"status"`
+	Version     int        `json:"version"`
+	StartedAt   time.Time  `json:"started_at"`
+	CompletedAt *time.Time `json:"completed_at,omitempty"`
 }

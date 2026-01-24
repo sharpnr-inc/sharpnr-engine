@@ -34,8 +34,8 @@ func (d *orgSetupWizardRepo) Create(
 func (d *orgSetupWizardRepo) GetAllSetupStepByOrgID(
 	ctx context.Context,
 	orgID uuid.UUID,
-) ([]org_setup_wizard_models.OrganizationSetup, error) {
-	var setups []org_setup_wizard_models.OrganizationSetup
+) ([]*org_setup_wizard_models.OrganizationSetup, error) {
+	var setups []*org_setup_wizard_models.OrganizationSetup
 
 	err := d.db.
 		WithContext(ctx).

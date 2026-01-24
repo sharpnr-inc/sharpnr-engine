@@ -60,7 +60,34 @@ func (s *orchestratorService) StepThreeLegalEntity(
 	return nil
 }
 
-func (s *orchestratorService) SetUpWizProgress(ctx context.Context, orgID uuid.UUID) error {
-	s.orgSetupWizService.Progress(ctx, orgID)
-	return nil
+func (s *orchestratorService) SetUpWizProgress(
+	ctx context.Context,
+	orgID uuid.UUID,
+) (orchestrator_dtos.SetupProgressResponseDTO, error) {
+
+	progress, err := s.orgSetupWizService.Progress(ctx, orgID)
+	if err != nil {
+		return orchestrator_dtos.SetupProgressResponseDTO{}, err
+	}
+
+	steps := make([]orchestrator_dtos.SetupStepProgressResponseDTO, 0, len(progress.Steps))
+
+	for _, step := range progress.Steps {
+		steps = append(steps, orchestrator_dtos.SetupStepProgressResponseDTO{
+			ID:          step.ID,
+			Step:        step.Step,
+			Status:      step.Status,
+			Version:     step.Version,
+			StartedAt:   step.StartedAt,
+			CompletedAt: step.CompletedAt,
+		})
+	}
+
+	return orchestrator_dtos.SetupProgressResponseDTO{
+		OverallStatus: progress.OverallStatus,
+		CurrentStep:   progress.CurrentStep,
+		ProgressPct:   progress.ProgressPct,
+		IsCompleted:   progress.IsCompleted,
+		Steps:         steps,
+	}, nil
 }

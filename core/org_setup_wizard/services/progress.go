@@ -2,19 +2,22 @@ package org_setup_wizard_services
 
 import (
 	"context"
+	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
 	org_setup_wizard_models "sharpnr-engine/core/org_setup_wizard/models"
+	org_setup_wizard_resolvers "sharpnr-engine/core/org_setup_wizard/resolvers"
 	"time"
 
 	"github.com/google/uuid"
 )
 
-func (s *orgSetupWizardService) Progress(ctx context.Context, orgID uuid.UUID) error {
-	_, err := s.orgSetWizRepo.GetAllSetupStepByOrgID(ctx, orgID)
+func (s *orgSetupWizardService) Progress(ctx context.Context, orgID uuid.UUID) (org_setup_wizard_contracts.SetupProgress, error) {
+	steps, err := s.orgSetWizRepo.GetAllSetupStepByOrgID(ctx, orgID)
 	if err != nil {
-		return err
+		return org_setup_wizard_contracts.SetupProgress{}, err
 	}
 
-	return nil
+	return org_setup_wizard_resolvers.ResolveSetupProgress(steps), nil
+
 }
 
 func (s *orgSetupWizardService) AddStepProgress(ctx context.Context, orgID uuid.UUID, step string, stepStatus string) error {

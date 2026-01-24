@@ -15,5 +15,5 @@ type OrgSetupWizardServiceInterface interface {
 	Step_three_AddLegalEntity(ctx context.Context) error
 
 	AddStepProgress(ctx context.Context, orgID uuid.UUID, step string, stepStatus string) error
-	Progress(ctx context.Context, orgID uuid.UUID) error
+	Progress(ctx context.Context, orgID uuid.UUID) (org_setup_wizard_contracts.SetupProgress, error)
 }
