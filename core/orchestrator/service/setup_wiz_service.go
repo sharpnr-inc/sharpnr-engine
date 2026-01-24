@@ -22,6 +22,7 @@ func (s *orchestratorService) AddOrganizationHQAddress(
 
 	input := org_setup_wizard_contracts.StepOneOrganizationHQ{
 		OrgID:        orgID,
+		StepID:       req.StepID,
 		Address_line: req.AddressLine,
 		Country:      req.Country,
 		City:         req.City,
@@ -47,7 +48,19 @@ func (s *orchestratorService) StepTwoProperty(
 	req *orchestrator_dtos.SetupOrgPropertyReqDTO,
 ) error {
 
-	s.orgSetupWizService.Step_two_AddProperty(ctx)
+	input := org_setup_wizard_contracts.PropertySetupInput{
+		OrgID:       orgID,
+		Name:        req.Name,
+		AddressLine: req.AddressLine,
+		City:        req.City,
+		State:       req.State,
+		Country:     req.Country,
+		Pincode:     req.Pincode,
+	}
+
+	if err := s.orgSetupWizService.Step_two_AddProperty(ctx, input); err != nil {
+		return err
+	}
 	return nil
 }
 

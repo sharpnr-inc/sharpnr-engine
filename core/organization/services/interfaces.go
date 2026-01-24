@@ -11,6 +11,7 @@ type OrganizationServiceInterface interface {
 	CreateNewOrganization(ctx context.Context, input organization_contracts.InputDataForOrgAndEmp) (output organization_contracts.InputForCreateDefaultEmployee, err error)
 	CreateDraftOrgForSignup(ctx context.Context, input organization_contracts.DraftOrganizationInput) (string, string, error)
 	IsOrgExists(ctx context.Context, rootEmail string) (bool, error)
+	VerifyOrgByID(ctx context.Context, orgID uuid.UUID) (bool, error)
 	GetStatus(ctx context.Context, orgID uuid.UUID) (string, error)
 
 	GetSignupSlug(ctx context.Context, tempId uuid.UUID) (string, error)

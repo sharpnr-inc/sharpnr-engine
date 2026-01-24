@@ -3,6 +3,7 @@ package org_setup_wizard_contracts
 import "github.com/google/uuid"
 
 type StepOneOrganizationHQ struct {
+	StepID       uuid.UUID
 	OrgID        uuid.UUID
 	Address_line string
 	Country      string

@@ -35,6 +35,7 @@ type RedisOrganizationRepositoryInterface interface {
 
 type OrganizationRepositoryInterface interface {
 	CreateOrganization(ctx context.Context, org *models.Organization) error
+	CreateOrganizationStatus(ctx context.Context, orgStatus *models.OrganizationSetupStatus) error
 	GetOrganizationByID(ctx context.Context, orgID uuid.UUID) (*models.Organization, error)
 	GetOrganizationBySharpID(ctx context.Context, sharpID string) (*models.Organization, error)
 	GetOrganizationByEmail(ctx context.Context, rootEmail string) (*models.Organization, error)

@@ -37,17 +37,18 @@ func (s *orgSetupWizardService) Step_one_AddOrgHqAddrAndGeoLocation(
 		return err
 	}
 
-	var competedStepTime = time.Now()
+	if err := s.orgSetWizRepo.UpdateCurrentStepStatus(ctx, "COMPLETE", input.OrgID, input.StepID); err != nil {
+		return err
+	}
+
 	step := &org_setup_wizard_models.OrganizationSetup{
 		ID:             uuid.New(),
 		OrganizationID: input.OrgID,
-		Status:         "COMPLETE",
-		CurrentStep:    "ORG_HQ_SETUP",
+		Status:         "IN_PROGRESS",
+		CurrentStep:    "PROPERTY_SETUP",
 		Version:        1,
 		StartedAt:      time.Now(),
-		CompletedAt:    &competedStepTime,
 		CreatedAt:      time.Now(),
-		UpdatedAt:      time.Now(),
 	}
 
 	if err := s.orgSetWizRepo.Create(ctx, step); err != nil {

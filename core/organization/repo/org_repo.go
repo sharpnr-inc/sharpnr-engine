@@ -132,3 +132,7 @@ func (d *organizationRepo) GetOrgSubscriptionPlan(ctx context.Context, orgID uui
 
 	return &subscription, nil
 }
+
+func (d *organizationRepo) CreateOrganizationStatus(ctx context.Context, orgStatus *models.OrganizationSetupStatus) error {
+	return d.db.WithContext(ctx).Create(orgStatus).Error
+}

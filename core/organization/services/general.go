@@ -2,6 +2,7 @@ package organization_services
 
 import (
 	"context"
+	"errors"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
 	"sharpnr-engine/core/organization/models"
 	"sharpnr-engine/sharp_mailer_engine"
@@ -73,4 +74,16 @@ func (r *organizationService) GetStatus(ctx context.Context, orgID uuid.UUID) (s
 	}
 
 	return org.Status, nil
+}
+
+func (r *organizationService) VerifyOrgByID(ctx context.Context, orgID uuid.UUID) (bool, error) {
+	org, err := r.orgMainRepo.GetOrganizationByID(ctx, orgID)
+	if err != nil {
+		return false, err
+	}
+	if org.ID == orgID {
+		return false, errors.New("org do not exist")
+	}
+
+	return true, nil
 }

@@ -166,7 +166,7 @@ func (c *OrchestratorController) Step_two_AddProperty(ctx *gin.Context) {
 		return
 	}
 
-	_, ok := orgUUIDRaw.(uuid.UUID)
+	orgID, ok := orgUUIDRaw.(uuid.UUID)
 	if !ok {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": "invalid org uuid type",
@@ -175,12 +175,19 @@ func (c *OrchestratorController) Step_two_AddProperty(ctx *gin.Context) {
 	}
 
 	var req *orchestrator_dtos.SetupOrgPropertyReqDTO
-	if err := ctx.ShouldBindJSON(req); err != nil {
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"message": "organization not found in context",
 		})
 		return
 	}
+
+	if err := c.orchestService.StepTwoProperty(ctx.Request.Context(), orgID, req); err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, "kk", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusBadRequest, "Property Added Success fully")
 
 }
 

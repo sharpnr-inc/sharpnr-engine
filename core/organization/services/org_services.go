@@ -103,6 +103,16 @@ func (r *organizationService) CreateNewOrganization(
 		return output, err
 	}
 
+	orgStatus := &models.OrganizationSetupStatus{
+		ID:              uuid.New(),
+		OrganizationID:  org.ID,
+		IsSetupComplete: false,
+	}
+
+	if err := r.orgMainRepo.CreateOrganizationStatus(ctx, orgStatus); err != nil {
+		return output, err
+	}
+
 	welcomeMailData := map[string]interface{}{
 		"welcome": "to sharpnr",
 	}
