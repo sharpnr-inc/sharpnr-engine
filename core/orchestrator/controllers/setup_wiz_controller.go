@@ -17,8 +17,7 @@ import (
 // @Tags         CategoryName (e.g., accounting-ap)
 // @Accept       json
 // @Produce      json
-// @Param        request  body  orchestrator_dtos.SetupProgressResponseDTO true  "Input description"
-// @Success      200  {object}  utils.Response{data=your_dtos.ResponseDTO} "Success message"
+// @Success      200  {object}  utils.Response "Complete" "Success message"
 // @Failure      400  {object}  utils.Response "Validation Error"
 // @Failure      401  {object}  utils.Response "Unauthorized"
 // @Failure      500  {object}  utils.Response "Internal Server Error"
@@ -90,8 +89,8 @@ func (c *OrchestratorController) GetSetupProgress(ctx *gin.Context) {
 // @Tags         CategoryName (e.g., accounting-ap)
 // @Accept       json
 // @Produce      json
-// @Param        request  body      your_dtos.TargetDTO  true  "Input description"
-// @Success      200  {object}  utils.Response{data=your_dtos.ResponseDTO} "Success message"
+// @Param        request  body  orchestrator_dtos.SetupOrganizationHQAddressReqDTO  true  "Input description"
+// @Success      200  {object}  utils.Response "Org HQ successfully" "Success message"
 // @Failure      400  {object}  utils.Response "Validation Error"
 // @Failure      401  {object}  utils.Response "Unauthorized"
 // @Failure      500  {object}  utils.Response "Internal Server Error"
@@ -123,9 +122,9 @@ func (c *OrchestratorController) Step_one_AddOrgHQ(ctx *gin.Context) {
 	}
 
 	var req *orchestrator_dtos.SetupOrganizationHQAddressReqDTO
-	if err := ctx.ShouldBindJSON(req); err != nil {
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "organization not found in context",
+			"message": "Invalid Request",
 		})
 		return
 	}
@@ -142,7 +141,7 @@ func (c *OrchestratorController) Step_one_AddOrgHQ(ctx *gin.Context) {
 // @Tags         core-setup
 // @Accept       json
 // @Produce      json
-// @Param        request  body      orchestrator_dtos.SetupOrgPropertyReqDTO  true  "Property Details"
+// @Param        request  body  orchestrator_dtos.SetupOrgPropertyReqDTO  true  "Property Details"
 // @Success      200  {object}  utils.Response "Property Added Successfully"
 // @Failure      400  {object}  utils.Response "Validation Error"
 // @Failure      401  {object}  utils.Response "Unauthorized"
@@ -199,7 +198,7 @@ func (c *OrchestratorController) Step_two_AddProperty(ctx *gin.Context) {
 // @Failure      400 {object} utils.Response "Validation or binding error"
 // @Failure      401 {object} utils.Response "Unauthorized"
 // @Failure      500 {object} utils.Response "Internal server error"
-// @Router       /setup/legal-entity [post]
+// @Router       /orchestrator/setup-wiz/step3 [post]
 func (c *OrchestratorController) Step_three_LegalEntity(ctx *gin.Context) {
 
 	// 1. Check Authentication

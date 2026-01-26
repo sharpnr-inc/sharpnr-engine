@@ -60,7 +60,7 @@ func (r *organizationService) AddHQ(ctx context.Context, input organization_cont
 	r.mailerEngine.Queues[sharp_mailer_engine.Notification] <- sharp_mailer_engine.EmailJob{
 		To:       verifiedOrg.RootEmail,
 		Subject:  "HQ Updates",
-		Template: sharp_mailer_engine.TmplWelcome,
+		Template: sharp_mailer_engine.TmplNotification,
 		Data:     notificationMailJob,
 	}
 
@@ -81,7 +81,7 @@ func (r *organizationService) VerifyOrgByID(ctx context.Context, orgID uuid.UUID
 	if err != nil {
 		return false, err
 	}
-	if org.ID == orgID {
+	if org.ID != orgID {
 		return false, errors.New("org do not exist")
 	}
 

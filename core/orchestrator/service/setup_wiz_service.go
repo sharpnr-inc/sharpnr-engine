@@ -22,9 +22,14 @@ func (s *orchestratorService) AddOrganizationHQAddress(
 	// Step 1 --> This is the mapping process, orchestrator implements the contracts of
 	// setup wizard
 
+	valiStepID, err := uuid.Parse(req.StepID)
+	if err != nil {
+		return err
+	}
+
 	input := org_setup_wizard_contracts.StepOneOrganizationHQ{
 		OrgID:        orgID,
-		StepID:       req.StepID,
+		StepID:       valiStepID,
 		Address_line: req.AddressLine,
 		Country:      req.Country,
 		City:         req.City,
@@ -50,7 +55,13 @@ func (s *orchestratorService) StepTwoProperty(
 	req *orchestrator_dtos.SetupOrgPropertyReqDTO,
 ) error {
 
+	stepParse_uuid, err := uuid.Parse(req.StepID)
+	if err != nil {
+		return err
+	}
+
 	input := org_setup_wizard_contracts.PropertySetupInput{
+		StepID:      stepParse_uuid,
 		OrgID:       orgID,
 		Name:        req.Name,
 		AddressLine: req.AddressLine,

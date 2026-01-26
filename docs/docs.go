@@ -89,7 +89,256 @@ const docTemplate = `{
                 }
             }
         },
-        "/org/register": {
+        "/orchestrator/setup-status": {
+            "get": {
+                "description": "Detailed explanation of what happens. Note: This requires an 'org_id' inside the session cookie.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orchestrator --\u003e Console"
+                ],
+                "summary": "Short, punchy summary of the action",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session cookie containing org_id",
+                        "name": "Cookie",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/setup-wiz/step3": {
+            "post": {
+                "description": "Third step of the onboarding wizard to define the organization's legal and physical presence.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "core-setup"
+                ],
+                "summary": "Setup Legal Entity",
+                "parameters": [
+                    {
+                        "description": "Legal Entity Details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/orchestrator_dtos.SetupLegalEntityReqDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Legal entity configured successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation or binding error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/setup-wizard/progress": {
+            "get": {
+                "description": "Detailed explanation of what happens (e.g., database changes, emails sent).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CategoryName (e.g.",
+                    "accounting-ap)"
+                ],
+                "summary": "Short, punchy summary of the action",
+                "responses": {
+                    "200": {
+                        "description": "Complete\" \"Success message",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/setup-wizard/step1": {
+            "post": {
+                "description": "Detailed explanation of what happens (e.g., database changes, emails sent).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CategoryName (e.g.",
+                    "accounting-ap)"
+                ],
+                "summary": "Short, punchy summary of the action",
+                "parameters": [
+                    {
+                        "description": "Input description",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/orchestrator_dtos.SetupOrganizationHQAddressReqDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Org HQ successfully\" \"Success message",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/setup-wizard/step2": {
+            "post": {
+                "description": "Second step of the onboarding wizard: Configures the core property attributes for the organization.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "core-setup"
+                ],
+                "summary": "Setup Organization Property",
+                "parameters": [
+                    {
+                        "description": "Property Details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/orchestrator_dtos.SetupOrgPropertyReqDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Property Added Successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/signup/initiate": {
             "post": {
                 "description": "Validates the request and starts the registration process.",
                 "consumes": [
@@ -143,6 +392,110 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "orchestrator_dtos.SetupLegalEntityReqDTO": {
+            "type": "object",
+            "required": [
+                "step_id"
+            ],
+            "properties": {
+                "address_line": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pincode": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "step_id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "orchestrator_dtos.SetupOrgPropertyReqDTO": {
+            "type": "object",
+            "properties": {
+                "accuracy_m": {
+                    "type": "integer"
+                },
+                "address_line": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pincode": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                }
+            }
+        },
+        "orchestrator_dtos.SetupOrganizationHQAddressReqDTO": {
+            "type": "object",
+            "required": [
+                "address_line",
+                "city",
+                "country",
+                "pincode",
+                "state",
+                "step_id"
+            ],
+            "properties": {
+                "accuracy_m": {
+                    "type": "integer"
+                },
+                "address_line": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "pincode": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "step_id": {
+                    "type": "string"
+                }
+            }
+        },
         "org_signup_dtos.OrganizationRegistrationDTO": {
             "description": "Organization Registration Data",
             "type": "object",

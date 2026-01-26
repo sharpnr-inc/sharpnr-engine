@@ -120,7 +120,7 @@ func (r *organizationService) CreateNewOrganization(
 	r.mailerEngine.Queues[sharp_mailer_engine.Notification] <- sharp_mailer_engine.EmailJob{
 		To:       org.RootEmail,
 		Subject:  "welcome to sharpnr",
-		Template: sharp_mailer_engine.TmplWelcome,
+		Template: sharp_mailer_engine.TmplNotification,
 		Data:     welcomeMailData,
 	}
 

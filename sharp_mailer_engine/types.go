@@ -17,6 +17,7 @@ const (
 	TmplVerification TemplateKey = "otp.html"
 	TmplInvoice      TemplateKey = "billing.html"
 	TmplWelcome      TemplateKey = "welcome.html"
+	TmplNotification TemplateKey = "notifications.html"
 )
 
 type EmailJob struct {

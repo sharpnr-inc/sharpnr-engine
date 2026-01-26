@@ -10,15 +10,13 @@ import (
 
 // GetOrganizationStatus godoc
 // @Summary      Short, punchy summary of the action
-// @Description  Detailed explanation of what happens (e.g., database changes, emails sent).
+// @Description  Detailed explanation of what happens. Note: This requires an 'org_id' inside the session cookie.
 // @Tags         Orchestrator --> Console
 // @Accept       json
 // @Produce      json
-// @Param        request  body      your_dtos.TargetDTO  true  "Input description"
-// @Success      200  {object}  utils.Response{data=your_dtos.ResponseDTO} "Success message"
-// @Failure      400  {object}  utils.Response "Validation Error"
-// @Failure      401  {object}  utils.Response "Unauthorized"
-// @Failure      500  {object}  utils.Response "Internal Server Error"
+// @Param        Cookie  header  string  true  "Session cookie containing org_id"
+// @Success      200     {object}  utils.Response{data=boolean} "Success"
+// @Failure      400     {object}  utils.Response "Validation Error"
 // @Router       /orchestrator/setup-status [get]
 func (c *OrchestratorController) GetOrgStatus(ctx *gin.Context) {
 

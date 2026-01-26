@@ -5,6 +5,7 @@ import (
 	"sharpnr-engine/cookieManager"
 	dbtx "sharpnr-engine/core/dbTx"
 	orchestrator_controllers "sharpnr-engine/core/orchestrator/controllers"
+	webMiddleware "sharpnr-engine/middlewares/web"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
 
@@ -23,7 +24,7 @@ func RegisterOrchestratorRoutes(
 	orchestService := sharpModules.SharpnrOrchestrator()
 	orchestController := orchestrator_controllers.NewOrchestratorController(orchestService)
 
-	org := webV1.Group("/orchestrator")
+	org := webV1.Group("/orchestrator", webMiddleware.WebAuthMiddleware(jwtMgr))
 
 	registerConsoleRoutes(org, orchestController)
 	registerSetupWizardRoutes(org, orchestController)

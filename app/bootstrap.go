@@ -40,7 +40,7 @@ func BootstrapModules(
 		orgSetupWizardService,
 	)
 
-	identityService := bootstrapIdentity(db)
+	identityService := bootstrapIdentity(db, employeeService)
 
 	hospitality := bootstrapHospitality(db, sereEngine)
 	// hospitalityOrderEngineService := bootstrapHospitalityOrderEngine(db)

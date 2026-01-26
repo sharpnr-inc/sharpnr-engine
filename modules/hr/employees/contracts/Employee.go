@@ -6,6 +6,7 @@ type EmployeeReader struct {
 	EmployeeID     uuid.UUID
 	Name           string
 	OrganizationID uuid.UUID
+	Role           string
 }
 
 type DefaultSuperAdminEmployeeInput struct {

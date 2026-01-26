@@ -2,6 +2,7 @@ package employee_services
 
 import (
 	"context"
+	employee_contracts "sharpnr-engine/modules/hr/employees/contracts"
 
 	"github.com/google/uuid"
 )
@@ -22,4 +23,8 @@ type EmployeeServiceInterface interface {
 		ctx context.Context,
 		employeeEmail string,
 	) (bool, error)
+
+	// Verify user
+
+	AuthenticateEmployee(ctx context.Context, email string, pass string) (*employee_contracts.EmployeeReader, error)
 }
