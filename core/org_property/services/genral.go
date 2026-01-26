@@ -2,6 +2,7 @@ package org_property_services
 
 import (
 	"context"
+	"errors"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	org_property_models "sharpnr-engine/core/org_property/models"
 	"time"
@@ -85,4 +86,58 @@ func (r *organizationPropertyService) GetPropertiesOfOrg(ctx context.Context, or
 	return &org_property_contracts.OrganizationProperties{
 		Properties: readers,
 	}, nil
+}
+
+func (r *organizationPropertyService) GetPropertyDetailsByID(
+	ctx context.Context,
+	orgID uuid.UUID,
+	propertyID uuid.UUID,
+) (*org_property_contracts.PropertyDetailsReader, error) {
+
+	pr, err := r.orgPropertyRepo.GetPropertyByID(ctx, propertyID)
+	if err != nil {
+		return nil, err
+	}
+	// Safety check for pr
+	if pr == nil {
+		return nil, errors.New("property not found")
+	}
+
+	if pr.OrganizationID != orgID {
+		return nil, errors.New("invalid property")
+	}
+
+	prDomain, err := r.orgPropertyRepo.GetPropertyDomain(ctx, propertyID)
+	if err != nil {
+		return nil, err
+	}
+
+	prLocation, err := r.orgPropertyRepo.GetPropertyAddress(ctx, propertyID)
+	if err != nil {
+		return nil, err
+	}
+
+	// --- SAFETY CHECKS ---
+	domainStr := ""
+	if prDomain != nil {
+		domainStr = prDomain.Domain
+	}
+
+	// If address is mandatory, return error. If optional, use empty strings.
+	if prLocation == nil {
+		return nil, errors.New("property address record is missing")
+	}
+
+	res := &org_property_contracts.PropertyDetailsReader{
+		Domain:      domainStr, // Use the safe variable
+		Name:        pr.Name,
+		Code:        pr.Code,
+		AddressLine: prLocation.AddressLine,
+		City:        prLocation.City,
+		State:       prLocation.State,
+		Country:     prLocation.Country,
+		Pincode:     prLocation.Pincode,
+	}
+
+	return res, nil
 }

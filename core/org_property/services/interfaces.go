@@ -10,4 +10,5 @@ import (
 type OrganizationPropertyServicesInterfaces interface {
 	CreatePropertyDefault(ctx context.Context, input org_property_contracts.CreateOrgPropertyInput) error
 	GetPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*org_property_contracts.OrganizationProperties, error)
+	GetPropertyDetailsByID(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (*org_property_contracts.PropertyDetailsReader, error)
 }

@@ -1,4 +1,4 @@
-package app
+package hospitalitydomain
 
 import (
 	barservices "sharpnr-engine/modules/hospitality/bar/services"

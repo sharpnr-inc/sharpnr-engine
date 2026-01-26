@@ -1,6 +1,7 @@
 package app
 
 import (
+	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	barrepo "sharpnr-engine/modules/hospitality/bar/repo"
 	barservices "sharpnr-engine/modules/hospitality/bar/services"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
@@ -19,7 +20,7 @@ import (
 func bootstrapHospitality(
 	db *gorm.DB,
 	sereEngine *sere.SERE,
-) *HospitalityDomain {
+) *hospitalitydomain.HospitalityDomain {
 
 	// Kitchen
 	kitchenRepo := kitchenrepo.NewKitchenRepository(db)
@@ -41,7 +42,7 @@ func bootstrapHospitality(
 	restaurantRepo := restaurantrepo.NewRestaurantRepository(db)
 	restaurantService := restaurantservices.NewRestaurantService(restaurantRepo)
 
-	return NewHospitalityDomain(
+	return hospitalitydomain.NewHospitalityDomain(
 		hotelService,
 		barService,
 		restaurantService,

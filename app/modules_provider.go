@@ -1,6 +1,7 @@
 package app
 
 import (
+	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	orchestrator_service "sharpnr-engine/core/orchestrator/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
@@ -15,7 +16,7 @@ type ModulesProvider interface {
 	OrganizationService() organization_services.OrganizationServiceInterface
 	SharpnrOrchestrator() orchestrator_service.OrchestratorServiceInterface
 	OrgSetupWiz() org_setup_wizard_services.OrgSetupWizardServiceInterface
-	Hospitality() *HospitalityDomain
+	Hospitality() *hospitalitydomain.HospitalityDomain
 	OrgPropertyService() org_property_services.OrganizationPropertyServicesInterfaces
 
 	OrgSignUpService() org_signup_services.OrganizationSignUpServiceInterfaces

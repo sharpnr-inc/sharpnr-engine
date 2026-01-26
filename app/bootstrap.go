@@ -51,6 +51,7 @@ func BootstrapModules(
 		organizationService,
 		orgPropertyService,
 		orgSetupWizardService,
+		hospitality,
 	)
 
 	sereEngine.UseTxExecutor(func(ctx context.Context, fn func(ctx context.Context) error) error {

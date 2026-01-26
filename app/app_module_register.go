@@ -1,6 +1,7 @@
 package app
 
 import (
+	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	orchestrator_service "sharpnr-engine/core/orchestrator/service"
 	org_legal_entity_service "sharpnr-engine/core/org_legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
@@ -26,7 +27,7 @@ type AppModules struct {
 	orchestratorService orchestrator_service.OrchestratorServiceInterface
 	orgSetupWizard      org_setup_wizard_services.OrgSetupWizardServiceInterface
 
-	hospitality *HospitalityDomain
+	hospitality *hospitalitydomain.HospitalityDomain
 
 	employeeService   employee_services.EmployeeServiceInterface
 	accountingService accounting_service.AccountingServiceInterface
@@ -36,7 +37,7 @@ func (m *AppModules) SharpnrOrchestrator() orchestrator_service.OrchestratorServ
 	return m.orchestratorService
 }
 
-func (m *AppModules) Hospitality() *HospitalityDomain {
+func (m *AppModules) Hospitality() *hospitalitydomain.HospitalityDomain {
 	return m.hospitality
 }
 
