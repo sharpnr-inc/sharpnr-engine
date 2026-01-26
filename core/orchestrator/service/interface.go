@@ -17,5 +17,6 @@ type OrchestratorServiceInterface interface {
 	SetUpWizProgress(ctx context.Context, orgID uuid.UUID) (orchestrator_dtos.SetupProgressResponseDTO, error)
 
 	// Property
+	GetAllPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
 	// UpdateProperty()
 }

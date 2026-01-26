@@ -18,4 +18,5 @@ type OrganizationPropertyRepositoryInterface interface {
 
 	AddDomainOfProperty(ctx context.Context, propertyDomain *org_property_models.OrganizationPropertyDomain) error
 	UpdateDomainPropertyStatus(ctx context.Context, status string, propertyID uuid.UUID) error
+	GetPropertyDomain(ctx context.Context, propertyID uuid.UUID) (*org_property_models.OrganizationPropertyDomain, error)
 }

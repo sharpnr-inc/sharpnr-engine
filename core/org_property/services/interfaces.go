@@ -3,8 +3,11 @@ package org_property_services
 import (
 	"context"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
+
+	"github.com/google/uuid"
 )
 
 type OrganizationPropertyServicesInterfaces interface {
 	CreatePropertyDefault(ctx context.Context, input org_property_contracts.CreateOrgPropertyInput) error
+	GetPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*org_property_contracts.OrganizationProperties, error)
 }

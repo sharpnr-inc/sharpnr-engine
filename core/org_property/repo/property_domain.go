@@ -2,10 +2,12 @@ package org_property_repo
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	org_property_models "sharpnr-engine/core/org_property/models"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func (o *organizationPropertyRepo) AddDomainOfProperty(ctx context.Context, propertyDomain *org_property_models.OrganizationPropertyDomain) error {
@@ -38,4 +40,22 @@ func (o *organizationPropertyRepo) UpdateDomainPropertyStatus(ctx context.Contex
 	}
 
 	return nil
+}
+
+func (o *organizationPropertyRepo) GetPropertyDomain(ctx context.Context, propertyID uuid.UUID) (*org_property_models.OrganizationPropertyDomain, error) {
+	var domain org_property_models.OrganizationPropertyDomain
+
+	err := o.db.
+		WithContext(ctx).
+		Where("organization_property_id = ?", propertyID).
+		First(&domain).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil // or return custom ErrNotFound
+		}
+		return nil, err
+	}
+
+	return &domain, nil
 }

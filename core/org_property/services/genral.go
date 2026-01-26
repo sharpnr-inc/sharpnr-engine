@@ -41,3 +41,48 @@ func (c *organizationPropertyService) CreatePropertyDefault(ctx context.Context,
 
 	return nil
 }
+
+func (r *organizationPropertyService) GetPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*org_property_contracts.OrganizationProperties, error) {
+	properties, err := r.orgPropertyRepo.GetAllPropertiesByOrgID(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+
+	readers := make([]org_property_contracts.PropertiesReader, 0, len(properties))
+	for _, p := range properties {
+
+		address, err := r.orgPropertyRepo.GetPropertyAddress(ctx, p.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		domain, err := r.orgPropertyRepo.GetPropertyDomain(ctx, p.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		reader := org_property_contracts.PropertiesReader{
+			ID:     p.ID,
+			Name:   p.Name,
+			Code:   p.Code,
+			City:   "",
+			State:  "",
+			Domain: "",
+		}
+
+		if address != nil {
+			reader.City = address.City
+			reader.State = address.State
+		}
+
+		if domain != nil {
+			reader.Domain = domain.Domain
+		}
+
+		readers = append(readers, reader)
+	}
+
+	return &org_property_contracts.OrganizationProperties{
+		Properties: readers,
+	}, nil
+}

@@ -11,7 +11,7 @@ func registerConsoleRoutes(r *gin.RouterGroup, c *orchestrator_controllers.Orche
 	cr := r.Group("/console")
 
 	cr.GET("/org-status", c.GetOrgStatus)
-	cr.GET("/property")
+	cr.GET("/property", c.ListAllOrgProperty)
 	cr.GET("/legal-entity")
 
 }
