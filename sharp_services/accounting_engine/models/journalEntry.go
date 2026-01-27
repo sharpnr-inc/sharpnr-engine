@@ -7,14 +7,19 @@ import (
 	"github.com/google/uuid"
 )
 
+/*
+Account Type    Debit (Left)    Credit (Right)
+Assets          Increase (+)    Decrease (-)
+Liabilities     Decrease (-)    Increase (+)
+Equity          Decrease (-)    Increase (+)
+Revenue         Decrease (-)    Increase (+)
+Expenses        Increase (+)    Decrease (-)
+*/
+
 type JournalEntry struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	AccountingBookID uuid.UUID      `gorm:"type:uuid;not null;index"`
-	AccountingBook   AccountingBook `gorm:"foreignKey:AccountingBookID"`
-
-	FiscalYearID uuid.UUID  `gorm:"type:uuid;not null;index"`
-	FiscalYear   FiscalYear `gorm:"foreignKey:FiscalYearID"`
+	ID               uuid.UUID `gorm:"type:uuid;primaryKey"`
+	AccountingBookID uuid.UUID `gorm:"type:uuid;not null;index"`
+	FiscalYearID     uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	EntryDate time.Time `gorm:"not null"`
 
@@ -22,9 +27,6 @@ type JournalEntry struct {
 	Narration string // Human readable explanation
 
 	EntryType accountingconstants.JournalEntryType
-	// NORMAL, OPENING_BALANCE, ADJUSTMENT
-
-	Lines []JournalLine `gorm:"foreignKey:JournalEntryID"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

@@ -45,7 +45,6 @@ func Hospitalityhotelroutes(
 	hotelRoom := hotel_routes.Group("/room")
 	{
 		hotelRoom.GET("")
-		hotelRoom.POST("/create", newHotelController.CreateRoom)
 		hotelRoom.POST("/update/:roomId")
 		hotelRoom.GET("/delete/:roomId")
 		hotelRoom.GET("/room-status/:hotelId/:roomId/:status", newHotelController.UpdateRoomStatus)

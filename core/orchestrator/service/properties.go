@@ -139,7 +139,7 @@ func (s *orchestratorService) AddModulesInProperty(
 	req *orchestrator_dtos.AddModulesInProperty_Req_DTO,
 ) error {
 
-	// Step One we have to vErify if user have the domain configured or not
+	// *Step One we have to vErify if user have the domain configured or not
 	// if they have then they must have respective modules
 	// for example if they have the Hospitality then the modules must be
 	// "HOTEL","BAR","RESTAURANT"

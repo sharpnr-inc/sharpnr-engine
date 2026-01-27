@@ -1,20 +1,11 @@
 package hotelrepo
 
 import (
-	"context"
-	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
-
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type hotelRepository struct {
 	db *gorm.DB
-}
-
-// GetFloorsByHotel implements HotelRepositoryInterface.
-func (h *hotelRepository) GetFloorsByHotel(ctx context.Context, hotelID uuid.UUID) ([]hotel_models.HotelFloor, error) {
-	panic("unimplemented")
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------//

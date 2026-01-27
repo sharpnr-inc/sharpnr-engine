@@ -9,19 +9,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// CreateJournalLines implements AccountingRepositoryInterface.
-func (r *accountingRepository) CreateJournalLines(
-	ctx context.Context,
-	lines []accounting_models.JournalLine,
-) error {
-
-	if len(lines) == 0 {
-		return nil
-	}
-
-	return r.db.WithContext(ctx).Create(&lines).Error
-}
-
 // GetJournalLinesByEntryID implements AccountingRepositoryInterface.
 func (r *accountingRepository) GetJournalLinesByEntryID(
 	ctx context.Context,

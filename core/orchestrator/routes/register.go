@@ -28,6 +28,5 @@ func RegisterOrchestratorRoutes(
 
 	registerConsoleRoutes(org, orchestController)
 	registerSetupWizardRoutes(org, orchestController)
-	registerLegalEntityRoutes()
 
 }

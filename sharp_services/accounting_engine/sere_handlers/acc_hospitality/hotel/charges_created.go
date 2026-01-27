@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	hotelevents "sharpnr-engine/modules/hospitality/hotel/hotel_events"
+	hotelevents "sharpnr-engine/modules/hospitality/hotel/events"
 	"sharpnr-engine/sere"
 	accounting_models "sharpnr-engine/sharp_services/accounting_engine/models"
 

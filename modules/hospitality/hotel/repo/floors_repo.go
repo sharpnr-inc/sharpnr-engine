@@ -59,3 +59,8 @@ func (h *hotelRepository) UpdateFloor(ctx context.Context, floor *hotel_models.H
 func (h *hotelRepository) DeleteFloor(ctx context.Context, floorID uuid.UUID) error {
 	panic("unimplemented")
 }
+
+// GetFloorsByHotel implements HotelRepositoryInterface.
+func (h *hotelRepository) GetFloorsByHotel(ctx context.Context, hotelID uuid.UUID) ([]hotel_models.HotelFloor, error) {
+	panic("unimplemented")
+}
