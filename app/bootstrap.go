@@ -54,6 +54,7 @@ func BootstrapModules(
 		hospitality,
 		accountingService,
 		orgLegalEntityService,
+		txManager,
 	)
 
 	sereEngine.UseTxExecutor(func(ctx context.Context, fn func(ctx context.Context) error) error {

@@ -2,6 +2,7 @@ package app
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
+	dbtx "sharpnr-engine/core/dbTx"
 	orchestrator_service "sharpnr-engine/core/orchestrator/service"
 	org_legal_entity_service "sharpnr-engine/core/org_legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
@@ -17,6 +18,7 @@ func bootstrapSharpnrOrchestrator(
 	hospitalityDomainSvc *hospitalitydomain.HospitalityDomain,
 	accountingEngineService accounting_service.AccountingServiceInterface,
 	legalEntityService org_legal_entity_service.OrgLegalEntityServiceInterface,
+	txManager dbtx.TxManager,
 ) orchestrator_service.OrchestratorServiceInterface {
 	return orchestrator_service.NewSharpnrOrchestratorService(
 		organizationService,
@@ -25,5 +27,6 @@ func bootstrapSharpnrOrchestrator(
 		hospitalityDomainSvc,
 		accountingEngineService,
 		legalEntityService,
+		txManager,
 	)
 }

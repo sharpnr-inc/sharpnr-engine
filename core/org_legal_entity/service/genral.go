@@ -42,3 +42,7 @@ func (r *orgLegalEntity) CreateNewLegalEntity(ctx context.Context, input org_leg
 	}
 	return nil
 }
+
+func (s *orgLegalEntity) GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) (*org_legal_entity_contracts.LegalEntityReader, error) {
+	panic("unimplmented")
+}

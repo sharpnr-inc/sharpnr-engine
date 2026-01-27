@@ -12,3 +12,9 @@ type NewLegalEntityInput struct {
 	Country     string
 	Pincode     string
 }
+
+type LegalEntityReader struct {
+	LegalEntityID uuid.UUID
+	Name          string
+	EntityType    string
+}
