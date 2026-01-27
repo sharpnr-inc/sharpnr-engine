@@ -84,6 +84,24 @@ func (HotelRoomRate) TableName() string {
 	return "hospitality.hotel_room_rate"
 }
 
+type RoomCategory struct {
+	ID           uuid.UUID
+	CategoryName string
+	CategoryCode string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	DeletedAt    time.Time
+}
+
+type HotelRoomCategory struct {
+	ID             uuid.UUID
+	RoomCategoryID uuid.UUID
+	HotelRoomID    uuid.UUID
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	DeletedAt      time.Time
+}
+
 // !! ----  These tables are not Migrated yet For Hotel Version 2
 
 type HotelRoomFeature struct {

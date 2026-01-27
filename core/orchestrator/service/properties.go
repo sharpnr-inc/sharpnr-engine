@@ -2,8 +2,9 @@ package orchestrator_service
 
 import (
 	"context"
+	"errors"
 	orchestrator_dtos "sharpnr-engine/core/orchestrator/dtos"
-	"strings"
+	"sharpnr-engine/shared/utils"
 
 	"github.com/google/uuid"
 	"golang.org/x/sync/errgroup"
@@ -82,7 +83,7 @@ func (c *orchestratorService) enrichHospitalityData(
 	g.Go(func() error {
 		hotel, err := c.hospitalityDomainSvc.HotelService().GetHotelDetails(ctx, orgID, propertyID)
 		if err != nil {
-			if isNotFoundError(err) {
+			if utils.IsNotFoundError(err) {
 				return nil
 			}
 			return err
@@ -112,10 +113,40 @@ func (c *orchestratorService) enrichHospitalityData(
 	return g.Wait()
 }
 
-// Utility to check for 404/Not Found errors
-// Adjust this logic to match your specific DB or Error library (e.g., GORM, sql)
-func isNotFoundError(err error) bool {
-	// Example: return errors.Is(err, gorm.ErrRecordNotFound)
-	// Example: return strings.Contains(err.Error(), "not found")
-	return err != nil && strings.Contains(strings.ToLower(err.Error()), "not found")
+func (s *orchestratorService) ConfigurePropertyToDomain(
+	ctx context.Context,
+	orgID uuid.UUID,
+	propertyID uuid.UUID,
+	req *orchestrator_dtos.AddDomainToPropertyReq_DTO,
+) error {
+
+	verify, err := s.organizationService.VerifyOrgByID(ctx, orgID)
+	if err != nil {
+		return err
+	}
+
+	if !verify {
+		return errors.New("org invalid")
+	}
+
+	return s.orgPropertyService.AddDomain(ctx, orgID, propertyID, req.Domain)
+}
+
+func (s *orchestratorService) AddModulesInProperty(
+	ctx context.Context,
+	orgID uuid.UUID,
+	propertyID uuid.UUID,
+	req *orchestrator_dtos.AddModulesInProperty_Req_DTO,
+) error {
+
+	// Step One we have to vErify if user have the domain configured or not
+	// if they have then they must have respective modules
+	// for example if they have the Hospitality then the modules must be
+	// "HOTEL","BAR","RESTAURANT"
+	// then we create the Switch case if Restaurant then we create Restaurant ... and what when they have all three ?
+	//
+	// Step Two verify ORG of course
+
+	// Step three verify the request the How
+	return nil
 }

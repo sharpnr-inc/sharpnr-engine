@@ -8,6 +8,12 @@ import (
 
 func registerPropertyRoutes(r *gin.RouterGroup, c *orchestrator_controllers.OrchestratorController) {
 
-	r.GET("/property", c.ListAllOrgProperty)
-	r.GET("/property/:propertyID", c.GetPropertyDetails)
+	pr := r.Group("/property")
+	{
+		pr.GET("", c.ListAllOrgProperty)
+		pr.GET("/:propertyID", c.GetPropertyDetails)
+		pr.POST("/:propertyID/add-domain", c.AddDomainInProperty)
+		pr.POST("/propertyID/add-modules", c.AddModulesInProperty)
+	}
+
 }

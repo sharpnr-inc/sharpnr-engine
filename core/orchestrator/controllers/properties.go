@@ -3,6 +3,7 @@ package orchestrator_controllers
 import (
 	"errors"
 	"net/http"
+	orchestrator_dtos "sharpnr-engine/core/orchestrator/dtos"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	"sharpnr-engine/shared/utils"
 
@@ -94,4 +95,90 @@ func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 
 	// 5. Success Response
 	utils.Success(ctx, http.StatusOK, "Property details fetch successfully", res)
+}
+
+func (c *OrchestratorController) AddDomainInProperty(ctx *gin.Context) {
+
+	// 1. User Authentication Check
+	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
+		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
+		return
+	}
+
+	// 2. Org context check
+	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
+	if !exists {
+		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
+		return
+	}
+
+	orgID, ok := orgUUIDRaw.(uuid.UUID)
+	if !ok {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
+		return
+	}
+
+	// 3. Param Parsing
+	propertyId := ctx.Param("propertyID")
+	pId, err := uuid.Parse(propertyId)
+	if err != nil {
+		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid propertyID format"))
+		return
+	}
+
+	var req *orchestrator_dtos.AddDomainToPropertyReq_DTO
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		return
+	}
+
+	if err := c.orchestService.ConfigurePropertyToDomain(ctx.Request.Context(), orgID, pId, req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeUnauthorized, err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Domain Added Successfully")
+
+}
+
+func (c *OrchestratorController) AddModulesInProperty(ctx *gin.Context) {
+	// 1. User Authentication Check
+	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
+		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
+		return
+	}
+
+	// 2. Org context check
+	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
+	if !exists {
+		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
+		return
+	}
+
+	orgID, ok := orgUUIDRaw.(uuid.UUID)
+	if !ok {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
+		return
+	}
+
+	// 3. Param Parsing
+	propertyId := ctx.Param("propertyID")
+	pId, err := uuid.Parse(propertyId)
+	if err != nil {
+		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid propertyID format"))
+		return
+	}
+
+	var req *orchestrator_dtos.AddModulesInProperty_Req_DTO
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		return
+	}
+
+	if err := c.orchestService.AddModulesInProperty(ctx.Request.Context(), orgID, pId, req); err != nil {
+		return
+	}
+
 }

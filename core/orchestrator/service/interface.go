@@ -18,6 +18,20 @@ type OrchestratorServiceInterface interface {
 
 	// Property
 	GetAllPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
+	ConfigurePropertyToDomain(
+		ctx context.Context,
+		orgID uuid.UUID,
+		propertyID uuid.UUID,
+		req *orchestrator_dtos.AddDomainToPropertyReq_DTO,
+	) error
+
+	AddModulesInProperty(
+		ctx context.Context,
+		orgID uuid.UUID,
+		propertyID uuid.UUID,
+		req *orchestrator_dtos.AddModulesInProperty_Req_DTO,
+	) error
+
 	GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
 	// UpdateProperty()
 }

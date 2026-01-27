@@ -94,3 +94,23 @@ func (d *hotelRepository) GetHotelsByPropertyID(ctx context.Context, propertyID 
 
 	return hotels, nil
 }
+
+// GetHotelByOrgID implements HotelRepositoryInterface.
+func (h *hotelRepository) GetHotelByOrgID(
+	ctx context.Context,
+	orgid uuid.UUID,
+) ([]*hotel_models.Hotel, error) {
+
+	hotels := make([]*hotel_models.Hotel, 0)
+
+	err := h.db.
+		WithContext(ctx).
+		Where("organization_id = ?", orgid).
+		Find(&hotels).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return hotels, nil
+}

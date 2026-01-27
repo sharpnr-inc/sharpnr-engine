@@ -17,11 +17,6 @@ func (h *hotelRepository) GetFloorsByHotel(ctx context.Context, hotelID uuid.UUI
 	panic("unimplemented")
 }
 
-// GetHotelByOrgID implements HotelRepositoryInterface.
-func (h *hotelRepository) GetHotelByOrgID(ctx context.Context, orgid uuid.UUID) ([]*hotel_models.Hotel, error) {
-	panic("unimplemented")
-}
-
 //-----------------------------------------------------------------------------------------------------------------------------------//
 
 // NewHotelRepository creates a new instance of hotelRepository.

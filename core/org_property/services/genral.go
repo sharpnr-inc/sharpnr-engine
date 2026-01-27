@@ -141,3 +141,30 @@ func (r *organizationPropertyService) GetPropertyDetailsByID(
 
 	return res, nil
 }
+
+func (r *organizationPropertyService) AddDomain(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, Domain string) error {
+
+	pr, err := r.orgPropertyRepo.GetPropertyByID(ctx, propertyID)
+	if err != nil {
+		return err
+	}
+
+	if pr.ID != propertyID {
+		return errors.New("invalid resources")
+	}
+
+	domain := org_property_models.OrganizationPropertyDomain{
+		ID:                     uuid.New(),
+		OrganizationPropertyID: propertyID,
+		Domain:                 Domain,
+		Status:                 "NOT_CONFIGURED",
+		CreatedAt:              time.Now(),
+		UpdatedAt:              time.Now(),
+	}
+
+	if err := r.orgPropertyRepo.AddDomainOfProperty(ctx, &domain); err != nil {
+		return err
+	}
+
+	return nil
+}

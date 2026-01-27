@@ -35,3 +35,29 @@ type HotelDetails_dto struct {
 	Name   string
 	Status bool
 }
+
+type AddDomainToPropertyReq_DTO struct {
+	Domain string `json:"domain" binding:"required"`
+}
+
+type AddModulesInProperty_Req_DTO struct {
+	Modules []string `json:"modules"`
+}
+
+type PropertyModuleConfigurationDTO struct {
+	PropertyID uuid.UUID             `json:"property_id"`
+	Domain     string                `json:"domain"`
+	Modules    []ModuleConfiguration `json:"modules"`
+	Kitchen    *KitchenConfiguration `json:"kitchen,omitempty"`
+}
+
+type ModuleConfiguration struct {
+	Name           string `json:"name"`
+	KitchenCapable bool   `json:"kitchen_capable"`
+	KitchenEnabled bool   `json:"kitchen_enabled"`
+}
+
+type KitchenConfiguration struct {
+	ApplicableModules []string `json:"applicable_modules"`
+	Sharing           *string  `json:"sharing,omitempty"`
+}
