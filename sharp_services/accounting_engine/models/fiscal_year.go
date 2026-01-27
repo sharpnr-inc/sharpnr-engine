@@ -10,10 +10,7 @@ import (
 type FiscalYear struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	OrgID uuid.UUID
-
 	AccountingBookID uuid.UUID `gorm:"type:uuid;not null;index"`
-	AccountingBook   AccountingBook
 
 	Name string
 

@@ -12,33 +12,15 @@ import (
 	"github.com/google/uuid"
 )
 
-// AccountingRepository defines the core contract for data access and persistence
-// operations in the Accounting module.
-//
-// This interface acts as the “Single Point of Truth” for accounting data flow,
-// ensuring all read/write operations for transactions, invoices, bills, ledgers,
-// and financial summaries are abstracted from the service layer.
-//
-// Responsibilities include, but are not limited to:
-//   - Managing persistence of all accounting entities (Accounts, Ledgers, Invoices, etc.)
-//   - Providing transactional consistency across modules (e.g., Bar, Hotel, HR)
-//   - Serving as a stable data abstraction for services, controllers, and event handlers
-//
-// Example:
-//
-//	repo := NewAccountingRepository(db)
-//	ledger, err := repo.GetLedgerByAccountID(accountID)
-//
-// Implementations of this interface should use GORM or any other
-// database ORM/driver under the hood for persistence.
 type AccountingRepositoryInterface interface {
 
 	// ------------------------
 	// Accounting Book
 	// ------------------------
 
-	CreateAccountingBook(ctx context.Context, book *accounting_models.AccountingBook) error
-	GetAccountingBookByID(ctx context.Context, bookID uuid.UUID) (*accounting_models.AccountingBook, error)
+	CreateAccountingBook(ctx context.Context, accounting_book *accounting_models.AccountingBook) error
+	GetAccountingBookByID(ctx context.Context, accounting_bookID uuid.UUID) ([]*accounting_models.AccountingBook, error)
+	GetAccountingBookByLegalEntityID(ctx context.Context, legal_entityId uuid.UUID) (*accounting_models.AccountingBook, error)
 
 	// ------------------------
 	// Fiscal Year

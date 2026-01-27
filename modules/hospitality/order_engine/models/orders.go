@@ -16,7 +16,7 @@ type HospitalityOrder struct {
 	PropertyID     uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	// Link to Table, Room, or Counter
-	ServicePointID uuid.UUID `gorm:"type:uuid;index;not null"`
+	PropertyServicePointID uuid.UUID `gorm:"type:uuid;index;not null"`
 
 	Domain string `gorm:"type:varchar(50);default:'HOSPITALITY'"`
 	Module string `gorm:"type:varchar(50);index"` // HOTEL, RESTAURANT, BAR
