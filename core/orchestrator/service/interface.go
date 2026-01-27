@@ -29,7 +29,7 @@ type OrchestratorServiceInterface interface {
 		ctx context.Context,
 		orgID uuid.UUID,
 		propertyID uuid.UUID,
-		req *orchestrator_dtos.AddModulesInProperty_Req_DTO,
+		req *orchestrator_dtos.PropertyModuleConfigurationDTO,
 	) error
 
 	GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)

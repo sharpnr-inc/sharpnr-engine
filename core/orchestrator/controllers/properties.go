@@ -142,6 +142,8 @@ func (c *OrchestratorController) AddDomainInProperty(ctx *gin.Context) {
 
 }
 
+// ------------------------------------------------------------------------------//
+
 func (c *OrchestratorController) AddModulesInProperty(ctx *gin.Context) {
 	// 1. User Authentication Check
 	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
@@ -171,7 +173,7 @@ func (c *OrchestratorController) AddModulesInProperty(ctx *gin.Context) {
 		return
 	}
 
-	var req *orchestrator_dtos.AddModulesInProperty_Req_DTO
+	var req *orchestrator_dtos.PropertyModuleConfigurationDTO
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
 		return

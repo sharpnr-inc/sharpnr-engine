@@ -9,8 +9,8 @@ import (
 type Kitchen struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	OrganizationID uuid.UUID `gorm:"type:uuid;not null"`
-	PropertyID     uuid.UUID `gorm:"type:uuid;not null"`
+	OrganizationID         uuid.UUID `gorm:"type:uuid;not null"`
+	OrganizationPropertyID uuid.UUID `gorm:"type:uuid;not null"`
 
 	Name        string `gorm:"size:100;not null"`
 	Description string

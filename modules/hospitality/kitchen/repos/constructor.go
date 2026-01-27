@@ -1,6 +1,8 @@
 package kitchenrepo
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type kitchenRepository struct {
 	db *gorm.DB

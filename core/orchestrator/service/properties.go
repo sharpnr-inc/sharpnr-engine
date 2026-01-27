@@ -136,7 +136,7 @@ func (s *orchestratorService) AddModulesInProperty(
 	ctx context.Context,
 	orgID uuid.UUID,
 	propertyID uuid.UUID,
-	req *orchestrator_dtos.AddModulesInProperty_Req_DTO,
+	req *orchestrator_dtos.PropertyModuleConfigurationDTO,
 ) error {
 
 	// *Step One we have to vErify if user have the domain configured or not
@@ -148,5 +148,11 @@ func (s *orchestratorService) AddModulesInProperty(
 	// Step Two verify ORG of course
 
 	// Step three verify the request the How
+
+	// s.hospitalityDomainSvc.HotelService().SetupDefaultHotel()
+	// s.hospitalityDomainSvc.BarService()
+	// s.hospitalityDomainSvc.RestaurantService()
+	// s.hospitalityDomainSvc.KitchenService()
+
 	return nil
 }
