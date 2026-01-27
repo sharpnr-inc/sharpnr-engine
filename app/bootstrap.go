@@ -45,7 +45,7 @@ func BootstrapModules(
 	hospitality := bootstrapHospitality(db, sereEngine)
 	// hospitalityOrderEngineService := bootstrapHospitalityOrderEngine(db)
 
-	accountingService := bootstrapAccounting(db)
+	accountingService := bootstrapAccounting(db, txManager)
 
 	orchestratorService := bootstrapSharpnrOrchestrator(
 		organizationService,

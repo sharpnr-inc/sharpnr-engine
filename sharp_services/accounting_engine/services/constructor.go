@@ -1,14 +1,22 @@
 package accounting_service
 
-import accounting_repo "sharpnr-engine/sharp_services/accounting_engine/repository"
+import (
+	dbtx "sharpnr-engine/core/dbTx"
+	accounting_repo "sharpnr-engine/sharp_services/accounting_engine/repository"
+)
 
 type accountingServices struct {
-	accRepo accounting_repo.AccountingRepositoryInterface
+	accRepo   accounting_repo.AccountingRepositoryInterface
+	txManager dbtx.TxManager
 }
 
-func NewAccountingService(accRepo accounting_repo.AccountingRepositoryInterface) *accountingServices {
+func NewAccountingService(
+	accRepo accounting_repo.AccountingRepositoryInterface,
+	txManager dbtx.TxManager,
+) *accountingServices {
 	return &accountingServices{
-		accRepo: accRepo,
+		accRepo:   accRepo,
+		txManager: txManager,
 	}
 
 }
