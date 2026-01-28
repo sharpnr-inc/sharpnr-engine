@@ -12,7 +12,7 @@ import (
 // TODO --> This is used inside the function where we fetch the hotel for the Property please
 // ?? Please Fix the this
 func (r *hotelService) GetHotelDetails(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (*hotel_contracts.HotelsReader, error) {
-	hotel, err := r.hotelRepo.GetHotelByOrgID(ctx, orgID)
+	hotel, err := r.hotelRepo.GetHotelsByPropertyID(ctx, propertyID)
 	if err != nil {
 		return nil, err
 	}
