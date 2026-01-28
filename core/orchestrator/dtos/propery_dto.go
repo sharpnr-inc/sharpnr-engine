@@ -16,18 +16,19 @@ type PropertiesReaderSlice struct {
 }
 
 type PropertyDetails_res_dto struct {
-	Name        string
-	Code        string
-	City        string
-	AddressLine string
-	State       string
-	Country     string
-	Domain      *string
-	Modules     *HospitalityPropertyModules
+	Name        string  `json:"name"`
+	Code        string  `json:"code"`
+	City        string  `json:"city"`
+	AddressLine string  `json:"address_line"`
+	State       string  `json:"state"`
+	Country     string  `json:"country"`
+	Domain      *string `json:"domain,omitempty"`
+	// Modules will only show up if it's not nil
+	Modules *HospitalityPropertyModules `json:"modules,omitempty"`
 }
 
 type HospitalityPropertyModules struct {
-	HotelDetails *[]HotelDetails_dto
+	HotelDetails *[]HotelDetails_dto `json:"hotel_details,omitempty"`
 }
 
 type HotelDetails_dto struct {

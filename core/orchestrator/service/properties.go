@@ -8,6 +8,7 @@ import (
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	"sharpnr-engine/shared/utils"
 	"strings"
+	"sync"
 
 	"github.com/google/uuid"
 	"golang.org/x/sync/errgroup"
@@ -77,12 +78,16 @@ func (c *orchestratorService) enrichHospitalityData(
 	orgID, propertyID uuid.UUID,
 	res *orchestrator_dtos.PropertyDetails_res_dto,
 ) error {
-	// 1. Initialize the Modules container
-	res.Modules = &orchestrator_dtos.HospitalityPropertyModules{}
-
 	g, ctx := errgroup.WithContext(ctx)
 
-	// --- Hotel Module ---
+	// Mutex protects the 'modules' struct from concurrent writes
+	var mu sync.Mutex
+	var foundData bool
+
+	// Temporary container
+	modules := &orchestrator_dtos.HospitalityPropertyModules{}
+
+	// --- 1. Hotel Module ---
 	g.Go(func() error {
 		hotel, err := c.hospitalityDomainSvc.HotelService().GetHotelDetails(ctx, orgID, propertyID)
 		if err != nil {
@@ -94,7 +99,6 @@ func (c *orchestratorService) enrichHospitalityData(
 
 		if hotel != nil && len(hotel.Hotels) > 0 {
 			hotelDTOs := make([]orchestrator_dtos.HotelDetails_dto, len(hotel.Hotels))
-
 			for i, h := range hotel.Hotels {
 				hotelDTOs[i] = orchestrator_dtos.HotelDetails_dto{
 					ID:     h.ID,
@@ -103,17 +107,61 @@ func (c *orchestratorService) enrichHospitalityData(
 				}
 			}
 
-			// Since the struct expects *[]HotelDetails_dto, we take the address of the slice
-			res.Modules.HotelDetails = &hotelDTOs
+			mu.Lock()
+			modules.HotelDetails = &hotelDTOs
+			foundData = true
+			mu.Unlock()
 		}
-
 		return nil
 	})
 
-	// --- Future: Add Bar and Restaurant g.Go blocks here ---
+	// --- 2. Future: Bar Module ---
+	/*
+	   g.Go(func() error {
+	       // Replace with actual Bar service call later
+	       bars, err := c.hospitalityDomainSvc.BarService().GetBarDetails(ctx, orgID, propertyID)
+	       if err != nil && !utils.IsNotFoundError(err) { return err }
 
-	// 2. Wait for all background tasks to finish
-	return g.Wait()
+	       if bars != nil && len(bars.Items) > 0 {
+	           // ... map to DTOs
+	           mu.Lock()
+	           // modules.BarDetails = &barDTOs
+	           foundData = true
+	           mu.Unlock()
+	       }
+	       return nil
+	   })
+	*/
+
+	// --- 3. Future: Kitchen Module ---
+	/*
+	   g.Go(func() error {
+	       // Replace with actual Kitchen service call later
+	       kitchens, err := c.hospitalityDomainSvc.KitchenService().GetKitchenDetails(ctx, orgID, propertyID)
+	       if err != nil && !utils.IsNotFoundError(err) { return err }
+
+	       if kitchens != nil && len(kitchens.Items) > 0 {
+	           // ... map to DTOs
+	           mu.Lock()
+	           // modules.KitchenDetails = &kitchenDTOs
+	           foundData = true
+	           mu.Unlock()
+	       }
+	       return nil
+	   })
+	*/
+
+	// Wait for all background tasks to finish
+	if err := g.Wait(); err != nil {
+		return err
+	}
+
+	// ONLY attach the modules object if at least one service found data
+	if foundData {
+		res.Modules = modules
+	}
+
+	return nil
 }
 
 func (s *orchestratorService) ConfigurePropertyToDomain(
