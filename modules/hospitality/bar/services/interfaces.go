@@ -8,7 +8,7 @@ import (
 )
 
 type BarServicesInterface interface {
-	SetupDefaultBar()
+	SetupDefaultBar(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (uuid.UUID, error)
 	GetBarDetails(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (*bar_contracts.BarDetailsReader, error)
 	// AddLegalEntity()
 	// GetLegalEntity()

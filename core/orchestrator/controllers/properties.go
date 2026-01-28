@@ -180,7 +180,10 @@ func (c *OrchestratorController) AddModulesInProperty(ctx *gin.Context) {
 	}
 
 	if err := c.orchestService.AddModulesInProperty(ctx.Request.Context(), orgID, pId, req); err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
 		return
 	}
+
+	utils.Success(ctx, 200, "Modules added successfully")
 
 }

@@ -14,5 +14,3 @@ func NewRestaurantService(restaurantRepo restaurantrepo.RestaurantRepositoryInte
 	}
 
 }
-
-// Right now Restaurant Service only implements the restaurant repository

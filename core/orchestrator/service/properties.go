@@ -3,8 +3,11 @@ package orchestrator_service
 import (
 	"context"
 	"errors"
+	"fmt"
 	orchestrator_dtos "sharpnr-engine/core/orchestrator/dtos"
+	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	"sharpnr-engine/shared/utils"
+	"strings"
 
 	"github.com/google/uuid"
 	"golang.org/x/sync/errgroup"
@@ -132,6 +135,8 @@ func (s *orchestratorService) ConfigurePropertyToDomain(
 	return s.orgPropertyService.AddDomain(ctx, orgID, propertyID, req.Domain)
 }
 
+//=---------------------------------------------------------------//
+
 func (s *orchestratorService) AddModulesInProperty(
 	ctx context.Context,
 	orgID uuid.UUID,
@@ -143,16 +148,88 @@ func (s *orchestratorService) AddModulesInProperty(
 	// if they have then they must have respective modules
 	// for example if they have the Hospitality then the modules must be
 	// "HOTEL","BAR","RESTAURANT"
-	// then we create the Switch case if Restaurant then we create Restaurant ... and what when they have all three ?
-	//
-	// Step Two verify ORG of course
+	// then we create the Switch case if Restaurant then we create Restaurant ...
 
-	// Step three verify the request the How
+	prt, err := s.orgPropertyService.GetPropertiesOfOrg(ctx, orgID)
+	if err != nil {
+		return err
+	}
 
-	// s.hospitalityDomainSvc.HotelService().SetupDefaultHotel()
-	// s.hospitalityDomainSvc.BarService()
-	// s.hospitalityDomainSvc.RestaurantService()
-	// s.hospitalityDomainSvc.KitchenService()
+	var property *org_property_contracts.PropertiesReader
+
+	for i := range prt.Properties {
+		if prt.Properties[i].ID == propertyID {
+			property = &prt.Properties[i]
+			break
+		}
+	}
+
+	if property == nil {
+		return errors.New("property not found")
+	}
+
+	if strings.TrimSpace(property.Domain) == "" {
+		return errors.New("domain not configured for property")
+	}
+
+	// Now we will add the modules that we receive in the request
+
+	for _, module := range req.Modules {
+		switch module.Name {
+		case "HOTEL":
+			_, err := s.hospitalityDomainSvc.
+				HotelService().
+				SetupDefaultHotel(ctx, orgID, propertyID)
+			if err != nil {
+				return err
+			}
+
+			if module.KitchenEnabled {
+				if err := s.hospitalityDomainSvc.
+					KitchenService().
+					CreateDefaultKitchen(ctx, orgID, propertyID, module.Name); err != nil {
+					return err
+				}
+			}
+
+		case "BAR":
+			_, err := s.hospitalityDomainSvc.
+				BarService().
+				SetupDefaultBar(ctx, orgID, propertyID)
+			if err != nil {
+				return err
+			}
+
+			if module.KitchenEnabled {
+				if err := s.hospitalityDomainSvc.
+					KitchenService().
+					CreateDefaultKitchen(ctx, orgID, propertyID, module.Name); err != nil {
+					return err
+				}
+			}
+
+		case "RESTAURANT":
+			_, err := s.hospitalityDomainSvc.
+				RestaurantService().
+				SetupDefaultRestaurant(ctx, orgID, propertyID)
+			if err != nil {
+				return err
+			}
+
+			if module.KitchenEnabled {
+				if err := s.hospitalityDomainSvc.
+					KitchenService().
+					CreateDefaultKitchen(ctx, orgID, propertyID, module.Name); err != nil {
+					return err
+				}
+			}
+
+		default:
+			return fmt.Errorf("unsupported module: %s", module.Name)
+
+		}
+
+	}
 
 	return nil
 }

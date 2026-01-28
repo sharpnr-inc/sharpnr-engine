@@ -30,7 +30,7 @@ func (h *hotelService) SearchGuests(ctx context.Context, orgId uuid.UUID, qry st
 }
 
 // SetupDefaultHotel implements HotelServiceInterface.
-func (h *hotelService) SetupDefaultHotel(ctx context.Context) {
+func (h *hotelService) SetupDefaultHotel(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (uuid.UUID, error) {
 	panic("unimplemented")
 }
 

@@ -2,6 +2,8 @@ package restaurantservices
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 /****************************************
@@ -10,5 +12,5 @@ import (
 ****************************************/
 
 type RestaurantServiceInterface interface {
-	CreateFloor(ctx context.Context)
+	SetupDefaultRestaurant(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (restuarantID uuid.UUID, err error)
 }

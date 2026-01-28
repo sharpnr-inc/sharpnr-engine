@@ -9,7 +9,7 @@ import (
 )
 
 type HotelServiceInterface interface {
-	SetupDefaultHotel(ctx context.Context)
+	SetupDefaultHotel(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (uuid.UUID, error)
 
 	SearchGuests(
 		ctx context.Context,
