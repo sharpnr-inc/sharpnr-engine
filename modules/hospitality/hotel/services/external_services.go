@@ -36,7 +36,7 @@ func (h *hotelService) SetupDefaultHotel(ctx context.Context, orgID uuid.UUID, p
 		ID:             uuid.New(),
 		OrganizationID: orgID,
 		PropertyID:     propertyID,
-		Name:           "Default Restaurant",
+		Name:           "Default Hotel",
 		IsActive:       false,
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),
