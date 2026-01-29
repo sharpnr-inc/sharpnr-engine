@@ -9,6 +9,7 @@ import (
 func migrateHotel(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&hotel_models.Hotel{},
+		&hotel_models.HotelSetup{},
 		&hotel_models.HotelOperationsTiming{},
 		&hotel_models.HotelAmenities{},
 		&hotel_models.HotelFloor{},
@@ -18,6 +19,7 @@ func migrateHotel(db *gorm.DB) error {
 		&hotel_models.HotelRoomTypeAddon{},
 		&hotel_models.HotelRoomTypeFeature{},
 		&hotel_models.HotelRoomTypeRate{},
+		&hotel_models.HotelMetaData{},
 
 		//--------Rooms--------------//
 		&hotel_models.HotelRoom{},

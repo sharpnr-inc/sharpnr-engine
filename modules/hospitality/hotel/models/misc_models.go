@@ -29,10 +29,18 @@ type HotelSetup struct {
 	UpdatedAt time.Time
 }
 
+func (HotelSetup) TableName() string {
+	return "hospitality.hotel_setup"
+}
+
 type HotelMetaData struct {
 	ID        uuid.UUID
 	HotelID   uuid.UUID
 	Meta      datatypes.JSON
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+func (HotelMetaData) TableName() string {
+	return "hospitality.hotel_meta_data"
 }
