@@ -28,10 +28,17 @@ type PropertyDetails_res_dto struct {
 }
 
 type HospitalityPropertyModules struct {
-	HotelDetails *[]HotelDetails_dto `json:"hotel_details,omitempty"`
+	HotelDetails   *[]HotelDetails_dto   `json:"hotel_details,omitempty"`
+	KitchenDetails *[]KitchenDetails_dto `json:"kitchen_details,omitempty"`
 }
 
 type HotelDetails_dto struct {
+	ID     uuid.UUID
+	Name   string
+	Status bool
+}
+
+type KitchenDetails_dto struct {
 	ID     uuid.UUID
 	Name   string
 	Status bool

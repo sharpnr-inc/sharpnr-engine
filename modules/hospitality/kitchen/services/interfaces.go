@@ -2,6 +2,7 @@ package kitchenservices
 
 import (
 	"context"
+	kitchen_contracts "sharpnr-engine/modules/hospitality/kitchen/contracts"
 
 	"github.com/google/uuid"
 )
@@ -9,4 +10,6 @@ import (
 type KitchenServiceInterface interface {
 	// Kitchen setup
 	CreateDefaultKitchen(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, module string) error
+
+	GetKitchensByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]*kitchen_contracts.Kitchen_Reader, error)
 }

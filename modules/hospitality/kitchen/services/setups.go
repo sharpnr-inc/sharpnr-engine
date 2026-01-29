@@ -3,6 +3,7 @@ package kitchenservices
 import (
 	"context"
 	"fmt"
+	kitchen_contracts "sharpnr-engine/modules/hospitality/kitchen/contracts"
 	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
 	"time"
 
@@ -23,4 +24,25 @@ func (r *kitchenService) CreateDefaultKitchen(ctx context.Context, orgID uuid.UU
 		UpdatedAt:              time.Now(),
 	}
 	return r.kitchenRepo.CreateKitchen(ctx, kitchen)
+}
+
+func (r *kitchenService) GetKitchensByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]*kitchen_contracts.Kitchen_Reader, error) {
+
+	kitchen, err := r.kitchenRepo.GetKitchenByPropertyId(ctx, propertyID)
+	if err != nil {
+		return nil, err
+	}
+	readers := make([]*kitchen_contracts.Kitchen_Reader, 0, len(kitchen))
+
+	for _, k := range kitchen {
+		reader := &kitchen_contracts.Kitchen_Reader{
+			ID:     k.ID,
+			Name:   k.Name,
+			Status: k.IsActive,
+		}
+
+		readers = append(readers, reader)
+	}
+
+	return readers, nil
 }

@@ -134,22 +134,31 @@ func (c *orchestratorService) enrichHospitalityData(
 	*/
 
 	// --- 3. Future: Kitchen Module ---
-	/*
-	   g.Go(func() error {
-	       // Replace with actual Kitchen service call later
-	       kitchens, err := c.hospitalityDomainSvc.KitchenService().GetKitchenDetails(ctx, orgID, propertyID)
-	       if err != nil && !utils.IsNotFoundError(err) { return err }
 
-	       if kitchens != nil && len(kitchens.Items) > 0 {
-	           // ... map to DTOs
-	           mu.Lock()
-	           // modules.KitchenDetails = &kitchenDTOs
-	           foundData = true
-	           mu.Unlock()
-	       }
-	       return nil
-	   })
-	*/
+	g.Go(func() error {
+		// Replace with actual Kitchen service call later
+		kitchens, err := c.hospitalityDomainSvc.KitchenService().GetKitchensByPropertyID(ctx, propertyID)
+		if err != nil && !utils.IsNotFoundError(err) {
+			return err
+		}
+
+		if len(kitchens) > 0 {
+			kitchenDTOs := make([]orchestrator_dtos.KitchenDetails_dto, len(kitchens))
+			for i, h := range kitchens {
+				kitchenDTOs[i] = orchestrator_dtos.KitchenDetails_dto{
+					ID:     h.ID,
+					Name:   h.Name,
+					Status: h.Status,
+				}
+			}
+
+			mu.Lock()
+			modules.KitchenDetails = &kitchenDTOs
+			foundData = true
+			mu.Unlock()
+		}
+		return nil
+	})
 
 	// Wait for all background tasks to finish
 	if err := g.Wait(); err != nil {

@@ -17,7 +17,7 @@ type Hotel struct {
 	CheckInTime  string `gorm:"default:10:00"`
 	CheckOutTime string `gorm:"default:13:00"`
 
-	IsActive bool `gorm:"default:true"`
+	IsActive bool `gorm:"default:false"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
