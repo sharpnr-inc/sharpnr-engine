@@ -9,7 +9,15 @@ import (
 func migrateHotel(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&hotel_models.Hotel{},
+		&hotel_models.HotelOperationsTiming{},
+		&hotel_models.HotelAmenities{},
 		&hotel_models.HotelFloor{},
+		&hotel_models.HotelRoomType{},
+		&hotel_models.HotelRoomAddons{},
+		&hotel_models.HotelRoomFeature{},
+		&hotel_models.HotelRoomTypeAddon{},
+		&hotel_models.HotelRoomTypeFeature{},
+		&hotel_models.HotelRoomTypeRate{},
 
 		//--------Rooms--------------//
 		&hotel_models.HotelRoom{},
