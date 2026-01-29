@@ -14,9 +14,9 @@ type Bar struct {
 	PropertyID     uuid.UUID `gorm:"type:uuid;index;not null"`
 	LegalEntityID  uuid.UUID `gorm:"type:uuid;index;not null"`
 
-	OpeningTime  time.Time `json:"opening_time"`
-	ClosingTime  time.Time `json:"closing_time"`
-	IsMultiFloor bool      `gorm:"default:false"`
+	// OpeningTime  time.Time `json:"opening_time"`
+	// ClosingTime  time.Time `json:"closing_time"`
+	// IsMultiFloor bool      `gorm:"default:false"`
 
 	IsActive bool `gorm:"default:false"`
 
@@ -26,4 +26,27 @@ type Bar struct {
 
 func (Bar) TableName() string {
 	return "hospitality.bar"
+}
+
+type BarLayout struct {
+	ID           uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+	BarID        uuid.UUID
+	PropertyID   uuid.UUID `gorm:"type:uuid;index;not null"`
+	IsMultiFloor bool
+}
+
+func (BarLayout) TableName() string {
+	return "hospitality.bar_layout"
+}
+
+type BarOperationTiming struct {
+	ID          uuid.UUID
+	BarID       uuid.UUID
+	PropertyID  uuid.UUID `gorm:"type:uuid;index;not null"`
+	OpeningTime time.Time `json:"opening_time"`
+	ClosingTime time.Time `json:"closing_time"`
+}
+
+func (BarOperationTiming) TableName() string {
+	return "hospitality.bar_operation_timing"
 }

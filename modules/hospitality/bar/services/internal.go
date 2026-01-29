@@ -7,11 +7,13 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *barServices) GetBarDetails(
+func (r *barServices) GetBarDetailsOfProperty(
 	ctx context.Context,
 	orgID uuid.UUID,
 	propertyID uuid.UUID,
-) (*bar_contracts.BarDetailsReader, error) {
+) ([]*bar_contracts.BarDetailsReader, error) {
 
-	return nil, nil
+	_, err := r.barRepo.GetBarByPropertyId(ctx, propertyID)
+	return nil, err
+
 }
