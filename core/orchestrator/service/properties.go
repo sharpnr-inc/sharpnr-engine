@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	dbtx "sharpnr-engine/core/dbTx"
 	orchestrator_dtos "sharpnr-engine/core/orchestrator/dtos"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	"sharpnr-engine/shared/utils"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/google/uuid"
 	"golang.org/x/sync/errgroup"
+	"gorm.io/gorm"
 )
 
 func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error) {
@@ -207,86 +209,90 @@ func (s *orchestratorService) AddModulesInProperty(
 	// "HOTEL","BAR","RESTAURANT"
 	// then we create the Switch case if Restaurant then we create Restaurant ...
 
-	prt, err := s.orgPropertyService.GetPropertiesOfOrg(ctx, orgID)
-	if err != nil {
-		return err
-	}
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 
-	var property *org_property_contracts.PropertiesReader
+		txCtx := dbtx.InjectTx(ctx, tx)
 
-	for i := range prt.Properties {
-		if prt.Properties[i].ID == propertyID {
-			property = &prt.Properties[i]
-			break
-		}
-	}
-
-	if property == nil {
-		return errors.New("property not found")
-	}
-
-	if strings.TrimSpace(property.Domain) == "" {
-		return errors.New("domain not configured for property")
-	}
-
-	// Now we will add the modules that we receive in the request
-
-	for _, module := range req.Modules {
-		switch module.Name {
-		case "HOTEL":
-			_, err := s.hospitalityDomainSvc.
-				HotelService().
-				SetupDefaultHotel(ctx, orgID, propertyID)
-			if err != nil {
-				return err
-			}
-
-			if module.KitchenEnabled {
-				if err := s.hospitalityDomainSvc.
-					KitchenService().
-					CreateDefaultKitchen(ctx, orgID, propertyID, module.Name); err != nil {
-					return err
-				}
-			}
-
-		case "BAR":
-			_, err := s.hospitalityDomainSvc.
-				BarService().
-				SetupDefaultBar(ctx, orgID, propertyID)
-			if err != nil {
-				return err
-			}
-
-			if module.KitchenEnabled {
-				if err := s.hospitalityDomainSvc.
-					KitchenService().
-					CreateDefaultKitchen(ctx, orgID, propertyID, module.Name); err != nil {
-					return err
-				}
-			}
-
-		case "RESTAURANT":
-			_, err := s.hospitalityDomainSvc.
-				RestaurantService().
-				SetupDefaultRestaurant(ctx, orgID, propertyID)
-			if err != nil {
-				return err
-			}
-
-			if module.KitchenEnabled {
-				if err := s.hospitalityDomainSvc.
-					KitchenService().
-					CreateDefaultKitchen(ctx, orgID, propertyID, module.Name); err != nil {
-					return err
-				}
-			}
-
-		default:
-			return fmt.Errorf("unsupported module: %s", module.Name)
-
+		prt, err := s.orgPropertyService.GetPropertiesOfOrg(txCtx, orgID)
+		if err != nil {
+			return err
 		}
 
-	}
+		var property *org_property_contracts.PropertiesReader
 
-	return nil
+		for i := range prt.Properties {
+			if prt.Properties[i].ID == propertyID {
+				property = &prt.Properties[i]
+				break
+			}
+		}
+
+		if property == nil {
+			return errors.New("property not found")
+		}
+
+		if strings.TrimSpace(property.Domain) == "" {
+			return errors.New("domain not configured for property")
+		}
+
+		for _, module := range req.Modules {
+			switch module.Name {
+			case "HOTEL":
+				_, err := s.hospitalityDomainSvc.
+					HotelService().
+					SetupDefaultHotel(txCtx, orgID, propertyID)
+				if err != nil {
+					return err
+				}
+
+				if module.KitchenEnabled {
+					if err := s.hospitalityDomainSvc.
+						KitchenService().
+						CreateDefaultKitchen(txCtx, orgID, propertyID, module.Name); err != nil {
+						return err
+					}
+				}
+
+			case "BAR":
+				_, err := s.hospitalityDomainSvc.
+					BarService().
+					SetupDefaultBar(txCtx, orgID, propertyID)
+				if err != nil {
+					return err
+				}
+
+				if module.KitchenEnabled {
+					if err := s.hospitalityDomainSvc.
+						KitchenService().
+						CreateDefaultKitchen(txCtx, orgID, propertyID, module.Name); err != nil {
+						return err
+					}
+				}
+
+			case "RESTAURANT":
+				_, err := s.hospitalityDomainSvc.
+					RestaurantService().
+					SetupDefaultRestaurant(txCtx, orgID, propertyID)
+				if err != nil {
+					return err
+				}
+
+				if module.KitchenEnabled {
+					if err := s.hospitalityDomainSvc.
+						KitchenService().
+						CreateDefaultKitchen(txCtx, orgID, propertyID, module.Name); err != nil {
+						return err
+					}
+				}
+
+			default:
+				return fmt.Errorf("unsupported module: %s", module.Name)
+
+			}
+
+		}
+
+		return nil
+	})
+
 }
