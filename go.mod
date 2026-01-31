@@ -22,6 +22,7 @@ require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/Depado/ginprom v1.8.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/cedar-policy/cedar-go v1.4.1 // indirect
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/goccy/go-yaml v1.18.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
@@ -34,6 +35,7 @@ require (
 	github.com/quic-go/quic-go v0.54.0 // indirect
 	go.uber.org/mock v0.5.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
+	golang.org/x/exp v0.0.0-20220921023135-46d9e7742f1e // indirect
 	golang.org/x/mod v0.26.0 // indirect
 	gorm.io/driver/mysql v1.5.6 // indirect
 )

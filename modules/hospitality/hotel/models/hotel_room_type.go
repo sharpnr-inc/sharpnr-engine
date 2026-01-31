@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// Hotel Room Type Can called as Category
+// Hotel Room Type Can be called as Category
 // this belongs to all together to To hotel
 
 type HotelRoomType struct {

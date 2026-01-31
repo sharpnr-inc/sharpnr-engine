@@ -20,6 +20,7 @@ import (
 func bootstrapHospitality(
 	db *gorm.DB,
 	sereEngine *sere.SERE,
+	// txManager dbtx.TxManager,
 ) *hospitalitydomain.HospitalityDomain {
 
 	// Kitchen

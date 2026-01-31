@@ -7,16 +7,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// This is bootstrap
-//
-
-// type employeeBootstrap struct {
-// 	Service employee_services.EmployeeServiceInterface
-
-// 	EmpIdentityRepo employee_repo.EmployeeIdentityRepositoryInterface
-// 	EmpAuthRepo     employee_repo.EmployeeAuthRepositoryInterface
-// }
-
 func bootstrapEmployee(db *gorm.DB) employee_services.EmployeeServiceInterface {
 	empIdentityRepo := employee_repo.NewEmployeeIdentityRepository(db)
 	empAuthRepo := employee_repo.NewEmployeeAuthRepository(db)
