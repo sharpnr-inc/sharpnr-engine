@@ -7,6 +7,7 @@ import (
 	"sharpnr-engine/modules/hospitality/hotel"
 	"sharpnr-engine/modules/hospitality/kitchen"
 	"sharpnr-engine/modules/hospitality/restaurant"
+	hospitality_utilities "sharpnr-engine/modules/hospitality/utilities_api"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,5 +29,7 @@ func RegisterHotelModuleRoutes(
 	bar.BarRoutes(sharpHospitality, modules)
 
 	concierge.ConciergeRoutes(sharpHospitality, modules)
+
+	hospitality_utilities.RegisterHospitalityUtilityRoutes(v1)
 
 }

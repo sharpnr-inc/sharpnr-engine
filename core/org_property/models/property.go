@@ -37,6 +37,23 @@ type OrganizationPropertyDomain struct {
 	UpdatedAt time.Time
 }
 
+type OrganizationPropertyDomainModules struct {
+	ID                           uuid.UUID
+	OrganizationPropertyID       uuid.UUID
+	OrganizationPropertyDomainID uuid.UUID
+	Module                       string
+	// Hotel, Bar, Restaurant, Night Club
+	ModuleID uuid.UUID
+	// HotelID, BraID, RestaurantID
+}
+
+type OrganizationPropertyDomainInfra struct {
+	ID                     uuid.UUID
+	OrganizationPropertyID uuid.UUID
+	InfraName              string
+	IsShared               *bool
+}
+
 func (OrganizationPropertyDomain) TableName() string {
 	return "organization_property.organization_property_domain"
 }

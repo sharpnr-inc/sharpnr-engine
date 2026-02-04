@@ -1,4 +1,4 @@
-package constants
+package org_legal_entity_constants
 
 // BusinessRegistrationType represents types of business registrations in India
 type BusinessRegistrationType string

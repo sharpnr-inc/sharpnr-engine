@@ -187,3 +187,7 @@ func (c *OrchestratorController) AddModulesInProperty(ctx *gin.Context) {
 	utils.Success(ctx, 200, "Modules added successfully")
 
 }
+
+func (c *OrchestratorController) AddProperty(*gin.Context) {
+
+}

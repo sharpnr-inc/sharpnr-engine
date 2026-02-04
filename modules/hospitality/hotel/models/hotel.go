@@ -80,3 +80,9 @@ type HotelRoomFeature struct {
 func (HotelRoomFeature) TableName() string {
 	return "hospitality.hotel_room_feature"
 }
+
+type HotelSetting struct {
+	ID             uuid.UUID
+	HotelID        uuid.UUID
+	KitchenEnabled bool
+}
