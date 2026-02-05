@@ -33,6 +33,7 @@ type OrchestratorServiceInterface interface {
 	) error
 
 	GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
+	CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error
 
 	//---------------Legal-Entity----------------------------------//
 

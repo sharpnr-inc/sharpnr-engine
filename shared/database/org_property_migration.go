@@ -15,9 +15,13 @@ func migrateOrgProperty(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&org_property_models.OrganizationProperty{},
 		&org_property_models.OrganizationPropertyAddress{},
-		&org_property_models.OrganizationPropertyDomain{},
 		&org_property_models.OrganizationPropertyTimeZone{},
 		&org_property_models.OrganizationPropertyGeoLocation{},
+		&org_property_models.OrganizationPropertyDomain{},
+		&org_property_models.OrganizationPropertyDomainModules{},
+		&org_property_models.OrganizationPropertyDomainInfra{},
+
+		// These are two tables i am not sure what do with these
 		&org_property_models.PropertyServicePoint{},
 		&org_property_models.ServicePointKitchenMapping{},
 	)

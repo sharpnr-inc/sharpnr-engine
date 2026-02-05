@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	orchestrator_dtos "sharpnr-engine/core/orchestrator/dtos"
+	property_constants "sharpnr-engine/core/org_property/constants"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	"sharpnr-engine/shared/utils"
 
@@ -188,6 +189,61 @@ func (c *OrchestratorController) AddModulesInProperty(ctx *gin.Context) {
 
 }
 
-func (c *OrchestratorController) AddProperty(*gin.Context) {
+func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
+
+	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
+		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
+		return
+	}
+
+	// 2. Org context check
+	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
+	if !exists {
+		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
+		return
+	}
+
+	OrgID, ok := orgUUIDRaw.(uuid.UUID)
+	if !ok {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
+		return
+	}
+
+	var req *orchestrator_dtos.CreatePropertyReq_dto
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, err.Error(), err)
+		return
+	}
+
+	if err := c.orchestService.CreateProperty(ctx.Request.Context(), OrgID, req); err != nil {
+		utils.Success(ctx, http.StatusCreated, "Property Added Successfully")
+		return
+	}
+
+}
+
+func (c *OrchestratorController) PropertyDomainTypes(ctx *gin.Context) {
+	// 1. User Authentication Check
+	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
+		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
+		return
+	}
+
+	// 2. Org context check
+	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
+	if !exists {
+		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
+		return
+	}
+
+	_, ok := orgUUIDRaw.(uuid.UUID)
+	if !ok {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Property Domain Fetched successfully", gin.H{
+		"domains": property_constants.PropertyDomains,
+	})
 
 }

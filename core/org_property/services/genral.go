@@ -3,6 +3,7 @@ package org_property_services
 import (
 	"context"
 	"errors"
+	property_constants "sharpnr-engine/core/org_property/constants"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	org_property_models "sharpnr-engine/core/org_property/models"
 	"time"
@@ -15,7 +16,7 @@ func (c *organizationPropertyService) CreatePropertyDefault(ctx context.Context,
 	property := &org_property_models.OrganizationProperty{
 		ID:             uuid.New(),
 		OrganizationID: input.OrgID,
-		Code:           "p1",
+		Code:           input.Code,
 		Name:           input.Name,
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),
@@ -117,19 +118,13 @@ func (r *organizationPropertyService) GetPropertyDetailsByID(
 		return nil, err
 	}
 
-	// --- SAFETY CHECKS ---
-	domainStr := ""
-	if prDomain != nil {
-		domainStr = prDomain.Domain
-	}
-
 	// If address is mandatory, return error. If optional, use empty strings.
 	if prLocation == nil {
 		return nil, errors.New("property address record is missing")
 	}
 
 	res := &org_property_contracts.PropertyDetailsReader{
-		Domain:      domainStr, // Use the safe variable
+		Domain:      prDomain.Domain, // Use the safe variable
 		Name:        pr.Name,
 		Code:        pr.Code,
 		AddressLine: prLocation.AddressLine,
@@ -142,7 +137,7 @@ func (r *organizationPropertyService) GetPropertyDetailsByID(
 	return res, nil
 }
 
-func (r *organizationPropertyService) AddDomain(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, Domain string) error {
+func (r *organizationPropertyService) AddDomain(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, Domain property_constants.PropertyDomainTypes) error {
 
 	pr, err := r.orgPropertyRepo.GetPropertyByID(ctx, propertyID)
 	if err != nil {

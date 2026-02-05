@@ -20,11 +20,6 @@ type EmployeeAuth struct {
 	IsActive      bool `gorm:"default:true"`
 	IsProvisioned bool `gorm:"default:false"` // True once IT setup is complete
 
-	// Granular platform access control
-	CanAccessMobile    bool `gorm:"default:true"`
-	CanAccessDashboard bool `gorm:"default:false"` // Usually for Managers/Admin
-	CanAccessPOS       bool `gorm:"default:false"` // For Waiters/Cashiers
-
 	LastLoginAt *time.Time
 	CreatedAt   time.Time
 	UpdatedAt   time.Time

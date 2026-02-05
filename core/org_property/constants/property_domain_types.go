@@ -17,7 +17,7 @@ type PropertyDomain struct {
 
 var PropertyDomains = []PropertyDomain{
 	{
-		ID:   "23dr9Q",
+		ID:   "HOSPITALITY",
 		Name: Hospitality,
 		Description: "Hospitality domain is designed for managing hotels, restaurants, bars, cafés, pubs, clubs, and cloud kitchens. " +
 			"It provides end-to-end operational capabilities including reservations, table and floor management, menu configuration, " +
@@ -26,7 +26,7 @@ var PropertyDomains = []PropertyDomain{
 		IsAvailable: true,
 	},
 	{
-		ID:   "EDU-001",
+		ID:   "EDUCATION",
 		Name: Education,
 		Description: "Education domain is intended for managing academic institutions such as schools, colleges, universities, and training centers. " +
 			"It will include features like student enrollment, course and curriculum management, attendance tracking, examinations, grading, " +
@@ -34,7 +34,7 @@ var PropertyDomains = []PropertyDomain{
 		IsAvailable: false,
 	},
 	{
-		ID:   "MED-001",
+		ID:   "MEDICAL_SCIENCE",
 		Name: MedicalScience,
 		Description: "Medical Science domain is planned for healthcare and clinical operations including hospitals, clinics, diagnostic centers, " +
 			"and laboratories. It will cover patient management, appointments, electronic medical records (EMR), billing, insurance workflows, " +
@@ -42,3 +42,17 @@ var PropertyDomains = []PropertyDomain{
 		IsAvailable: false,
 	},
 }
+
+type PropertyRunningStatus string
+
+const (
+	Active    PropertyRunningStatus = "ACTIVE"
+	NotActive PropertyRunningStatus = "NOT_ACTIVE"
+)
+
+type PropertyConfigurationStatus string
+
+const (
+	Configured    PropertyConfigurationStatus = "CONFIGURED"
+	NotConfigured PropertyConfigurationStatus = "NOT_CONFIGURED"
+)

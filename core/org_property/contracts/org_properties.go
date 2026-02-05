@@ -1,6 +1,10 @@
 package org_property_contracts
 
-import "github.com/google/uuid"
+import (
+	property_constants "sharpnr-engine/core/org_property/constants"
+
+	"github.com/google/uuid"
+)
 
 type OrganizationProperties struct {
 	Properties []PropertiesReader
@@ -11,13 +15,13 @@ type PropertiesReader struct {
 	Name   string
 	City   string
 	State  string
-	Domain string
+	Domain property_constants.PropertyDomainTypes
 	Code   string
 
 	// We can add Country later
 }
 type PropertyDetailsReader struct {
-	Domain      string
+	Domain      property_constants.PropertyDomainTypes
 	Name        string
 	Code        string
 	AddressLine string

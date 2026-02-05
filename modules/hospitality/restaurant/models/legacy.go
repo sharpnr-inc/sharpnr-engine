@@ -31,14 +31,11 @@ func (Restaurant) TableName() string {
 }
 
 type RestaurantFloor struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
+	ID           uuid.UUID `gorm:"type:uuid;primaryKey"`
 	RestaurantID uuid.UUID `gorm:"type:uuid;not null;index"`
-
-	Name        string
-	FloorNumber int
-
-	CreatedAt time.Time
+	Name         string
+	FloorNumber  int
+	CreatedAt    time.Time
 }
 
 func (RestaurantFloor) TableName() string {

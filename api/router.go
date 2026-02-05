@@ -55,8 +55,6 @@ func SetupRouter(
 			v1.RegisterModuleRoutes(protected, modules)
 			orchestrator_routes.RegisterOrchestratorRoutes(protected, txManager, sere, cookies, jwtmgr, modules)
 		}
-
-		v1.UtilsRoutes(webV1)
 	}
 
 	// ========================

@@ -10,6 +10,8 @@ func registerPropertyRoutes(r *gin.RouterGroup, c *orchestrator_controllers.Orch
 
 	pr := r.Group("/property")
 	{
+		pr.GET("/utils/domains", c.PropertyDomainTypes)
+		pr.POST("/create", c.AddProperty)
 		pr.GET("", c.ListAllOrgProperty)
 		pr.GET("/:propertyID", c.GetPropertyDetails)
 		pr.POST("/:propertyID/add-domain", c.AddDomainInProperty)

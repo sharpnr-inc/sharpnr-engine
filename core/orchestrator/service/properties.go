@@ -8,7 +8,6 @@ import (
 	orchestrator_dtos "sharpnr-engine/core/orchestrator/dtos"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	"sharpnr-engine/shared/utils"
-	"strings"
 	"sync"
 
 	"github.com/google/uuid"
@@ -231,10 +230,6 @@ func (s *orchestratorService) AddModulesInProperty(
 			return errors.New("property not found")
 		}
 
-		if strings.TrimSpace(property.Domain) == "" {
-			return errors.New("domain not configured for property")
-		}
-
 		for _, module := range req.Modules {
 			switch module.Name {
 			case "HOTEL":
@@ -295,4 +290,23 @@ func (s *orchestratorService) AddModulesInProperty(
 		return nil
 	})
 
+}
+
+func (s *orchestratorService) CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error {
+	prInp := org_property_contracts.CreateOrgPropertyInput{
+		OrgID:       orgID,
+		Name:        req.Name,
+		Code:        req.Code,
+		AddressLine: req.AddressLine,
+		City:        req.City,
+		State:       req.State,
+		Country:     req.Country,
+		Pincode:     req.Pincode,
+	}
+
+	if err := s.orgPropertyService.CreatePropertyDefault(ctx, prInp); err != nil {
+		return err
+	}
+
+	return nil
 }

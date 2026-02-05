@@ -87,33 +87,3 @@ type EmployeeReporting struct {
 func (EmployeeReporting) TableName() string {
 	return "employee.employee_reporting"
 }
-
-// -------------------------------
-// 4️⃣ HOSPITALITY OPERATIONAL PROFILE
-// -------------------------------
-type EmployeeHospitalityProfile struct {
-	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
-	EmployeeID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex"`
-
-	// OperationalRole: KITCHEN, CONCIERGE, HOUSEKEEPING, WAITER
-	OperationalRole string `gorm:"type:varchar(50)"`
-
-	// Capability Flags for RBAC in the UI
-	CanTakeOrders  bool `gorm:"default:false"`
-	CanPrepareFood bool `gorm:"default:false"`
-	CanAssignRooms bool `gorm:"default:false"`
-	CanCloseBills  bool `gorm:"default:false"`
-
-	// Preferences for auto-assignment
-	DefaultOutlet string `gorm:"type:varchar(50)"` // BAR, RESTAURANT
-	ServiceZone   string `gorm:"type:varchar(50)"` // FLOOR_1, SECTION_A
-
-	IsActive bool `gorm:"default:true"`
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
-func (EmployeeHospitalityProfile) TableName() string {
-	return "employee.employee_hospitality_profile"
-}

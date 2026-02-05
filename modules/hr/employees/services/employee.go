@@ -30,16 +30,13 @@ func (h *employeeService) CreateDefaultSuperAdmin(
 
 	// 2️⃣ Create Auth (password provisioning can be deferred)
 	auth := &employee_models.EmployeeAuth{
-		ID:                 uuid.New(),
-		EmployeeID:         employee.ID,
-		Email:              rootEmail,
-		Username:           rootEmail,
-		IsActive:           true,
-		IsProvisioned:      false,
-		CanAccessDashboard: true,
-		PasswordHash:       hashPass,
-		CanAccessMobile:    true,
-		CanAccessPOS:       true,
+		ID:            uuid.New(),
+		EmployeeID:    employee.ID,
+		Email:         rootEmail,
+		Username:      rootEmail,
+		IsActive:      true,
+		IsProvisioned: false,
+		PasswordHash:  hashPass,
 	}
 
 	if err := h.empAuthRepo.Create(ctx, auth); err != nil {

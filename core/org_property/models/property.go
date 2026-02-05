@@ -21,43 +21,6 @@ func (OrganizationProperty) TableName() string {
 	return "organization_property.organization_property"
 }
 
-/*
-This table connects Property with a Domain
-Example domains: Hospitality / Medical / Retail
-*/
-type OrganizationPropertyDomain struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	OrganizationPropertyID uuid.UUID `gorm:"type:uuid;index;not null"`
-
-	Domain string `gorm:"type:varchar(50);index;not null"` // Hospitality / Medical / Retail
-	Status string `gorm:"type:varchar(20);index;not null"` // ENABLED / DISABLED
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
-type OrganizationPropertyDomainModules struct {
-	ID                           uuid.UUID
-	OrganizationPropertyID       uuid.UUID
-	OrganizationPropertyDomainID uuid.UUID
-	Module                       string
-	// Hotel, Bar, Restaurant, Night Club
-	ModuleID uuid.UUID
-	// HotelID, BraID, RestaurantID
-}
-
-type OrganizationPropertyDomainInfra struct {
-	ID                     uuid.UUID
-	OrganizationPropertyID uuid.UUID
-	InfraName              string
-	IsShared               *bool
-}
-
-func (OrganizationPropertyDomain) TableName() string {
-	return "organization_property.organization_property_domain"
-}
-
 type OrganizationPropertyAddress struct {
 	ID                     uuid.UUID `gorm:"primaryKey"`
 	OrganizationID         uuid.UUID `gorm:"index;not null"`
