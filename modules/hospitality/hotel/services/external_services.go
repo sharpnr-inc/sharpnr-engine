@@ -20,9 +20,10 @@ func (r *hotelService) GetHotelDetails(ctx context.Context, orgID uuid.UUID, pro
 
 	for i, h := range hotel {
 		items[i] = hotel_contracts.HotelReader{
-			ID:     h.ID,
-			Name:   h.Name,
-			Status: h.IsActive,
+			ID:           h.ID,
+			Name:         h.Name,
+			Status:       h.IsActive,
+			IsConfigured: h.IsConfigured,
 		}
 	}
 

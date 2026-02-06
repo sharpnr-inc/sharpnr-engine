@@ -7,7 +7,8 @@ type HotelsReader struct {
 }
 
 type HotelReader struct {
-	ID     uuid.UUID
-	Name   string
-	Status bool
+	ID           uuid.UUID
+	Name         string
+	Status       bool
+	IsConfigured bool
 }

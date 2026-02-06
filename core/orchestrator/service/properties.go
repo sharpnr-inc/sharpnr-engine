@@ -26,12 +26,13 @@ func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID u
 
 	for _, p := range res.Properties {
 		readers = append(readers, orchestrator_dtos.PropertiesReaderSlice{
-			ID:     p.ID,
-			Name:   p.Name,
-			City:   p.City,
-			State:  p.State,
-			Domain: p.Domain,
-			Code:   p.Code,
+			ID:           p.ID,
+			Name:         p.Name,
+			City:         p.City,
+			State:        p.State,
+			Domain:       p.Domain,
+			Code:         p.Code,
+			IsConfigured: p.IsConfigured,
 		})
 	}
 
@@ -39,6 +40,8 @@ func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID u
 		Properties: readers,
 	}, nil
 }
+
+//=---------------------------------------------------------------//
 
 func (c *orchestratorService) GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error) {
 
@@ -81,16 +84,18 @@ func (c *orchestratorService) enrichHospitalityData(
 ) error {
 	g, ctx := errgroup.WithContext(ctx)
 
-	// Mutex protects the 'modules' struct from concurrent writes
-	var mu sync.Mutex
-	var foundData bool
-
-	// Temporary container
-	modules := &orchestrator_dtos.HospitalityPropertyModules{}
+	var (
+		mu      sync.Mutex
+		modules []orchestrator_dtos.ModulesDetails_dto
+		infra   []orchestrator_dtos.PropertyInfra_res_dto
+	)
 
 	// --- 1. Hotel Module ---
 	g.Go(func() error {
-		hotel, err := c.hospitalityDomainSvc.HotelService().GetHotelDetails(ctx, orgID, propertyID)
+		hotel, err := c.hospitalityDomainSvc.
+			HotelService().
+			GetHotelDetails(ctx, orgID, propertyID)
+
 		if err != nil {
 			if utils.IsNotFoundError(err) {
 				return nil
@@ -98,81 +103,111 @@ func (c *orchestratorService) enrichHospitalityData(
 			return err
 		}
 
-		if hotel != nil && len(hotel.Hotels) > 0 {
-			hotelDTOs := make([]orchestrator_dtos.HotelDetails_dto, len(hotel.Hotels))
-			for i, h := range hotel.Hotels {
-				hotelDTOs[i] = orchestrator_dtos.HotelDetails_dto{
-					ID:     h.ID,
-					Name:   h.Name,
-					Status: h.Status,
-				}
-			}
-
-			mu.Lock()
-			modules.HotelDetails = &hotelDTOs
-			foundData = true
-			mu.Unlock()
+		if hotel == nil || len(hotel.Hotels) == 0 {
+			return nil
 		}
+
+		hotelDTOs := make([]orchestrator_dtos.ModulesDetails_dto, 0, len(hotel.Hotels))
+		for _, h := range hotel.Hotels {
+			hotelDTOs = append(hotelDTOs, orchestrator_dtos.ModulesDetails_dto{
+				ID:           h.ID,
+				Name:         h.Name,
+				Status:       h.Status,
+				IsConfigured: h.IsConfigured,
+				Module_Type:  "HOTEL",
+			})
+		}
+
+		mu.Lock()
+		modules = append(modules, hotelDTOs...)
+		mu.Unlock()
+
 		return nil
 	})
 
-	// --- 2. Future: Bar Module ---
-	/*
-	   g.Go(func() error {
-	       // Replace with actual Bar service call later
-	       bars, err := c.hospitalityDomainSvc.BarService().GetBarDetails(ctx, orgID, propertyID)
-	       if err != nil && !utils.IsNotFoundError(err) { return err }
-
-	       if bars != nil && len(bars.Items) > 0 {
-	           // ... map to DTOs
-	           mu.Lock()
-	           // modules.BarDetails = &barDTOs
-	           foundData = true
-	           mu.Unlock()
-	       }
-	       return nil
-	   })
-	*/
-
-	// --- 3. Future: Kitchen Module ---
-
+	// --- 2. Restaurant Module ---
 	g.Go(func() error {
-		// Replace with actual Kitchen service call later
-		kitchens, err := c.hospitalityDomainSvc.KitchenService().GetKitchensByPropertyID(ctx, propertyID)
+		restaurant, err := c.hospitalityDomainSvc.
+			RestaurantService().
+			GetAllRestaurantOfProperty(ctx, propertyID)
+
+		if err != nil {
+			if utils.IsNotFoundError(err) {
+				return nil
+			}
+			return err
+		}
+
+		if len(restaurant) == 0 {
+			return nil
+		}
+
+		dTOs := make([]orchestrator_dtos.ModulesDetails_dto, 0, len(restaurant))
+		for _, h := range restaurant {
+			dTOs = append(dTOs, orchestrator_dtos.ModulesDetails_dto{
+				ID:           h.ID,
+				Name:         h.Name,
+				Status:       h.Status,
+				IsConfigured: h.IsConfigured,
+				Module_Type:  "RESTAURANT",
+			})
+		}
+
+		mu.Lock()
+		modules = append(modules, dTOs...)
+		mu.Unlock()
+
+		return nil
+	})
+
+	// --- 3. Kitchen (Infra) ---
+	g.Go(func() error {
+		kitchens, err := c.hospitalityDomainSvc.
+			KitchenService().
+			GetKitchensByPropertyID(ctx, propertyID)
+
 		if err != nil && !utils.IsNotFoundError(err) {
 			return err
 		}
 
-		if len(kitchens) > 0 {
-			kitchenDTOs := make([]orchestrator_dtos.KitchenDetails_dto, len(kitchens))
-			for i, h := range kitchens {
-				kitchenDTOs[i] = orchestrator_dtos.KitchenDetails_dto{
-					ID:     h.ID,
-					Name:   h.Name,
-					Status: h.Status,
-				}
-			}
-
-			mu.Lock()
-			modules.KitchenDetails = &kitchenDTOs
-			foundData = true
-			mu.Unlock()
+		if len(kitchens) == 0 {
+			return nil
 		}
+
+		kitchenDTOs := make([]orchestrator_dtos.PropertyInfra_res_dto, 0, len(kitchens))
+		for _, k := range kitchens {
+			kitchenDTOs = append(kitchenDTOs, orchestrator_dtos.PropertyInfra_res_dto{
+				ID:         k.ID,
+				Name:       k.Name,
+				Status:     k.Status,
+				Infra_Type: "KITCHEN",
+			})
+		}
+
+		mu.Lock()
+		infra = append(infra, kitchenDTOs...)
+		mu.Unlock()
+
 		return nil
 	})
 
-	// Wait for all background tasks to finish
+	// Wait for all goroutines
 	if err := g.Wait(); err != nil {
 		return err
 	}
 
-	// ONLY attach the modules object if at least one service found data
-	if foundData {
-		res.Modules = modules
+	// Attach only if data exists
+	if len(modules) > 0 {
+		res.Modules = &modules
+	}
+	if len(infra) > 0 {
+		res.Infra = &infra
 	}
 
 	return nil
 }
+
+// =---------------------------------------------------------------//
 
 func (s *orchestratorService) ConfigurePropertyToDomain(
 	ctx context.Context,
@@ -230,61 +265,55 @@ func (s *orchestratorService) AddModulesInProperty(
 			return errors.New("property not found")
 		}
 
-		for _, module := range req.Modules {
-			switch module.Name {
-			case "HOTEL":
-				_, err := s.hospitalityDomainSvc.
-					HotelService().
-					SetupDefaultHotel(txCtx, orgID, propertyID)
-				if err != nil {
-					return err
-				}
-
-				if module.KitchenEnabled {
-					if err := s.hospitalityDomainSvc.
-						KitchenService().
-						CreateDefaultKitchen(txCtx, orgID, propertyID, module.Name); err != nil {
+		if req.Modules != nil {
+			for _, module := range *req.Modules {
+				switch module {
+				case "HOTEL":
+					_, err := s.hospitalityDomainSvc.
+						HotelService().
+						SetupDefaultHotel(txCtx, orgID, propertyID)
+					if err != nil {
 						return err
 					}
-				}
 
-			case "BAR":
-				_, err := s.hospitalityDomainSvc.
-					BarService().
-					SetupDefaultBar(txCtx, orgID, propertyID)
-				if err != nil {
-					return err
-				}
-
-				if module.KitchenEnabled {
-					if err := s.hospitalityDomainSvc.
-						KitchenService().
-						CreateDefaultKitchen(txCtx, orgID, propertyID, module.Name); err != nil {
+				case "BAR":
+					_, err := s.hospitalityDomainSvc.
+						BarService().
+						SetupDefaultBar(txCtx, orgID, propertyID)
+					if err != nil {
 						return err
 					}
-				}
 
-			case "RESTAURANT":
-				_, err := s.hospitalityDomainSvc.
-					RestaurantService().
-					SetupDefaultRestaurant(txCtx, orgID, propertyID)
-				if err != nil {
-					return err
-				}
-
-				if module.KitchenEnabled {
-					if err := s.hospitalityDomainSvc.
-						KitchenService().
-						CreateDefaultKitchen(txCtx, orgID, propertyID, module.Name); err != nil {
+				case "RESTAURANT":
+					_, err := s.hospitalityDomainSvc.
+						RestaurantService().
+						SetupDefaultRestaurant(txCtx, orgID, propertyID)
+					if err != nil {
 						return err
 					}
-				}
 
-			default:
-				return fmt.Errorf("unsupported module: %s", module.Name)
+				default:
+					return fmt.Errorf("unsupported module: %s", module)
+
+				}
 
 			}
+		}
 
+		if req.Infrastructure != nil {
+			for _, infra := range *req.Infrastructure {
+
+				switch infra.Infra_Name {
+				case "KITCHEN":
+					if err := s.hospitalityDomainSvc.
+						KitchenService().
+						CreateDefaultKitchen(txCtx, orgID, propertyID, "DEFAULT"); err != nil {
+						return err
+					}
+				default:
+					return fmt.Errorf("unsupported module: %s", infra.Infra_Name)
+				}
+			}
 		}
 
 		return nil
@@ -292,6 +321,7 @@ func (s *orchestratorService) AddModulesInProperty(
 
 }
 
+// =---------------------------------------------------------------//
 func (s *orchestratorService) CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error {
 	prInp := org_property_contracts.CreateOrgPropertyInput{
 		OrgID:       orgID,
@@ -310,3 +340,5 @@ func (s *orchestratorService) CreateProperty(ctx context.Context, orgID uuid.UUI
 
 	return nil
 }
+
+//=---------------------------------------------------------------//

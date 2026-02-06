@@ -11,12 +11,13 @@ type OrganizationProperties struct {
 }
 
 type PropertiesReader struct {
-	ID     uuid.UUID
-	Name   string
-	City   string
-	State  string
-	Domain property_constants.PropertyDomainTypes
-	Code   string
+	ID           uuid.UUID
+	Name         string
+	City         string
+	State        string
+	Domain       property_constants.PropertyDomainTypes
+	IsConfigured bool
+	Code         string
 
 	// We can add Country later
 }

@@ -1,6 +1,7 @@
 package restaurant_models
 
 import (
+	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -57,7 +58,7 @@ type RestaurantTable struct {
 
 	Capacity int
 
-	Status string `gorm:"size:20;default:'AVAILABLE'"`
+	Status restaurant_constants.RestaurantTableStatusType `gorm:"size:20;default:'AVAILABLE'"`
 	// AVAILABLE, OCCUPIED, RESERVED, BLOCKED
 
 	CreatedAt time.Time
@@ -74,7 +75,7 @@ type RestaurantDiningSession struct {
 	RestaurantID uuid.UUID `gorm:"type:uuid;not null;index"`
 	TableID      uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	Status string `gorm:"size:20;not null"`
+	Status restaurant_constants.RestaurantDiningSessionStatusType `gorm:"size:20;not null"`
 	// OPEN, CLOSED, CANCELLED
 
 	StartedAt time.Time

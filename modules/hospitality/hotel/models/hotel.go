@@ -16,7 +16,8 @@ type Hotel struct {
 
 	Name string `gorm:"size:100"`
 
-	IsActive bool `gorm:"default:false"`
+	IsActive     bool `gorm:"default:false"`
+	IsConfigured bool `gorm:"default:false"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

@@ -10,8 +10,9 @@ type OrganizationProperty struct {
 	ID             uuid.UUID `gorm:"primaryKey"`
 	OrganizationID uuid.UUID `gorm:"index;not null"`
 
-	Code string `gorm:"type:varchar(50);index;not null"` // internal short code
-	Name string `gorm:"type:varchar(150);not null"`
+	Code         string `gorm:"type:varchar(50);index;not null"` // internal short code
+	Name         string `gorm:"type:varchar(150);not null"`
+	IsConfigured bool   `gorm:"default:false"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -19,6 +20,17 @@ type OrganizationProperty struct {
 
 func (OrganizationProperty) TableName() string {
 	return "organization_property.organization_property"
+}
+
+// TODO we will do the Data Migration later
+type OrganizationPropertyConfigurationStatus struct {
+	ID                     uuid.UUID
+	OrganizationPropertyID uuid.UUID
+	IsConfigured           bool
+}
+
+func (OrganizationPropertyConfigurationStatus) TableName() string {
+	return "organization_property.organization_property_configuration_statuses"
 }
 
 type OrganizationPropertyAddress struct {

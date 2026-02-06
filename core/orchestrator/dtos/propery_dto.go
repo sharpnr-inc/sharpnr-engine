@@ -28,25 +28,23 @@ type PropertyDetails_res_dto struct {
 	State       string                                  `json:"state"`
 	Country     string                                  `json:"country"`
 	Domain      *property_constants.PropertyDomainTypes `json:"domain,omitempty"`
-	// Modules will only show up if it's not nil
-	Modules *HospitalityPropertyModules `json:"modules,omitempty"`
+	Modules     *[]ModulesDetails_dto                   `json:"__modules__data__,omitempty"`
+	Infra       *[]PropertyInfra_res_dto                `json:"infra,omitempty"`
 }
 
-type HospitalityPropertyModules struct {
-	HotelDetails   *[]HotelDetails_dto   `json:"hotel_details,omitempty"`
-	KitchenDetails *[]KitchenDetails_dto `json:"kitchen_details,omitempty"`
+type ModulesDetails_dto struct {
+	ID           uuid.UUID `json:"id"`
+	Name         string    `json:"name"`
+	Status       bool      `json:"status"`
+	Module_Type  string    `json:"module_type"`
+	IsConfigured bool      `json:"is_configured"`
 }
 
-type HotelDetails_dto struct {
-	ID     uuid.UUID
-	Name   string
-	Status bool
-}
-
-type KitchenDetails_dto struct {
-	ID     uuid.UUID
-	Name   string
-	Status bool
+type PropertyInfra_res_dto struct {
+	ID         uuid.UUID `json:"id"`
+	Name       string    `json:"name"`
+	Status     bool      `json:"status"`
+	Infra_Type string    `json:"infra_type"`
 }
 
 type AddDomainToPropertyReq_DTO struct {
@@ -54,15 +52,15 @@ type AddDomainToPropertyReq_DTO struct {
 }
 
 type PropertyModuleConfigurationDTO struct {
-	PropertyID uuid.UUID                              `json:"property_id"`
-	Domain     property_constants.PropertyDomainTypes `json:"domain"`
-	Modules    []ModuleConfiguration                  `json:"modules"`
+	PropertyID     uuid.UUID                              `json:"property_id"`
+	Domain         property_constants.PropertyDomainTypes `json:"domain"`
+	Modules        *[]string                              `json:"modules,omitempty"`
+	Infrastructure *[]PropertyInfraConfiguration          `json:"infrastructure,omitempty"`
 }
 
-type ModuleConfiguration struct {
-	Name           string `json:"name"`
-	KitchenCapable bool   `json:"kitchen_capable"`
-	KitchenEnabled bool   `json:"kitchen_enabled"`
+type PropertyInfraConfiguration struct {
+	Infra_Name string `json:"infra_name"`
+	InfraQty   int    `json:"qty"`
 }
 
 type CreatePropertyReq_dto struct {

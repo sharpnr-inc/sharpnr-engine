@@ -1,40 +1,51 @@
 package hospitality_utilities
 
+type HospitalityModulesType string
+
+const (
+	Restaurant             HospitalityModulesType = "RESTAURANT"
+	Hotel                  HospitalityModulesType = "HOTEL"
+	Bar                    HospitalityModulesType = "BAR"
+	NightClub              HospitalityModulesType = "NIGHT_CLUB"
+	Resort                 HospitalityModulesType = "RESORT"
+	CloudKitchen_Takeaways HospitalityModulesType = "CLOUD_KITCHEN/TAKEAWAYS"
+)
+
 type HospitalityDomainModule struct {
 	ID          string
-	ModuleName  string
+	ModuleName  HospitalityModulesType
 	Description string
 	IsAvailable bool
 }
 
 var HospitalityModules = []HospitalityDomainModule{
 	{
-		ID:          "8908",
-		ModuleName:  "HOTEL",
+		ID:          "HOTEL",
+		ModuleName:  Hotel,
 		Description: "Comprehensive hotel management module for handling reservations, room inventory, guest check-ins/outs, housekeeping, billing, and reporting.",
 		IsAvailable: false,
 	},
 	{
-		ID:          "3453",
-		ModuleName:  "RESTAURANT",
+		ID:          "RESTAURANT",
+		ModuleName:  Restaurant,
 		Description: "End-to-end restaurant operations module for managing tables, menus, orders, kitchen display systems (KDS), billing, and online ordering integration.",
 		IsAvailable: true,
 	},
 	{
-		ID:          "3453",
-		ModuleName:  "PUB/CLUB",
+		ID:          "NIGHT_CLUB",
+		ModuleName:  NightClub,
 		Description: "Entertainment and nightlife operations module covering guest entry, table and bottle service, membership management, event scheduling, and POS integration.",
 		IsAvailable: false,
 	},
 	{
-		ID:          "8394758",
-		ModuleName:  "BAR",
+		ID:          "BAR",
+		ModuleName:  Bar,
 		Description: "Bar and lounge management system focusing on inventory tracking, liquor control, bartender sales monitoring, and daily revenue insights.",
 		IsAvailable: true,
 	},
 	{
-		ID:          "heiu4533",
-		ModuleName:  "CLOUD KITCHEN/TAKEAWAYS",
+		ID:          "CLOUD_KITCHEN_TAKEAWAYS",
+		ModuleName:  CloudKitchen_Takeaways,
 		Description: "Specialized cloud kitchen and takeaway module designed for multi-brand virtual kitchens—supports order aggregation, delivery partner APIs, kitchen workflows, and real-time analytics.",
 		IsAvailable: false,
 	},

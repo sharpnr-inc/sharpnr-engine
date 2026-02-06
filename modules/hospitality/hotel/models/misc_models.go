@@ -44,3 +44,13 @@ type HotelMetaData struct {
 func (HotelMetaData) TableName() string {
 	return "hospitality.hotel_meta_data"
 }
+
+type HotelConfiguration struct {
+	ID           uuid.UUID
+	HotelID      uuid.UUID
+	IsConfigured bool
+}
+
+func (HotelConfiguration) TableName() string {
+	return "hospitality.hotel_configurations"
+}
