@@ -64,12 +64,13 @@ func (r *organizationPropertyService) GetPropertiesOfOrg(ctx context.Context, or
 		}
 
 		reader := org_property_contracts.PropertiesReader{
-			ID:     p.ID,
-			Name:   p.Name,
-			Code:   p.Code,
-			City:   "",
-			State:  "",
-			Domain: "",
+			ID:           p.ID,
+			Name:         p.Name,
+			Code:         p.Code,
+			City:         "",
+			State:        "",
+			Domain:       "",
+			IsConfigured: p.IsConfigured,
 		}
 
 		if address != nil {
