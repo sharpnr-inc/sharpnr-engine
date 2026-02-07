@@ -6,6 +6,8 @@ import (
 	"github.com/google/uuid"
 )
 
+// --------------------------------------------------------------------------------------//
+
 type PropertiesOfOrganization_ResDto struct {
 	Properties []PropertiesReaderSlice `jason:"properties"`
 }
@@ -19,6 +21,8 @@ type PropertiesReaderSlice struct {
 	IsConfigured bool                                   `json:"is_configured"`
 	Code         string                                 `json:"code"`
 }
+
+// --------------------------------------------------------------------------------------//
 
 type PropertyDetails_res_dto struct {
 	Name        string                                  `json:"name"`
@@ -47,9 +51,13 @@ type PropertyInfra_res_dto struct {
 	Infra_Type string    `json:"infra_type"`
 }
 
+// --------------------------------------------------------------------------------------//
+
 type AddDomainToPropertyReq_DTO struct {
 	Domain property_constants.PropertyDomainTypes `json:"domain" binding:"required"`
 }
+
+// --------------------------------------------------------------------------------------//
 
 type PropertyModuleConfigurationDTO struct {
 	PropertyID     uuid.UUID                              `json:"property_id"`
@@ -63,6 +71,8 @@ type PropertyInfraConfiguration struct {
 	InfraQty   int    `json:"qty"`
 }
 
+// --------------------------------------------------------------------------------------//
+
 type CreatePropertyReq_dto struct {
 	Name        string `json:"name"`
 	Code        string `json:"code"`
@@ -72,3 +82,27 @@ type CreatePropertyReq_dto struct {
 	Country     string `json:"country"`
 	Pincode     string `json:"pincode"`
 }
+
+// --------------------------------------------------------------------------------------//
+
+type ConfigurePropertysRestaurant_Req_dto struct {
+	PropertyID       uuid.UUID                                           `json:"propertyID"`
+	RestaurantID     uuid.UUID                                           `json:"restaurantID"`
+	GeneralDetails   ConfigurePropertysRestaurant_GeneralDetails_Req_dto `json:"general_details"`
+	RestaurantLayout []RestaurantLayoutSetup_Req_dto                     `json:"restaurant_layout"`
+}
+
+type ConfigurePropertysRestaurant_GeneralDetails_Req_dto struct {
+	Name        string `json:"name"`
+	IsPureVeg   bool   `json:"is_pure_veg"`
+	OpeningTime string `json:"opening_time"`
+	ClosingTime string `json:"closing_time"`
+}
+
+type RestaurantLayoutSetup_Req_dto struct {
+	Floor_Number   int    `json:"floor_number"`
+	FloorName      string `json:"floor_name"`
+	NumberOfTables int    `json:"number_of_tables"`
+}
+
+// --------------------------------------------------------------------------------------//

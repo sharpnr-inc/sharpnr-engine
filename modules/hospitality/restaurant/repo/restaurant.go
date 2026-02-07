@@ -6,6 +6,7 @@ import (
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func (r *restaurantRepo) CreateRestaurant(ctx context.Context, res *restaurant_models.Restaurant) error {
@@ -71,4 +72,23 @@ func (r *restaurantRepo) GetRestaurantByPropertyID(ctx context.Context, property
 	}
 
 	return restaurants, nil
+}
+
+func (r *restaurantRepo) UpdateGeneralDetails(ctx context.Context, restaurantID uuid.UUID, updates map[string]interface{}) error {
+	// .Model() tells GORM which table to use
+	// .Where() ensures we only update the specific restaurant
+	result := r.db.WithContext(ctx).
+		Model(&restaurant_models.Restaurant{}).
+		Where("id = ?", restaurantID).
+		Updates(updates)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return nil
 }

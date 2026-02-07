@@ -50,7 +50,7 @@ func (r *restaurantService) GetAllRestaurantOfProperty(
 			ID:           rs.ID,
 			Name:         rs.Name,
 			Status:       false,
-			IsConfigured: false,
+			IsConfigured: rs.IsConfigured,
 		})
 	}
 

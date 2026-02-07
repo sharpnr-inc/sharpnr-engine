@@ -18,10 +18,13 @@ type Restaurant struct {
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
 	PropertyID     uuid.UUID `gorm:"type:uuid;not null;index"`
 	LegalEntityID  uuid.UUID `gorm:"type:uuid;not null;index"`
+	IsActive       bool      `gorm:"default:false"`
+	IsConfigured   bool      `gorm:"default:false"`
 
 	IsPureVeg   bool   `gorm:"default:false" json:"is_pure_veg"`
-	OpeningTime string `gorm:"size:5" json:"opening_time"` // e.g., "09:00"
-	ClosingTime string `gorm:"size:5" json:"closing_time"` // e.g., "22:00"
+	OpeningTime string `gorm:"type:varchar(5);not null"` // "06:33"
+	ClosingTime string `gorm:"type:varchar(5);not null"` // "15:01"
+	IsOvernight bool   `gorm:"default:false;not null"`
 
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`

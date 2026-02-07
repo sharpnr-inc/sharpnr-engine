@@ -31,6 +31,12 @@ type OrchestratorServiceInterface interface {
 		propertyID uuid.UUID,
 		req *orchestrator_dtos.PropertyModuleConfigurationDTO,
 	) error
+	ConfigureRestaurant(
+		ctx context.Context,
+		orgID uuid.UUID,
+		propertyID uuid.UUID,
+		req *orchestrator_dtos.ConfigurePropertysRestaurant_Req_dto,
+	) error
 
 	GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
 	CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error

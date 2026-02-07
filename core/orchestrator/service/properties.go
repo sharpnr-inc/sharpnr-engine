@@ -7,6 +7,7 @@ import (
 	dbtx "sharpnr-engine/core/dbTx"
 	orchestrator_dtos "sharpnr-engine/core/orchestrator/dtos"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
+	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
 	"sharpnr-engine/shared/utils"
 	"sync"
 
@@ -342,3 +343,52 @@ func (s *orchestratorService) CreateProperty(ctx context.Context, orgID uuid.UUI
 }
 
 //=---------------------------------------------------------------//
+
+func (s *orchestratorService) ConfigureRestaurant(
+	ctx context.Context,
+	orgID uuid.UUID,
+	propertyID uuid.UUID,
+	req *orchestrator_dtos.ConfigurePropertysRestaurant_Req_dto,
+) error {
+	// 1. Initialize the slice for the domain service contract
+	// We use the length of the incoming layout to allocate memory efficiently
+	generalDetails := &restaurant_contracts.UpdateGeneralDetailsInput{
+		Name:         req.GeneralDetails.Name,
+		IsConfigured: true,
+		IsPureVeg:    req.GeneralDetails.IsPureVeg,
+		OpeningTime:  req.GeneralDetails.OpeningTime,
+		ClosingTime:  req.GeneralDetails.ClosingTime,
+	}
+
+	err := s.hospitalityDomainSvc.
+		RestaurantService().
+		UpdateRestaurantGeneralDetails(ctx, req.RestaurantID, generalDetails)
+	if err != nil {
+		return err
+	}
+	layoutInputs := make([]restaurant_contracts.SetupRestaurantLayoutInput, 0, len(req.RestaurantLayout))
+
+	// 2. Map the DTO data to the Service Contract
+	for _, f := range req.RestaurantLayout {
+		layoutInputs = append(layoutInputs, restaurant_contracts.SetupRestaurantLayoutInput{
+			Floor_Name:       f.FloorName, // Map from DTO field to Contract field
+			Floor_Number:     f.Floor_Number,
+			Number_of_tables: f.NumberOfTables,
+		})
+	}
+
+	// 3. Pass the mapped slice to your domain service
+	// Ensure you pass layoutInputs as the final argument
+	if err := s.hospitalityDomainSvc.RestaurantService().SetupRestaurantLayout(
+		ctx,
+		propertyID,
+		req.RestaurantID,
+		layoutInputs,
+	); err != nil {
+		return err
+	}
+
+	// Future: Add logic here to configure Bar and Kitchen modules
+
+	return nil
+}
