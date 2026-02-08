@@ -26,4 +26,10 @@ type RestaurantServiceInterface interface {
 		input *restaurant_contracts.UpdateGeneralDetailsInput,
 	) error
 	SetupRestaurantLayout(ctx context.Context, propertyID uuid.UUID, restaurantID uuid.UUID, setupInput []restaurant_contracts.SetupRestaurantLayoutInput) error
+
+	GetRestaurantLayout(
+		ctx context.Context,
+		orgID uuid.UUID, // PropertyID
+		restaurantID uuid.UUID, // RestaurantID
+	) (layout restaurant_contracts.RestaurantLayout_Response_dto, err error)
 }

@@ -15,7 +15,7 @@ func RestaurantRoutes(
 	restaurantService := modules.Hospitality().RestaurantService()
 	newRestaurantController := restaurantcontrollers.NewRestaurantController(restaurantService)
 
-	resRoutes := v1.Group("/:propertyID/restaurant")
+	resRoutes := v1.Group("/restaurant/:restaurantID")
 	resRoutes.GET("/layout", newRestaurantController.GetRestaurantLayout)
 
 }

@@ -25,21 +25,6 @@ func (Kitchen) TableName() string {
 	return "hospitality.kitchen"
 }
 
-type KitchenMenuItem struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	KitchenID  uuid.UUID `gorm:"type:uuid;index;not null"`
-	MenuItemID uuid.UUID `gorm:"type:uuid;index;not null"`
-
-	IsActive bool `gorm:"default:true"`
-
-	CreatedAt time.Time
-}
-
-func (KitchenMenuItem) TableName() string {
-	return "hospitality.kitchen_menu_item"
-}
-
 type KitchenTicket struct {
 	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null"`

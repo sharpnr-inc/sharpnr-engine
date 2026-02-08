@@ -1,6 +1,7 @@
 package hospitalityMenu_models
 
 import (
+	hospitality_utilities "sharpnr-engine/modules/hospitality/utilities_api"
 	"time"
 
 	"github.com/google/uuid"
@@ -18,8 +19,8 @@ type MenuGroup struct {
 	Description string `gorm:"type:varchar(255)"`
 
 	// Owner: RESTAURANT, BAR, HOTEL, HOUSEKEEPING
-	OwnerModule string    `gorm:"type:varchar(50)"`
-	OwnerID     uuid.UUID `gorm:"type:uuid;index"`
+	OwnerModule hospitality_utilities.HospitalityModulesType `gorm:"type:varchar(50)"`
+	OwnerID     uuid.UUID                                    `gorm:"type:uuid;index"`
 
 	IsActive  bool `gorm:"default:true"`
 	CreatedAt time.Time
@@ -78,7 +79,6 @@ type MenuItem struct {
 	BasePrice   float64 `gorm:"type:decimal(12,2);not null"`
 	IsAvailable bool    `gorm:"default:true"`
 
-	// Tax: FOOD, ALCOHOL, ROOM_SERVICE
 	TaxCategoryCode string `gorm:"type:varchar(50)"`
 	Unit            string `gorm:"type:varchar(20);default:'plate'"`
 
