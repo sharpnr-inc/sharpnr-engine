@@ -21,3 +21,19 @@ func (m *menuRepo) GetSubCategoryByID(ctx context.Context, id uuid.UUID) (*hospi
 	}
 	return &sub, nil
 }
+
+// GetSubCategoriesByCategory implements MenuRepository.
+func (m *menuRepo) GetSubCategoriesByCategoryID(ctx context.Context, categoryID uuid.UUID) ([]hospitalityMenu_models.MenuSubCategory, error) {
+	var subCategories []hospitalityMenu_models.MenuSubCategory
+
+	// Use Find instead of First to populate a slice
+	err := m.db.WithContext(ctx).
+		Where("menu_category_id = ?", categoryID).
+		Find(&subCategories).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return subCategories, nil
+}

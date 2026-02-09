@@ -7,55 +7,55 @@ import (
 )
 
 type CreateMenuInput struct {
-	MenuName        string
-	MenuDescription *string
-	OwnerID         uuid.UUID
-	OrganizationID  uuid.UUID
-	PropertyID      uuid.UUID
-	OwnerModuleType hospitality_utilities.HospitalityModulesType
-	Categories      *[]AddMenuCategoryInput
+	MenuName        string                                       `json:"menu_name"`
+	MenuDescription *string                                      `json:"menu_description,omitempty"`
+	OwnerID         uuid.UUID                                    `json:"owner_id"`
+	OrganizationID  uuid.UUID                                    `json:"organization_id"`
+	PropertyID      uuid.UUID                                    `json:"property_id"`
+	OwnerModuleType hospitality_utilities.HospitalityModulesType `json:"owner_module_type"`
+	Categories      *[]AddMenuCategoryInput                      `json:"categories,omitempty"`
 }
 
 type AddMenuCategoryInput struct {
-	MenuID              uuid.UUID
-	CategoryName        string
-	CategoryDescription string
-	SubCategories       *[]AddSubCategoryInput
+	MenuID              uuid.UUID              `json:"menu_id"`
+	CategoryName        string                 `json:"category_name"`
+	CategoryDescription string                 `json:"category_description"`
+	SubCategories       *[]AddSubCategoryInput `json:"sub_categories,omitempty"`
 }
 
 type AddSubCategoryInput struct {
-	MenuCategoryID    uuid.UUID
-	SubCatName        string
-	SubCatDescription string
-	MenuItem          *[]AddMenuItemInput
+	MenuCategoryID    uuid.UUID           `json:"menu_category_id"`
+	SubCatName        string              `json:"sub_cat_name"`
+	SubCatDescription string              `json:"sub_cat_description"`
+	MenuItem          *[]AddMenuItemInput `json:"menu_items,omitempty"`
 }
 
 type AddMenuItemInput struct {
-	MenuID            uuid.UUID
-	MenuSubCategoryID uuid.UUID
-	Name              string
-	Description       string
-	Unit              string
-	BasePrice         float64
-	VariantGroup      *[]AddVariantGroupInput
-	AddOns            *[]AddAddOnInput
+	MenuID            uuid.UUID               `json:"menu_id"`
+	MenuSubCategoryID uuid.UUID               `json:"menu_sub_category_id"`
+	Name              string                  `json:"name"`
+	Description       string                  `json:"description"`
+	Unit              string                  `json:"unit"`
+	BasePrice         float64                 `json:"base_price"`
+	VariantGroup      *[]AddVariantGroupInput `json:"variant_groups,omitempty"`
+	AddOns            *[]AddAddOnInput        `json:"add_ons,omitempty"`
 }
 
 type AddVariantGroupInput struct {
-	MenuItemID       uuid.UUID
-	VariantGroupName string
-	Variant          *[]AddVariantInput
+	MenuItemID       uuid.UUID          `json:"menu_item_id"`
+	VariantGroupName string             `json:"variant_group_name"`
+	Variant          *[]AddVariantInput `json:"variants,omitempty"`
 }
 
 type AddVariantInput struct {
-	VariantGroupID uuid.UUID
-	MenuItemID     uuid.UUID
-	Name           string
-	Price          float64
+	VariantGroupID uuid.UUID `json:"variant_group_id"`
+	MenuItemID     uuid.UUID `json:"menu_item_id"`
+	Name           string    `json:"name"`
+	Price          float64   `json:"price"`
 }
 
 type AddAddOnInput struct {
-	MenuItemID uuid.UUID
-	Name       string
-	Price      float64
+	MenuItemID uuid.UUID `json:"menu_item_id"`
+	Name       string    `json:"name"`
+	Price      float64   `json:"price"`
 }

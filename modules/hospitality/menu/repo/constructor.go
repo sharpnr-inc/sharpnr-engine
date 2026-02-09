@@ -41,16 +41,6 @@ func (m *menuRepo) DeleteVariant(id uuid.UUID) error {
 	panic("unimplemented")
 }
 
-// GetItemsBySubCategory implements MenuRepository.
-func (m *menuRepo) GetItemsBySubCategory(subCatID uuid.UUID) ([]hospitalityMenu_models.MenuItem, error) {
-	panic("unimplemented")
-}
-
-// GetSubCategoriesByCategory implements MenuRepository.
-func (m *menuRepo) GetSubCategoriesByCategory(categoryID uuid.UUID) ([]hospitalityMenu_models.MenuSubCategory, error) {
-	panic("unimplemented")
-}
-
 // GetVariantsByItem implements MenuRepository.
 func (m *menuRepo) GetVariantsByItem(itemID uuid.UUID) ([]hospitalityMenu_models.MenuVariant, error) {
 	panic("unimplemented")

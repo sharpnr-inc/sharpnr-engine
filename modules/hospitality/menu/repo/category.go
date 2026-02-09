@@ -13,16 +13,11 @@ func (m *menuRepo) CreateCategory(ctx context.Context, category *hospitalityMenu
 }
 
 // GetCategoriesByGroup implements MenuRepository.
-func (m *menuRepo) GetCategoriesByGroup(ctx context.Context, groupID uuid.UUID) ([]hospitalityMenu_models.MenuCategory, error) {
+func (m *menuRepo) GetAllCategoriesByMenuID(ctx context.Context, menuID uuid.UUID) ([]hospitalityMenu_models.MenuCategory, error) {
 	var categories []hospitalityMenu_models.MenuCategory
 
 	err := m.db.WithContext(ctx).
-		Where("group_id = ?", groupID).
-		Preload("SubCategories").
-		Preload("SubCategories.MenuItems").
-		Preload("SubCategories.MenuItems.VariantGroups").
-		Preload("SubCategories.MenuItems.VariantGroups.Variants").
-		Preload("SubCategories.MenuItems.Addons").
+		Where("menu_group_id = ?", menuID).
 		Find(&categories).Error
 
 	if err != nil {

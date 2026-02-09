@@ -22,7 +22,6 @@ func (m *menuRepo) GetAllMenuGroups(ctx context.Context, propertyID uuid.UUID) (
 
 	err := m.db.WithContext(ctx).
 		Where("property_id = ?", propertyID).
-		Preload("Categories").
 		Find(&groups).
 		Error
 
@@ -34,10 +33,22 @@ func (m *menuRepo) GetAllMenuGroups(ctx context.Context, propertyID uuid.UUID) (
 }
 
 // Add helper to get MenuGroup for org validation
-func (m *menuRepo) GetMenuGroupByID(ctx context.Context, groupID uuid.UUID) (*hospitalityMenu_models.MenuGroup, error) {
+func (m *menuRepo) GetMenuByID(ctx context.Context, groupID uuid.UUID) (*hospitalityMenu_models.MenuGroup, error) {
 	var group hospitalityMenu_models.MenuGroup
 	err := m.db.WithContext(ctx).
 		Where("id = ?", groupID).
+		First(&group).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return &group, nil
+}
+
+func (m *menuRepo) GetMenuByOwnersID(ctx context.Context, ownersID uuid.UUID) (*hospitalityMenu_models.MenuGroup, error) {
+	var group hospitalityMenu_models.MenuGroup
+	err := m.db.WithContext(ctx).
+		Where("owner_id = ?", ownersID).
 		First(&group).Error
 
 	if err != nil {

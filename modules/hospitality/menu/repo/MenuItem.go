@@ -21,3 +21,19 @@ func (m *menuRepo) GetMenuItemByID(ctx context.Context, id uuid.UUID) (*hospital
 
 	return &item, nil
 }
+
+// GetItemsBySubCategory implements MenuRepository.
+func (m *menuRepo) GetItemsBySubCategoryID(ctx context.Context, subCatID uuid.UUID) ([]hospitalityMenu_models.MenuItem, error) {
+	var items []hospitalityMenu_models.MenuItem
+
+	err := m.db.WithContext(ctx).
+		Where("menu_sub_category_id = ?", subCatID).
+		Find(&items).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return items, nil
+}

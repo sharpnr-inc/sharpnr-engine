@@ -14,7 +14,8 @@ type MenuRepositoryInterface interface {
 	CreateMenuGroup(ctx context.Context, group *hospitalityMenu_models.MenuGroup) error
 	GetAllMenuGroups(ctx context.Context, propertyID uuid.UUID) ([]*hospitalityMenu_models.MenuGroup, error)
 
-	GetMenuGroupByID(ctx context.Context, groupID uuid.UUID) (*hospitalityMenu_models.MenuGroup, error)
+	GetMenuByOwnersID(ctx context.Context, ownersID uuid.UUID) (*hospitalityMenu_models.MenuGroup, error)
+	GetMenuByID(ctx context.Context, menuID uuid.UUID) (*hospitalityMenu_models.MenuGroup, error)
 	UpdateMenuGroup(group *hospitalityMenu_models.MenuGroup) error
 	DeleteMenuGroup(id uuid.UUID) error
 
@@ -22,7 +23,7 @@ type MenuRepositoryInterface interface {
 	// 🗂️ MENU CATEGORIES
 	// -------------------------------
 	CreateCategory(ctx context.Context, category *hospitalityMenu_models.MenuCategory) error
-	GetCategoriesByGroup(ctx context.Context, groupID uuid.UUID) ([]hospitalityMenu_models.MenuCategory, error)
+	GetAllCategoriesByMenuID(ctx context.Context, menuID uuid.UUID) ([]hospitalityMenu_models.MenuCategory, error)
 	GetCategoryByID(ctx context.Context, id uuid.UUID) (*hospitalityMenu_models.MenuCategory, error)
 	UpdateCategory(category *hospitalityMenu_models.MenuCategory) error
 	DeleteCategory(id uuid.UUID) error
@@ -31,7 +32,7 @@ type MenuRepositoryInterface interface {
 	// 📂 MENU SUBCATEGORIES
 	// -------------------------------
 	CreateSubCategory(ctx context.Context, sub *hospitalityMenu_models.MenuSubCategory) error
-	GetSubCategoriesByCategory(categoryID uuid.UUID) ([]hospitalityMenu_models.MenuSubCategory, error)
+	GetSubCategoriesByCategoryID(ctx context.Context, categoryID uuid.UUID) ([]hospitalityMenu_models.MenuSubCategory, error)
 	GetSubCategoryByID(ctx context.Context, id uuid.UUID) (*hospitalityMenu_models.MenuSubCategory, error)
 	UpdateSubCategory(subCat *hospitalityMenu_models.MenuSubCategory) error
 	DeleteSubCategory(id uuid.UUID) error
@@ -40,7 +41,7 @@ type MenuRepositoryInterface interface {
 	// 🍽️ MENU ITEMS
 	// -------------------------------
 	CreateMenuItem(ctx context.Context, item *hospitalityMenu_models.MenuItem) error
-	GetItemsBySubCategory(subCatID uuid.UUID) ([]hospitalityMenu_models.MenuItem, error)
+	GetItemsBySubCategoryID(ctx context.Context, subCatID uuid.UUID) ([]hospitalityMenu_models.MenuItem, error)
 	GetMenuItemByID(ctx context.Context, id uuid.UUID) (*hospitalityMenu_models.MenuItem, error)
 	UpdateMenuItem(item *hospitalityMenu_models.MenuItem) error
 	DeleteMenuItem(id uuid.UUID) error
@@ -50,6 +51,7 @@ type MenuRepositoryInterface interface {
 	// -------------------------------
 	CreateVariant(ctx context.Context, variant *hospitalityMenu_models.MenuVariant) error
 	GetVariantsByItem(itemID uuid.UUID) ([]hospitalityMenu_models.MenuVariant, error)
+	GetVariantsByVariantGroupID(ctx context.Context, variantGroupID uuid.UUID) ([]hospitalityMenu_models.MenuVariant, error)
 	UpdateVariant(variant *hospitalityMenu_models.MenuVariant) error
 	DeleteVariant(id uuid.UUID) error
 
@@ -64,6 +66,7 @@ type MenuRepositoryInterface interface {
 	// 🧀 ADDONS
 	// -------------------------------
 	CreateAddon(ctx context.Context, addon *hospitalityMenu_models.MenuItemAddon) error
+	GetAddOnsByMenuItemID(ctx context.Context, menuItemID uuid.UUID) ([]hospitalityMenu_models.MenuItemAddon, error)
 	UpdateAddon(addon *hospitalityMenu_models.MenuItemAddon) error
 	DeleteAddon(id uuid.UUID) error
 }
