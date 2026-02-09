@@ -1,6 +1,7 @@
 package hospitality_order_engine_models
 
 import (
+	hospitality_utilities "sharpnr-engine/modules/hospitality/utilities_api"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,10 +16,7 @@ type HospitalityOrder struct {
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
 	PropertyID     uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	// Link to Table, Room, or Counter
-	PropertyServicePointID uuid.UUID `gorm:"type:uuid;index;not null"`
-
-	Module string `gorm:"type:varchar(50);index"` // HOTEL, RESTAURANT, BAR
+	Module hospitality_utilities.HospitalityModulesType `gorm:"type:varchar(50);index"` // HOTEL, RESTAURANT, BAR
 
 	// Status: CREATED, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED
 	Status string `gorm:"type:varchar(20);index;default:'CREATED'"`

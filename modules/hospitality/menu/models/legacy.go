@@ -52,7 +52,6 @@ func (MenuCategory) TableName() string { return "hospitality.menu_category" }
 type MenuSubCategory struct {
 	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
 	MenuCategoryID uuid.UUID `gorm:"type:uuid;not null;index"`
-	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	Name        string `gorm:"type:varchar(100);not null"`
 	Description string `gorm:"type:varchar(255)"`
@@ -69,8 +68,8 @@ func (MenuSubCategory) TableName() string { return "hospitality.menu_subcategory
 // -------------------------------
 type MenuItem struct {
 	ID                uuid.UUID `gorm:"type:uuid;primaryKey"`
+	MenuGroupID       uuid.UUID
 	MenuSubCategoryID uuid.UUID `gorm:"type:uuid;index"`
-	OrganizationID    uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	Name        string `gorm:"type:varchar(100);not null"`
 	Description string `gorm:"type:varchar(255)"`
@@ -79,11 +78,9 @@ type MenuItem struct {
 	BasePrice   float64 `gorm:"type:decimal(12,2);not null"`
 	IsAvailable bool    `gorm:"default:true"`
 
-	TaxCategoryCode string `gorm:"type:varchar(50)"`
-	Unit            string `gorm:"type:varchar(20);default:'plate'"`
+	Unit string `gorm:"type:varchar(20);default:'plate'"`
 
-	IsActive       bool      `gorm:"default:true"`
-	ServicePointID uuid.UUID `gorm:"type:uuid;index"`
+	IsActive bool `gorm:"default:true"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
