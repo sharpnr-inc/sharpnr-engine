@@ -14,6 +14,13 @@ func RegisterMenuRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) {
 
 	mr := v1.Group("/:ownersID/menu")
 
+	mr.GET("", mc.GetMenu)
+	mr.POST("/add", mc.AddMenu)
+
 	mr.POST("/addCategory", mc.AddCategoryInMenu)
-	mr.GET("/:categoryID/addSubCategory")
+	mr.POST("/addSubCategory", mc.AddSubCategory)
+	mr.POST("/add-menu-item", mc.AddMenuItems)
+	mr.POST("/add-variant-group", mc.AddVariantsGroup)
+	mr.POST("/add-variant", mc.AddVariants)
+	mr.POST("/add-addOns", mc.AddAddons)
 }
