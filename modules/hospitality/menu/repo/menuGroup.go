@@ -45,16 +45,19 @@ func (m *menuRepo) GetMenuByID(ctx context.Context, groupID uuid.UUID) (*hospita
 	return &group, nil
 }
 
-func (m *menuRepo) GetMenuByOwnersID(ctx context.Context, ownersID uuid.UUID) (*hospitalityMenu_models.MenuGroup, error) {
-	var group hospitalityMenu_models.MenuGroup
+func (m *menuRepo) GetMenuByOwnersID(ctx context.Context, ownersID uuid.UUID) ([]*hospitalityMenu_models.MenuGroup, error) {
+	var groups []*hospitalityMenu_models.MenuGroup
+
+	// Use Find to retrieve all menus belonging to this owner
 	err := m.db.WithContext(ctx).
 		Where("owner_id = ?", ownersID).
-		First(&group).Error
+		Find(&groups).Error
 
 	if err != nil {
 		return nil, err
 	}
-	return &group, nil
+
+	return groups, nil
 }
 
 // UpdateMenuGroup implements MenuRepository.

@@ -124,3 +124,31 @@ func (s *menuService) GetMenu(ctx context.Context, menuID uuid.UUID) (*hospitali
 
 	return output, nil
 }
+
+func (s *menuService) GetMenusOfOwners(ctx context.Context, ownersID uuid.UUID) ([]hospitality_menu_contracts.MenuOutput, error) {
+	// Initialize as an empty slice to ensure JSON returns [] instead of null
+	finalMenus := []hospitality_menu_contracts.MenuOutput{}
+
+	// 1. Get all root menu groups for this owner
+	menus, err := s.menuRepo.GetMenuByOwnersID(ctx, ownersID)
+	if err != nil {
+		// Return empty slice and error if DB call fails
+		return finalMenus, err
+	}
+
+	// 2. For each menu group, build the full nested tree
+	for _, m := range menus {
+		// We reuse the existing GetMenu logic
+		fullMenu, err := s.GetMenu(ctx, m.ID)
+		if err != nil {
+			// If one menu fails to load, we can skip it or return error
+			continue
+		}
+
+		if fullMenu != nil {
+			finalMenus = append(finalMenus, *fullMenu)
+		}
+	}
+
+	return finalMenus, nil
+}

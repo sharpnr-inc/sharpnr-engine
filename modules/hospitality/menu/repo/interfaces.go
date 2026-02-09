@@ -14,7 +14,7 @@ type MenuRepositoryInterface interface {
 	CreateMenuGroup(ctx context.Context, group *hospitalityMenu_models.MenuGroup) error
 	GetAllMenuGroups(ctx context.Context, propertyID uuid.UUID) ([]*hospitalityMenu_models.MenuGroup, error)
 
-	GetMenuByOwnersID(ctx context.Context, ownersID uuid.UUID) (*hospitalityMenu_models.MenuGroup, error)
+	GetMenuByOwnersID(ctx context.Context, ownersID uuid.UUID) ([]*hospitalityMenu_models.MenuGroup, error)
 	GetMenuByID(ctx context.Context, menuID uuid.UUID) (*hospitalityMenu_models.MenuGroup, error)
 	UpdateMenuGroup(group *hospitalityMenu_models.MenuGroup) error
 	DeleteMenuGroup(id uuid.UUID) error
