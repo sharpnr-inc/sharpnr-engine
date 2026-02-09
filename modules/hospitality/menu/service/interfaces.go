@@ -9,5 +9,4 @@ import (
 
 type MenuService interface {
 	CreateMenu(ctx context.Context, req *hospitality_menu_contracts.CreateMenuInput) (menuID uuid.UUID, err error)
-	// AddCategoryInMenu(ctx context.Context)
 }

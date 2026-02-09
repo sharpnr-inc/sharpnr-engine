@@ -51,7 +51,7 @@ type AddVariantInput struct {
 	VariantGroupID uuid.UUID
 	MenuItemID     uuid.UUID
 	Name           string
-	Price          string
+	Price          float64
 }
 
 type AddAddOnInput struct {
