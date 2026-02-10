@@ -1,27 +1,27 @@
 package app
 
 import (
-	org_signup_services "sharpnr-engine/core/org-signup/services"
-	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr-identity/services"
-	"sharpnr-engine/modules/accounting/accounting_service"
-	barservices "sharpnr-engine/modules/hospitality/bar/services"
-	hotelservices "sharpnr-engine/modules/hospitality/hotel/services"
-	kitchenservices "sharpnr-engine/modules/hospitality/kitchen/kitchenServices"
-	menuservice "sharpnr-engine/modules/hospitality/menu/menu_service"
-	"sharpnr-engine/modules/hospitality/restaurant/restaurantservices"
-	hr_employee_services "sharpnr-engine/modules/hr/employees/services"
+	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
+	orchestrator_service "sharpnr-engine/core/orchestrator/service"
+	org_property_services "sharpnr-engine/core/org_property/services"
+	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
+	org_signup_services "sharpnr-engine/core/org_signup/services"
+	organization_services "sharpnr-engine/core/organization/services"
+	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
+	employee_services "sharpnr-engine/modules/hr/employees/services"
+	accounting_service "sharpnr-engine/sharp_services/accounting_engine/services"
 )
 
 type ModulesProvider interface {
-	OrgSignUpService() org_signup_services.OrgSignUpServiceInterface
+	OrganizationService() organization_services.OrganizationServiceInterface
+	SharpnrOrchestrator() orchestrator_service.OrchestratorServiceInterface
+	OrgSetupWiz() org_setup_wizard_services.OrgSetupWizardServiceInterface
+	Hospitality() *hospitalitydomain.HospitalityDomain
+	OrgPropertyService() org_property_services.OrganizationPropertyServicesInterfaces
+
+	OrgSignUpService() org_signup_services.OrganizationSignUpServiceInterfaces
 	SharpAuthService() sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
 
-	HospitalityHotelService() hotelservices.HotelService
-	HospitalityBarService() barservices.BarServices
-	HospitalityKitchenService() kitchenservices.KitchenServiceInterface
-	HospitalityMenuService() menuservice.MenuService
-	HospitalityRestaurantService() restaurantservices.RestaurantService
-
-	HrService() hr_employee_services.HrEmployeeServiceInterface
+	EmployeeService() employee_services.EmployeeServiceInterface
 	AccountingService() accounting_service.AccountingServiceInterface
 }

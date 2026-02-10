@@ -1,5 +1,5 @@
-package hr_employee_controllers
+package employee_controllers
 
-func (c *hrEmployeeController) GetEmployee() {
+func (c *employeeController) GetEmployee() {
 	panic("Uni")
 }

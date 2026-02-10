@@ -1,8 +1,8 @@
-package hr_employee_repo
+package employee_repo
 
 import (
 	"context"
-	sharphr_models "sharpnr-engine/modules/hr/hrModels"
+	employee_models "sharpnr-engine/modules/hr/employees/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,7 +21,7 @@ func NewEmployeePrivilegePolicyRepository(
 
 func (r *employeePrivilegePolicyRepo) Assign(
 	ctx context.Context,
-	assignment *sharphr_models.EmployeePrivilegePolicy,
+	assignment *employee_models.EmployeePrivilegePolicy,
 ) error {
 
 	if assignment.ID == uuid.Nil {
@@ -38,9 +38,9 @@ func (r *employeePrivilegePolicyRepo) Assign(
 func (r *employeePrivilegePolicyRepo) ListByEmployeeID(
 	ctx context.Context,
 	employeeID uuid.UUID,
-) ([]*sharphr_models.EmployeePrivilegePolicy, error) {
+) ([]*employee_models.EmployeePrivilegePolicy, error) {
 
-	var assignments []*sharphr_models.EmployeePrivilegePolicy
+	var assignments []*employee_models.EmployeePrivilegePolicy
 
 	if err := r.db.
 		WithContext(ctx).
@@ -61,6 +61,6 @@ func (r *employeePrivilegePolicyRepo) RevokeByEmployeeID(
 	return r.db.
 		WithContext(ctx).
 		Where("employee_id = ?", employeeID).
-		Delete(&sharphr_models.EmployeePrivilegePolicy{}).
+		Delete(&employee_models.EmployeePrivilegePolicy{}).
 		Error
 }

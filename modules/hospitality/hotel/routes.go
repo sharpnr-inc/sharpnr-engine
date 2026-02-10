@@ -2,7 +2,7 @@ package hotel
 
 import (
 	"sharpnr-engine/app"
-	hotelcontrollers "sharpnr-engine/modules/hospitality/hotel/hotel_controllers"
+	hotelcontrollers "sharpnr-engine/modules/hospitality/hotel/controllers"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,7 +16,7 @@ func Hospitalityhotelroutes(
 	modules app.ModulesProvider,
 ) {
 
-	hotelService := modules.HospitalityHotelService()
+	hotelService := modules.Hospitality().HotelService()
 	newHotelController := hotelcontrollers.NewHotelController(hotelService)
 
 	/************************
@@ -45,7 +45,6 @@ func Hospitalityhotelroutes(
 	hotelRoom := hotel_routes.Group("/room")
 	{
 		hotelRoom.GET("")
-		hotelRoom.POST("/create", newHotelController.CreateRoom)
 		hotelRoom.POST("/update/:roomId")
 		hotelRoom.GET("/delete/:roomId")
 		hotelRoom.GET("/room-status/:hotelId/:roomId/:status", newHotelController.UpdateRoomStatus)
@@ -84,7 +83,7 @@ func Hospitalityhotelroutes(
 
 	hotelTax := hotel_routes.Group("/tax")
 	{
-		hotelTax.POST("/create-rule", newHotelController.CreateTaxRule)
+		hotelTax.POST("/create-rule")
 	}
 
 	hotelBill := hotel_routes.Group("/billing")

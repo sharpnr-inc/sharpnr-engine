@@ -1,115 +1,112 @@
 basePath: /api/v1
 definitions:
-  constants.OrgType:
-    enum:
-    - HOSPITALITY
-    - RETAIL
-    - SALON
-    type: string
-    x-enum-varnames:
-    - Hotel
-    - Retail
-    - Salon
-  dto.ErrorResponse:
+  orchestrator_dtos.SetupLegalEntityReqDTO:
     properties:
-      isError:
-        type: boolean
-      message:
+      address_line:
         type: string
-    type: object
-  dto.Org_Signup_REQUEST_DTO:
-    properties:
-      email:
-        description: Email address of the organization for contact and login purposes.
-        example: hotel@example.com
+      city:
         type: string
-      mobile:
-        description: Mobile number of the organization or primary contact person.
-        example: "+911234567890"
+      country:
         type: string
       name:
-        description: Name of the organization.
-        example: Sharpnr Hotel
         type: string
-      org_type:
-        allOf:
-        - $ref: '#/definitions/constants.OrgType'
-        description: |-
-          ORG_TYPE specifies the type of organization.
-          Uses the OrgType constant defined in the constants package.
-        example: HOTEL
+      pincode:
+        type: string
+      state:
+        type: string
+      step_id:
+        type: string
+      type:
+        type: string
+    required:
+    - step_id
+    type: object
+  orchestrator_dtos.SetupOrgPropertyReqDTO:
+    properties:
+      accuracy_m:
+        type: integer
+      address_line:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        type: string
+      pincode:
+        type: string
+      state:
+        type: string
+    type: object
+  orchestrator_dtos.SetupOrganizationHQAddressReqDTO:
+    properties:
+      accuracy_m:
+        type: integer
+      address_line:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      pincode:
+        type: string
+      state:
+        type: string
+      step_id:
+        type: string
+    required:
+    - address_line
+    - city
+    - country
+    - pincode
+    - state
+    - step_id
+    type: object
+  org_signup_dtos.OrganizationRegistrationDTO:
+    description: Organization Registration Data
+    properties:
+      email:
+        type: string
+      mobile:
+        type: string
       password:
-        description: Password for the organization login.
-        example: supersecure
+        minLength: 8
         type: string
+    required:
+    - email
+    - mobile
+    - password
     type: object
-  dto.Org_Signup_RESPONSE_DTO:
+  utils.APIError:
     properties:
-      email:
-        description: Email of the organization.
-        example: hotel@example.com
+      code:
         type: string
-    type: object
-  dto.Org_Verify_Otp_REQUEST_DTO:
-    properties:
-      otp:
-        description: OTP is the one-time password sent to the organization's email
-          or mobile.
-        example: "123456"
-        type: string
-    type: object
-  dto.Org_Verify_Otp_RESPONSE_DTO:
-    properties:
-      email:
-        description: Email of the organization.
-        example: hotel@example.com
-        type: string
-      org_name:
-        description: Name of the organization.
-        example: Sharpnr Hotel
-        type: string
-      org_type:
-        allOf:
-        - $ref: '#/definitions/constants.OrgType'
-        description: ORG_TYPE specifies the type of the organization.
-        example: HOTEL
-      sharpnr_id:
-        description: Sharpnr_Id is the unique identifier assigned to the organization.
-        example: SHRabc123def456
-        type: string
-    type: object
-  dto.Response-any:
-    properties:
-      data:
-        description: <-- pointer here
-      error:
-        $ref: '#/definitions/dto.ErrorResponse'
       message:
         type: string
-      statusCode:
+      status:
         type: integer
+    type: object
+  utils.Response:
+    description: Global API Response Wrapper
+    properties:
+      data: {}
+      error:
+        $ref: '#/definitions/utils.APIError'
+      message:
+        type: string
+      success:
+        type: boolean
       timestamp:
         type: string
       token:
-        description: ✅ Optional field
-        type: string
-    type: object
-  dto.Response-dto_Org_Verify_Otp_RESPONSE_DTO:
-    properties:
-      data:
-        allOf:
-        - $ref: '#/definitions/dto.Org_Verify_Otp_RESPONSE_DTO'
-        description: <-- pointer here
-      error:
-        $ref: '#/definitions/dto.ErrorResponse'
-      message:
-        type: string
-      statusCode:
-        type: integer
-      timestamp:
-        type: string
-      token:
-        description: ✅ Optional field
         type: string
     type: object
 host: 192.168.1.35:8080
@@ -126,71 +123,6 @@ info:
   title: Sharpnr Engine APIs
   version: "1.0"
 paths:
-  /hospitality-menu/categories:
-    get:
-      consumes:
-      - application/json
-      description: Create Category in linked to the authenticated organization UUID.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Bar details retrieved successfully
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Invalid organization UUID format
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Organization UUID missing
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "404":
-          description: No bar found for this organization
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Failed to fetch bar details
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      security:
-      - ApiKeyAuth: []
-      summary: Create Category In Menu
-      tags:
-      - Hospitality / Menu
-    post:
-      consumes:
-      - application/json
-      description: Create Category linked to the authenticated organization UUID.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Category created successfully
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Invalid organization UUID format
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      security:
-      - ApiKeyAuth: []
-      summary: Create Category In Menu
-      tags:
-      - Hospitality / Menu
   /hospitality/bar:
     get:
       consumes:
@@ -234,67 +166,201 @@ paths:
       summary: Get bar details for the current organization
       tags:
       - Hospitality - Bar
-  /otp-verify:
-    post:
+  /orchestrator/setup-status:
+    get:
       consumes:
       - application/json
-      description: Verifies the OTP sent to the organization's email during signup.
+      description: 'Detailed explanation of what happens. Note: This requires an ''org_id''
+        inside the session cookie.'
       parameters:
-      - description: Bearer token
+      - description: Session cookie containing org_id
         in: header
-        name: Authorization
+        name: Cookie
         required: true
         type: string
-      - description: OTP verification payload
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/dto.Org_Verify_Otp_REQUEST_DTO'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Success
           schema:
-            $ref: '#/definitions/dto.Response-dto_Org_Verify_Otp_RESPONSE_DTO'
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  type: boolean
+              type: object
         "400":
-          description: Bad Request
+          description: Validation Error
           schema:
-            $ref: '#/definitions/dto.Response-any'
+            $ref: '#/definitions/utils.Response'
+      summary: Short, punchy summary of the action
+      tags:
+      - Orchestrator --> Console
+  /orchestrator/setup-wiz/step3:
+    post:
+      consumes:
+      - application/json
+      description: Third step of the onboarding wizard to define the organization's
+        legal and physical presence.
+      parameters:
+      - description: Legal Entity Details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/orchestrator_dtos.SetupLegalEntityReqDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Legal entity configured successfully
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Validation or binding error
+          schema:
+            $ref: '#/definitions/utils.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.Response-any'
-      summary: Verify OTP for organization registration
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Setup Legal Entity
       tags:
-      - Org SignUp
-  /register:
-    post:
+      - core-setup
+  /orchestrator/setup-wizard/progress:
+    get:
       consumes:
       - application/json
-      description: Registers a new organization
-      parameters:
-      - description: Organization signup data
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/dto.Org_Signup_REQUEST_DTO'
+      description: Detailed explanation of what happens (e.g., database changes, emails
+        sent).
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Complete" "Success message
           schema:
-            $ref: '#/definitions/dto.Org_Signup_RESPONSE_DTO'
+            $ref: '#/definitions/utils.Response'
         "400":
-          description: Bad Request
+          description: Validation Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Create a new organization
+            $ref: '#/definitions/utils.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Short, punchy summary of the action
       tags:
-      - Org SignUp
+      - CategoryName (e.g.
+      - accounting-ap)
+  /orchestrator/setup-wizard/step1:
+    post:
+      consumes:
+      - application/json
+      description: Detailed explanation of what happens (e.g., database changes, emails
+        sent).
+      parameters:
+      - description: Input description
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/orchestrator_dtos.SetupOrganizationHQAddressReqDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Org HQ successfully" "Success message
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Short, punchy summary of the action
+      tags:
+      - CategoryName (e.g.
+      - accounting-ap)
+  /orchestrator/setup-wizard/step2:
+    post:
+      consumes:
+      - application/json
+      description: 'Second step of the onboarding wizard: Configures the core property
+        attributes for the organization.'
+      parameters:
+      - description: Property Details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/orchestrator_dtos.SetupOrgPropertyReqDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Property Added Successfully
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Setup Organization Property
+      tags:
+      - core-setup
+  /signup/initiate:
+    post:
+      consumes:
+      - application/json
+      description: Validates the request and starts the registration process.
+      parameters:
+      - description: Details
+        in: body
+        name: registration
+        required: true
+        schema:
+          $ref: '#/definitions/org_signup_dtos.OrganizationRegistrationDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully initiated registration
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Initiate Organization Registration
+      tags:
+      - signup
 swagger: "2.0"

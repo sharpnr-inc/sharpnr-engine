@@ -5,8 +5,9 @@ import (
 	"sharpnr-engine/app"
 	"sharpnr-engine/cookieManager"
 	dbtx "sharpnr-engine/core/dbTx"
-	org_signup "sharpnr-engine/core/org-signup"
-	sharpnr_identity_auth "sharpnr-engine/core/sharpnr-identity"
+	orchestrator_routes "sharpnr-engine/core/orchestrator/routes"
+	org_signup "sharpnr-engine/core/org_signup"
+	sharpnr_identity_auth "sharpnr-engine/core/sharpnr_identity"
 	"sharpnr-engine/middlewares"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
@@ -52,9 +53,8 @@ func SetupRouter(
 
 		{
 			v1.RegisterModuleRoutes(protected, modules)
+			orchestrator_routes.RegisterOrchestratorRoutes(protected, txManager, sere, cookies, jwtmgr, modules)
 		}
-
-		v1.UtilsRoutes(webV1)
 	}
 
 	// ========================

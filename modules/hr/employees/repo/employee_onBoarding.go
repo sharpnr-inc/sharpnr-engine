@@ -1,8 +1,8 @@
-package hr_employee_repo
+package employee_repo
 
 import (
 	"context"
-	sharphr_models "sharpnr-engine/modules/hr/hrModels"
+	employee_models "sharpnr-engine/modules/hr/employees/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -11,8 +11,8 @@ import (
 // *This File Implements all the methods from the EmployeeOnboardingRepositoryInterface
 /*
 type EmployeeOnboardingRepositoryInterface interface {
-	Create(ctx context.Context, onboarding *sharphr_models.EmployeeOnboarding) error
-	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*sharphr_models.EmployeeOnboarding, error)
+	Create(ctx context.Context, onboarding *employee_models.EmployeeOnboarding) error
+	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*employee_models.EmployeeOnboarding, error)
 	UpdateStatus(ctx context.Context, empID uuid.UUID, status string) error
 }
 */
@@ -29,7 +29,7 @@ func NewEmployeeOnboardingRepository(db *gorm.DB) *employeeOnboardingRepo {
 
 func (r *employeeOnboardingRepo) Create(
 	ctx context.Context,
-	onboarding *sharphr_models.EmployeeOnboarding,
+	onboarding *employee_models.EmployeeOnboarding,
 ) error {
 
 	if onboarding.ID == uuid.Nil {
@@ -42,9 +42,9 @@ func (r *employeeOnboardingRepo) Create(
 func (r *employeeOnboardingRepo) GetByEmployeeID(
 	ctx context.Context,
 	empID uuid.UUID,
-) (*sharphr_models.EmployeeOnboarding, error) {
+) (*employee_models.EmployeeOnboarding, error) {
 
-	var onboarding sharphr_models.EmployeeOnboarding
+	var onboarding employee_models.EmployeeOnboarding
 
 	err := r.db.
 		WithContext(ctx).
@@ -67,7 +67,7 @@ func (r *employeeOnboardingRepo) UpdateStatus(
 
 	return r.db.
 		WithContext(ctx).
-		Model(&sharphr_models.EmployeeOnboarding{}).
+		Model(&employee_models.EmployeeOnboarding{}).
 		Where("employee_id = ?", empID).
 		Update("status", status).
 		Error

@@ -2,8 +2,10 @@ package v1
 
 import (
 	"sharpnr-engine/app"
-	"sharpnr-engine/modules/base"
-	"sharpnr-engine/modules/hospitality"
+	accounting_engine_routes "sharpnr-engine/sharp_services/accounting_engine/routes"
+
+	hospitality_routes "sharpnr-engine/modules/hospitality/routes"
+	hr_routes "sharpnr-engine/modules/hr/routes"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,6 +15,8 @@ func RegisterModuleRoutes(
 	v1 *gin.RouterGroup,
 	modules app.ModulesProvider,
 ) {
-	base.RegisterBaseModuleRoutes(v1, modules)
-	hospitality.RegisterHotelModuleRoutes(v1, modules)
+	// base.RegisterBaseModuleRoutes(v1, modules)
+	hospitality_routes.RegisterHotelModuleRoutes(v1, modules)
+	accounting_engine_routes.RegisterAccountingRoutes(v1, modules)
+	hr_routes.RegisterHRRoutes(v1, modules)
 }

@@ -1,0 +1,13 @@
+package accounting_controllers
+
+import accounting_service "sharpnr-engine/sharp_services/accounting_engine/services"
+
+type accountingController struct {
+	accSvc accounting_service.AccountingServiceInterface
+}
+
+func NewAccountingController(accSvc accounting_service.AccountingServiceInterface) *accountingController {
+	return &accountingController{
+		accSvc: accSvc,
+	}
+}

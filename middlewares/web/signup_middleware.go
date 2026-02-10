@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	signupCookieName       = "_signup"
+	SignupCookieName       = "_signup"
 	SignupUserIDContextKey = "signup_user_id"
 )
 
@@ -24,7 +24,7 @@ func SignupGuardMiddleware(jwtMgr jwt_manager.Manager) gin.HandlerFunc {
 		}
 
 		// Check signup cookie
-		signupToken, err := ctx.Cookie(signupCookieName)
+		signupToken, err := ctx.Cookie(SignupCookieName)
 		if err != nil || signupToken == "" {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"message": "Signup session expired or invalid",
@@ -40,7 +40,7 @@ func SignupGuardMiddleware(jwtMgr jwt_manager.Manager) gin.HandlerFunc {
 			return
 		}
 
-		ctx.Set(SignupUserIDContextKey, claims.UserID)
+		ctx.Set(SignupCookieName, claims.UserID)
 
 		ctx.Next()
 	}

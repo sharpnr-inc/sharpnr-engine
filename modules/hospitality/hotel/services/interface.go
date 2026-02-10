@@ -2,53 +2,14 @@ package hotelservices
 
 import (
 	"context"
-	hospitalitydtos "sharpnr-engine/modules/hospitality/hospitality_dtos"
-	hospitalitymodels "sharpnr-engine/modules/hospitality/hospitality_models"
-	hoteldtos "sharpnr-engine/modules/hospitality/hotel/hotelDtos"
+	hotel_contracts "sharpnr-engine/modules/hospitality/hotel/contracts"
+	hoteldtos "sharpnr-engine/modules/hospitality/hotel/dtos"
 
 	"github.com/google/uuid"
 )
 
-type HotelService interface {
-	CreateRoomInHotel(
-		ctx context.Context,
-		orgID uuid.UUID,
-		req hoteldtos.CreateRoomInFloor_REQ,
-	) error
-
-	UpdateHotelDetails(
-		ctx context.Context,
-		orgId uuid.UUID,
-		req hospitalitydtos.Hotel_UpdateOrConfigure_REQUEST,
-	) error
-
-	CreateFloor(
-		ctx context.Context,
-		orgID uuid.UUID,
-		req hospitalitydtos.CreateFloorInHotel_REQ,
-	) (*hospitalitydtos.CreateFloorInHotel_RESPONSE, error)
-
-	GetHotelDetails(
-		ctx context.Context,
-		orgId uuid.UUID,
-	) (*hospitalitydtos.GetHotel_RESPONSE, error)
-
-	GetFrontDeskTerminal(
-		ctx context.Context,
-		orgId uuid.UUID,
-	) (*hospitalitydtos.HotelBookingTerminal_Response, error)
-
-	UpdateRoomStatus(ctx context.Context, orgId, hotelId, roomId uuid.UUID, status string) error
-
-	// -----------------
-	// Bookings
-	// ------------------
-	CreateBookingForRoom(ctx context.Context, orgId uuid.UUID, req *hoteldtos.RoomBookingRequest_dto) error
-	GetRoomBookingDetails(ctx context.Context, roomId, orgID uuid.UUID) (*hoteldtos.BookingDetailsDTO, error)
-
-	// -----------------
-	// Guest
-	// ------------------
+type HotelServiceInterface interface {
+	SetupDefaultHotel(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (uuid.UUID, error)
 
 	SearchGuests(
 		ctx context.Context,
@@ -64,31 +25,7 @@ type HotelService interface {
 		req hoteldtos.CreateHotelGuestsRequest,
 	) error
 
-	// -----------------
-	// Tax
-	// ------------------
-
-	CreateTaxRule(ctx context.Context, orgId uuid.UUID, req hoteldtos.CreateHotelTaxRuleRequest) error
-
-	// -----------------
-	// Billing
-	// ------------------
-	PreviewBill(ctx context.Context, orgId, bookingID uuid.UUID) (*hoteldtos.BillPreviewDTO, error)
-
-	FinalizeBill(
-		ctx context.Context,
-		orgID uuid.UUID,
-		bookingID uuid.UUID,
-	) (*hospitalitymodels.HotelBill, error)
-
-	FinalizeBillAndGetInvoice(
-		ctx context.Context,
-		orgID uuid.UUID,
-		bookingID uuid.UUID,
-	) (*hoteldtos.HotelInvoiceDTO, error)
-
-	// -----------------
-	// Payments
-	// ------------------
 	AddPaymentForBooking(ctx context.Context, orgID uuid.UUID, req hoteldtos.AddPaymentsForBookingRequest_dto) error
+
+	GetHotelDetails(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (*hotel_contracts.HotelsReader, error)
 }

@@ -1,8 +1,8 @@
-package hr_employee_repo
+package employee_repo
 
 import (
 	"context"
-	sharphr_models "sharpnr-engine/modules/hr/hrModels"
+	employee_models "sharpnr-engine/modules/hr/employees/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,7 +21,7 @@ func NewEmployeeAuthRepository(db *gorm.DB) *hrEmployeeAuthRepo {
 
 func (r *hrEmployeeAuthRepo) Create(
 	ctx context.Context,
-	auth *sharphr_models.EmployeeAuth,
+	auth *employee_models.EmployeeAuth,
 ) error {
 
 	if auth.ID == uuid.Nil {
@@ -34,9 +34,9 @@ func (r *hrEmployeeAuthRepo) Create(
 func (r *hrEmployeeAuthRepo) GetByEmployeeID(
 	ctx context.Context,
 	empID uuid.UUID,
-) (*sharphr_models.EmployeeAuth, error) {
+) (*employee_models.EmployeeAuth, error) {
 
-	var auth sharphr_models.EmployeeAuth
+	var auth employee_models.EmployeeAuth
 	if err := r.db.WithContext(ctx).
 		Where("employee_id = ?", empID).
 		First(&auth).Error; err != nil {
@@ -49,9 +49,9 @@ func (r *hrEmployeeAuthRepo) GetByEmployeeID(
 func (r *hrEmployeeAuthRepo) GetByUsername(
 	ctx context.Context,
 	username string,
-) (*sharphr_models.EmployeeAuth, error) {
+) (*employee_models.EmployeeAuth, error) {
 
-	var auth sharphr_models.EmployeeAuth
+	var auth employee_models.EmployeeAuth
 	if err := r.db.WithContext(ctx).
 		Where("username = ?", username).
 		First(&auth).Error; err != nil {
@@ -68,7 +68,7 @@ func (r *hrEmployeeAuthRepo) UpdateLastLogin(
 ) error {
 
 	return r.db.WithContext(ctx).
-		Model(&sharphr_models.EmployeeAuth{}).
+		Model(&employee_models.EmployeeAuth{}).
 		Where("employee_id = ?", empID).
 		Update("last_login_at", at).
 		Error

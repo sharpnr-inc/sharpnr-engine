@@ -1,29 +1,44 @@
 package app
 
 import (
-	org_signup_services "sharpnr-engine/core/org-signup/services"
-	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr-identity/services"
-	"sharpnr-engine/modules/accounting/accounting_service"
-	barservices "sharpnr-engine/modules/hospitality/bar/services"
-	hotelservices "sharpnr-engine/modules/hospitality/hotel/services"
-	kitchenservices "sharpnr-engine/modules/hospitality/kitchen/kitchenServices"
-	menuservice "sharpnr-engine/modules/hospitality/menu/menu_service"
-	"sharpnr-engine/modules/hospitality/restaurant/restaurantservices"
-	hr_employee_services "sharpnr-engine/modules/hr/employees/services"
+	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
+	orchestrator_service "sharpnr-engine/core/orchestrator/service"
+	org_legal_entity_service "sharpnr-engine/core/org_legal_entity/service"
+	org_property_services "sharpnr-engine/core/org_property/services"
+	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
+	org_signup_services "sharpnr-engine/core/org_signup/services"
+	organization_services "sharpnr-engine/core/organization/services"
+	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
+	employee_services "sharpnr-engine/modules/hr/employees/services"
+	accounting_service "sharpnr-engine/sharp_services/accounting_engine/services"
 )
 
 type AppModules struct {
-	orgSignupService org_signup_services.OrgSignUpServiceInterface
-	sharpAuthService sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
 
-	hospitality_hotelService      hotelservices.HotelService
-	hospitality_barService        barservices.BarServices
-	hospitality_restaurantService restaurantservices.RestaurantService
-	hospitality_kitchenService    kitchenservices.KitchenServiceInterface
-	hospitality_menuService       menuservice.MenuService
+	// This is the Organization service which includes both repo
+	// Redis and Main Pgsql DB
+	organizationService organization_services.OrganizationServiceInterface
 
-	hrService         hr_employee_services.HrEmployeeServiceInterface
+	orgLegalEntityService org_legal_entity_service.OrgLegalEntityServiceInterface
+	//Signup service
+	orgSignupService    org_signup_services.OrganizationSignUpServiceInterfaces
+	sharpAuthService    sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
+	orgPropertyService  org_property_services.OrganizationPropertyServicesInterfaces
+	orchestratorService orchestrator_service.OrchestratorServiceInterface
+	orgSetupWizard      org_setup_wizard_services.OrgSetupWizardServiceInterface
+
+	hospitality *hospitalitydomain.HospitalityDomain
+
+	employeeService   employee_services.EmployeeServiceInterface
 	accountingService accounting_service.AccountingServiceInterface
+}
+
+func (m *AppModules) SharpnrOrchestrator() orchestrator_service.OrchestratorServiceInterface {
+	return m.orchestratorService
+}
+
+func (m *AppModules) Hospitality() *hospitalitydomain.HospitalityDomain {
+	return m.hospitality
 }
 
 // AccountingService implements ModulesProvider.
@@ -31,40 +46,27 @@ func (m *AppModules) AccountingService() accounting_service.AccountingServiceInt
 	return m.accountingService
 }
 
-// HospitalityBarService implements ModulesProvider.
-func (m *AppModules) HospitalityBarService() barservices.BarServices {
-	return m.hospitality_barService
-}
-
-// HospitalityHotelService implements ModulesProvider.
-func (m *AppModules) HospitalityHotelService() hotelservices.HotelService {
-	return m.hospitality_hotelService
-}
-
-// HospitalityKitchenService implements ModulesProvider.
-func (m *AppModules) HospitalityKitchenService() kitchenservices.KitchenServiceInterface {
-	return m.hospitality_kitchenService
-}
-
-// HospitalityMenuService implements ModulesProvider.
-func (m *AppModules) HospitalityMenuService() menuservice.MenuService {
-	return m.hospitality_menuService
-}
-
-// HospitalityRestaurantService implements ModulesProvider.
-func (m *AppModules) HospitalityRestaurantService() restaurantservices.RestaurantService {
-	return m.hospitality_restaurantService
-}
-
 // SharpAuthService implements ModulesProvider.
 func (m *AppModules) SharpAuthService() sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface {
 	return m.sharpAuthService
 }
 
-func (m *AppModules) HrService() hr_employee_services.HrEmployeeServiceInterface {
-	return m.hrService
+func (m *AppModules) EmployeeService() employee_services.EmployeeServiceInterface {
+	return m.employeeService
 }
 
-func (m *AppModules) OrgSignUpService() org_signup_services.OrgSignUpServiceInterface {
+func (m *AppModules) OrgSignUpService() org_signup_services.OrganizationSignUpServiceInterfaces {
 	return m.orgSignupService
+}
+
+func (m *AppModules) OrgPropertyService() org_property_services.OrganizationPropertyServicesInterfaces {
+	return m.orgPropertyService
+}
+
+func (m *AppModules) OrganizationService() organization_services.OrganizationServiceInterface {
+	return m.organizationService
+}
+
+func (m *AppModules) OrgSetupWiz() org_setup_wizard_services.OrgSetupWizardServiceInterface {
+	return m.orgSetupWizard
 }

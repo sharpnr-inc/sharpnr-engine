@@ -2,7 +2,7 @@ package hotel_sere_handlers
 
 import (
 	"log"
-	hotelevents "sharpnr-engine/modules/hospitality/hotel/hotel_events"
+	hotelevents "sharpnr-engine/modules/hospitality/hotel/events"
 	"sharpnr-engine/sere"
 )
 

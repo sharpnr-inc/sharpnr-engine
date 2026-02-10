@@ -1,8 +1,8 @@
-package hr_employee_repo
+package employee_repo
 
 import (
 	"context"
-	sharphr_models "sharpnr-engine/modules/hr/hrModels"
+	employee_models "sharpnr-engine/modules/hr/employees/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -10,19 +10,19 @@ import (
 
 // This file Implements all the Methods of EmployeeIdentityRepositoryInterface
 
-type hrEmployeeRepo struct {
+type employeeRepo struct {
 	db *gorm.DB
 }
 
-func NewEmployeeIdentityRepository(db *gorm.DB) *hrEmployeeRepo {
-	return &hrEmployeeRepo{
+func NewEmployeeIdentityRepository(db *gorm.DB) *employeeRepo {
+	return &employeeRepo{
 		db: db,
 	}
 }
 
-func (r *hrEmployeeRepo) Create(
+func (r *employeeRepo) Create(
 	ctx context.Context,
-	emp *sharphr_models.Employee,
+	emp *employee_models.Employee,
 ) error {
 
 	if emp.ID == uuid.Nil {
@@ -32,12 +32,12 @@ func (r *hrEmployeeRepo) Create(
 	return r.db.WithContext(ctx).Create(emp).Error
 }
 
-func (r *hrEmployeeRepo) GetByID(
+func (r *employeeRepo) GetByID(
 	ctx context.Context,
 	empID uuid.UUID,
-) (*sharphr_models.Employee, error) {
+) (*employee_models.Employee, error) {
 
-	var emp sharphr_models.Employee
+	var emp employee_models.Employee
 
 	err := r.db.
 		WithContext(ctx).
@@ -52,12 +52,12 @@ func (r *hrEmployeeRepo) GetByID(
 	return &emp, nil
 }
 
-func (r *hrEmployeeRepo) GetByEmail(
+func (r *employeeRepo) GetByEmail(
 	ctx context.Context,
 	email string,
-) (*sharphr_models.Employee, error) {
+) (*employee_models.Employee, error) {
 
-	var emp sharphr_models.Employee
+	var emp employee_models.Employee
 
 	err := r.db.
 		WithContext(ctx).
@@ -72,12 +72,28 @@ func (r *hrEmployeeRepo) GetByEmail(
 	return &emp, nil
 }
 
-func (r *hrEmployeeRepo) ListByOrg(
+func (r *employeeRepo) ExistsByEmail(
+	ctx context.Context,
+	email string,
+) (bool, error) {
+
+	var count int64
+
+	err := r.db.WithContext(ctx).
+		Model(&employee_models.Employee{}).
+		Where("email = ?", email).
+		Count(&count).
+		Error
+
+	return count > 0, err
+}
+
+func (r *employeeRepo) ListByOrg(
 	ctx context.Context,
 	orgID uuid.UUID,
-) ([]*sharphr_models.Employee, error) {
+) ([]*employee_models.Employee, error) {
 
-	var employees []*sharphr_models.Employee
+	var employees []*employee_models.Employee
 
 	err := r.db.
 		WithContext(ctx).

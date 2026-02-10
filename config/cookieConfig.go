@@ -61,7 +61,7 @@ func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieM
 			SameSite: http.SameSiteLaxMode,
 		},
 		cookieManager.Signup: {
-			Name:     "_dev_signup",
+			Name:     "_signup",
 			Scope:    cookieManager.Protected,
 			TTL:      int(ttl.Cookie.Seconds()),
 			SameSite: http.SameSiteLaxMode,

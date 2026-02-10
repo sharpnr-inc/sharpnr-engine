@@ -1,6 +1,6 @@
 package mailer
 
 type Identity struct {
-	FromAddress string // "Sharpnr OTP <otp@sharpnr.com>"
+	FromAddress string // "Sharpnr
 	ReplyTo     string // optional
 }

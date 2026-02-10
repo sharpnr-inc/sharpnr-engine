@@ -1,8 +1,8 @@
-package hr_employee_repo
+package employee_repo
 
 import (
 	"context"
-	sharphr_models "sharpnr-engine/modules/hr/hrModels"
+	employee_models "sharpnr-engine/modules/hr/employees/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -12,8 +12,8 @@ import (
 
 /*
 type EmployeeEmploymentRepositoryInterface interface {
-	Create(ctx context.Context, emp *sharphr_models.EmployeeEmployment) error
-	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*sharphr_models.EmployeeEmployment, error)
+	Create(ctx context.Context, emp *employee_models.EmployeeEmployment) error
+	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*employee_models.EmployeeEmployment, error)
 }
 */
 //
@@ -29,7 +29,7 @@ func NewEmployeeEmploymentRepo(db *gorm.DB) *employeeEmploymentRepo {
 
 func (r *employeeEmploymentRepo) Create(
 	ctx context.Context,
-	emp *sharphr_models.EmployeeEmployment,
+	emp *employee_models.EmployeeEmployment,
 ) error {
 
 	if emp.ID == uuid.Nil {
@@ -42,9 +42,9 @@ func (r *employeeEmploymentRepo) Create(
 func (r *employeeEmploymentRepo) GetByEmployeeID(
 	ctx context.Context,
 	empID uuid.UUID,
-) (*sharphr_models.EmployeeEmployment, error) {
+) (*employee_models.EmployeeEmployment, error) {
 
-	var employment sharphr_models.EmployeeEmployment
+	var employment employee_models.EmployeeEmployment
 
 	err := r.db.
 		WithContext(ctx).

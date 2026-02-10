@@ -24,107 +24,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/hospitality-menu/categories": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Create Category in linked to the authenticated organization UUID.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Hospitality / Menu"
-                ],
-                "summary": "Create Category In Menu",
-                "responses": {
-                    "200": {
-                        "description": "Bar details retrieved successfully",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid organization UUID format",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Organization UUID missing",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "No bar found for this organization",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to fetch bar details",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Create Category linked to the authenticated organization UUID.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Hospitality / Menu"
-                ],
-                "summary": "Create Category In Menu",
-                "responses": {
-                    "200": {
-                        "description": "Category created successfully",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid organization UUID format",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/hospitality/bar": {
             "get": {
                 "security": [
@@ -190,9 +89,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/otp-verify": {
-            "post": {
-                "description": "Verifies the OTP sent to the organization's email during signup.",
+        "/orchestrator/setup-status": {
+            "get": {
+                "description": "Detailed explanation of what happens. Note: This requires an 'org_id' inside the session cookie.",
                 "consumes": [
                     "application/json"
                 ],
@@ -200,52 +99,49 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Org SignUp"
+                    "Orchestrator --\u003e Console"
                 ],
-                "summary": "Verify OTP for organization registration",
+                "summary": "Short, punchy summary of the action",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
+                        "description": "Session cookie containing org_id",
+                        "name": "Cookie",
                         "in": "header",
                         "required": true
-                    },
-                    {
-                        "description": "OTP verification payload",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.Org_Verify_Otp_REQUEST_DTO"
-                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Success",
                         "schema": {
-                            "$ref": "#/definitions/dto.Response-dto_Org_Verify_Otp_RESPONSE_DTO"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Validation Error",
                         "schema": {
-                            "$ref": "#/definitions/dto.Response-any"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/dto.Response-any"
+                            "$ref": "#/definitions/utils.Response"
                         }
                     }
                 }
             }
         },
-        "/register": {
+        "/orchestrator/setup-wiz/step3": {
             "post": {
-                "description": "Registers a new organization",
+                "description": "Third step of the onboarding wizard to define the organization's legal and physical presence.",
                 "consumes": [
                     "application/json"
                 ],
@@ -253,34 +149,242 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Org SignUp"
+                    "core-setup"
                 ],
-                "summary": "Create a new organization",
+                "summary": "Setup Legal Entity",
                 "parameters": [
                     {
-                        "description": "Organization signup data",
-                        "name": "input",
+                        "description": "Legal Entity Details",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.Org_Signup_REQUEST_DTO"
+                            "$ref": "#/definitions/orchestrator_dtos.SetupLegalEntityReqDTO"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Legal entity configured successfully",
                         "schema": {
-                            "$ref": "#/definitions/dto.Org_Signup_RESPONSE_DTO"
+                            "$ref": "#/definitions/utils.Response"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Validation or binding error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/setup-wizard/progress": {
+            "get": {
+                "description": "Detailed explanation of what happens (e.g., database changes, emails sent).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CategoryName (e.g.",
+                    "accounting-ap)"
+                ],
+                "summary": "Short, punchy summary of the action",
+                "responses": {
+                    "200": {
+                        "description": "Complete\" \"Success message",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/setup-wizard/step1": {
+            "post": {
+                "description": "Detailed explanation of what happens (e.g., database changes, emails sent).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CategoryName (e.g.",
+                    "accounting-ap)"
+                ],
+                "summary": "Short, punchy summary of the action",
+                "parameters": [
+                    {
+                        "description": "Input description",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/orchestrator_dtos.SetupOrganizationHQAddressReqDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Org HQ successfully\" \"Success message",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/setup-wizard/step2": {
+            "post": {
+                "description": "Second step of the onboarding wizard: Configures the core property attributes for the organization.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "core-setup"
+                ],
+                "summary": "Setup Organization Property",
+                "parameters": [
+                    {
+                        "description": "Property Details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/orchestrator_dtos.SetupOrgPropertyReqDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Property Added Successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/signup/initiate": {
+            "post": {
+                "description": "Validates the request and starts the registration process.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "signup"
+                ],
+                "summary": "Initiate Organization Registration",
+                "parameters": [
+                    {
+                        "description": "Details",
+                        "name": "registration",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/org_signup_dtos.OrganizationRegistrationDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully initiated registration",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
                         }
                     }
                 }
@@ -288,162 +392,163 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "constants.OrgType": {
-            "type": "string",
-            "enum": [
-                "HOSPITALITY",
-                "RETAIL",
-                "SALON"
+        "orchestrator_dtos.SetupLegalEntityReqDTO": {
+            "type": "object",
+            "required": [
+                "step_id"
             ],
-            "x-enum-varnames": [
-                "Hotel",
-                "Retail",
-                "Salon"
-            ]
-        },
-        "dto.ErrorResponse": {
-            "type": "object",
             "properties": {
-                "isError": {
-                    "type": "boolean"
-                },
-                "message": {
+                "address_line": {
                     "type": "string"
-                }
-            }
-        },
-        "dto.Org_Signup_REQUEST_DTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "description": "Email address of the organization for contact and login purposes.",
-                    "type": "string",
-                    "example": "hotel@example.com"
                 },
-                "mobile": {
-                    "description": "Mobile number of the organization or primary contact person.",
-                    "type": "string",
-                    "example": "+911234567890"
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
                 },
                 "name": {
-                    "description": "Name of the organization.",
-                    "type": "string",
-                    "example": "Sharpnr Hotel"
+                    "type": "string"
                 },
-                "org_type": {
-                    "description": "ORG_TYPE specifies the type of organization.\nUses the OrgType constant defined in the constants package.",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/constants.OrgType"
-                        }
-                    ],
-                    "example": "HOTEL"
+                "pincode": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "step_id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "orchestrator_dtos.SetupOrgPropertyReqDTO": {
+            "type": "object",
+            "properties": {
+                "accuracy_m": {
+                    "type": "integer"
+                },
+                "address_line": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pincode": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                }
+            }
+        },
+        "orchestrator_dtos.SetupOrganizationHQAddressReqDTO": {
+            "type": "object",
+            "required": [
+                "address_line",
+                "city",
+                "country",
+                "pincode",
+                "state",
+                "step_id"
+            ],
+            "properties": {
+                "accuracy_m": {
+                    "type": "integer"
+                },
+                "address_line": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "pincode": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "step_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "org_signup_dtos.OrganizationRegistrationDTO": {
+            "description": "Organization Registration Data",
+            "type": "object",
+            "required": [
+                "email",
+                "mobile",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "mobile": {
+                    "type": "string"
                 },
                 "password": {
-                    "description": "Password for the organization login.",
                     "type": "string",
-                    "example": "supersecure"
+                    "minLength": 8
                 }
             }
         },
-        "dto.Org_Signup_RESPONSE_DTO": {
+        "utils.APIError": {
             "type": "object",
             "properties": {
-                "email": {
-                    "description": "Email of the organization.",
-                    "type": "string",
-                    "example": "hotel@example.com"
-                }
-            }
-        },
-        "dto.Org_Verify_Otp_REQUEST_DTO": {
-            "type": "object",
-            "properties": {
-                "otp": {
-                    "description": "OTP is the one-time password sent to the organization's email or mobile.",
-                    "type": "string",
-                    "example": "123456"
-                }
-            }
-        },
-        "dto.Org_Verify_Otp_RESPONSE_DTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "description": "Email of the organization.",
-                    "type": "string",
-                    "example": "hotel@example.com"
-                },
-                "org_name": {
-                    "description": "Name of the organization.",
-                    "type": "string",
-                    "example": "Sharpnr Hotel"
-                },
-                "org_type": {
-                    "description": "ORG_TYPE specifies the type of the organization.",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/constants.OrgType"
-                        }
-                    ],
-                    "example": "HOTEL"
-                },
-                "sharpnr_id": {
-                    "description": "Sharpnr_Id is the unique identifier assigned to the organization.",
-                    "type": "string",
-                    "example": "SHRabc123def456"
-                }
-            }
-        },
-        "dto.Response-any": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "description": "\u003c-- pointer here"
-                },
-                "error": {
-                    "$ref": "#/definitions/dto.ErrorResponse"
+                "code": {
+                    "type": "string"
                 },
                 "message": {
                     "type": "string"
                 },
-                "statusCode": {
+                "status": {
                     "type": "integer"
+                }
+            }
+        },
+        "utils.Response": {
+            "description": "Global API Response Wrapper",
+            "type": "object",
+            "properties": {
+                "data": {},
+                "error": {
+                    "$ref": "#/definitions/utils.APIError"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
                 },
                 "timestamp": {
                     "type": "string"
                 },
                 "token": {
-                    "description": "✅ Optional field",
-                    "type": "string"
-                }
-            }
-        },
-        "dto.Response-dto_Org_Verify_Otp_RESPONSE_DTO": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "description": "\u003c-- pointer here",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/dto.Org_Verify_Otp_RESPONSE_DTO"
-                        }
-                    ]
-                },
-                "error": {
-                    "$ref": "#/definitions/dto.ErrorResponse"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "statusCode": {
-                    "type": "integer"
-                },
-                "timestamp": {
-                    "type": "string"
-                },
-                "token": {
-                    "description": "✅ Optional field",
                     "type": "string"
                 }
             }
