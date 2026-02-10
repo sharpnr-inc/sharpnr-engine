@@ -4,13 +4,11 @@ import (
 	"context"
 	hoteldtos "sharpnr-engine/modules/hospitality/hotel/dtos"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
-	"sharpnr-engine/sere"
 
 	"github.com/google/uuid"
 )
 
 type hotelService struct {
-	sere      *sere.SERE // 🔥 event engine
 	hotelRepo hotelrepo.HotelRepositoryInterface
 }
 
@@ -30,12 +28,10 @@ func (h *hotelService) SearchGuests(ctx context.Context, orgId uuid.UUID, qry st
 }
 
 func NewHotelService(
-	sere *sere.SERE,
 	hotelRepo hotelrepo.HotelRepositoryInterface,
 
 ) *hotelService {
 	return &hotelService{
-		sere:      sere,
 		hotelRepo: hotelRepo,
 	}
 }

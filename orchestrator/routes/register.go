@@ -7,7 +7,6 @@ import (
 	webMiddleware "sharpnr-engine/middlewares/web"
 	orchestrator_controllers "sharpnr-engine/orchestrator/controllers"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
-	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +14,6 @@ import (
 func RegisterOrchestratorRoutes(
 	webV1 *gin.RouterGroup,
 	txManager dbtx.TxManager,
-	sere *sere.SERE,
 	cookieMgr cookieManager.Manager,
 	jwtMgr jwt_manager.Manager,
 	sharpModules app.ModulesProvider,

@@ -11,7 +11,6 @@ import (
 	webMiddleware "sharpnr-engine/middlewares/web"
 	orchestrator_routes "sharpnr-engine/orchestrator/routes"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
-	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -24,7 +23,6 @@ func SetupRouter(
 	db *gorm.DB,
 	txManager dbtx.TxManager,
 	redis *redis.Client,
-	sere *sere.SERE,
 	cookies cookieManager.Manager,
 	jwtmgr jwt_manager.Manager,
 	modules app.ModulesProvider,
@@ -53,7 +51,7 @@ func SetupRouter(
 
 		{
 			v1.RegisterModuleRoutes(protected, modules)
-			orchestrator_routes.RegisterOrchestratorRoutes(protected, txManager, sere, cookies, jwtmgr, modules)
+			orchestrator_routes.RegisterOrchestratorRoutes(protected, txManager, cookies, jwtmgr, modules)
 		}
 	}
 
@@ -62,7 +60,7 @@ func SetupRouter(
 	// ========================
 	mobileV1 := router.Group("/api/v1/mobile")
 	{
-		sharpnr_identity_auth.SharpnrIdentityAuthMobileRoutes(mobileV1, db, redis, sere)
+		sharpnr_identity_auth.SharpnrIdentityAuthMobileRoutes(mobileV1, db, redis)
 	}
 
 	return router

@@ -1,10 +1,7 @@
 package app
 
 import (
-	"context"
-
 	dbtx "sharpnr-engine/core/dbTx"
-	"sharpnr-engine/sere"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
 	"github.com/redis/go-redis/v9"
@@ -15,7 +12,6 @@ func BootstrapModules(
 	db *gorm.DB,
 	redis *redis.Client,
 	txManager dbtx.TxManager,
-	sereEngine *sere.SERE,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 ) *AppModules {
 
@@ -33,7 +29,6 @@ func BootstrapModules(
 
 	orgSignupService := bootstrapOrgSignup(
 		txManager,
-		sereEngine,
 		mailerEngine,
 		employeeService,
 		organizationService,
@@ -44,8 +39,6 @@ func BootstrapModules(
 
 	hospitality := bootstrapHospitality(
 		db,
-		sereEngine,
-		// txManager,
 	)
 
 	accountingService := bootstrapAccounting(db, txManager)
@@ -59,19 +52,6 @@ func BootstrapModules(
 		orgLegalEntityService,
 		txManager,
 	)
-
-	sereEngine.UseTxExecutor(func(ctx context.Context, fn func(ctx context.Context) error) error {
-		return txManager.WithTx(ctx, func(tx *gorm.DB) error {
-			txCtx := dbtx.InjectTx(ctx, tx)
-			return fn(txCtx)
-		})
-	})
-
-	RegisterAllWorkFlow(
-		sereEngine,
-	)
-
-	RegisterSereEventHandler(sereEngine)
 
 	return &AppModules{
 		organizationService:   organizationService,

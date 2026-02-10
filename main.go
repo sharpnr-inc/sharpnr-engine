@@ -10,7 +10,6 @@ import (
 	"sharpnr-engine/cookieManager"
 	dbtx "sharpnr-engine/core/dbTx"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
-	"sharpnr-engine/sere"
 	"sharpnr-engine/shared/database"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
@@ -47,12 +46,6 @@ func main() {
 	}
 	log.Println("✅ Database migration completed.")
 
-	sereEngine := sere.NewSERE()
-	sereEngine.Start()
-	sereEngine.WaitUntilStarted()
-
-	log.Println("✅ SERE is up and running")
-
 	mailerEng := sharp_mailer_engine.New(cfg)
 	if err := mailerEng.LoadTemplates("./sharp_mailer_engine/templates"); err != nil {
 		log.Fatal(err)
@@ -79,14 +72,13 @@ func main() {
 
 	txManager := dbtx.NewGormTxManager(db)
 
-	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, sereEngine, mailerEng)
+	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, mailerEng)
 
 	// Create and configure the main router
 	r := api.SetupRouter(
 		db,
 		txManager,
 		redisDb,
-		sereEngine,
 		cookieMgr,
 		jwtmgr,
 		sharpnrModules,

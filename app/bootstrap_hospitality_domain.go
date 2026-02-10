@@ -12,14 +12,12 @@ import (
 	menuservice "sharpnr-engine/modules/hospitality/menu/service"
 	restaurantrepo "sharpnr-engine/modules/hospitality/restaurant/repo"
 	restaurantservices "sharpnr-engine/modules/hospitality/restaurant/services"
-	"sharpnr-engine/sere"
 
 	"gorm.io/gorm"
 )
 
 func bootstrapHospitality(
 	db *gorm.DB,
-	sereEngine *sere.SERE,
 	// txManager dbtx.TxManager,
 ) *hospitalitydomain.HospitalityDomain {
 
@@ -33,7 +31,7 @@ func bootstrapHospitality(
 
 	// Hotel
 	hotelRepo := hotelrepo.NewHotelRepository(db)
-	hotelService := hotelservices.NewHotelService(sereEngine, hotelRepo)
+	hotelService := hotelservices.NewHotelService(hotelRepo)
 
 	// Bar
 	barRepo := barrepo.NewBarRepository(db)
