@@ -37,9 +37,7 @@ func BootstrapModules(
 
 	identityService := bootstrapIdentity(db, employeeService)
 
-	hospitality := bootstrapHospitality(
-		db,
-	)
+	hospitality := bootstrapHospitality(db)
 
 	accountingService := bootstrapAccounting(db, txManager)
 
