@@ -8,7 +8,7 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
-	accounting_service "sharpnr-engine/sharp_services/accounting_engine/services"
+	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
 )
 
 func bootstrapSharpnrOrchestrator(

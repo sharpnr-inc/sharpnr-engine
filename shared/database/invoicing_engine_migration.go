@@ -1,7 +1,7 @@
 package database
 
 import (
-	invoice_engine_models "sharpnr-engine/sharp_services/invoicing_engine/models"
+	invoice_engine_models "sharpnr-engine/service_engines/invoicing_engine/models"
 
 	"gorm.io/gorm"
 )

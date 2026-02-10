@@ -5,7 +5,7 @@ import (
 	dbtx "sharpnr-engine/core/dbTx"
 	org_legal_entity_contracts "sharpnr-engine/core/org_legal_entity/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
-	accounting_engine_contracts "sharpnr-engine/sharp_services/accounting_engine/contracts"
+	accounting_engine_contracts "sharpnr-engine/service_engines/accounting_engine/contracts"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

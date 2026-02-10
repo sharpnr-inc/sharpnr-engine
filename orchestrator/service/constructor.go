@@ -7,7 +7,7 @@ import (
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	organization_services "sharpnr-engine/core/organization/services"
-	accounting_service "sharpnr-engine/sharp_services/accounting_engine/services"
+	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
 )
 
 type orchestratorService struct {

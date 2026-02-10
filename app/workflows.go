@@ -8,7 +8,7 @@ import (
 	restaurant_sere_adapters "sharpnr-engine/modules/hospitality/restaurant/sere_adapters"
 	employee_sere_adapter "sharpnr-engine/modules/hr/employees/sere_adapter"
 	"sharpnr-engine/sere"
-	acc_sere_wf_adapters "sharpnr-engine/sharp_services/accounting_engine/workflow_adapter"
+	acc_sere_wf_adapters "sharpnr-engine/service_engines/accounting_engine/workflow_adapter"
 )
 
 func RegisterAllWorkFlow(

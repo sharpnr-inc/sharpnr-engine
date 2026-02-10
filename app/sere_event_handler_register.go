@@ -3,7 +3,7 @@ package app
 import (
 	"sharpnr-engine/modules/hospitality/hotel/hotel_sere_handlers"
 	"sharpnr-engine/sere"
-	accounting_sere_handlers "sharpnr-engine/sharp_services/accounting_engine/sere_handlers"
+	accounting_sere_handlers "sharpnr-engine/service_engines/accounting_engine/sere_handlers"
 )
 
 func RegisterSereEventHandler(

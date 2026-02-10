@@ -10,7 +10,7 @@ import (
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
 	employee_services "sharpnr-engine/modules/hr/employees/services"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
-	accounting_service "sharpnr-engine/sharp_services/accounting_engine/services"
+	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
 )
 
 type AppModules struct {
