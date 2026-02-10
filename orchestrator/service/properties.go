@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
-	orchestrator_dtos "sharpnr-engine/core/orchestrator/dtos"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
+	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	"sharpnr-engine/shared/utils"
 	"sync"
 

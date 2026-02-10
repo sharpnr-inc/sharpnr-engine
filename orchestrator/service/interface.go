@@ -2,7 +2,7 @@ package orchestrator_service
 
 import (
 	"context"
-	orchestrator_dtos "sharpnr-engine/core/orchestrator/dtos"
+	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 
 	"github.com/google/uuid"
 )

@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	orchestrator_dtos "sharpnr-engine/core/orchestrator/dtos"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
+	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 
 	"github.com/google/uuid"
 )

@@ -3,8 +3,8 @@ package orchestrator_controllers
 import (
 	"errors"
 	"net/http"
-	orchestrator_dtos "sharpnr-engine/core/orchestrator/dtos"
 	webMiddleware "sharpnr-engine/middlewares/web"
+	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"

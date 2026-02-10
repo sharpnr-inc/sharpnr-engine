@@ -4,8 +4,8 @@ import (
 	"sharpnr-engine/app"
 	"sharpnr-engine/cookieManager"
 	dbtx "sharpnr-engine/core/dbTx"
-	orchestrator_controllers "sharpnr-engine/core/orchestrator/controllers"
 	webMiddleware "sharpnr-engine/middlewares/web"
+	orchestrator_controllers "sharpnr-engine/orchestrator/controllers"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sere"
 

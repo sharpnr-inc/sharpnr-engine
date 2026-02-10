@@ -3,8 +3,8 @@ package orchestrator_service
 import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
-	orchestrator_dtos "sharpnr-engine/core/orchestrator/dtos"
 	org_legal_entity_contracts "sharpnr-engine/core/org_legal_entity/contracts"
+	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	accounting_engine_contracts "sharpnr-engine/sharp_services/accounting_engine/contracts"
 
 	"github.com/google/uuid"

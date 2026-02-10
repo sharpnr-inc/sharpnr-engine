@@ -1,6 +1,6 @@
 package orchestrator_controllers
 
-import orchestrator_service "sharpnr-engine/core/orchestrator/service"
+import orchestrator_service "sharpnr-engine/orchestrator/service"
 
 type OrchestratorController struct {
 	orchestService orchestrator_service.OrchestratorServiceInterface

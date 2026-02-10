@@ -1,7 +1,7 @@
 package orchestrator_routes
 
 import (
-	orchestrator_controllers "sharpnr-engine/core/orchestrator/controllers"
+	orchestrator_controllers "sharpnr-engine/orchestrator/controllers"
 
 	"github.com/gin-gonic/gin"
 )
