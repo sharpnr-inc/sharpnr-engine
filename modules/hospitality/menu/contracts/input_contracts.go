@@ -1,6 +1,7 @@
 package hospitality_menu_contracts
 
 import (
+	menu_constants "sharpnr-engine/modules/hospitality/menu/constants"
 	hospitality_utilities "sharpnr-engine/modules/hospitality/utilities_api"
 
 	"github.com/google/uuid"
@@ -10,8 +11,8 @@ type CreateMenuInput struct {
 	MenuName        string                                       `json:"menu_name"`
 	MenuDescription *string                                      `json:"menu_description,omitempty"`
 	OwnerID         uuid.UUID                                    `json:"owner_id"`
-	OrganizationID  uuid.UUID                                    `json:"organization_id"`
-	PropertyID      uuid.UUID                                    `json:"property_id"`
+	OrganizationID  *uuid.UUID                                   `json:"organization_id omitempty"`
+	PropertyID      *uuid.UUID                                   `json:"property_id,omitempty"`
 	OwnerModuleType hospitality_utilities.HospitalityModulesType `json:"owner_module_type"`
 	Categories      *[]AddMenuCategoryInput                      `json:"categories,omitempty"`
 }
@@ -31,14 +32,15 @@ type AddSubCategoryInput struct {
 }
 
 type AddMenuItemInput struct {
-	MenuID            uuid.UUID               `json:"menu_id"`
-	MenuSubCategoryID uuid.UUID               `json:"menu_sub_category_id"`
-	Name              string                  `json:"name"`
-	Description       string                  `json:"description"`
-	Unit              string                  `json:"unit"`
-	BasePrice         float64                 `json:"base_price"`
-	VariantGroup      *[]AddVariantGroupInput `json:"variant_groups,omitempty"`
-	AddOns            *[]AddAddOnInput        `json:"add_ons,omitempty"`
+	MenuID            uuid.UUID                          `json:"menu_id"`
+	MenuSubCategoryID uuid.UUID                          `json:"menu_sub_category_id"`
+	Name              string                             `json:"name"`
+	Description       string                             `json:"description"`
+	Unit              string                             `json:"unit"`
+	DietaryType       menu_constants.MenuItemDietaryType `json:"dietary_type"`
+	BasePrice         float64                            `json:"base_price"`
+	VariantGroup      *[]AddVariantGroupInput            `json:"variant_groups,omitempty"`
+	AddOns            *[]AddAddOnInput                   `json:"add_ons,omitempty"`
 }
 
 type AddVariantGroupInput struct {

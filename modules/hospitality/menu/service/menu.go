@@ -13,16 +13,14 @@ import (
 func (s *menuService) CreateMenu(ctx context.Context, req *hospitality_menu_contracts.CreateMenuInput) (uuid.UUID, error) {
 	// 1. Create the Root Menu Group
 	menuGrp := &hospitalityMenu_models.MenuGroup{
-		ID:             uuid.New(),
-		OrganizationID: req.OrganizationID,
-		PropertyID:     req.PropertyID,
-		Name:           req.MenuName,
-		Description:    *req.MenuDescription,
-		OwnerModule:    req.OwnerModuleType,
-		OwnerID:        req.OwnerID,
-		IsActive:       false,
-		CreatedAt:      time.Now(),
-		UpdatedAt:      time.Now(),
+		ID:          uuid.New(),
+		Name:        req.MenuName,
+		Description: *req.MenuDescription,
+		OwnerModule: req.OwnerModuleType,
+		OwnerID:     req.OwnerID,
+		IsActive:    false,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 
 	if err := s.menuRepo.CreateMenuGroup(ctx, menuGrp); err != nil {
@@ -106,11 +104,10 @@ func (s *menuService) AddMenuItemInSubCategory(ctx context.Context, req *hospita
 		MenuSubCategoryID: req.MenuSubCategoryID,
 		Name:              req.Name,
 		Description:       req.Description,
-		IsVeg:             true,
 		BasePrice:         req.BasePrice,
 		IsAvailable:       true,
 		Unit:              req.Unit,
-		IsActive:          true,
+		DietaryType:       req.DietaryType,
 		CreatedAt:         time.Now(),
 		UpdatedAt:         time.Now(),
 	}

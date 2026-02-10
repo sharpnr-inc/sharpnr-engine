@@ -1,6 +1,7 @@
 package hospitalityMenu_models
 
 import (
+	menu_constants "sharpnr-engine/modules/hospitality/menu/constants"
 	hospitality_utilities "sharpnr-engine/modules/hospitality/utilities_api"
 	"time"
 
@@ -52,9 +53,8 @@ func (MenuCategory) TableName() string { return "hospitality.menu_category" }
 type MenuSubCategory struct {
 	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
 	MenuCategoryID uuid.UUID `gorm:"type:uuid;not null;index"`
-
-	Name        string `gorm:"type:varchar(100);not null"`
-	Description string `gorm:"type:varchar(255)"`
+	Name           string    `gorm:"type:varchar(100);not null"`
+	Description    string    `gorm:"type:varchar(255)"`
 
 	IsActive  bool `gorm:"default:true"`
 	CreatedAt time.Time
@@ -73,14 +73,13 @@ type MenuItem struct {
 
 	Name        string `gorm:"type:varchar(100);not null"`
 	Description string `gorm:"type:varchar(255)"`
-	IsVeg       bool   `gorm:"default:true"`
 
 	BasePrice   float64 `gorm:"type:decimal(12,2);not null"`
 	IsAvailable bool    `gorm:"default:true"`
 
 	Unit string `gorm:"type:varchar(20);default:'plate'"`
 
-	IsActive bool `gorm:"default:true"`
+	DietaryType menu_constants.MenuItemDietaryType
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

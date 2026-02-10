@@ -1,6 +1,8 @@
 package hospitality_menu_contracts
 
 import (
+	menu_constants "sharpnr-engine/modules/hospitality/menu/constants"
+
 	"github.com/google/uuid"
 )
 
@@ -28,15 +30,16 @@ type SubCategoryOutput struct {
 }
 
 type MenuItemOutput struct {
-	ID                uuid.UUID            `json:"id"`
-	MenuID            uuid.UUID            `json:"menu_id"`
-	MenuSubCategoryID uuid.UUID            `json:"menu_sub_category_id"`
-	Name              string               `json:"name"`
-	Description       string               `json:"description"`
-	Unit              string               `json:"unit"`
-	BasePrice         float64              `json:"base_price"`
-	VariantGroups     []VariantGroupOutput `json:"variant_groups"`
-	AddOns            []AddOnOutput        `json:"add_ons"`
+	ID                uuid.UUID                          `json:"id"`
+	MenuID            uuid.UUID                          `json:"menu_id"`
+	MenuSubCategoryID uuid.UUID                          `json:"menu_sub_category_id"`
+	Name              string                             `json:"name"`
+	Description       string                             `json:"description"`
+	Unit              string                             `json:"unit"`
+	BasePrice         float64                            `json:"base_price"`
+	DietaryType       menu_constants.MenuItemDietaryType `json:"dietary_type"`
+	VariantGroups     []VariantGroupOutput               `json:"variant_groups"`
+	AddOns            []AddOnOutput                      `json:"add_ons"`
 }
 
 type VariantGroupOutput struct {
