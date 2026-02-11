@@ -6,6 +6,7 @@ import (
 	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
+	hotel_contracts "sharpnr-engine/modules/hospitality/hotel/contracts"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	"sharpnr-engine/shared/utils"
@@ -391,4 +392,42 @@ func (s *orchestratorService) ConfigureRestaurant(
 	// Future: Add logic here to configure Bar and Kitchen modules
 
 	return nil
+}
+
+func (c *orchestratorService) ConfigureHotel(
+	ctx context.Context,
+	orgID uuid.UUID,
+	propertyID uuid.UUID,
+	req *orchestrator_dtos.ConfigureHotel_Request_dto,
+) error {
+
+	hotelLayouts := make([]hotel_contracts.FloorInput, 0, len(req.HotelLayout))
+
+	for _, floorReq := range req.HotelLayout {
+		hotelLayouts = append(hotelLayouts, hotel_contracts.FloorInput{
+			HotelID:       req.HotelID,
+			FloorName:     floorReq.FloorName,
+			FloorNumber:   floorReq.FloorNumber,
+			NumberOfRooms: floorReq.NumberOfRooms,
+		})
+	}
+
+	if err := c.hospitalityDomainSvc.HotelService().SetUpLayout(ctx, hotelLayouts); err != nil {
+		return err
+	}
+
+	genDetails := hotel_contracts.AddHotelGeneralInfoInput{
+		HotelID:          req.HotelID,
+		HotelName:        req.GenDetails.HotelDisplayName,
+		HotelOpeningTime: req.GenDetails.OpeningTime,
+		HotelClosingTime: req.GenDetails.ClosingTime,
+		Is24X7:           req.GenDetails.Is24X7,
+	}
+
+	if err := c.hospitalityDomainSvc.HotelService().AddHotelGenDetails(ctx, &genDetails); err != nil {
+		return err
+	}
+
+	return nil
+
 }

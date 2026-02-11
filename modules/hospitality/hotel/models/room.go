@@ -1,15 +1,15 @@
 package hotel_models
 
 import (
+	hotel_constants "sharpnr-engine/modules/hospitality/hotel/constants"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 type HotelFloor struct {
-	ID      uuid.UUID `gorm:"type:uuid;primaryKey"`
-	HotelID uuid.UUID `gorm:"type:uuid;not null"`
-
+	ID          uuid.UUID `gorm:"type:uuid;primaryKey"`
+	HotelID     uuid.UUID `gorm:"type:uuid;not null"`
 	Name        string
 	FloorNumber int `gorm:"not null"`
 	CreatedAt   time.Time
@@ -22,14 +22,15 @@ func (HotelFloor) TableName() string {
 type HotelRoom struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	HotelID         uuid.UUID `gorm:"type:uuid;not null;index"`
-	HotelFloorID    uuid.UUID `gorm:"type:uuid;not null;index"`
-	HotelRoomTypeID uuid.UUID
+	HotelID      uuid.UUID `gorm:"type:uuid;not null;index"`
+	HotelFloorID uuid.UUID `gorm:"type:uuid;not null;index"`
+	// This can be null
+	HotelRoomTypeID *uuid.UUID
 
 	RoomCode string `gorm:"size:30;"`
 	Name     string `gorm:"size:100"`
 
-	Status string `gorm:"size:20;not null;default:'AVAILABLE'"`
+	Status hotel_constants.HotelRoomStatusType `gorm:"size:20;not null;default:'AVAILABLE'"`
 	// AVAILABLE, OCCUPIED, RESERVED, MAINTENANCE, BLOCKED
 
 	BedType   string

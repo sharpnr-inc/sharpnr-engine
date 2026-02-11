@@ -151,7 +151,7 @@ func (h *hotelRepository) GetHotelRoomsByFloorID(ctx context.Context, floorID uu
 	// 1. Target the HotelRoom model
 	// 2. Filter by the floor_id column
 	err := h.db.WithContext(ctx).
-		Where("floor_id = ?", floorID).
+		Where("hotel_floor_id = ?", floorID).
 		Find(&rooms).Error
 
 	if err != nil {

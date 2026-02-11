@@ -4,12 +4,12 @@ import (
 	hotelservices "sharpnr-engine/modules/hospitality/hotel/services"
 )
 
-type HotelController struct {
+type hotelController struct {
 	hotelService hotelservices.HotelServiceInterface
 }
 
-func NewHotelController(s hotelservices.HotelServiceInterface) *HotelController {
-	return &HotelController{
+func NewHotelController(s hotelservices.HotelServiceInterface) *hotelController {
+	return &hotelController{
 		hotelService: s,
 	}
 }

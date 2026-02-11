@@ -289,3 +289,46 @@ func (c *OrchestratorController) ConfigurePropertiesRestaurant(ctx *gin.Context)
 	utils.Success(ctx, 201, "Configured successfully")
 
 }
+
+func (c *OrchestratorController) ConfigurePropertyHotel(ctx *gin.Context) {
+	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
+		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
+		return
+	}
+
+	// 2. Org context check
+	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
+	if !exists {
+		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
+		return
+	}
+
+	orgID, ok := orgUUIDRaw.(uuid.UUID)
+	if !ok {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
+		return
+	}
+
+	// 3. Param Parsing
+	propertyId := ctx.Param("propertyID")
+	pId, err := uuid.Parse(propertyId)
+	if err != nil {
+		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid propertyID format"))
+		return
+	}
+
+	var req *orchestrator_dtos.ConfigureHotel_Request_dto
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		return
+	}
+
+	if err := c.orchestService.ConfigureHotel(ctx.Request.Context(), orgID, pId, req); err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Configuration Complete")
+}

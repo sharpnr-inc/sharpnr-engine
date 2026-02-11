@@ -4,7 +4,7 @@ import (
 	"sharpnr-engine/app"
 	"sharpnr-engine/modules/hospitality/bar"
 	"sharpnr-engine/modules/hospitality/concierge"
-	"sharpnr-engine/modules/hospitality/hotel"
+	hotel_routes "sharpnr-engine/modules/hospitality/hotel/routes"
 	"sharpnr-engine/modules/hospitality/kitchen"
 	menu_routes "sharpnr-engine/modules/hospitality/menu/routes"
 	"sharpnr-engine/modules/hospitality/restaurant"
@@ -21,7 +21,7 @@ func RegisterHotelModuleRoutes(
 	// Route Group
 	sharpHospitality := v1.Group("/sharp-hospitality")
 
-	hotel.Hospitalityhotelroutes(sharpHospitality, modules)
+	hotel_routes.RegisterHotelRoutes(sharpHospitality, modules)
 
 	kitchen.KitchenRoutes(sharpHospitality, modules)
 	menu_routes.RegisterMenuRoutes(sharpHospitality, modules)
