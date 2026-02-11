@@ -12,11 +12,7 @@ type OrganizationSetting struct {
 
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	// Optional scoping
-	Domain OrgDomainType `gorm:"index"`
-	Module string        `gorm:"size:50;index"`
-
-	Scope SettingScope `gorm:"size:20;not null"`
+	Scope string `gorm:"size:20;not null"`
 
 	// Only used when Scope = UNIT
 	UnitID *uuid.UUID `gorm:"type:uuid;index"`
