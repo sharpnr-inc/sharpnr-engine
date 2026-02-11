@@ -14,6 +14,7 @@ func MigrateDB(db *gorm.DB) error {
 	}
 
 	migrations := []func(*gorm.DB) error{
+
 		migrateCore,
 		migrateOrgProperty,
 		migrateOrgLegalEntity,
@@ -27,6 +28,7 @@ func MigrateDB(db *gorm.DB) error {
 		migrateSetupWizard,
 		migrateInvoicingEngine,
 		migrateHospitalityOrderEngine,
+		migrateSeroEngine,
 	}
 
 	for _, migrate := range migrations {

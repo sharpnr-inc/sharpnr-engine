@@ -2,6 +2,7 @@ package main
 
 // Main entry point of the application
 import (
+	"context"
 	"log"
 
 	"sharpnr-engine/api"
@@ -10,6 +11,7 @@ import (
 	"sharpnr-engine/cookieManager"
 	dbtx "sharpnr-engine/core/dbTx"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
+	"sharpnr-engine/sero"
 	"sharpnr-engine/shared/database"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
@@ -46,6 +48,16 @@ func main() {
 	}
 	log.Println("✅ Database migration completed.")
 
+	// --- Initialize SERO Engine ---
+	seroRepo := sero.NewGormOutboxRepo(db)
+	seroEngine := sero.NewSEROEngine(seroRepo)
+
+	// Start background relay
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go seroEngine.StartRelay(ctx)
+	log.Println("🚀 SERO Event Relay started.")
+
 	mailerEng := sharp_mailer_engine.New(cfg)
 	if err := mailerEng.LoadTemplates("./sharp_mailer_engine/templates"); err != nil {
 		log.Fatal(err)
@@ -72,7 +84,7 @@ func main() {
 
 	txManager := dbtx.NewGormTxManager(db)
 
-	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, mailerEng)
+	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, mailerEng, seroEngine)
 
 	// Create and configure the main router
 	r := api.SetupRouter(

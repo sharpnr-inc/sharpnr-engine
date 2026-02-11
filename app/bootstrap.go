@@ -2,6 +2,7 @@ package app
 
 import (
 	dbtx "sharpnr-engine/core/dbTx"
+	"sharpnr-engine/sero"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
 	"github.com/redis/go-redis/v9"
@@ -13,6 +14,7 @@ func BootstrapModules(
 	redis *redis.Client,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
+	seroEngine *sero.SEROEngine,
 ) *AppModules {
 
 	organizationService := bootstrapOrganization(db, redis, mailerEngine)
@@ -37,7 +39,7 @@ func BootstrapModules(
 
 	identityService := bootstrapIdentity(db, employeeService)
 
-	hospitality := bootstrapHospitality(db, txManager)
+	hospitality := bootstrapHospitality(db, txManager, seroEngine)
 
 	accountingService := bootstrapAccounting(db, txManager)
 

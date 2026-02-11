@@ -2,13 +2,15 @@ package sero
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type OutboxRepository interface {
 	Save(ctx context.Context, tx *gorm.DB, event *SeroOutbox) error
 	FetchPending(ctx context.Context, batchSize int) ([]SeroOutbox, error)
-	UpdateStatus(ctx context.Context, id uint, status string, errStr string) error
+	UpdateStatus(ctx context.Context, id uuid.UUID, status string, errStr string) error
 }
 
 type GormOutboxRepo struct {
@@ -33,7 +35,7 @@ func (r *GormOutboxRepo) FetchPending(ctx context.Context, batchSize int) ([]Ser
 	return events, err
 }
 
-func (r *GormOutboxRepo) UpdateStatus(ctx context.Context, id uint, status string, errStr string) error {
+func (r *GormOutboxRepo) UpdateStatus(ctx context.Context, id uuid.UUID, status string, errStr string) error {
 	updates := map[string]interface{}{"status": status, "last_error": errStr}
 	if status == "FAILED" {
 		updates["retries"] = gorm.Expr("retries + ?", 1)
