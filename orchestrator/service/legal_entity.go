@@ -20,7 +20,6 @@ func (c *orchestratorService) CreateLegalEntity(ctx context.Context, orgID uuid.
 		// *This is orchestrator level Service
 		// *So orchestrator Responsible for the Creating Legal Entity and its Accounting book
 		// Each Legal Entity have the One Accounting book with fiscal Year
-		// This is Not Simple as seems
 		// So Legal Entity Owns the Accounting book
 		// When Create the Legal Entity We also Create the Accounting book related to the Legal Entity
 		// *Since everything is NOT Tightly connected we create the Accounting book via orchestrator
