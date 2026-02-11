@@ -1,6 +1,7 @@
 package hotel_models
 
 import (
+	hotel_constants "sharpnr-engine/modules/hospitality/hotel/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -29,7 +30,7 @@ type HotelRoom struct {
 	RoomCode string `gorm:"size:30;"`
 	Name     string `gorm:"size:100"`
 
-	Status string `gorm:"size:20;not null;default:'AVAILABLE'"`
+	Status hotel_constants.HotelRoomStatusType `gorm:"size:20;not null;default:'AVAILABLE'"`
 	// AVAILABLE, OCCUPIED, RESERVED, MAINTENANCE, BLOCKED
 
 	BedType   string

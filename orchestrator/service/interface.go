@@ -38,6 +38,8 @@ type OrchestratorServiceInterface interface {
 		req *orchestrator_dtos.ConfigurePropertysRestaurant_Req_dto,
 	) error
 
+	ConfigureHotel(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, req *orchestrator_dtos.ConfigureHotel_Request_dto) error
+
 	GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
 	CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error
 

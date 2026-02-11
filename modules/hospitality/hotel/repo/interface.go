@@ -2,6 +2,7 @@ package hotelrepo
 
 import (
 	"context"
+	hotel_contracts "sharpnr-engine/modules/hospitality/hotel/contracts"
 	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
 
 	"github.com/google/uuid"
@@ -17,6 +18,9 @@ type HotelRepositoryInterface interface {
 	GetHotelByOrgID(ctx context.Context, orgid uuid.UUID) ([]*hotel_models.Hotel, error)
 	UpdateHotelStatus(ctx context.Context, hotelID uuid.UUID, status string) error
 	GetHotelsByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]*hotel_models.Hotel, error)
+
+	UpdateHotelGenDetails(ctx context.Context, updates *hotel_contracts.HotelMainGenDetailsInput) error
+	CreateHotelOperationalTiming(ctx context.Context, hotel_timing *hotel_models.HotelOperationsTiming) error
 
 	//-------------------------------------------------------------
 	//   Floors

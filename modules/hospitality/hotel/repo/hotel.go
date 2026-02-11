@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	hotel_contracts "sharpnr-engine/modules/hospitality/hotel/contracts"
 	hotel_models "sharpnr-engine/modules/hospitality/hotel/models"
+	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -15,6 +17,30 @@ func (h *hotelRepository) CreateHotel(ctx context.Context, hotel *hotel_models.H
 	if err := h.db.WithContext(ctx).Create(hotel).Error; err != nil {
 		return err
 	}
+	return nil
+}
+
+func (r *hotelRepository) UpdateHotelGenDetails(ctx context.Context, updates *hotel_contracts.HotelMainGenDetailsInput) error {
+	// We use a map to ensure GORM updates all fields, even if they are 'false' or empty strings.
+	updateData := map[string]interface{}{
+		"name":          updates.Name,
+		"is_configured": updates.IsConfigured,
+		"updated_at":    time.Now(),
+	}
+
+	result := r.db.WithContext(ctx).
+		Model(&hotel_models.Hotel{}).
+		Where("id = ?", updates.HotelID).
+		Updates(updateData)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("no hotel found with the given ID")
+	}
+
 	return nil
 }
 

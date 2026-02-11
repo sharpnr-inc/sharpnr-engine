@@ -1,21 +1,38 @@
 package hotel_contracts
 
-import "github.com/google/uuid"
+import (
+	hotel_constants "sharpnr-engine/modules/hospitality/hotel/constants"
 
-type CreateHotelFloorsInput struct {
-	OrgID      uuid.UUID
-	PropertyID uuid.UUID
-	HotelID    uuid.UUID
-	Floors     []FloorInput
-}
+	"github.com/google/uuid"
+)
 
 type FloorInput struct {
-	FloorName   string
-	FloorNumber int
+	HotelID       uuid.UUID
+	FloorName     string
+	FloorNumber   int
+	NumberOfRooms int
+}
+
+type RoomInput struct {
+	HotelID   uuid.UUID
+	FloorID   uuid.UUID
+	Name      string
+	Code      string
+	Status    hotel_constants.HotelRoomStatusType
+	BedType   string
+	MaxGuests int
 }
 
 type AddHotelGeneralInfoInput struct {
-	HotelID          string
+	HotelID          uuid.UUID
 	HotelName        string
 	HotelOpeningTime string
+	HotelClosingTime string
+	Is24X7           bool
+}
+
+type HotelMainGenDetailsInput struct {
+	HotelID      uuid.UUID
+	Name         string
+	IsConfigured bool
 }

@@ -106,3 +106,23 @@ type RestaurantLayoutSetup_Req_dto struct {
 }
 
 // --------------------------------------------------------------------------------------//
+
+type ConfigureHotel_Request_dto struct {
+	PropertyID  uuid.UUID                                     `json:"propertyId"`
+	HotelID     uuid.UUID                                     `json:"hotelId"`
+	GenDetails  ConfigurationPropertyHotel_GenDetails_Req_dto `json:"genDetails"`
+	HotelLayout []HotelLayoutSetup_Req_dto                    `json:"hotelLayout"`
+}
+
+type ConfigurationPropertyHotel_GenDetails_Req_dto struct {
+	HotelDisplayName string `json:"hotelDisplayName"`
+	Is24X7           bool   `json:"is24x7"`
+	OpeningTime      string `json:"openingTime"`
+	ClosingTime      string `json:"closingTime"`
+}
+
+type HotelLayoutSetup_Req_dto struct {
+	FloorNumber   int    `json:"floorNumber"`
+	FloorName     string `json:"floorName"`
+	NumberOfRooms int    `json:"numberOfRooms"`
+}
