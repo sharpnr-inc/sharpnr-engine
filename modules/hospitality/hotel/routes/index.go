@@ -11,7 +11,8 @@ func RegisterHotelRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) {
 	hotelService := modules.Hospitality().HotelService()
 	hc := hotelcontrollers.NewHotelController(hotelService)
 
-	hr := v1.Group("/hotel")
+	hr := v1.Group("/hotel/:hotelID/")
 
-	hr.GET("/", hc.GetOverview)
+	hr.GET("/layout", hc.GetHotelLayout)
+	hr.GET("")
 }

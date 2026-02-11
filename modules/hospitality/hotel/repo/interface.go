@@ -28,7 +28,7 @@ type HotelRepositoryInterface interface {
 
 	CreateFloor(ctx context.Context, floor *hotel_models.HotelFloor) error
 	GetFloorByID(ctx context.Context, id string) (*hotel_models.HotelFloor, error)
-	GetFloorsByHotel(ctx context.Context, hotelID uuid.UUID) ([]hotel_models.HotelFloor, error)
+	GetFloorsByHotelID(ctx context.Context, hotelID uuid.UUID) ([]*hotel_models.HotelFloor, error)
 	UpdateFloor(ctx context.Context, floor *hotel_models.HotelFloor) error
 	DeleteFloor(ctx context.Context, floorID uuid.UUID) error
 
