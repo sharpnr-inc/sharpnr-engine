@@ -9,8 +9,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// TODO --> This is used inside the function where we fetch the hotel for the Property please
-// ?? Please Fix the this
 func (r *hotelService) GetHotelDetails(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (*hotel_contracts.HotelsReader, error) {
 	hotel, err := r.hotelRepo.GetHotelsByPropertyID(ctx, propertyID)
 	if err != nil {
@@ -33,6 +31,7 @@ func (r *hotelService) GetHotelDetails(ctx context.Context, orgID uuid.UUID, pro
 }
 
 func (h *hotelService) SetupDefaultHotel(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (uuid.UUID, error) {
+
 	defHotel := &hotel_models.Hotel{
 		ID:             uuid.New(),
 		OrganizationID: orgID,

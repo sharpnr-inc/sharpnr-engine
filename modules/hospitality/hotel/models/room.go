@@ -7,9 +7,8 @@ import (
 )
 
 type HotelFloor struct {
-	ID      uuid.UUID `gorm:"type:uuid;primaryKey"`
-	HotelID uuid.UUID `gorm:"type:uuid;not null"`
-
+	ID          uuid.UUID `gorm:"type:uuid;primaryKey"`
+	HotelID     uuid.UUID `gorm:"type:uuid;not null"`
 	Name        string
 	FloorNumber int `gorm:"not null"`
 	CreatedAt   time.Time
@@ -22,9 +21,10 @@ func (HotelFloor) TableName() string {
 type HotelRoom struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	HotelID         uuid.UUID `gorm:"type:uuid;not null;index"`
-	HotelFloorID    uuid.UUID `gorm:"type:uuid;not null;index"`
-	HotelRoomTypeID uuid.UUID
+	HotelID      uuid.UUID `gorm:"type:uuid;not null;index"`
+	HotelFloorID uuid.UUID `gorm:"type:uuid;not null;index"`
+	// This can be null
+	HotelRoomTypeID *uuid.UUID
 
 	RoomCode string `gorm:"size:30;"`
 	Name     string `gorm:"size:100"`
