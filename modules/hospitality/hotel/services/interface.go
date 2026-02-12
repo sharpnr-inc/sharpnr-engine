@@ -10,22 +10,11 @@ import (
 
 type HotelServiceInterface interface {
 	SetupDefaultHotel(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (uuid.UUID, error)
-
-	SearchGuests(
-		ctx context.Context,
-		orgId uuid.UUID,
-		qry string,
-	) (
-		[]hoteldtos.HotelGuestResponseDTO,
-		error)
-
-	CreateGuestInHotel(
-		ctx context.Context,
-		orgId uuid.UUID,
-		req hoteldtos.CreateHotelGuestsRequest,
-	) error
-
-	AddPaymentForBooking(ctx context.Context, orgID uuid.UUID, req hoteldtos.AddPaymentsForBookingRequest_dto) error
-
 	GetHotelDetails(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (*hotel_contracts.HotelsReader, error)
+	GetHotelLayout(ctx context.Context, hotelID uuid.UUID) (res *hoteldtos.HotelLayoutResponseDTO, err error)
+
+	SetupFloors(ctx context.Context, req *hotel_contracts.FloorInput) (floorID uuid.UUID, err error)
+	SetUpLayout(ctx context.Context, layout []hotel_contracts.FloorInput) error
+	SetupRoom(ctx context.Context, req *hotel_contracts.RoomInput) (hotelRoomID uuid.UUID, err error)
+	AddHotelGenDetails(ctx context.Context, input *hotel_contracts.AddHotelGeneralInfoInput) error
 }

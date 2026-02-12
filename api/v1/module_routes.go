@@ -2,7 +2,7 @@ package v1
 
 import (
 	"sharpnr-engine/app"
-	accounting_engine_routes "sharpnr-engine/sharp_services/accounting_engine/routes"
+	accounting_engine_routes "sharpnr-engine/service_engines/accounting_engine/routes"
 
 	hospitality_routes "sharpnr-engine/modules/hospitality/routes"
 	hr_routes "sharpnr-engine/modules/hr/routes"

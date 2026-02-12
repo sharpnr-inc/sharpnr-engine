@@ -5,7 +5,6 @@ import (
 	"sharpnr-engine/cookieManager"
 	sharpnr_identity_auth_controllers "sharpnr-engine/core/sharpnr_identity/controllers"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
-	"sharpnr-engine/sere"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -40,8 +39,7 @@ func SharpnrIdentityAuthWebRoutes(
 func SharpnrIdentityAuthMobileRoutes(
 	mobileV1 *gin.RouterGroup,
 	db *gorm.DB,
-	redis *redis.Client,
-	sere *sere.SERE) {
+	redis *redis.Client) {
 
 	idMobileRoutes := mobileV1.Group("/identity/mobile")
 	{

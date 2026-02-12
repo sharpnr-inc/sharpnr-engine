@@ -1,7 +1,7 @@
 package database
 
 import (
-	accounting_models "sharpnr-engine/sharp_services/accounting_engine/models"
+	accounting_models "sharpnr-engine/service_engines/accounting_engine/models"
 
 	"gorm.io/gorm"
 )

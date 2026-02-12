@@ -2,14 +2,14 @@ package app
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
-	orchestrator_service "sharpnr-engine/core/orchestrator/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
 	employee_services "sharpnr-engine/modules/hr/employees/services"
-	accounting_service "sharpnr-engine/sharp_services/accounting_engine/services"
+	orchestrator_service "sharpnr-engine/orchestrator/service"
+	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
 )
 
 type ModulesProvider interface {

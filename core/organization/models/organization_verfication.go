@@ -14,8 +14,6 @@ type OrganizationVerification struct {
 	EmailVerified    bool `gorm:"default:false"`
 	MobileVerified   bool `gorm:"default:false"`
 	PhysicalVerified bool `gorm:"default:false"`
-	GSTVerified      bool `gorm:"default:false"`
-	CINVerified      bool `gorm:"default:false"`
 
 	VerifiedAt *time.Time
 	VerifiedBy *uuid.UUID // admin / system
