@@ -15,10 +15,6 @@ func bootstrapEmployee(db *gorm.DB) employee_services.EmployeeServiceInterface {
 	empProfileRepo := employee_repo.NewEmployeeProfileRepo(db)
 	empEmploymentRepo := employee_repo.NewEmployeeEmploymentRepo(db)
 
-	policyRepo := employee_repo.NewEmployeePolicyRepo(db)
-	policyRuleRepo := employee_repo.NewEmployeePolicyRuleRepository(db)
-	privilegePolicyRepo := employee_repo.NewEmployeePrivilegePolicyRepository(db)
-
 	return employee_services.NewEmployeeService(
 		empIdentityRepo,
 		empAuthRepo,
@@ -26,9 +22,6 @@ func bootstrapEmployee(db *gorm.DB) employee_services.EmployeeServiceInterface {
 		empVerificationRepo,
 		empProfileRepo,
 		empEmploymentRepo,
-		policyRepo,
-		policyRuleRepo,
-		privilegePolicyRepo,
 	)
 
 }

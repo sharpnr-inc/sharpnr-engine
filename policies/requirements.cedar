@@ -34,3 +34,10 @@ forbid (
   resource
 )
 when { context.table_number == "0" };
+
+permit (
+  principal in Hospitality::Role::"super_admin_role_id",
+  action, // Empty action means "Any Action"
+  resource
+)
+when { resource in Hospitality::Organization::"org_uuid" };

@@ -1,25 +1,44 @@
-namespace  Hospitality {
-  entity Bar {
-      
-  };
-
-  entity Hotel {  
-      
-  };
+namespace Sharpnr {
+  // --- The Core Hierarchy ---
+  entity Organization {};
+  entity LegalEntity { parent: Organization };
   
-  entity Restaurant {
-
+  // A Property belongs to a LegalEntity (e.g., "City Hospital" or "Grand Hotel")
+  entity Property { 
+      parent: LegalEntity,
+      domain: String // "Hospitality" or "Medical"
   };
 
-  entity User in [Role] {};
+  // --- Identity ---
   entity Role {};
+  entity Employee in [Role, LegalEntity, Organization] {};
 
-  action CreateBooking appliesTo {
-      principal: [User, Role],
-      resource: Hotel,
-      context: {
-          stay_duration_days: Long,
-          guest_count: Long
-      }
+  // --- Vertical Resources (Industry Specific) ---
+  entity Hotel { parent: Property };
+  entity Clinic { parent: Property };
+  entity Pharmacy { parent: Property };
+
+  // --- Horizontal Resources (Common Base Services) ---
+  entity Bill { parent: LegalEntity };
+  entity EmployeeRecord { parent: Organization };
+  entity Campaign { parent: Property };
+
+  // --- Example Actions ---
+  // A Horizontal Action (Common)
+  action ViewFinancials appliesTo {
+      principal: [Employee, Role],
+      resource: [LegalEntity, Bill]
+  };
+
+  // A Vertical Action (Hospitality Only)
+  action CheckInGuest appliesTo {
+      principal: [Employee, Role],
+      resource: Hotel
+  };
+
+  // A Vertical Action (Medical Only)
+  action PrescribeMedication appliesTo {
+      principal: [Employee, Role],
+      resource: Clinic
   };
 }
