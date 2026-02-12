@@ -1,4 +1,4 @@
-package sharpnr_identity_auth
+package sharpnrIdentity_routes
 
 import (
 	"sharpnr-engine/app"
@@ -7,12 +7,10 @@ import (
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 
 	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis/v9"
-	"gorm.io/gorm"
 )
 
-func SharpnrIdentityAuthWebRoutes(
-	webV1 *gin.RouterGroup,
+func RegisterSharpnrIdentityWebRoutes(
+	routeGroup *gin.RouterGroup,
 	cookie cookieManager.Manager,
 	jwtMgr jwt_manager.Manager,
 	modules app.ModulesProvider,
@@ -25,29 +23,11 @@ func SharpnrIdentityAuthWebRoutes(
 		sharpIdService,
 	)
 
-	idWebRoutes := webV1.Group("/identity/web")
+	idWebRoutes := routeGroup.Group("/identity/web")
 	{
 		idWebRoutes.POST("/login", sharpIdController.WebLogin)
 		idWebRoutes.POST("/refresh")
 		idWebRoutes.GET("/myprofile")
-		idWebRoutes.POST("/renderer")
 		idWebRoutes.POST("/update")
 	}
-
-}
-
-func SharpnrIdentityAuthMobileRoutes(
-	mobileV1 *gin.RouterGroup,
-	db *gorm.DB,
-	redis *redis.Client) {
-
-	idMobileRoutes := mobileV1.Group("/identity/mobile")
-	{
-		idMobileRoutes.POST("/login")
-		idMobileRoutes.POST("/refresh")
-		idMobileRoutes.GET("/myprofile")
-		idMobileRoutes.POST("/renderer")
-		idMobileRoutes.POST("/update")
-	}
-
 }
