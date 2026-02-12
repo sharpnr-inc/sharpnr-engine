@@ -8,9 +8,6 @@ import (
 )
 
 type EmployeeServiceInterface interface {
-
-	// Creates the Default Super Admin and
-	// This Takes the
 	CreateDefaultSuperAdmin(
 		ctx context.Context,
 		orgId uuid.UUID,
@@ -27,4 +24,6 @@ type EmployeeServiceInterface interface {
 	// Verify user
 
 	AuthenticateEmployee(ctx context.Context, email string, pass string) (*employee_contracts.EmployeeReader, error)
+
+	GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*employee_contracts.EmployeeProfileOutput, error)
 }

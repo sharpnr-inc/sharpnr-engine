@@ -27,7 +27,21 @@ func RegisterSharpnrIdentityWebRoutes(
 	{
 		idWebRoutes.POST("/login", sharpIdController.WebLogin)
 		idWebRoutes.POST("/refresh")
-		idWebRoutes.GET("/myprofile")
-		idWebRoutes.POST("/update")
+	}
+}
+
+func RegisterSharpnrIdentityProtectedWebRoutes(
+	routeGroup *gin.RouterGroup,
+	cookie cookieManager.Manager,
+	jwtMgr jwt_manager.Manager,
+	modules app.ModulesProvider,
+) {
+	sharpIdService := modules.SharpAuthService()
+	sharpIdController := sharpnr_identity_auth_controllers.NewSharpnrIdentityAuthController(cookie, jwtMgr, sharpIdService)
+
+	idProtectedWebRoutes := routeGroup.Group("/identity/web")
+	{
+		idProtectedWebRoutes.GET("/profile", sharpIdController.GetMyProfile)
+		idProtectedWebRoutes.POST("/update")
 	}
 }
