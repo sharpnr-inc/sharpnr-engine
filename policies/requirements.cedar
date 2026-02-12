@@ -1,28 +1,36 @@
-// 1. Master Key: SuperAdmin can do anything
-permit(
-    principal in Role::"SuperAdmin",
-    action,
-    resource
+// 1. General permission for Receptionists to handle Hotel bookings
+permit (
+  principal in Hospitality::Role::"Receptionist",
+  action == Hospitality::Action::"CreateBooking",
+  resource is Hospitality::Hotel
+)
+when { context.guest_count <= 5 };
+
+// 2. Allow Waiters to start dining sessions in the Restaurant
+permit (
+  principal in Hospitality::Role::"Waiter",
+  action == Hospitality::Action::"StartDiningSession",
+  resource is Hospitality::Restaurant
 );
 
-// 2. Kitchen Template: Chef Role
-permit(
-    principal in Role::"Chef",
-    action in [Action::"Cook", Action::"ManageKitchen"],
-    resource is Kitchen
+// 3. Manager Override: Can create large bookings (more than 5 guests)
+permit (
+  principal in Hospitality::Role::"Manager",
+  action == Hospitality::Action::"CreateBooking",
+  resource is Hospitality::Hotel
 );
 
-// 3. Bar Template: Bartender Role
-permit(
-    principal in Role::"Bartender",
-    action in [Action::"Pour", Action::"OpenTab"],
-    resource is Bar
+// 4. Specific restriction: Only Managers can Void Drinks at the Bar
+permit (
+  principal in Hospitality::Role::"Manager",
+  action == Hospitality::Action::"VoidDrink",
+  resource is Hospitality::Bar
 );
 
-// 4. Custom Policy Template: For "Special" permissions assigned to specific employees
-@id("custom-link")
-permit(
-    principal == ?principal,
-    action == ?action,
-    resource == ?resource
-);
+// 5. Safety Rule: Forbid anyone from starting a session if the table is "0" (invalid)
+forbid (
+  principal,
+  action == Hospitality::Action::"StartDiningSession",
+  resource
+)
+when { context.table_number == "0" };
