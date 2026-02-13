@@ -8,14 +8,10 @@ import (
 
 type SharpIamPolicies struct {
 	ID             uuid.UUID `gorm:"type:uuid;primaryKey;"`
-	OrganizationID uuid.UUID `gorm:"index;not null"`
-	Domain         string    `gorm:"size:50"`                 // Hospitality, Medical, etc.
-	PrincipalID    string    `gorm:"size:100;index;not null"` // EmployeeID, RoleID, etc. depending on PrincipalType
-	ResourceType   string    `gorm:"size:50;index;not null"`
-	ResourceID     string    `gorm:"size:100;index;not null"`
-	ScopeID        string    `gorm:"size:100;index"` // For Property or LegalEntity level scoping
+	OrganizationID uuid.UUID `gorm:"index;not null"`          // this is the tenant/organization that the policy belongs to
+	SharpIamRoleID         uuid.UUID `gorm:"index;not null"` // EmployeeID, RoleID, etc.
 	CedarPolicy    string    `gorm:"type:text;not null"`
-	UIMetadata     []byte    `gorm:"type:jsonb"` // To remember checkbox states
+	UIMetadata     []byte    `gorm:"type:jsonb"` // To remember checkbox states , this is optional and can be null
 	IsEnabled      bool      `gorm:"default:true"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time

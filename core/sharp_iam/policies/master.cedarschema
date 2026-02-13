@@ -1,6 +1,0 @@
-namespace Org{
-    entity Employees {};
-    entity LegalEntity{};
-    entity Role {};
-    entity Domain {};
-}
