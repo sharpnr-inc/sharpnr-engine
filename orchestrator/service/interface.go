@@ -30,7 +30,7 @@ type OrchestratorServiceInterface interface {
 		orgID uuid.UUID,
 		propertyID uuid.UUID,
 		req *orchestrator_dtos.PropertyModuleConfigurationDTO,
-	) error
+	) (*orchestrator_dtos.ModuleOperationResult, error)
 	ConfigureRestaurant(
 		ctx context.Context,
 		orgID uuid.UUID,

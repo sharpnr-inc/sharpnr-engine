@@ -126,3 +126,9 @@ type HotelLayoutSetup_Req_dto struct {
 	FloorName     string `json:"floorName"`
 	NumberOfRooms int    `json:"numberOfRooms"`
 }
+
+type ModuleOperationResult struct {
+	Created []string `json:"created"`
+	Skipped []string `json:"skipped"`
+	Message string   `json:"message"`
+}

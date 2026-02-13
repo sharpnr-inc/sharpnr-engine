@@ -180,12 +180,18 @@ func (c *OrchestratorController) AddModulesInProperty(ctx *gin.Context) {
 		return
 	}
 
-	if err := c.orchestService.AddModulesInProperty(ctx.Request.Context(), orgID, pId, req); err != nil {
+	// 1. Capture both the result and the error
+	result, err := c.orchestService.AddModulesInProperty(ctx.Request.Context(), orgID, pId, req)
+
+	if err != nil {
+		// Handle specific errors (like the "Only one module" constraint)
 		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
 		return
 	}
 
-	utils.Success(ctx, 200, "Modules added successfully")
+	// 2. Pass the result object back in the success response
+	// This gives the frontend the 'Created', 'Skipped', and 'Message' fields
+	utils.Success(ctx, http.StatusOK, "Result", result)
 
 }
 

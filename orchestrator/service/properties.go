@@ -237,90 +237,111 @@ func (s *orchestratorService) AddModulesInProperty(
 	orgID uuid.UUID,
 	propertyID uuid.UUID,
 	req *orchestrator_dtos.PropertyModuleConfigurationDTO,
-) error {
+) (*orchestrator_dtos.ModuleOperationResult, error) { // Changed signature
 
-	// *Step One we have to vErify if user have the domain configured or not
-	// if they have then they must have respective modules
-	// for example if they have the Hospitality then the modules must be
-	// "HOTEL","BAR","RESTAURANT"
-	// then we create the Switch case if Restaurant then we create Restaurant ...
+	result := &orchestrator_dtos.ModuleOperationResult{
+		Created: []string{},
+		Skipped: []string{},
+	}
 
-	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
-
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
+		// 1. Property Validation
 		prt, err := s.orgPropertyService.GetPropertiesOfOrg(txCtx, orgID)
 		if err != nil {
 			return err
 		}
 
 		var property *org_property_contracts.PropertiesReader
-
 		for i := range prt.Properties {
 			if prt.Properties[i].ID == propertyID {
 				property = &prt.Properties[i]
 				break
 			}
 		}
-
 		if property == nil {
 			return errors.New("property not found")
 		}
 
+		// 2. Identification Phase
+		var modulesToCreate []string
 		if req.Modules != nil {
 			for _, module := range *req.Modules {
+				exists := false
 				switch module {
 				case "HOTEL":
-					_, err := s.hospitalityDomainSvc.
-						HotelService().
-						SetupDefaultHotel(txCtx, orgID, propertyID)
-					if err != nil {
-						return err
+					h, _ := s.hospitalityDomainSvc.HotelService().GetHotelByPropertyID(ctx, propertyID)
+					if h != nil && len(h.Hotels) > 0 {
+						exists = true
 					}
-
 				case "BAR":
-					_, err := s.hospitalityDomainSvc.
-						BarService().
-						SetupDefaultBar(txCtx, orgID, propertyID)
-					if err != nil {
-						return err
+					b, _ := s.hospitalityDomainSvc.BarService().GetBarDetailsOfProperty(ctx, orgID, propertyID)
+					if len(b) > 0 {
+						exists = true
 					}
-
 				case "RESTAURANT":
-					_, err := s.hospitalityDomainSvc.
-						RestaurantService().
-						SetupDefaultRestaurant(txCtx, orgID, propertyID)
-					if err != nil {
-						return err
+					r, _ := s.hospitalityDomainSvc.RestaurantService().GetAllRestaurantOfProperty(ctx, propertyID)
+					if len(r) > 0 {
+						exists = true
 					}
-
-				default:
-					return fmt.Errorf("unsupported module: %s", module)
-
 				}
 
+				if exists {
+					result.Skipped = append(result.Skipped, module)
+				} else {
+					modulesToCreate = append(modulesToCreate, module)
+				}
 			}
 		}
 
+		// 3. Constraint Check
+		if len(modulesToCreate) > 1 {
+			return fmt.Errorf("only one new module type is allowed at a time; requested: %v", modulesToCreate)
+		}
+
+		// 4. Execution Phase
+		if len(modulesToCreate) == 1 {
+			target := modulesToCreate[0]
+			var setupErr error
+			switch target {
+			case "HOTEL":
+				_, setupErr = s.hospitalityDomainSvc.HotelService().SetupDefaultHotel(txCtx, orgID, propertyID)
+			case "BAR":
+				_, setupErr = s.hospitalityDomainSvc.BarService().SetupDefaultBar(txCtx, orgID, propertyID)
+			case "RESTAURANT":
+				_, setupErr = s.hospitalityDomainSvc.RestaurantService().SetupDefaultRestaurant(txCtx, orgID, propertyID)
+			}
+
+			if setupErr != nil {
+				return setupErr
+			}
+			result.Created = append(result.Created, target)
+		}
+
+		// 5. Infrastructure (Kitchen)
 		if req.Infrastructure != nil {
 			for _, infra := range *req.Infrastructure {
-
-				switch infra.Infra_Name {
-				case "KITCHEN":
-					if err := s.hospitalityDomainSvc.
-						KitchenService().
-						CreateDefaultKitchen(txCtx, orgID, propertyID, "DEFAULT"); err != nil {
+				if infra.Infra_Name == "KITCHEN" {
+					if err := s.hospitalityDomainSvc.KitchenService().CreateDefaultKitchen(txCtx, orgID, propertyID, "DEFAULT"); err != nil {
 						return err
 					}
-				default:
-					return fmt.Errorf("unsupported module: %s", infra.Infra_Name)
+					result.Created = append(result.Created, "KITCHEN")
 				}
 			}
 		}
+
+		// 6. Build final message
+		result.Message = fmt.Sprintf("%v created. %v already existed and were skipped.", result.Created, result.Skipped)
 
 		return nil
 	})
 
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 // =---------------------------------------------------------------//
