@@ -2,10 +2,10 @@ package policies
 
 import "embed"
 
-//go:embed requirements.cedar
+//go:embed basepolicy.cedar
 var InternalFS embed.FS
 
 // GetBasePolicy reads the file from within this package
 func GetBasePolicy() ([]byte, error) {
-	return InternalFS.ReadFile("requirements.cedar")
+	return InternalFS.ReadFile("basepolicy.cedar")
 }

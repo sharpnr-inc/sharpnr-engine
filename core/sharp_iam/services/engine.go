@@ -43,6 +43,8 @@ func (e *SharpIAM) IsAuthorized(
 	// 2️⃣ Build Entities
 	entities := cedar.EntityMap{}
 
+	cedar.NewPolicySet()
+
 	// ---------- Principal ----------
 	pUID := cedar.NewEntityUID(
 		cedar.EntityType(fmt.Sprintf("%s::Employee", Namespace)),
