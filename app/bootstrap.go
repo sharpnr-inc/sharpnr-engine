@@ -17,7 +17,8 @@ func BootstrapModules(
 	seroEngine *sero.SEROEngine,
 ) *AppModules {
 
-	organizationService := bootstrapOrganization(db, redis, mailerEngine)
+	iAM := bootstrapSharIAM(db)
+	organizationService := bootstrapOrganization(db, redis, mailerEngine, iAM)
 	orgPropertyService := bootstrapOrgProperty(db)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db)
 
