@@ -15,6 +15,8 @@ type HospitalityOrder struct {
 
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
 	PropertyID     uuid.UUID `gorm:"type:uuid;not null;index"`
+	// OwnnersID is the ID of the Restaurant/Hotel/Bar that owns this order. This allows us to easily query all orders for a specific owner.
+	OwnersID uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	Module hospitality_utilities.HospitalityModulesType `gorm:"type:varchar(50);index"` // HOTEL, RESTAURANT, BAR
 

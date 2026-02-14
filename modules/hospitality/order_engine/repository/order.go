@@ -39,6 +39,24 @@ func (r *orderEngineRepo) GetOrderByID(ctx context.Context, orderID uuid.UUID) (
 	return &order, nil
 }
 
+func (r *orderEngineRepo) GetOrdersByOwnersID(ctx context.Context, ownersID uuid.UUID) ([]*hospitality_order_engine_models.HospitalityOrder, error) {
+	var orders []*hospitality_order_engine_models.HospitalityOrder
+
+	// We filter by owners_id and usually want to see the most recent orders first.
+	// We also Preload "OrderItems" so the UI has all the data it needs immediately.
+	err := r.db.WithContext(ctx).
+		Preload("OrderItems").
+		Where("owners_id = ?", ownersID).
+		Order("created_at DESC").
+		Find(&orders).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return orders, nil
+}
+
 func (r *orderEngineRepo) GetOrdersByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]*hospitality_order_engine_models.HospitalityOrder, error) {
 	var orders []*hospitality_order_engine_models.HospitalityOrder
 

@@ -30,8 +30,7 @@ type KitchenTicket struct {
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null"`
 	PropertyID     uuid.UUID
 
-	KitchenID      uuid.UUID `gorm:"type:uuid;not null"`
-	ServicePointID uuid.UUID `gorm:"type:uuid;index;not null"`
+	KitchenID uuid.UUID `gorm:"type:uuid;not null"`
 
 	Status   string `gorm:"size:20;default:'PENDING'"`
 	TicketNo string `gorm:"size:50;uniqueIndex"`
