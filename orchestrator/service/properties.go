@@ -453,6 +453,36 @@ func (c *orchestratorService) ConfigureHotel(
 
 }
 
-func (s *orchestratorService) GetPropertyInfra(ctx context.Context, proertyID uuid.UUID, orgID uuid.UUID) (string, error){
-	return "", nil
+func (s *orchestratorService) GetPropertyInfra(
+	ctx context.Context,
+	propertyID uuid.UUID,
+	orgID uuid.UUID, infraType *string) (*orchestrator_dtos.ListAllInfraOfProperty_Res_dto, error) {
+
+	_, err := s.orgPropertyService.GetPropertyDetailsByID(ctx, orgID, propertyID)
+	if err != nil {
+		return nil, err
+	}
+
+	// For Now we have only Kitchen as Infra, so directly calling that. In future, we can use infraType to decide which infra details to fetch
+	kitchens, err := s.hospitalityDomainSvc.KitchenService().GetKitchensByPropertyID(ctx, propertyID)
+	if err != nil {
+		return nil, err
+	}
+
+	results := make([]*orchestrator_dtos.PropertyInfra_res_dto, 0, len(kitchens))
+
+	for i, inf := range kitchens {
+		results[i] = &orchestrator_dtos.PropertyInfra_res_dto{
+			ID:         inf.ID,
+			Name:       inf.Name,
+			Status:     inf.Status,
+			Infra_Type: inf.Name,
+		}
+	}
+
+	return &orchestrator_dtos.ListAllInfraOfProperty_Res_dto{
+		PropertyID:      propertyID,
+		Infrastructures: results,
+	}, nil
+
 }

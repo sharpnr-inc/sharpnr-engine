@@ -10,13 +10,17 @@ import (
 type OrchestratorServiceInterface interface {
 	GetOrganizationStatus(ctx context.Context, orgID uuid.UUID) (bool, error)
 
-	// SetupWiz
+	/* -------------------------------------------------------------------------- */
+	/*                       Setupwizard related operations                       */
+	/* -------------------------------------------------------------------------- */
 	AddOrganizationHQAddress(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupOrganizationHQAddressReqDTO) error
 	StepTwoProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupOrgPropertyReqDTO) error
 	StepThreeLegalEntity(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupLegalEntityReqDTO) error
 	SetUpWizProgress(ctx context.Context, orgID uuid.UUID) (orchestrator_dtos.SetupProgressResponseDTO, error)
 
-	// Property
+	/* -------------------------------------------------------------------------- */
+	/*                         Property related operations                        */
+	/* -------------------------------------------------------------------------- */
 	GetAllPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
 	ConfigurePropertyToDomain(
 		ctx context.Context,
@@ -49,7 +53,15 @@ type OrchestratorServiceInterface interface {
 		empID uuid.UUID,
 	) (*orchestrator_dtos.PropertyOfResturants, error)
 
-	//---------------Legal-Entity----------------------------------//
+	GetPropertyInfra(
+		ctx context.Context,
+		propertyID uuid.UUID,
+		orgID uuid.UUID, infraType *string,
+	) (*orchestrator_dtos.ListAllInfraOfProperty_Res_dto, error)
+
+	/* -------------------------------------------------------------------------- */
+	/*                           Legal Entity Operations                          */
+	/* -------------------------------------------------------------------------- */
 
 	CreateLegalEntity(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.AddLegalEntity_REQ_DTO) error
 	UpdateLegalEntity()

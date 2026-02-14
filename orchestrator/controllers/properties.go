@@ -263,3 +263,25 @@ func (c *OrchestratorController) GetPropertyInfra(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusOK, "Property Infra fetched successfully")
 
 }
+
+func (c *OrchestratorController) GetPropertysInfra(ctx *gin.Context) {
+
+	orgID, _, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return // Response already sent by helper
+	}
+
+	// 2. Param Parsing using your helper
+	pId, err := c.getPropertyFromParams(ctx)
+	if err != nil {
+		return // getPropertyFromParams already sent the 400 Failure response
+	}
+
+	res, err := c.orchestService.GetPropertyInfra(ctx.Request.Context(), orgID, pId, nil)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Property Infra fetched successfully", res)
+}
