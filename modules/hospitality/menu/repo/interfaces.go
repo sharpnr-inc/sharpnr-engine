@@ -45,6 +45,9 @@ type MenuRepositoryInterface interface {
 	GetMenuItemByID(ctx context.Context, id uuid.UUID) (*hospitalityMenu_models.MenuItem, error)
 	UpdateMenuItem(item *hospitalityMenu_models.MenuItem) error
 	DeleteMenuItem(id uuid.UUID) error
+	CreateEntryInKitchenMenuRegister(ctx context.Context, entry *hospitalityMenu_models.MenuItemKitchenRegister) error
+	GetKitchenMenuRegisterByMenuItemID(ctx context.Context, menuItemID uuid.UUID, kitchenID uuid.UUID) (*hospitalityMenu_models.MenuItemKitchenRegister, error)
+	GetMenuItemKitchen(ctx context.Context, menuItemID uuid.UUID) (*hospitalityMenu_models.MenuItemKitchenRegister, error)
 
 	// -------------------------------
 	// 🧩 VARIANTS

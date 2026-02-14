@@ -58,6 +58,7 @@ func (s *menuService) GetMenu(ctx context.Context, menuID uuid.UUID) (*hospitali
 			}
 
 			for _, item := range items {
+				kitchenReg, err := s.menuRepo.GetMenuItemKitchen(ctx, item.ID)
 				itemOut := hospitality_menu_contracts.MenuItemOutput{
 					ID:                item.ID,
 					MenuID:            item.MenuGroupID,
@@ -66,6 +67,8 @@ func (s *menuService) GetMenu(ctx context.Context, menuID uuid.UUID) (*hospitali
 					Description:       item.Description,
 					Unit:              item.Unit,
 					BasePrice:         item.BasePrice,
+					DietaryType:       item.DietaryType,
+					ServedBy:          kitchenReg.KitchenID, // Default to Nil, will update if kitchenReg exists
 					VariantGroups:     []hospitality_menu_contracts.VariantGroupOutput{},
 					AddOns:            []hospitality_menu_contracts.AddOnOutput{},
 				}

@@ -23,4 +23,8 @@ func RegisterMenuRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) {
 	mr.POST("/add-variant-group", mc.AddVariantsGroup)
 	mr.POST("/add-variant", mc.AddVariants)
 	mr.POST("/add-addOns", mc.AddAddons)
+	mr.POST("/attchKitchen/menu", mc.SetKitchenToWholeMenu)
+	// mr.POST("/attchKitchenToCategory", mc.SetKitchenToCategory)
+	// mr.POST("/attchKitchenToSubCategory", mc.SetKitchenToSubCategory)
+	// mr.POST("/attchKitchenToMenuItem", mc.SetKitchenToMenuItem)
 }

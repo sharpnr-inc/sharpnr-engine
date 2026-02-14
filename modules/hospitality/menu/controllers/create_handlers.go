@@ -3,7 +3,6 @@ package menu_controllers
 import (
 	"errors"
 	"net/http"
-	webMiddleware "sharpnr-engine/middlewares/web"
 	hospitality_menu_contracts "sharpnr-engine/modules/hospitality/menu/contracts"
 	"sharpnr-engine/shared/utils"
 
@@ -40,20 +39,8 @@ func (c *menuController) AddMenu(ctx *gin.Context) {
 
 func (c *menuController) AddCategoryInMenu(ctx *gin.Context) {
 
-	if _, exist := ctx.Get(webMiddleware.UserIDContextKey); !exist {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
-	}
-
-	// 2. Org context check
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
-		return
-	}
-
-	_, ok := orgUUIDRaw.(uuid.UUID)
+	_, ok := c.validateContext(ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
 		return
 	}
 
@@ -208,6 +195,32 @@ func (c *menuController) AddAddons(ctx *gin.Context) {
 	}
 
 	if _, err := c.menuService.AddAddOnInMenu(ctx, &req); err != nil {
+		utils.Failure(ctx, http.StatusBadGateway, utils.CodeInternalError, err)
+		return
+	}
+	utils.Success(ctx, http.StatusOK, "success")
+}
+
+func (c *menuController) SetKitchenToWholeMenu(ctx *gin.Context) {
+	_, ok := c.validateContext(ctx)
+	if !ok {
+		return
+	}
+
+	ownersIDRaw := ctx.Param("ownersID")
+	ownersID, err := uuid.Parse(ownersIDRaw)
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid ownersID format"))
+		return
+	}
+
+	var req hospitality_menu_contracts.SetKitchenToWholeMenuInput
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		return
+	}
+
+	if err := c.menuService.SetKitchenToWholeMenu(ctx, ownersID, &req); err != nil {
 		utils.Failure(ctx, http.StatusBadGateway, utils.CodeInternalError, err)
 		return
 	}
