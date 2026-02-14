@@ -49,3 +49,24 @@ func (c *orchestratorService) CreateLegalEntity(ctx context.Context, orgID uuid.
 func (c *orchestratorService) UpdateLegalEntity() {
 
 }
+
+func (c *orchestratorService) GetAllLegalEntity(ctx context.Context, orgID uuid.UUID) ([]*orchestrator_dtos.LegalEntity_Response_dto, error) {
+	les, err := c.legalEntityService.GetLegalEntityByOrgID(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+
+	results := make([]*orchestrator_dtos.LegalEntity_Response_dto, len(les))
+
+	for i, le := range les {
+
+		results[i] = &orchestrator_dtos.LegalEntity_Response_dto{
+			Name: le.Name,
+			ID:   le.LegalEntityID,
+			Type: le.EntityType,
+		}
+	}
+
+	return results, nil
+
+}

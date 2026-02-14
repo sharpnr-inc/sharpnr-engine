@@ -39,4 +39,16 @@ func (c *OrchestratorController) AddLegalEntity(ctx *gin.Context) {
 
 func (c *OrchestratorController) ListAllLegalEntity(ctx *gin.Context) {
 
+	orgID, _, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	res, err := c.orchestService.GetAllLegalEntity(ctx, orgID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Legal Entities retrieved successfully", res)
 }

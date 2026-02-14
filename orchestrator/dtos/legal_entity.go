@@ -1,5 +1,7 @@
 package orchestrator_dtos
 
+import "github.com/google/uuid"
+
 type AddLegalEntity_REQ_DTO struct {
 	Type         string  `json:"type"`
 	Name         string  `json:"name"`
@@ -11,4 +13,10 @@ type AddLegalEntity_REQ_DTO struct {
 	GST          *string `json:"gst_number,omitempty"`
 	CIN          *string `json:"cin_number,omitempty"`
 	PAN          *string `json:"pan_number,omitempty"`
+}
+
+type LegalEntity_Response_dto struct {
+	Name string
+	ID   uuid.UUID
+	Type string
 }

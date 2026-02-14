@@ -43,15 +43,25 @@ func (r *orgLegalEntity) CreateNewLegalEntity(ctx context.Context, input org_leg
 	return legalEntity.ID, nil
 }
 
-func (s *orgLegalEntity) GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) (*org_legal_entity_contracts.LegalEntityReader, error) {
-	legalEntities, err := s.legalEntityRepo.GetLegalEntityByID(ctx, orgID)
+func (s *orgLegalEntity) GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) ([]*org_legal_entity_contracts.LegalEntityReader, error) {
+	// 1. Fetch from Repo
+	legalEntities, err := s.legalEntityRepo.GetLegalEntityByOrgID(ctx, orgID)
 	if err != nil {
 		return nil, err
 	}
 
-	return &org_legal_entity_contracts.LegalEntityReader{
-		LegalEntityID: legalEntities.ID,
-		Name:          legalEntities.LegalName,
-		EntityType:    legalEntities.EntityType,
-	}, nil
+	// 2. Initialize the result slice with the correct length
+	results := make([]*org_legal_entity_contracts.LegalEntityReader, len(legalEntities))
+
+	// 3. Map each repo model to the contract reader
+	for i, le := range legalEntities {
+		results[i] = &org_legal_entity_contracts.LegalEntityReader{
+			LegalEntityID: le.ID,
+			Name:          le.LegalName,
+			EntityType:    le.EntityType,
+			// ... map other fields like GST, PAN, etc.
+		}
+	}
+
+	return results, nil
 }
