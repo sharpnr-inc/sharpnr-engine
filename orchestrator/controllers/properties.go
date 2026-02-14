@@ -63,13 +63,11 @@ func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 	if !ok {
 		return // Response already sent by helper
 	}
-	// 3. Param Parsing
-	propertyId := ctx.Param("propertyID")
-	pId, err := uuid.Parse(propertyId)
+
+	// 2. Param Parsing using your helper
+	pId, err := c.getPropertyFromParams(ctx)
 	if err != nil {
-		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid propertyID format"))
-		return
+		return // getPropertyFromParams already sent the 400 Failure response
 	}
 
 	// 4. Service Call
@@ -90,13 +88,10 @@ func (c *OrchestratorController) AddDomainInProperty(ctx *gin.Context) {
 	if !ok {
 		return // Response already sent by helper
 	}
-	// 3. Param Parsing
-	propertyId := ctx.Param("propertyID")
-	pId, err := uuid.Parse(propertyId)
+	// 2. Param Parsing using your helper
+	pId, err := c.getPropertyFromParams(ctx)
 	if err != nil {
-		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid propertyID format"))
-		return
+		return // getPropertyFromParams already sent the 400 Failure response
 	}
 
 	var req *orchestrator_dtos.AddDomainToPropertyReq_DTO
@@ -122,13 +117,10 @@ func (c *OrchestratorController) AddModulesInProperty(ctx *gin.Context) {
 	if !ok {
 		return // Response already sent by helper
 	}
-	// 3. Param Parsing
-	propertyId := ctx.Param("propertyID")
-	pId, err := uuid.Parse(propertyId)
+	// 2. Param Parsing using your helper
+	pId, err := c.getPropertyFromParams(ctx)
 	if err != nil {
-		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid propertyID format"))
-		return
+		return // getPropertyFromParams already sent the 400 Failure response
 	}
 
 	var req *orchestrator_dtos.PropertyModuleConfigurationDTO
@@ -247,4 +239,27 @@ func (c *OrchestratorController) ConfigurePropertyHotel(ctx *gin.Context) {
 	}
 
 	utils.Success(ctx, http.StatusOK, "Configuration Complete")
+}
+
+func (c *OrchestratorController) GetPropertyInfra(ctx *gin.Context) {
+	// 1. User Authentication Check
+	_, _, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return // Response already sent by helper
+	}
+
+	// 2. Param Parsing using your helper
+	_, err := c.getPropertyFromParams(ctx)
+	if err != nil {
+		return // getPropertyFromParams already sent the 400 Failure response
+	}
+
+	// res, err := c.orchestService.GetPropertyInfra(ctx.Request.Context(), orgID, pId)
+	// if err != nil {
+	// 	utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+	// 	return
+	// }
+
+	utils.Success(ctx, http.StatusOK, "Property Infra fetched successfully")
+
 }

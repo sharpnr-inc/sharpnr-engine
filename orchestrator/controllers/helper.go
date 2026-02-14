@@ -40,3 +40,17 @@ func (c *OrchestratorController) resolveRequestContexts(ctx *gin.Context) (uuid.
 
 	return orgID, empID, true
 }
+
+func (c *OrchestratorController) getPropertyFromParams(ctx *gin.Context) (uuid.UUID, error) {
+
+	// 3. Param Parsing
+	propertyId := ctx.Param("propertyID")
+	pId, err := uuid.Parse(propertyId)
+	if err != nil {
+		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid propertyID format"))
+		return uuid.Nil, err
+	}
+
+	return pId, err
+}
