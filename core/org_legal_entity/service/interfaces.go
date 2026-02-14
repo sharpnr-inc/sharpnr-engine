@@ -8,6 +8,6 @@ import (
 )
 
 type OrgLegalEntityServiceInterface interface {
-	CreateNewLegalEntity(ctx context.Context, input org_legal_entity_contracts.NewLegalEntityInput) error
+	CreateNewLegalEntity(ctx context.Context, input org_legal_entity_contracts.NewLegalEntityInput) (legalEntityID uuid.UUID, err error)
 	GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) (*org_legal_entity_contracts.LegalEntityReader, error)
 }

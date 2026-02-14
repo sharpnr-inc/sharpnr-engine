@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *orgLegalEntity) CreateNewLegalEntity(ctx context.Context, input org_legal_entity_contracts.NewLegalEntityInput) error {
+func (r *orgLegalEntity) CreateNewLegalEntity(ctx context.Context, input org_legal_entity_contracts.NewLegalEntityInput) (legalEntityID uuid.UUID, err error) {
 
 	legalEntity := &org_legal_entity_models.OrganizationLegalEntity{
 		ID:             uuid.New(),
@@ -22,7 +22,7 @@ func (r *orgLegalEntity) CreateNewLegalEntity(ctx context.Context, input org_leg
 	}
 
 	if err := r.legalEntityRepo.CreateLegalEntity(ctx, legalEntity); err != nil {
-		return err
+		return uuid.Nil, err
 	}
 
 	legEntAddr := &org_legal_entity_models.LegalEntityAddress{
@@ -38,11 +38,20 @@ func (r *orgLegalEntity) CreateNewLegalEntity(ctx context.Context, input org_leg
 	}
 
 	if err := r.legalEntityRepo.AddAddressInLegalEntity(ctx, legEntAddr); err != nil {
-		return err
+		return uuid.Nil, err
 	}
-	return nil
+	return legalEntity.ID, nil
 }
 
 func (s *orgLegalEntity) GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) (*org_legal_entity_contracts.LegalEntityReader, error) {
-	panic("unimplmented")
+	legalEntities, err := s.legalEntityRepo.GetLegalEntityByID(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &org_legal_entity_contracts.LegalEntityReader{
+		LegalEntityID: legalEntities.ID,
+		Name:          legalEntities.LegalName,
+		EntityType:    legalEntities.EntityType,
+	}, nil
 }

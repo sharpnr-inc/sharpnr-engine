@@ -452,3 +452,7 @@ func (c *orchestratorService) ConfigureHotel(
 	return nil
 
 }
+
+func (s *orchestratorService) GetPropertyInfra(ctx context.Context, proertyID uuid.UUID, orgID uuid.UUID) (string, error){
+	return "", nil
+}
