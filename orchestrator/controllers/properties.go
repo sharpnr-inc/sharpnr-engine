@@ -59,24 +59,10 @@ func (c *OrchestratorController) ListAllOrgProperty(ctx *gin.Context) {
 
 func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 	// 1. User Authentication Check
-	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
-		return
-	}
-
-	// 2. Org context check
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
-		return
-	}
-
-	orgID, ok := orgUUIDRaw.(uuid.UUID)
+	orgID, _, ok := c.resolveRequestContexts(ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
-		return
+		return // Response already sent by helper
 	}
-
 	// 3. Param Parsing
 	propertyId := ctx.Param("propertyID")
 	pId, err := uuid.Parse(propertyId)
@@ -100,25 +86,10 @@ func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 
 func (c *OrchestratorController) AddDomainInProperty(ctx *gin.Context) {
 
-	// 1. User Authentication Check
-	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
-		return
-	}
-
-	// 2. Org context check
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
-		return
-	}
-
-	orgID, ok := orgUUIDRaw.(uuid.UUID)
+	orgID, _, ok := c.resolveRequestContexts(ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
-		return
+		return // Response already sent by helper
 	}
-
 	// 3. Param Parsing
 	propertyId := ctx.Param("propertyID")
 	pId, err := uuid.Parse(propertyId)
