@@ -6,6 +6,8 @@ import (
 	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
 	"sync"
+
+	"github.com/google/uuid"
 )
 
 type Handler func(ctx context.Context, payload interface{}) error
@@ -49,6 +51,7 @@ func (e *SEROEngine) Publish(ctx context.Context, evt SeroEngineEventType, paylo
 	// 2. Persist to Outbox (Atomic with business logic)
 	jsonPayload, _ := json.Marshal(payload)
 	outboxEntry := &SeroOutbox{
+		ID:        uuid.New(),
 		EventName: evt,
 		Payload:   jsonPayload,
 		Status:    "PENDING",

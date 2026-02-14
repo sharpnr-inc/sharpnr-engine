@@ -8,6 +8,7 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
+	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
 )
 
@@ -19,6 +20,7 @@ func bootstrapSharpnrOrchestrator(
 	accountingEngineService accounting_service.AccountingServiceInterface,
 	legalEntityService org_legal_entity_service.OrgLegalEntityServiceInterface,
 	txManager dbtx.TxManager,
+	seroEngine *sero.SEROEngine,
 ) orchestrator_service.OrchestratorServiceInterface {
 	return orchestrator_service.NewSharpnrOrchestratorService(
 		organizationService,
@@ -28,5 +30,6 @@ func bootstrapSharpnrOrchestrator(
 		accountingEngineService,
 		legalEntityService,
 		txManager,
+		seroEngine,
 	)
 }

@@ -32,4 +32,8 @@ type RestaurantServiceInterface interface {
 		orgID uuid.UUID, // PropertyID
 		restaurantID uuid.UUID, // RestaurantID
 	) (layout restaurant_contracts.RestaurantLayout_Response_dto, err error)
+
+	/* ---------------------------------- Order --------------------------------- */
+
+	CreateOrder(ctx context.Context)
 }

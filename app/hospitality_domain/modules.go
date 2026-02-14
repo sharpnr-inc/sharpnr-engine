@@ -5,6 +5,7 @@ import (
 	hotelservices "sharpnr-engine/modules/hospitality/hotel/services"
 	kitchenservices "sharpnr-engine/modules/hospitality/kitchen/services"
 	menuservice "sharpnr-engine/modules/hospitality/menu/service"
+	hospitality_order_engine_service "sharpnr-engine/modules/hospitality/order_engine/service"
 	restaurantservices "sharpnr-engine/modules/hospitality/restaurant/services"
 )
 
@@ -14,6 +15,7 @@ type HospitalityDomain struct {
 	restaurantService restaurantservices.RestaurantServiceInterface
 	kitchenService    kitchenservices.KitchenServiceInterface
 	menuService       menuservice.MenuService
+	orderEngine       hospitality_order_engine_service.HospitalityOrderEngineServiceInterface
 }
 
 func NewHospitalityDomain(
@@ -22,6 +24,7 @@ func NewHospitalityDomain(
 	restaurantService restaurantservices.RestaurantServiceInterface,
 	kitchenService kitchenservices.KitchenServiceInterface,
 	menuService menuservice.MenuService,
+	orderEngine hospitality_order_engine_service.HospitalityOrderEngineServiceInterface,
 ) *HospitalityDomain {
 	return &HospitalityDomain{
 		hotelService:      hotelService,
@@ -29,6 +32,7 @@ func NewHospitalityDomain(
 		restaurantService: restaurantService,
 		kitchenService:    kitchenService,
 		menuService:       menuService,
+		orderEngine:       orderEngine,
 	}
 }
 
@@ -52,4 +56,8 @@ func (h *HospitalityDomain) KitchenService() kitchenservices.KitchenServiceInter
 
 func (h *HospitalityDomain) MenuService() menuservice.MenuService {
 	return h.menuService
+}
+
+func (h *HospitalityDomain) OrderEngine() hospitality_order_engine_service.HospitalityOrderEngineServiceInterface {
+	return h.orderEngine
 }

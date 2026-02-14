@@ -11,6 +11,8 @@ import (
 	kitchenservices "sharpnr-engine/modules/hospitality/kitchen/services"
 	menurepo "sharpnr-engine/modules/hospitality/menu/repo"
 	menuservice "sharpnr-engine/modules/hospitality/menu/service"
+	hospitality_order_engine_repository "sharpnr-engine/modules/hospitality/order_engine/repository"
+	hospitality_order_engine_service "sharpnr-engine/modules/hospitality/order_engine/service"
 	restaurantrepo "sharpnr-engine/modules/hospitality/restaurant/repo"
 	restaurantservices "sharpnr-engine/modules/hospitality/restaurant/services"
 	"sharpnr-engine/sero"
@@ -26,7 +28,10 @@ func bootstrapHospitality(
 
 	// Kitchen
 	kitchenRepo := kitchenrepo.NewKitchenRepository(db)
-	kitchenService := kitchenservices.NewKitchenService(kitchenRepo)
+	kitchenService := kitchenservices.NewKitchenService(kitchenRepo, seroEngine)
+
+	orderEnginerepo := hospitality_order_engine_repository.NewHospitalityOrderEngine(db)
+	orderEngineService := hospitality_order_engine_service.NewHospitalityOrderEngineService(orderEnginerepo, seroEngine)
 
 	// Menu
 	menuRepo := menurepo.NewHospitalityMenuRepository(db)
@@ -42,7 +47,7 @@ func bootstrapHospitality(
 
 	// Restaurant
 	restaurantRepo := restaurantrepo.NewRestaurantRepository(db)
-	restaurantService := restaurantservices.NewRestaurantService(restaurantRepo)
+	restaurantService := restaurantservices.NewRestaurantService(restaurantRepo, seroEngine)
 
 	return hospitalitydomain.NewHospitalityDomain(
 		hotelService,
@@ -50,5 +55,6 @@ func bootstrapHospitality(
 		restaurantService,
 		kitchenService,
 		menuService,
+		orderEngineService,
 	)
 }

@@ -52,6 +52,7 @@ func BootstrapModules(
 		accountingService,
 		orgLegalEntityService,
 		txManager,
+		seroEngine,
 	)
 
 	return &AppModules{
