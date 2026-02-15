@@ -90,3 +90,8 @@ type RestaurantDiningSession struct {
 func (RestaurantDiningSession) TableName() string {
 	return "hospitality.restaurant_dining_session"
 }
+
+type RestaurantTakawaysSales struct {
+	ID           uuid.UUID
+	RestaurantID uuid.UUID
+}
