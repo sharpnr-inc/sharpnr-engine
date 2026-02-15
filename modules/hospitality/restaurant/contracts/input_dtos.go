@@ -1,6 +1,10 @@
 package restaurant_contracts
 
-import restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
+import (
+	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
+
+	"github.com/google/uuid"
+)
 
 type RestaurantFloorLayout_Response_dto struct {
 	Floor_Name   string
@@ -19,4 +23,22 @@ type RestaurantTableLayout_Response_dto struct {
 	TableID   string
 	Status    restaurant_constants.RestaurantTableStatusType
 	Capacity  int
+}
+
+type OrdersResquest_dto struct {
+	PropertyID             uuid.UUID
+	OwnersID               uuid.UUID
+	TableID                *uuid.UUID
+	RoomID                 *uuid.UUID
+	OrderProcessEmployeeID *uuid.UUID // this is the ID for the employeeID who took the order
+	OrderType              string     // DINE_IN | TAKEAWAY | ROOM_SERVICE
+	Orders                 []OrdersItem
+}
+
+type OrdersItem struct {
+	ItemID             uuid.UUID
+	Qty                int
+	SpecialInstruction string
+	VariantID          *uuid.UUID
+	AddonIDs           []uuid.UUID
 }

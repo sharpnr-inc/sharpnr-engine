@@ -2,6 +2,7 @@ package menurepo
 
 import (
 	"context"
+	dbtx "sharpnr-engine/core/dbTx"
 	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 
 	"github.com/google/uuid"
@@ -9,8 +10,13 @@ import (
 )
 
 func (r *menuRepo) CreateEntryInKitchenMenuRegister(ctx context.Context, entry *hospitalityMenu_models.MenuItemKitchenRegister) error {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
 	// clause.OnConflict allows us to handle the unique constraint on MenuItemID
-	err := r.db.WithContext(ctx).Clauses(clause.OnConflict{
+	err := db.WithContext(ctx).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "menu_item_id"}}, // The unique index column
 		DoUpdates: clause.AssignmentColumns([]string{"kitchen_id", "owner_type", "updated_at"}),
 	}).Create(entry).Error

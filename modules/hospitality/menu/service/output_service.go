@@ -58,7 +58,18 @@ func (s *menuService) GetMenu(ctx context.Context, menuID uuid.UUID) (*hospitali
 			}
 
 			for _, item := range items {
+				// 1. Fetch the kitchen registration
 				kitchenReg, err := s.menuRepo.GetMenuItemKitchen(ctx, item.ID)
+
+				// 2. Safely determine the value for ServedBy
+				// If there's an error or the record is nil, use an empty string
+				var servedBy uuid.UUID
+				if err == nil && kitchenReg != nil {
+					servedBy = kitchenReg.KitchenID
+				} else {
+					servedBy = uuid.Nil // Explicitly sending empty string if not available
+				}
+
 				itemOut := hospitality_menu_contracts.MenuItemOutput{
 					ID:                item.ID,
 					MenuID:            item.MenuGroupID,
@@ -68,7 +79,7 @@ func (s *menuService) GetMenu(ctx context.Context, menuID uuid.UUID) (*hospitali
 					Unit:              item.Unit,
 					BasePrice:         item.BasePrice,
 					DietaryType:       item.DietaryType,
-					ServedBy:          kitchenReg.KitchenID, // Default to Nil, will update if kitchenReg exists
+					ServedBy:          servedBy, // Default to Nil, will update if kitchenReg exists
 					VariantGroups:     []hospitality_menu_contracts.VariantGroupOutput{},
 					AddOns:            []hospitality_menu_contracts.AddOnOutput{},
 				}

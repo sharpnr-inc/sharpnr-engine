@@ -30,3 +30,10 @@ const (
 	Configured    RestaurantConfigurationType = "CONFIGURED"
 	NotConfigured RestaurantConfigurationType = "NOT_CONFIGURED"
 )
+
+type RestaurantOrderType string
+
+const (
+	DineInOrder  RestaurantOrderType = "DINE_IN"
+	TakewayOrder RestaurantOrderType = "TAKEAWAY"
+)

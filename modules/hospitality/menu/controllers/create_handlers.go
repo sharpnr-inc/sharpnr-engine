@@ -220,7 +220,7 @@ func (c *menuController) SetKitchenToWholeMenu(ctx *gin.Context) {
 		return
 	}
 
-	if err := c.menuService.SetKitchenToWholeMenu(ctx, ownersID, &req); err != nil {
+	if err := c.menuService.SetKitchenToWholeMenu(ctx.Request.Context(), ownersID, &req); err != nil {
 		utils.Failure(ctx, http.StatusBadGateway, utils.CodeInternalError, err)
 		return
 	}

@@ -41,7 +41,7 @@ func bootstrapHospitality(
 
 	// Menu
 	menuRepo := menurepo.NewHospitalityMenuRepository(db)
-	menuService := menuservice.NewHospitalityMenuService(menuRepo)
+	menuService := menuservice.NewHospitalityMenuService(menuRepo, txManager)
 
 	// Hotel
 	hotelRepo := hotelrepo.NewHotelRepository(db)
