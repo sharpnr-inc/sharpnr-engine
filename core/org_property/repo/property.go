@@ -2,6 +2,7 @@ package org_property_repo
 
 import (
 	"context"
+	dbtx "sharpnr-engine/core/dbTx"
 	org_property_models "sharpnr-engine/core/org_property/models"
 
 	"github.com/google/uuid"
@@ -11,7 +12,12 @@ import (
 func (o *organizationPropertyRepo) CreateProperty(ctx context.Context, property *org_property_models.OrganizationProperty) error {
 	// .Create inserts the property record.
 	// GORM will automatically populate property.ID and timestamps upon success.
-	err := o.db.WithContext(ctx).Create(property).Error
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = o.db
+	}
+	err := db.WithContext(ctx).Create(property).Error
 	if err != nil {
 		return err
 	}

@@ -346,22 +346,28 @@ func (s *orchestratorService) AddModulesInProperty(
 
 // =---------------------------------------------------------------//
 func (s *orchestratorService) CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error {
-	prInp := org_property_contracts.CreateOrgPropertyInput{
-		OrgID:       orgID,
-		Name:        req.Name,
-		Code:        req.Code,
-		AddressLine: req.AddressLine,
-		City:        req.City,
-		State:       req.State,
-		Country:     req.Country,
-		Pincode:     req.Pincode,
-	}
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
 
-	if err := s.orgPropertyService.CreatePropertyDefault(ctx, prInp); err != nil {
-		return err
-	}
+		prInp := org_property_contracts.CreateOrgPropertyInput{
+			OrgID:       orgID,
+			Name:        req.Name,
+			Code:        req.Code,
+			AddressLine: req.AddressLine,
+			City:        req.City,
+			State:       req.State,
+			Country:     req.Country,
+			Pincode:     req.Pincode,
+		}
 
-	return nil
+		if err := s.orgPropertyService.CreatePropertyDefault(txCtx, prInp); err != nil {
+			return err
+		}
+
+		return nil
+
+	})
+
 }
 
 //=---------------------------------------------------------------//
