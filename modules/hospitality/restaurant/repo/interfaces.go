@@ -2,6 +2,7 @@ package restaurantrepo
 
 import (
 	"context"
+	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 
 	"github.com/google/uuid"
@@ -31,7 +32,8 @@ type RestaurantRepositoryInterface interface {
 	// Restaurant -- Floors --> Tables --> Dining Session
 	CreateRestaurantDiningSession(ctx context.Context, diningSession *restaurant_models.RestaurantDiningSession) error
 	UpdateDiningSessionStatus(ctx context.Context, diningSessionID uuid.UUID, status string) error
-	GetDiningSessionByStatus(ctx context.Context, restaurantID uuid.UUID, status string) ([]*restaurant_models.RestaurantDiningSession, error)
+	GetDiningSessionByStatus(ctx context.Context, restaurantID uuid.UUID, status restaurant_constants.RestaurantDiningSessionStatusType) ([]*restaurant_models.RestaurantDiningSession, error)
+	GetDiningSessionByTableID(ctx context.Context, tableID uuid.UUID) (*restaurant_models.RestaurantDiningSession, error)
 
 	// Dining Session payments
 	CreateSessionPayment(ctx context.Context, sessionPayment *restaurant_models.RestaurantSessionPayment) error

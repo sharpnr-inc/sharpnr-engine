@@ -3,8 +3,8 @@ package restaurant_constants
 type RestaurantDiningSessionStatusType string
 
 const (
-	Opened RestaurantDiningSessionStatusType = "OPEN"
-	Closed RestaurantDiningSessionStatusType = "CLOSED"
+	DineInSessionOpened RestaurantDiningSessionStatusType = "OPEN"
+	DineInSessionClosed RestaurantDiningSessionStatusType = "CLOSED"
 )
 
 type RestaurantTableStatusType string

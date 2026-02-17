@@ -2,6 +2,7 @@ package restaurantservices
 
 import (
 	"context"
+	dbtx "sharpnr-engine/core/dbTx"
 	restaurantrepo "sharpnr-engine/modules/hospitality/restaurant/repo"
 	"sharpnr-engine/sero"
 )
@@ -9,6 +10,7 @@ import (
 type restaurantService struct {
 	restaurantRepo restaurantrepo.RestaurantRepositoryInterface
 	seroEngine     *sero.SEROEngine
+	txManager      dbtx.TxManager
 }
 
 // CreateOrder implements RestaurantServiceInterface.
@@ -24,10 +26,12 @@ func (r *restaurantService) AddRestaurantGeneralDetails(ctx context.Context) {
 func NewRestaurantService(
 	restaurantRepo restaurantrepo.RestaurantRepositoryInterface,
 	seroEngine *sero.SEROEngine,
+	txManager dbtx.TxManager,
 ) *restaurantService {
 	return &restaurantService{
 		restaurantRepo: restaurantRepo,
 		seroEngine:     seroEngine,
+		txManager:      txManager,
 	}
 
 }

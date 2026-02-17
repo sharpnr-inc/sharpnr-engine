@@ -17,19 +17,19 @@ type RestaurantLayout_Response_dto struct {
 }
 
 type RestaurantTableLayout_Response_dto struct {
-	TableName string
-	TableCode string
-	FloorID   string
-	TableID   string
-	Status    restaurant_constants.RestaurantTableStatusType
-	Capacity  int
+	TableName            string
+	TableCode            string
+	FloorID              string
+	TableID              string
+	Status               restaurant_constants.RestaurantTableStatusType
+	Capacity             int
+	CurrentDineSessionID *uuid.UUID
 }
 
 type OrdersResquest_dto struct {
 	PropertyID             uuid.UUID
 	OwnersID               uuid.UUID
 	TableID                *uuid.UUID
-	RoomID                 *uuid.UUID
 	OrderProcessEmployeeID *uuid.UUID // this is the ID for the employeeID who took the order
 	OrderType              string     // DINE_IN | TAKEAWAY | ROOM_SERVICE
 	Orders                 []OrdersItem
@@ -41,4 +41,12 @@ type OrdersItem struct {
 	SpecialInstruction string
 	VariantID          *uuid.UUID
 	AddonIDs           []uuid.UUID
+}
+
+/* ----------------------------------- <*> ---------------------------------- */
+
+type AddOrderInDineSession_Request_dto struct {
+	TableID         uuid.UUID
+	DineInSessionID uuid.UUID
+	Orders          []OrdersItem
 }

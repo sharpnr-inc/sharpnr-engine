@@ -54,7 +54,7 @@ func bootstrapHospitality(
 
 	// Restaurant
 	restaurantRepo := restaurantrepo.NewRestaurantRepository(db)
-	restaurantService := restaurantservices.NewRestaurantService(restaurantRepo, seroEngine)
+	restaurantService := restaurantservices.NewRestaurantService(restaurantRepo, seroEngine, txManager)
 	restaurant_event_handlers.Register(seroEngine, restaurantService)
 
 	return hospitalitydomain.NewHospitalityDomain(

@@ -18,4 +18,7 @@ func RestaurantRoutes(
 	resRoutes := v1.Group("/restaurant/:restaurantID")
 	resRoutes.GET("/layout", newRestaurantController.GetRestaurantLayout)
 
+	resRoutes.GET("/:tableID/dineIn-session", newRestaurantController.CreateDineSession)
+	resRoutes.POST("/")
+
 }
