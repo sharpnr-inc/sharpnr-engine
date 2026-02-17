@@ -9,56 +9,35 @@ import (
 type RestaurantCharge struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	OrganizationID uuid.UUID
-	PropertyID     uuid.UUID
-	RestaurantID   uuid.UUID
-	LegalEntityID  uuid.UUID
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
+	PropertyID     uuid.UUID `gorm:"type:uuid;index"`
+	RestaurantID   uuid.UUID `gorm:"type:uuid;not null;index"`
+	LegalEntityID  uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	SessionID uuid.UUID `gorm:"type:uuid;not null;index"`
+	RestaurantDiningSessionID *uuid.UUID `gorm:"type:uuid;index"`
+	RestaurantPickUpOrdersID  *uuid.UUID `gorm:"type:uuid;index"`
 
-	ChargeType string
-	// FOOD, SERVICE_CHARGE, PACKAGING
+	RestaurantOrderID     *uuid.UUID `gorm:"type:uuid;index"`
+	RestaurantOrderItemID *uuid.UUID `gorm:"type:uuid;index"`
+
+	ChargeType string `gorm:"type:varchar(50);not null;index"`
+	// FOOD, SERVICE_CHARGE, PACKAGING, TAX, DISCOUNT, ROUND_OFF
 
 	SourceRefID *uuid.UUID
-	// KOT_ID
+	// KOT_ID, TAX_RULE_ID, DISCOUNT_RULE_ID
 
-	Description string
+	Description string `gorm:"type:text"`
 
-	Quantity float64
-	UnitRate float64
-	Amount   float64
+	Quantity float64 `gorm:"type:numeric(10,3);not null"`
+	UnitRate float64 `gorm:"type:numeric(12,2);not null"`
+	Amount   float64 `gorm:"type:numeric(12,2);not null"`
 
 	ChargedAt time.Time
+
 	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func (RestaurantCharge) TableName() string {
 	return "hospitality.restaurant_charge"
-}
-
-type RestaurantSessionPayment struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	OrganizationID uuid.UUID
-	PropertyID     uuid.UUID
-	RestaurantID   uuid.UUID
-	LegalEntityID  uuid.UUID
-
-	SessionID uuid.UUID `gorm:"type:uuid;not null;index"`
-
-	Amount float64
-
-	Method string
-	// CASH, UPI, CARD
-
-	Status string
-	// RECEIVED, FAILED
-
-	Reference string
-
-	ReceivedAt time.Time
-}
-
-func (RestaurantSessionPayment) TableName() string {
-	return "hospitality.restaurant_session_payment"
 }

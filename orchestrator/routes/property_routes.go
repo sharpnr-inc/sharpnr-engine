@@ -19,6 +19,8 @@ func registerPropertyRoutes(r *gin.RouterGroup, c *orchestrator_controllers.Orch
 		pr.POST("/:propertyID/configure-restaurant", c.ConfigurePropertiesRestaurant)
 		pr.POST("/:propertyID/configure-hotel", c.ConfigurePropertyHotel)
 		pr.GET("/:propertyID/infra", c.GetPropertyInfra)
+		pr.GET("/allinfra")
+
 	}
 
 }
