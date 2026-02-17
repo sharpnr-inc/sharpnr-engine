@@ -10,11 +10,11 @@ const (
 type RestaurantTableStatusType string
 
 const (
-	Available     RestaurantTableStatusType = "AVAILABLE"
-	Occupied      RestaurantTableStatusType = "OCCUPIED"
-	Reserved      RestaurantTableStatusType = "RESERVED"
-	Blocked       RestaurantTableStatusType = "BLOCKED"
-	UnderCleaning RestaurantTableStatusType = "UNDER_CLEANING"
+	TableStatusAvailable     RestaurantTableStatusType = "AVAILABLE"
+	TableStatusOccupied      RestaurantTableStatusType = "OCCUPIED"
+	TableStatusReserved      RestaurantTableStatusType = "RESERVED"
+	TableStatusBlocked       RestaurantTableStatusType = "BLOCKED"
+	TableStatusUnderCleaning RestaurantTableStatusType = "UNDER_CLEANING"
 )
 
 type RestaurantRunningStatusType string

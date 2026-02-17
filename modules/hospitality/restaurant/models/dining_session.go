@@ -19,6 +19,7 @@ type RestaurantDiningSession struct {
 	// OPEN, CLOSED, CANCELLED
 
 	StartedAt time.Time
+	StartedBy uuid.UUID
 	ClosedAt  *time.Time
 
 	CreatedAt time.Time

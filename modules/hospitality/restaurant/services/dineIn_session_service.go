@@ -3,6 +3,7 @@ package restaurantservices
 import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
+	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 	"time"
 
@@ -22,6 +23,10 @@ func (s *restaurantService) StartDineSession(ctx context.Context,
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
+		if err := s.restaurantRepo.UpdateTableStatus(txCtx, tableID, restaurant_constants.TableStatusOccupied); err != nil {
+			return err
+		}
+
 		// 1. Generate the ID first so we can capture it
 		sessionID = uuid.New()
 
@@ -29,7 +34,8 @@ func (s *restaurantService) StartDineSession(ctx context.Context,
 			ID:           sessionID,
 			RestaurantID: restaurantID,
 			TableID:      tableID,
-			Status:       "RUNNING",
+			Status:       restaurant_constants.DineInSessionOpened,
+			StartedBy:    employeeID,
 			StartedAt:    time.Now(),
 			CreatedAt:    time.Now(),
 		}
@@ -54,4 +60,11 @@ func (s *restaurantService) StartDineSession(ctx context.Context,
 
 func (s *restaurantService) AddOrdersInSession(ctx context.Context) {
 	panic("Unimplemented")
+}
+
+/* ----------------------------------- <*> ---------------------------------- */
+
+func (s *restaurantService) GetDineSessionOrders(ctx context.Context, dineInSessionID uuid.UUID) error {
+
+	return nil
 }

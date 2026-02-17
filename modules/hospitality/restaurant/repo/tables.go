@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
+	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 
 	"github.com/google/uuid"
@@ -17,7 +18,7 @@ func (r *restaurantRepo) CreateTables(ctx context.Context, resTable *restaurant_
 	return db.WithContext(ctx).Create(resTable).Error
 }
 
-func (r *restaurantRepo) UpdateTableStatus(ctx context.Context, tableID uuid.UUID, status string) error {
+func (r *restaurantRepo) UpdateTableStatus(ctx context.Context, tableID uuid.UUID, status restaurant_constants.RestaurantTableStatusType) error {
 	// We use .Model() to identify the table and .Update() for the specific column
 	result := r.db.WithContext(ctx).
 		Model(&restaurant_models.RestaurantTable{}).
@@ -52,7 +53,7 @@ func (d *restaurantRepo) GetTableById(ctx context.Context, tableId uuid.UUID) (*
 	return &table, nil
 }
 
-func (r *restaurantRepo) GetTablesByStatus(ctx context.Context, restaurantID uuid.UUID, status string) ([]*restaurant_models.RestaurantTable, error) {
+func (r *restaurantRepo) GetTablesByStatus(ctx context.Context, restaurantID uuid.UUID, status restaurant_constants.RestaurantTableStatusType) ([]*restaurant_models.RestaurantTable, error) {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db

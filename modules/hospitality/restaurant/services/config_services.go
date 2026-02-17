@@ -37,7 +37,7 @@ func (r *restaurantService) AddTablesInFloor(ctx context.Context, AddTablesInFlo
 		Code:         *AddTablesInFloorInput.Code,
 		Name:         *AddTablesInFloorInput.Name,
 		Capacity:     4,
-		Status:       restaurant_constants.Available,
+		Status:       restaurant_constants.TableStatusAvailable,
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
 	}

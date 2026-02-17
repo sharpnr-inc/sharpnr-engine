@@ -24,6 +24,8 @@ func (r *restaurantRepo) CreateRestaurantDiningSession(ctx context.Context, dini
 	return db.WithContext(ctx).Create(diningSession).Error
 }
 
+/* ----------------------------------- <*> ---------------------------------- */
+
 func (r *restaurantRepo) UpdateDiningSessionStatus(ctx context.Context, diningSessionID uuid.UUID, status string) error {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
@@ -45,6 +47,8 @@ func (r *restaurantRepo) UpdateDiningSessionStatus(ctx context.Context, diningSe
 
 	return nil
 }
+
+/* ----------------------------------- <*> ---------------------------------- */
 
 func (r *restaurantRepo) GetDiningSessionByStatus(
 	ctx context.Context,
@@ -71,6 +75,8 @@ func (r *restaurantRepo) GetDiningSessionByStatus(
 	return sessions, nil
 }
 
+/* ----------------------------------- <*> ---------------------------------- */
+
 func (r *restaurantRepo) GetDiningSessionByTableID(ctx context.Context, tableID uuid.UUID) (*restaurant_models.RestaurantDiningSession, error) {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
@@ -92,4 +98,10 @@ func (r *restaurantRepo) GetDiningSessionByTableID(ctx context.Context, tableID 
 	}
 
 	return &session, nil
+}
+
+/* ----------------------------------- <*> ---------------------------------- */
+
+func (r *restaurantRepo) GetAllOrdersOfSession(ctx context.Context, dineSessionID uuid.UUID) error {
+	return nil
 }

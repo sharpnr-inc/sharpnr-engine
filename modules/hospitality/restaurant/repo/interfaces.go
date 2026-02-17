@@ -24,9 +24,9 @@ type RestaurantRepositoryInterface interface {
 
 	// Restaurant --> Floors --> tables
 	CreateTables(ctx context.Context, resTables *restaurant_models.RestaurantTable) error
-	UpdateTableStatus(ctx context.Context, tableID uuid.UUID, status string) error
+	UpdateTableStatus(ctx context.Context, tableID uuid.UUID, status restaurant_constants.RestaurantTableStatusType) error
 	GetTableById(ctx context.Context, tableId uuid.UUID) (*restaurant_models.RestaurantTable, error)
-	GetTablesByStatus(ctx context.Context, restaurantID uuid.UUID, status string) ([]*restaurant_models.RestaurantTable, error)
+	GetTablesByStatus(ctx context.Context, restaurantID uuid.UUID, status restaurant_constants.RestaurantTableStatusType) ([]*restaurant_models.RestaurantTable, error)
 	GetAllTablesOfFloor(ctx context.Context, floorID uuid.UUID) ([]*restaurant_models.RestaurantTable, error)
 
 	// Restaurant -- Floors --> Tables --> Dining Session
@@ -38,6 +38,10 @@ type RestaurantRepositoryInterface interface {
 	// Dining Session payments
 	CreateSessionPayment(ctx context.Context, sessionPayment *restaurant_models.RestaurantSessionPayment) error
 	GetAllPaymentsOfDiningSession(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantSessionPayment, error)
+
+	// Orders
+	GetOrdersByDiningSessionID(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantOrders, error)
+	GetOrderItemsByOrderID(ctx context.Context, restaurantOrderID uuid.UUID)([]*restaurant_models.RestaurantOrderItems, error)
 
 	// Charges
 	CreateCharges(ctx context.Context, charges *restaurant_models.RestaurantCharge) error

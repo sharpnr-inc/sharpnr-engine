@@ -36,4 +36,15 @@ type RestaurantServiceInterface interface {
 	/* ---------------------------------- Order --------------------------------- */
 
 	CreateOrder(ctx context.Context)
+
+	/* -------------------------------------------------------------------------- */
+	/*                               DineIn Services                              */
+	/* -------------------------------------------------------------------------- */
+
+	StartDineSession(ctx context.Context,
+		restaurantID uuid.UUID,
+		orgID uuid.UUID,
+		employeeID uuid.UUID,
+		tableID uuid.UUID,
+	) (uuid.UUID, error)
 }
