@@ -40,8 +40,10 @@ type RestaurantRepositoryInterface interface {
 	GetAllPaymentsOfDiningSession(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantSessionPayment, error)
 
 	// Orders
+	CreateOrder(ctx context.Context, order *restaurant_models.RestaurantOrders) error
+	CreateOrderItem(ctx context.Context, orderItem *restaurant_models.RestaurantOrderItems) error
 	GetOrdersByDiningSessionID(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantOrders, error)
-	GetOrderItemsByOrderID(ctx context.Context, restaurantOrderID uuid.UUID)([]*restaurant_models.RestaurantOrderItems, error)
+	GetOrderItemsByOrderID(ctx context.Context, restaurantOrderID uuid.UUID) ([]*restaurant_models.RestaurantOrderItems, error)
 
 	// Charges
 	CreateCharges(ctx context.Context, charges *restaurant_models.RestaurantCharge) error

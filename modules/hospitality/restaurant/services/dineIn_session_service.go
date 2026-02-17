@@ -3,8 +3,11 @@ package restaurantservices
 import (
 	"context"
 	"errors"
+	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
 	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
+	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
+	restaurant_events "sharpnr-engine/modules/hospitality/restaurant/events"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 	"time"
 
@@ -59,8 +62,70 @@ func (s *restaurantService) StartDineSession(ctx context.Context,
 
 /* ----------------------------------- <*> ---------------------------------- */
 
-func (s *restaurantService) AddOrdersInSession(ctx context.Context) {
-	panic("Unimplemented")
+func (s *restaurantService) AddOrdersInSession(
+	ctx context.Context,
+	req *restaurant_contracts.AddOrderInDineSession_Request_dto,
+	orgID uuid.UUID,
+	restaurantID uuid.UUID,
+) error {
+
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		if req == nil {
+			return fmt.Errorf("request is not and seg faulted")
+		}
+
+		order := &restaurant_models.RestaurantOrders{
+			ID:                        uuid.New(),
+			OrganizationID:            orgID,
+			RestaurantID:              restaurantID,
+			RestaurantDiningSessionID: &req.DineSessionID,
+			OrderNumber:               "1",
+			CreatedAt:                 time.Now(),
+		}
+
+		if err := s.restaurantRepo.CreateOrder(txCtx, order); err != nil {
+			return err
+		}
+
+		for _, it := range req.Orders {
+
+			items := &restaurant_models.RestaurantOrderItems{
+				ID:                uuid.New(),
+				RestaurantOrderID: order.ID,
+				MenuItemID:        it.ItemID,
+				Quantity:          it.Qty,
+				Status:            "PENDING",
+			}
+
+			if err := s.restaurantRepo.CreateOrderItem(txCtx, items); err != nil {
+				return err
+			}
+		}
+
+		payload := restaurant_events.OrderCreatedPayload{
+			OrderID:       order.ID,
+			DineSessionID: req.DineSessionID,
+			RestaurantID:  restaurantID,
+			OrderNumber:   order.OrderNumber,
+			ItemsCount:    len(req.Orders),
+			CreatedAt:     order.CreatedAt,
+		}
+
+		if err := s.seroEngine.Publish(
+			txCtx,
+			restaurant_events.OrderCreatedInRestaurant,
+			payload,
+		); err != nil {
+			return err
+		}
+
+		return nil
+
+	})
+
 }
 
 /* ----------------------------------- <*> ---------------------------------- */

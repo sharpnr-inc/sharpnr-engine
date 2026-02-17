@@ -40,7 +40,7 @@ type RestaurantOrderItems struct {
 
 	MenuItemID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	Quantity  float64 `gorm:"type:numeric(10,3);not null"`
+	Quantity  int     `gorm:"type:numeric(10,3);not null"`
 	UnitPrice float64 `gorm:"type:numeric(12,2);not null"`
 	Total     float64 `gorm:"type:numeric(12,2);not null"`
 

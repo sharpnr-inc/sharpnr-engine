@@ -35,13 +35,14 @@ func bootstrapHospitality(
 	kitchenService := kitchenservices.NewKitchenService(kitchenRepo, seroEngine)
 	kitchen_sero_event_handlers.Register(seroEngine, kitchenService)
 
-	orderEnginerepo := hospitality_order_engine_repository.NewHospitalityOrderEngine(db)
-	orderEngineService := hospitality_order_engine_service.NewHospitalityOrderEngineService(orderEnginerepo, seroEngine)
-	orderEngineSero_event_handlers.Register(seroEngine, orderEngineService)
-
 	// Menu
 	menuRepo := menurepo.NewHospitalityMenuRepository(db)
 	menuService := menuservice.NewHospitalityMenuService(menuRepo, txManager)
+
+	// order engine
+	orderEnginerepo := hospitality_order_engine_repository.NewHospitalityOrderEngine(db)
+	orderEngineService := hospitality_order_engine_service.NewHospitalityOrderEngineService(orderEnginerepo, seroEngine)
+	orderEngineSero_event_handlers.Register(seroEngine, orderEngineService, kitchenService, menuService)
 
 	// Hotel
 	hotelRepo := hotelrepo.NewHotelRepository(db)

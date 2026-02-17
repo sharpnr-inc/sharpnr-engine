@@ -57,3 +57,33 @@ func (r *restaurantRepo) GetOrderItemsByOrderID(ctx context.Context, restaurantO
 }
 
 /* ----------------------------------- <*> ---------------------------------- */
+
+func (r *restaurantRepo) CreateOrder(ctx context.Context, order *restaurant_models.RestaurantOrders) error {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	// Persist the order to the database using the provided context
+	err := db.WithContext(ctx).Create(order).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *restaurantRepo) CreateOrderItem(ctx context.Context, orderItem *restaurant_models.RestaurantOrderItems) error {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	// Insert the individual line item
+	err := db.WithContext(ctx).Create(orderItem).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

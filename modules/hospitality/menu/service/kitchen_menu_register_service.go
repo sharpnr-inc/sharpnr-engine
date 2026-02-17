@@ -62,3 +62,12 @@ func (c *menuService) SetKitchenToWholeMenu(ctx context.Context, ownersID uuid.U
 	})
 
 }
+
+func (c *menuService) GetKitchenOfMenuItem(ctx context.Context, menuItemID uuid.UUID) (uuid.UUID, error) {
+	kitchen, err := c.menuRepo.GetMenuItemKitchen(ctx, menuItemID)
+	if err != nil {
+		return uuid.Nil, err
+	}
+
+	return kitchen.KitchenID, nil
+}

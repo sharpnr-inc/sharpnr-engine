@@ -21,4 +21,5 @@ type MenuService interface {
 	// Queries
 	GetMenu(ctx context.Context, menuID uuid.UUID) (*hospitality_menu_contracts.MenuOutput, error)
 	GetMenusOfOwners(ctx context.Context, ownersID uuid.UUID) ([]hospitality_menu_contracts.MenuOutput, error)
+	GetKitchenOfMenuItem(ctx context.Context, menuItemID uuid.UUID) (uuid.UUID, error)
 }

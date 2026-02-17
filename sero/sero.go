@@ -72,3 +72,18 @@ func (e *SEROEngine) Publish(ctx context.Context, evt SeroEngineEventType, paylo
 	}
 	return nil
 }
+
+// MapToStruct converts a generic interface (usually a map) into a specific pointer to a struct
+func MapToStruct(input interface{}, target interface{}) error {
+	bytes, err := json.Marshal(input)
+	if err != nil {
+		return fmt.Errorf("failed to marshal input: %w", err)
+	}
+
+	err = json.Unmarshal(bytes, target)
+	if err != nil {
+		return fmt.Errorf("failed to unmarshal into target struct: %w", err)
+	}
+
+	return nil
+}

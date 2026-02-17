@@ -26,6 +26,8 @@ type RestaurantTableLayout_Response_dto struct {
 	CurrentDineSessionID *uuid.UUID
 }
 
+/* ----------------------------------- *** ---------------------------------- */
+
 type OrdersResquest_dto struct {
 	PropertyID             uuid.UUID
 	OwnersID               uuid.UUID
@@ -46,7 +48,9 @@ type OrdersItem struct {
 /* ----------------------------------- <*> ---------------------------------- */
 
 type AddOrderInDineSession_Request_dto struct {
-	TableID         uuid.UUID
-	DineInSessionID uuid.UUID
-	Orders          []OrdersItem
+	TableID       uuid.UUID
+	DineSessionID uuid.UUID
+	Orders        []OrdersItem
 }
+
+/* ----------------------------------- *** ---------------------------------- */
