@@ -3,6 +3,7 @@ package restaurantrepo
 import (
 	"context"
 	"fmt"
+	dbtx "sharpnr-engine/core/dbTx"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 
 	"github.com/google/uuid"
@@ -10,11 +11,15 @@ import (
 )
 
 func (r *restaurantRepo) CreateRestaurant(ctx context.Context, res *restaurant_models.Restaurant) error {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
 	if res == nil {
 		return fmt.Errorf("restaurant data is nil")
 	}
 	// Insert record into database
-	if err := r.db.WithContext(ctx).Create(res).Error; err != nil {
+	if err := db.WithContext(ctx).Create(res).Error; err != nil {
 		return fmt.Errorf("failed to create restaurant: %w", err)
 	}
 
@@ -22,17 +27,17 @@ func (r *restaurantRepo) CreateRestaurant(ctx context.Context, res *restaurant_m
 }
 
 func (r *restaurantRepo) GetRestaurantByID(ctx context.Context, restaurantID uuid.UUID) (*restaurant_models.Restaurant, error) {
-	var restaurant restaurant_models.Restaurant
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
 
-	// We use .First() because we are looking for one specific record by ID.
-	// This method returns gorm.ErrRecordNotFound if the ID does not exist.
-	err := r.db.WithContext(ctx).
+	var restaurant restaurant_models.Restaurant
+	err := db.WithContext(ctx).
 		Where("id = ?", restaurantID).
 		First(&restaurant).Error
 
 	if err != nil {
-		// We return the error (including ErrRecordNotFound) so the service layer
-		// can handle it appropriately (e.g., returning a 404 Not Found).
 		return nil, err
 	}
 
@@ -40,17 +45,17 @@ func (r *restaurantRepo) GetRestaurantByID(ctx context.Context, restaurantID uui
 }
 
 func (r *restaurantRepo) GetRestaurantByOrgID(ctx context.Context, orgId uuid.UUID) ([]*restaurant_models.Restaurant, error) {
-	// 1. Define the slice to hold the results
-	var restaurants []*restaurant_models.Restaurant
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
 
-	// 2. Use .Find() to fetch all records matching the organization_id
-	err := r.db.WithContext(ctx).
+	var restaurants []*restaurant_models.Restaurant
+	err := db.WithContext(ctx).
 		Where("organization_id = ?", orgId).
 		Find(&restaurants).Error
 
 	if err != nil {
-		// Find returns an empty slice and nil error if no records are found.
-		// We only return an error if the database connection actually fails.
 		return nil, err
 	}
 
@@ -58,16 +63,17 @@ func (r *restaurantRepo) GetRestaurantByOrgID(ctx context.Context, orgId uuid.UU
 }
 
 func (r *restaurantRepo) GetRestaurantByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]*restaurant_models.Restaurant, error) {
-	var restaurants []*restaurant_models.Restaurant
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
 
-	// We filter by property_id to get all restaurants belonging to that property
-	err := r.db.WithContext(ctx).
+	var restaurants []*restaurant_models.Restaurant
+	err := db.WithContext(ctx).
 		Where("property_id = ?", propertyID).
 		Find(&restaurants).Error
 
 	if err != nil {
-		// GORM .Find() returns an empty slice and no error if nothing is found.
-		// We only return an error for actual database failures.
 		return nil, err
 	}
 
@@ -75,9 +81,12 @@ func (r *restaurantRepo) GetRestaurantByPropertyID(ctx context.Context, property
 }
 
 func (r *restaurantRepo) UpdateGeneralDetails(ctx context.Context, restaurantID uuid.UUID, updates map[string]interface{}) error {
-	// .Model() tells GORM which table to use
-	// .Where() ensures we only update the specific restaurant
-	result := r.db.WithContext(ctx).
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	result := db.WithContext(ctx).
 		Model(&restaurant_models.Restaurant{}).
 		Where("id = ?", restaurantID).
 		Updates(updates)
