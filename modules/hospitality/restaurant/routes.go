@@ -19,6 +19,7 @@ func RestaurantRoutes(
 	resRoutes.GET("/layout", newRestaurantController.GetRestaurantLayout)
 
 	resRoutes.GET("/:tableID/dineIn-session", newRestaurantController.CreateDineSession)
-	resRoutes.POST("/")
+	//dine In session Related
+	resRoutes.GET("/dining-session/:dineSessionID/orders", newRestaurantController.GetDineInSessionOrders)
 
 }

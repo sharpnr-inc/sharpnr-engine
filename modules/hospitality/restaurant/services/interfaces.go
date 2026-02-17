@@ -47,4 +47,6 @@ type RestaurantServiceInterface interface {
 		employeeID uuid.UUID,
 		tableID uuid.UUID,
 	) (uuid.UUID, error)
+
+	GetDineSessionOrders(ctx context.Context, dineInSessionID uuid.UUID) (interface{}, error)
 }

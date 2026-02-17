@@ -67,6 +67,16 @@ func (c *restaurantController) resolveTableID(ctx *gin.Context) (uuid.UUID, bool
 	return parsedID, true
 }
 
+func (c *restaurantController) resolveDineInSessionID(ctx *gin.Context) (uuid.UUID, bool) {
+	dineSessionIDStr := ctx.Param("dineSessionID")
+	parsedID, err := uuid.Parse(dineSessionIDStr)
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid Dine In Session ID format"))
+		return uuid.Nil, false
+	}
+	return parsedID, true
+}
+
 // resolveBody binds the JSON request body to the provided struct type.
 func (c *restaurantController) resolveBody(ctx *gin.Context, target interface{}) bool {
 	if err := ctx.ShouldBindJSON(target); err != nil {

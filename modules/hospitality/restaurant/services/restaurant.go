@@ -29,6 +29,8 @@ func (r *restaurantService) SetupDefaultRestaurant(ctx context.Context, orgID uu
 
 }
 
+/* ----------------------------------- *** ---------------------------------- */
+
 func (r *restaurantService) GetAllRestaurantOfProperty(
 	ctx context.Context,
 	propertyID uuid.UUID,
@@ -56,6 +58,8 @@ func (r *restaurantService) GetAllRestaurantOfProperty(
 
 	return result, nil
 }
+
+/* ---------------------------------- <**> ---------------------------------- */
 
 func (r *restaurantService) GetRestaurantLayout(
 	ctx context.Context,
@@ -113,3 +117,5 @@ func (r *restaurantService) GetRestaurantLayout(
 	layout.Layout = floorLayouts
 	return layout, nil
 }
+
+/* -------------------------------- **<***>** ------------------------------- */
