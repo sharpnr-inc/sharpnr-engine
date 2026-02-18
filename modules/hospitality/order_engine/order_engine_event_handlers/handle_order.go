@@ -3,8 +3,6 @@ package orderEngineSero_event_handlers
 import (
 	"context"
 	"fmt"
-	kitchenservices "sharpnr-engine/modules/hospitality/kitchen/services"
-	menuservice "sharpnr-engine/modules/hospitality/menu/service"
 	hospitality_order_engine_service "sharpnr-engine/modules/hospitality/order_engine/service"
 	restaurant_events "sharpnr-engine/modules/hospitality/restaurant/events"
 	"sharpnr-engine/sero"
@@ -12,8 +10,7 @@ import (
 
 func handleOrder(
 	serivce hospitality_order_engine_service.HospitalityOrderEngineServiceInterface,
-	kitchenService kitchenservices.KitchenServiceInterface,
-	menuService menuservice.MenuService,
+
 ) sero.Handler {
 
 	return func(ctx context.Context, payload interface{}) error {
@@ -28,7 +25,7 @@ func handleOrder(
 			}
 		}
 
-		return nil
+		return serivce.ProcessOrder(ctx, data)
 
 	}
 

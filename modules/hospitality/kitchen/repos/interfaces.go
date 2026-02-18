@@ -12,7 +12,10 @@ type KitchenRepositoryInterface interface {
 	GetKitchenById(ctx context.Context, kitchenId uuid.UUID) ([]*kitchen_models.Kitchen, error)
 	GetKitchenByOrgId(ctx context.Context, orgId uuid.UUID) ([]*kitchen_models.Kitchen, error)
 	GetKitchenByPropertyId(ctx context.Context, propertyID uuid.UUID) ([]*kitchen_models.Kitchen, error)
-
-	//
 	SwitchKitchenOnOff(ctx context.Context, KitchenID uuid.UUID, b bool) error
+
+	// Ticket (KOT) Operations
+	CreateKitchenTicket(ctx context.Context, ticket *kitchen_models.KitchenTicket) error
+	CreateKitchenTicketItem(ctx context.Context, item *kitchen_models.KitchenTicketItem) error
+	CreateKitchenTicketItemAddon(ctx context.Context, addon *kitchen_models.KitchenTicketItemAddon) error
 }

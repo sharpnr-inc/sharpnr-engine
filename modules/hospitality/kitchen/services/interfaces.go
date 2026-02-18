@@ -10,6 +10,6 @@ import (
 type KitchenServiceInterface interface {
 	// Kitchen setup
 	CreateDefaultKitchen(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, module string) error
-
 	GetKitchensByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]*kitchen_contracts.Kitchen_Reader, error)
+	CreateKOT(ctx context.Context, input kitchen_contracts.CreateKOT_req_dto) error
 }

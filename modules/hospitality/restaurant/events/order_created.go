@@ -2,7 +2,6 @@ package restaurant_events
 
 import (
 	"sharpnr-engine/sero"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -12,11 +11,31 @@ const (
 )
 
 type OrderCreatedPayload struct {
-	OrderID        uuid.UUID `json:"order_id"`
-	OrganizationID uuid.UUID
-	DineSessionID  uuid.UUID `json:"dine_session_id"`
-	RestaurantID   uuid.UUID `json:"restaurant_id"`
-	OrderNumber    string    `json:"order_number"`
-	ItemsCount     int       `json:"items_count"`
-	CreatedAt      time.Time `json:"created_at"`
+	OrderID        uuid.UUID           `json:"order_id"`
+	OrganizationID uuid.UUID           `json:"organization_id"`
+	RestaurantID   uuid.UUID           `json:"restaurant_id"`
+	SessionID      uuid.UUID           `json:"session_id"`
+	Items          []OrderItemEventDTO `json:"items"`
+}
+
+type OrderItemEventDTO struct {
+	ID         uuid.UUID         `json:"id"` // The OrderItem Primary Key
+	MenuItemID uuid.UUID         `json:"menu_item_id"`
+	Quantity   int               `json:"quantity"`
+	Notes      string            `json:"notes"`
+	Variants   []VariantEventDTO `json:"variants"`
+	Addons     []AddonEventDTO   `json:"addons"`
+}
+
+type VariantEventDTO struct {
+	VariantID    uuid.UUID `json:"variant_id"`
+	VariantName  string    `json:"variant_name"`
+	PriceAtOrder float64   `json:"price_at_order"`
+}
+
+type AddonEventDTO struct {
+	AddOnID      uuid.UUID `json:"addon_id"`
+	Name         string    `json:"name"`
+	Qty          int       `json:"qty"`
+	PriceAtOrder float64   `json:"price_at_order"`
 }

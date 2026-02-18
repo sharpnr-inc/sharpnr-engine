@@ -41,8 +41,8 @@ func bootstrapHospitality(
 
 	// order engine
 	orderEnginerepo := hospitality_order_engine_repository.NewHospitalityOrderEngine(db)
-	orderEngineService := hospitality_order_engine_service.NewHospitalityOrderEngineService(orderEnginerepo, seroEngine)
-	orderEngineSero_event_handlers.Register(seroEngine, orderEngineService, kitchenService, menuService)
+	orderEngineService := hospitality_order_engine_service.NewHospitalityOrderEngineService(orderEnginerepo, seroEngine, menuService, kitchenService)
+	orderEngineSero_event_handlers.Register(seroEngine, orderEngineService)
 
 	// Hotel
 	hotelRepo := hotelrepo.NewHotelRepository(db)

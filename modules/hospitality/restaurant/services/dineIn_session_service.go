@@ -6,6 +6,7 @@ import (
 	dbtx "sharpnr-engine/core/dbTx"
 	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
+	restaurant_events "sharpnr-engine/modules/hospitality/restaurant/events"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 	"time"
 
@@ -69,11 +70,20 @@ func (s *restaurantService) AddOrdersInSession(
 ) error {
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
-
 		txCtx := dbtx.InjectTx(ctx, tx)
 
+		// 1. Initialize the Event Payload
+		eventPayload := restaurant_events.OrderCreatedPayload{
+			OrderID:        uuid.New(),
+			OrganizationID: orgID,
+			RestaurantID:   restaurantID,
+			SessionID:      dineInSessionID,
+			Items:          make([]restaurant_events.OrderItemEventDTO, 0),
+		}
+
+		// 2. Create Order Header
 		ord := &restaurant_models.RestaurantOrders{
-			ID:                        uuid.New(),
+			ID:                        eventPayload.OrderID,
 			OrganizationID:            orgID,
 			RestaurantID:              restaurantID,
 			RestaurantDiningSessionID: &dineInSessionID,
@@ -88,10 +98,12 @@ func (s *restaurantService) AddOrdersInSession(
 		}
 
 		for _, itm := range req.Items {
+			itemID := uuid.New()
 
-			item := &restaurant_models.RestaurantOrderItems{
-				ID:                uuid.New(),
-				RestaurantOrderID: restaurantID,
+			// Build the Item Record for the DB
+			itemRecord := &restaurant_models.RestaurantOrderItems{
+				ID:                itemID,
+				RestaurantOrderID: ord.ID,
 				MenuItemID:        itm.MenuItemID,
 				Quantity:          itm.Quantity,
 				UnitPrice:         itm.BasePriceAtOrder,
@@ -101,56 +113,79 @@ func (s *restaurantService) AddOrdersInSession(
 				UpdatedAt:         time.Now(),
 			}
 
-			if err := s.restaurantRepo.CreateOrderItem(txCtx, item); err != nil {
+			if err := s.restaurantRepo.CreateOrderItem(txCtx, itemRecord); err != nil {
 				return err
 			}
 
-			if len(itm.SelectedVariants) > 0 {
-
-				for _, vr := range itm.SelectedVariants {
-
-					variants := &restaurant_models.RestaurantOrderItemsVariants{
-						ID:                    uuid.New(),
-						RestaurantOrderItemID: item.ID,
-						VariantID:             vr.VariantID,
-						VariantGroupID:        vr.VariantGroupID,
-						Name:                  vr.VariantName,
-						PriceAtOrder:          vr.PriceAtOrder,
-						CreatedAt:             time.Now(),
-					}
-
-					if err := s.restaurantRepo.CreateOrderItemVariant(txCtx, variants); err != nil {
-						return err
-					}
-				}
-
+			// Prepare Item for the Event
+			itemEvent := restaurant_events.OrderItemEventDTO{
+				ID:         itemID,
+				MenuItemID: itm.MenuItemID,
+				Quantity:   itm.Quantity,
+				Notes:      itm.SpecialInstructions,
+				Variants:   make([]restaurant_events.VariantEventDTO, 0),
+				Addons:     make([]restaurant_events.AddonEventDTO, 0),
 			}
 
-			if len(itm.SelectedAddOns) > 0 {
-
-				for _, adn := range itm.SelectedAddOns {
-					addons := &restaurant_models.RestaurantOrderItemsAddOns{
-						ID:                    uuid.New(),
-						RestaurantOrderItemID: item.ID,
-						AddOnID:               adn.ID,
-						Name:                  adn.Name,
-						Quantity:              adn.Qty,
-						PriceAtOrder:          adn.PriceAtOrder,
-						CreatedAt:             time.Now(),
-					}
-
-					if err := s.restaurantRepo.CreateOrderItemAddon(ctx, addons); err != nil {
-						return err
-					}
+			// 3. Handle Variants
+			for _, vr := range itm.SelectedVariants {
+				variantRecord := &restaurant_models.RestaurantOrderItemsVariants{
+					ID:                    uuid.New(),
+					RestaurantOrderItemID: itemID,
+					VariantID:             vr.VariantID,
+					VariantGroupID:        vr.VariantGroupID,
+					Name:                  vr.VariantName,
+					PriceAtOrder:          vr.PriceAtOrder,
+					CreatedAt:             time.Now(),
+				}
+				if err := s.restaurantRepo.CreateOrderItemVariant(txCtx, variantRecord); err != nil {
+					return err
 				}
 
+				// Add to Event DTO
+				itemEvent.Variants = append(itemEvent.Variants, restaurant_events.VariantEventDTO{
+					VariantID:    vr.VariantID,
+					VariantName:  vr.VariantName,
+					PriceAtOrder: vr.PriceAtOrder,
+				})
 			}
+
+			// 4. Handle Add-ons
+			for _, adn := range itm.SelectedAddOns {
+				addonRecord := &restaurant_models.RestaurantOrderItemsAddOns{
+					ID:                    uuid.New(),
+					RestaurantOrderItemID: itemID,
+					AddOnID:               adn.ID,
+					Name:                  adn.Name,
+					Quantity:              adn.Qty,
+					PriceAtOrder:          adn.PriceAtOrder,
+					CreatedAt:             time.Now(),
+				}
+				if err := s.restaurantRepo.CreateOrderItemAddon(txCtx, addonRecord); err != nil {
+					return err
+				}
+
+				// Add to Event DTO
+				itemEvent.Addons = append(itemEvent.Addons, restaurant_events.AddonEventDTO{
+					AddOnID:      adn.ID,
+					Name:         adn.Name,
+					Qty:          adn.Qty,
+					PriceAtOrder: adn.PriceAtOrder,
+				})
+			}
+
+			// Append the fully built item DTO to the payload
+			eventPayload.Items = append(eventPayload.Items, itemEvent)
+		}
+
+		// 5. Publish the clean DTO
+		err := s.seroEngine.Publish(txCtx, restaurant_events.OrderCreatedInRestaurant, eventPayload)
+		if err != nil {
+			return err
 		}
 
 		return nil
-
 	})
-
 }
 
 /* ----------------------------------- <*> ---------------------------------- */
