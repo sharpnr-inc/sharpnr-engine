@@ -41,6 +41,8 @@ func migrateRestaurant(db *gorm.DB) error {
 		// =====================================================
 		&restaurant_models.RestaurantOrders{},
 		&restaurant_models.RestaurantOrderItems{},
+		&restaurant_models.RestaurantOrderItemsVariants{},
+		&restaurant_models.RestaurantOrderItemsAddOns{},
 
 		// =====================================================
 		// Charges

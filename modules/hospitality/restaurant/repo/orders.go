@@ -73,6 +73,8 @@ func (r *restaurantRepo) CreateOrder(ctx context.Context, order *restaurant_mode
 	return nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (r *restaurantRepo) CreateOrderItem(ctx context.Context, orderItem *restaurant_models.RestaurantOrderItems) error {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
@@ -87,3 +89,39 @@ func (r *restaurantRepo) CreateOrderItem(ctx context.Context, orderItem *restaur
 
 	return nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *restaurantRepo) CreateOrderItemVariant(ctx context.Context, orderVariant *restaurant_models.RestaurantOrderItemsVariants) error {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	// Insert the individual line item
+	err := db.WithContext(ctx).Create(orderVariant).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *restaurantRepo) CreateOrderItemAddon(ctx context.Context, orderAddon *restaurant_models.RestaurantOrderItemsAddOns) error {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	// Insert the individual line item
+	err := db.WithContext(ctx).Create(orderAddon).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */

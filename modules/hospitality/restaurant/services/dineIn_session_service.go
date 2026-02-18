@@ -3,11 +3,9 @@ package restaurantservices
 import (
 	"context"
 	"errors"
-	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
 	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
-	restaurant_events "sharpnr-engine/modules/hospitality/restaurant/events"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 	"time"
 
@@ -64,7 +62,8 @@ func (s *restaurantService) StartDineSession(ctx context.Context,
 
 func (s *restaurantService) AddOrdersInSession(
 	ctx context.Context,
-	req *restaurant_contracts.AddOrderInDineSession_Request_dto,
+	dineInSessionID uuid.UUID,
+	req *restaurant_contracts.DiningSessionOrder_req_dto,
 	orgID uuid.UUID,
 	restaurantID uuid.UUID,
 ) error {
@@ -73,53 +72,79 @@ func (s *restaurantService) AddOrdersInSession(
 
 		txCtx := dbtx.InjectTx(ctx, tx)
 
-		if req == nil {
-			return fmt.Errorf("request is not and seg faulted")
-		}
-
-		order := &restaurant_models.RestaurantOrders{
+		ord := &restaurant_models.RestaurantOrders{
 			ID:                        uuid.New(),
 			OrganizationID:            orgID,
 			RestaurantID:              restaurantID,
-			RestaurantDiningSessionID: &req.DineSessionID,
+			RestaurantDiningSessionID: &dineInSessionID,
 			OrderNumber:               "1",
+			Status:                    "PENDING",
 			CreatedAt:                 time.Now(),
+			UpdatedAt:                 time.Now(),
 		}
 
-		if err := s.restaurantRepo.CreateOrder(txCtx, order); err != nil {
+		if err := s.restaurantRepo.CreateOrder(txCtx, ord); err != nil {
 			return err
 		}
 
-		for _, it := range req.Orders {
+		for _, itm := range req.Items {
 
-			items := &restaurant_models.RestaurantOrderItems{
+			item := &restaurant_models.RestaurantOrderItems{
 				ID:                uuid.New(),
-				RestaurantOrderID: order.ID,
-				MenuItemID:        it.ItemID,
-				Quantity:          it.Qty,
+				RestaurantOrderID: restaurantID,
+				MenuItemID:        itm.MenuItemID,
+				Quantity:          itm.Quantity,
+				UnitPrice:         itm.BasePriceAtOrder,
 				Status:            "PENDING",
+				Notes:             itm.SpecialInstructions,
+				CreatedAt:         time.Now(),
+				UpdatedAt:         time.Now(),
 			}
 
-			if err := s.restaurantRepo.CreateOrderItem(txCtx, items); err != nil {
+			if err := s.restaurantRepo.CreateOrderItem(txCtx, item); err != nil {
 				return err
 			}
-		}
 
-		payload := restaurant_events.OrderCreatedPayload{
-			OrderID:       order.ID,
-			DineSessionID: req.DineSessionID,
-			RestaurantID:  restaurantID,
-			OrderNumber:   order.OrderNumber,
-			ItemsCount:    len(req.Orders),
-			CreatedAt:     order.CreatedAt,
-		}
+			if len(itm.SelectedVariants) > 0 {
 
-		if err := s.seroEngine.Publish(
-			txCtx,
-			restaurant_events.OrderCreatedInRestaurant,
-			payload,
-		); err != nil {
-			return err
+				for _, vr := range itm.SelectedVariants {
+
+					variants := &restaurant_models.RestaurantOrderItemsVariants{
+						ID:                    uuid.New(),
+						RestaurantOrderItemID: item.ID,
+						VariantID:             vr.VariantID,
+						VariantGroupID:        vr.VariantGroupID,
+						Name:                  vr.VariantName,
+						PriceAtOrder:          vr.PriceAtOrder,
+						CreatedAt:             time.Now(),
+					}
+
+					if err := s.restaurantRepo.CreateOrderItemVariant(txCtx, variants); err != nil {
+						return err
+					}
+				}
+
+			}
+
+			if len(itm.SelectedAddOns) > 0 {
+
+				for _, adn := range itm.SelectedAddOns {
+					addons := &restaurant_models.RestaurantOrderItemsAddOns{
+						ID:                    uuid.New(),
+						RestaurantOrderItemID: item.ID,
+						AddOnID:               adn.ID,
+						Name:                  adn.Name,
+						Quantity:              adn.Qty,
+						PriceAtOrder:          adn.PriceAtOrder,
+						CreatedAt:             time.Now(),
+					}
+
+					if err := s.restaurantRepo.CreateOrderItemAddon(ctx, addons); err != nil {
+						return err
+					}
+				}
+
+			}
 		}
 
 		return nil

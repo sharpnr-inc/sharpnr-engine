@@ -42,6 +42,8 @@ type RestaurantRepositoryInterface interface {
 	// Orders
 	CreateOrder(ctx context.Context, order *restaurant_models.RestaurantOrders) error
 	CreateOrderItem(ctx context.Context, orderItem *restaurant_models.RestaurantOrderItems) error
+	CreateOrderItemVariant(ctx context.Context, orderVariant *restaurant_models.RestaurantOrderItemsVariants) error
+	CreateOrderItemAddon(ctx context.Context, orderAddon *restaurant_models.RestaurantOrderItemsAddOns) error
 	GetOrdersByDiningSessionID(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantOrders, error)
 	GetOrderItemsByOrderID(ctx context.Context, restaurantOrderID uuid.UUID) ([]*restaurant_models.RestaurantOrderItems, error)
 

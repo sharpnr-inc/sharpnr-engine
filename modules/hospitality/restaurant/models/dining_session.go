@@ -10,18 +10,14 @@ import (
 /* ------------------------ Restaurant Dining Session ----------------------- */
 
 type RestaurantDiningSession struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	RestaurantID uuid.UUID `gorm:"type:uuid;not null;index"`
-	TableID      uuid.UUID `gorm:"type:uuid;not null;index"`
-
-	Status restaurant_constants.RestaurantDiningSessionStatusType `gorm:"size:20;not null"`
-	// OPEN, CLOSED, CANCELLED
+	ID           uuid.UUID                                              `gorm:"type:uuid;primaryKey"`
+	RestaurantID uuid.UUID                                              `gorm:"type:uuid;not null;index"`
+	TableID      uuid.UUID                                              `gorm:"type:uuid;not null;index"`
+	Status       restaurant_constants.RestaurantDiningSessionStatusType `gorm:"size:20;not null"`
 
 	StartedAt time.Time
 	StartedBy uuid.UUID
 	ClosedAt  *time.Time
-
 	CreatedAt time.Time
 }
 
@@ -45,25 +41,18 @@ func (RestaurantDiningSessionCustomer) TableName() string {
 /* ----------------------- Restaurant Session payments ---------------------- */
 
 type RestaurantSessionPayment struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	OrganizationID uuid.UUID
-	PropertyID     uuid.UUID
-	RestaurantID   uuid.UUID
-	LegalEntityID  uuid.UUID
-
+	ID                        uuid.UUID `gorm:"type:uuid;primaryKey"`
+	OrganizationID            uuid.UUID
+	PropertyID                uuid.UUID
+	RestaurantID              uuid.UUID
+	LegalEntityID             uuid.UUID
 	RestaurantDiningSessionID uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	Amount float64
+	Method string // CASH, UPI, CARD
 
-	Method string
-	// CASH, UPI, CARD
-
-	Status string
-	// RECEIVED, FAILED
-
-	Reference string
-
+	Status     string // RECEIVED, FAILED
+	Reference  string
 	ReceivedAt time.Time
 }
 

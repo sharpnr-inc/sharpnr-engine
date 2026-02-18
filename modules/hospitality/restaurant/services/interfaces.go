@@ -49,4 +49,11 @@ type RestaurantServiceInterface interface {
 	) (uuid.UUID, error)
 
 	GetDineSessionOrders(ctx context.Context, dineInSessionID uuid.UUID) (interface{}, error)
+	AddOrdersInSession(
+		ctx context.Context,
+		dineInSessionID uuid.UUID,
+		req *restaurant_contracts.DiningSessionOrder_req_dto,
+		orgID uuid.UUID,
+		restaurantID uuid.UUID,
+	) error
 }

@@ -28,29 +28,35 @@ type RestaurantTableLayout_Response_dto struct {
 
 /* ----------------------------------- *** ---------------------------------- */
 
-type OrdersResquest_dto struct {
-	PropertyID             uuid.UUID
-	OwnersID               uuid.UUID
-	TableID                *uuid.UUID
-	OrderProcessEmployeeID *uuid.UUID // this is the ID for the employeeID who took the order
-	OrderType              string     // DINE_IN | TAKEAWAY | ROOM_SERVICE
-	Orders                 []OrdersItem
+// Order represents the top-level order for a table
+type DiningSessionOrder_req_dto struct {
+	TableID uuid.UUID   `json:"table_id"`
+	Items   []OrderItem `json:"items"`
 }
 
-type OrdersItem struct {
-	ItemID             uuid.UUID
-	Qty                int
-	SpecialInstruction string
-	VariantID          *uuid.UUID
-	AddonIDs           []uuid.UUID
+// OrderItem matches the "truth" of your React Cart Item
+type OrderItem struct {
+	MenuItemID          uuid.UUID         `json:"menu_item_id"`
+	ItemName            string            `json:"item_name"`
+	Quantity            int               `json:"quantity"`
+	BasePriceAtOrder    float64           `json:"base_price_at_order"`
+	SpecialInstructions string            `json:"special_instructions"`
+	SelectedVariants    []SelectedVariant `json:"selected_variants"`
+	SelectedAddOns      []SelectedAddOn   `json:"selected_add_ons"`
 }
 
-/* ----------------------------------- <*> ---------------------------------- */
-
-type AddOrderInDineSession_Request_dto struct {
-	TableID       uuid.UUID
-	DineSessionID uuid.UUID
-	Orders        []OrdersItem
+// SelectedVariant handles multiple groups (Size, Crust, etc.)
+type SelectedVariant struct {
+	VariantGroupID uuid.UUID `json:"variant_group_id"`
+	VariantID      uuid.UUID `json:"variant_id"`
+	VariantName    string    `json:"variant_name"`
+	PriceAtOrder   float64   `json:"price_at_order"`
 }
 
-/* ----------------------------------- *** ---------------------------------- */
+// SelectedAddOn handles multi-select extras (Coke, Extra Cheese)
+type SelectedAddOn struct {
+	ID           uuid.UUID `json:"id"`
+	Name         string    `json:"name"`
+	Qty          int       `json:"qty"`
+	PriceAtOrder float64   `json:"price_at_order"`
+}
