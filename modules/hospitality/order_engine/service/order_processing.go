@@ -29,7 +29,7 @@ func (s *hospitalityOrderEngineService) ProcessOrder(ctx context.Context, data r
 			kotVariants = append(kotVariants, kitchen_contracts.KOTExtra_dto{
 				ID:   v.VariantID,
 				Name: v.VariantName,
-				Qty:  1, 
+				Qty:  1,
 			})
 		}
 
@@ -45,12 +45,13 @@ func (s *hospitalityOrderEngineService) ProcessOrder(ctx context.Context, data r
 
 		// Prepare the KOT Item DTO
 		kotItem := kitchen_contracts.KOTItem_dto{
-			OrderItemID: itm.ID,         // The PK of the RestaurantOrderItem
-			MenuItemID:  itm.MenuItemID,
-			Quantity:    itm.Quantity,
-			Remarks:     itm.Notes,
-			Variants:    kotVariants,
-			Addons:      kotAddons,
+			OrderItemID:  data.OrderID,
+			MenuItemID:   itm.MenuItemID,
+			MenuItemName: itm.MenuItemName,
+			Quantity:     itm.Quantity,
+			Remarks:      itm.Notes,
+			Variants:     kotVariants,
+			Addons:       kotAddons,
 		}
 
 		groups[kitchenID] = append(groups[kitchenID], kotItem)

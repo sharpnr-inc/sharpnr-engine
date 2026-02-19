@@ -15,13 +15,15 @@ type KOT_resp_dto struct {
 }
 
 type KOTItem_resp_dto struct {
-	ID         uuid.UUID           `json:"id"`
-	MenuItemID uuid.UUID           `json:"menu_item_id"`
-	VariantID  *uuid.UUID          `json:"variant_id,omitempty"`
-	Quantity   int                 `json:"quantity"`
-	Remarks    string              `json:"remarks"`
-	IsPrinted  bool                `json:"is_printed"`
-	Addons     []KOTAddon_resp_dto `json:"addons"`
+	OrderID      uuid.UUID `json:"order_id"`
+	MenuItemID   uuid.UUID `json:"menu_item_id"`
+	MenuItemName string
+	VariantID    *uuid.UUID          `json:"variant_id,omitempty"`
+	VaraintName  *string             `jsonr:"variant_name,omitempty"`
+	Quantity     int                 `json:"quantity"`
+	Remarks      string              `json:"remarks"`
+	IsPrinted    bool                `json:"is_printed"`
+	Addons       []KOTAddon_resp_dto `json:"addons"`
 }
 
 type KOTAddon_resp_dto struct {

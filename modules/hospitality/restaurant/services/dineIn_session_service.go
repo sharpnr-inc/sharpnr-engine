@@ -86,7 +86,7 @@ func (s *restaurantService) AddOrdersInSession(
 			OrganizationID:            orgID,
 			RestaurantID:              restaurantID,
 			RestaurantDiningSessionID: &dineInSessionID,
-			OrderNumber:               "1",
+			OrderNumber:               "1", // TODO Needed to fixed
 			Status:                    "PENDING",
 			CreatedAt:                 time.Now(),
 			UpdatedAt:                 time.Now(),
@@ -97,16 +97,16 @@ func (s *restaurantService) AddOrdersInSession(
 		}
 
 		for _, itm := range req.Items {
-			itemID := uuid.New()
 
 			// Build the Item Record for the DB
 			itemRecord := &restaurant_models.RestaurantOrderItems{
-				ID:                itemID,
+				ID:                uuid.New(),
 				RestaurantOrderID: ord.ID,
 				MenuItemID:        itm.MenuItemID,
+				MenuItemName:      itm.ItemName,
 				Quantity:          itm.Quantity,
 				UnitPrice:         itm.BasePriceAtOrder,
-				Status:            "PENDING",
+				Status:            "PENDING", // unesseory
 				Notes:             itm.SpecialInstructions,
 				CreatedAt:         time.Now(),
 				UpdatedAt:         time.Now(),
@@ -118,19 +118,19 @@ func (s *restaurantService) AddOrdersInSession(
 
 			// Prepare Item for the Event
 			itemEvent := restaurant_events.OrderItemEventDTO{
-				ID:         itemID,
-				MenuItemID: itm.MenuItemID,
-				Quantity:   itm.Quantity,
-				Notes:      itm.SpecialInstructions,
-				Variants:   make([]restaurant_events.VariantEventDTO, 0),
-				Addons:     make([]restaurant_events.AddonEventDTO, 0),
+				MenuItemID:   itm.MenuItemID,
+				MenuItemName: itm.ItemName,
+				Quantity:     itm.Quantity,
+				Notes:        itm.SpecialInstructions,
+				Variants:     make([]restaurant_events.VariantEventDTO, 0),
+				Addons:       make([]restaurant_events.AddonEventDTO, 0),
 			}
 
 			// 3. Handle Variants
 			for _, vr := range itm.SelectedVariants {
 				variantRecord := &restaurant_models.RestaurantOrderItemsVariants{
 					ID:                    uuid.New(),
-					RestaurantOrderItemID: itemID,
+					RestaurantOrderItemID: itemRecord.ID,
 					VariantID:             vr.VariantID,
 					VariantGroupID:        vr.VariantGroupID,
 					Name:                  vr.VariantName,
@@ -153,7 +153,7 @@ func (s *restaurantService) AddOrdersInSession(
 			for _, adn := range itm.SelectedAddOns {
 				addonRecord := &restaurant_models.RestaurantOrderItemsAddOns{
 					ID:                    uuid.New(),
-					RestaurantOrderItemID: itemID,
+					RestaurantOrderItemID: itemRecord.ID,
 					AddOnID:               adn.ID,
 					Name:                  adn.Name,
 					Quantity:              adn.Qty,
@@ -220,7 +220,7 @@ func (s *restaurantService) GetDineSessionOrders(ctx context.Context, dineInSess
 			itemDTO := restaurant_contracts.OrderItem_resp_dto{
 				ID:         itm.ID,
 				MenuItemID: itm.MenuItemID,
-				Name:       "Test", // Assumes your model/join has this
+				Name:       itm.MenuItemName, // Assumes your model/join has this
 				Quantity:   itm.Quantity,
 				UnitPrice:  itm.UnitPrice,
 				Status:     itm.Status,

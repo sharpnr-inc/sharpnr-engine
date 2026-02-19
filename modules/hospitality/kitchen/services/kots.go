@@ -2,9 +2,11 @@ package kitchenservices
 
 import (
 	"context"
+	"errors"
 	kitchen_contracts "sharpnr-engine/modules/hospitality/kitchen/contracts"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func (s *kitchenService) GetKots(ctx context.Context, kitchenID uuid.UUID) ([]kitchen_contracts.KOT_resp_dto, error) {
@@ -25,24 +27,37 @@ func (s *kitchenService) GetKots(ctx context.Context, kitchenID uuid.UUID) ([]ki
 			Items:     []kitchen_contracts.KOTItem_resp_dto{},
 		}
 
-		// 2. Explicitly query items for THIS ticket (Flat DB style)
+		// 2. Explicitly query items for THIS ticket
 		items, err := s.kitchenRepo.GetKitchenTicketItemsByTicketID(ctx, t.ID)
 		if err != nil {
-			continue // Or handle error
+			continue
 		}
 
 		for _, itm := range items {
 			itemDTO := kitchen_contracts.KOTItem_resp_dto{
-				ID:         itm.ID,
-				MenuItemID: itm.MenuItemID,
-				VariantID:  itm.VariantID,
-				Quantity:   itm.Quantity,
-				Remarks:    itm.Remarks,
-				IsPrinted:  itm.IsPrinted,
-				Addons:     []kitchen_contracts.KOTAddon_resp_dto{},
+				OrderID:      itm.ID,
+				MenuItemID:   itm.MenuItemID,
+				MenuItemName: itm.MenuItemName,
+				Quantity:     itm.Quantity,
+				Remarks:      itm.Remarks,
+				IsPrinted:    itm.IsPrinted,
+				Addons:       []kitchen_contracts.KOTAddon_resp_dto{},
 			}
 
-			// 3. Explicitly query addons for THIS item
+			// --- VARIANT LOGIC ---
+			// Check if this item has a variant assigned
+			variant, err := s.kitchenRepo.GetKitchenTicketItemVariant(ctx, itm.ID)
+			if err == nil {
+				// Record found: Populate pointers
+				itemDTO.VaraintName = &variant.VariantName
+				itemDTO.VariantID = &variant.VaraintID
+			} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+				// A real database error occurred
+				return nil, err
+			}
+			// If ErrRecordNotFound, we do nothing; itemDTO fields stay nil
+
+			// --- ADDONS LOGIC ---
 			addons, err := s.kitchenRepo.GetKitchenTicketItemAddOn(ctx, itm.ID)
 			if err == nil {
 				for _, a := range addons {
@@ -52,6 +67,8 @@ func (s *kitchenService) GetKots(ctx context.Context, kitchenID uuid.UUID) ([]ki
 						Quantity: a.Quantity,
 					})
 				}
+			} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+				return nil, err
 			}
 
 			kotDTO.Items = append(kotDTO.Items, itemDTO)

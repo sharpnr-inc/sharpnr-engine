@@ -15,6 +15,10 @@ func (r *kitchenRepository) CreateKitchenTicketItem(ctx context.Context, item *k
 	return r.db.WithContext(ctx).Create(item).Error
 }
 
+func (r *kitchenRepository) CreateKitchenTicketItemVariant(ctx context.Context, item *kitchen_models.KitchenTicketItemVariant) error {
+	return r.db.WithContext(ctx).Create(item).Error
+}
+
 func (r *kitchenRepository) CreateKitchenTicketItemAddon(ctx context.Context, addon *kitchen_models.KitchenTicketItemAddon) error {
 	return r.db.WithContext(ctx).Create(addon).Error
 }
@@ -54,4 +58,12 @@ func (r *kitchenRepository) GetKitchenTicketItemAddOn(ctx context.Context, kitch
 		Where("kitchen_ticket_item_id = ?", kitchenTicketItemID).
 		Find(&addons).Error
 	return addons, err
+}
+
+func (r *kitchenRepository) GetKitchenTicketItemVariant(ctx context.Context, kitchenTicketItemID uuid.UUID) (*kitchen_models.KitchenTicketItemVariant, error) {
+	var variant *kitchen_models.KitchenTicketItemVariant
+	err := r.db.WithContext(ctx).
+		Where("kitchen_ticket_item_id = ?", kitchenTicketItemID).
+		Find(&variant).Error
+	return variant, err
 }

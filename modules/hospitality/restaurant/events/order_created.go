@@ -19,12 +19,12 @@ type OrderCreatedPayload struct {
 }
 
 type OrderItemEventDTO struct {
-	ID         uuid.UUID         `json:"id"` // The OrderItem Primary Key
-	MenuItemID uuid.UUID         `json:"menu_item_id"`
-	Quantity   int               `json:"quantity"`
-	Notes      string            `json:"notes"`
-	Variants   []VariantEventDTO `json:"variants"`
-	Addons     []AddonEventDTO   `json:"addons"`
+	MenuItemID   uuid.UUID         `json:"menu_item_id"`
+	MenuItemName string            `json:"menu_item_name"`
+	Quantity     int               `json:"quantity"`
+	Notes        string            `json:"notes"`
+	Variants     []VariantEventDTO `json:"variants"`
+	Addons       []AddonEventDTO   `json:"addons"`
 }
 
 type VariantEventDTO struct {

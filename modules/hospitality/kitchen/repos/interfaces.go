@@ -17,9 +17,11 @@ type KitchenRepositoryInterface interface {
 	// Ticket (KOT) Operations
 	CreateKitchenTicket(ctx context.Context, ticket *kitchen_models.KitchenTicket) error
 	CreateKitchenTicketItem(ctx context.Context, item *kitchen_models.KitchenTicketItem) error
+	CreateKitchenTicketItemVariant(ctx context.Context, item *kitchen_models.KitchenTicketItemVariant) error
 	CreateKitchenTicketItemAddon(ctx context.Context, addon *kitchen_models.KitchenTicketItemAddon) error
 
 	GetKitchenTicketsByKitchenID(ctx context.Context, kitchenID uuid.UUID) ([]*kitchen_models.KitchenTicket, error)
 	GetKitchenTicketItemsByTicketID(ctx context.Context, kitchenTicketItemID uuid.UUID) ([]*kitchen_models.KitchenTicketItem, error)
 	GetKitchenTicketItemAddOn(ctx context.Context, kitchenTicketItemID uuid.UUID) ([]*kitchen_models.KitchenTicketItemAddon, error)
+	GetKitchenTicketItemVariant(ctx context.Context, kitchenTicketItemID uuid.UUID) (*kitchen_models.KitchenTicketItemVariant, error)
 }

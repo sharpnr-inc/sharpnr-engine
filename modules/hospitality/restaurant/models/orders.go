@@ -29,12 +29,13 @@ type RestaurantOrderItems struct {
 	ID                uuid.UUID `gorm:"type:uuid;primaryKey"`
 	RestaurantOrderID uuid.UUID `gorm:"type:uuid;not null;index"`
 	MenuItemID        uuid.UUID `gorm:"type:uuid;not null;index"`
-	Quantity          int       `gorm:"not null"`
-	UnitPrice float64 `gorm:"type:numeric(12,2);not null"`
-	Status    string  `gorm:"type:varchar(30);not null;index"` // PENDING, PREPARING, READY, SERVED, CANCELLED
-	Notes     string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	MenuItemName      string
+	Quantity          int     `gorm:"not null"`
+	UnitPrice         float64 `gorm:"type:numeric(12,2);not null"`
+	Status            string  `gorm:"type:varchar(30);not null;index"` // PENDING, PREPARING, READY, SERVED, CANCELLED
+	Notes             string
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
 }
 
 func (RestaurantOrderItems) TableName() string {

@@ -20,6 +20,7 @@ func (s *kitchenService) CreateKOT(ctx context.Context, input kitchen_contracts.
 		KitchenID:      input.KitchenID,
 		Status:         "PENDING",
 		TicketNo:       "KOT-AUTO-1", // Replace with your sequence logic
+		OrderID:        input.OrderID,
 		CreatedAt:      now,
 		UpdatedAt:      now,
 	}
@@ -31,19 +32,11 @@ func (s *kitchenService) CreateKOT(ctx context.Context, input kitchen_contracts.
 	// 2. Iterate through line items
 	for _, itm := range input.Items {
 
-		// Note: Using itm.Variants[0].ID if your model only supports one variant.
-		// If multiple variants are needed, the model KitchenTicketItem needs updating.
-		var variantID *uuid.UUID
-		if len(itm.Variants) > 0 {
-			vID := itm.Variants[0].ID
-			variantID = &vID
-		}
-
 		ticketItem := &kitchen_models.KitchenTicketItem{
 			ID:              uuid.New(),
 			KitchenTicketID: ticket.ID,
 			MenuItemID:      itm.MenuItemID,
-			VariantID:       variantID,
+			MenuItemName:    itm.MenuItemName,
 			Quantity:        int(itm.Quantity),
 			Remarks:         itm.Remarks,
 			IsPrinted:       false,
@@ -53,6 +46,20 @@ func (s *kitchenService) CreateKOT(ctx context.Context, input kitchen_contracts.
 
 		if err := s.kitchenRepo.CreateKitchenTicketItem(ctx, ticketItem); err != nil {
 			return err
+		}
+
+		for _, vrn := range itm.Variants {
+			varaintsRecords := &kitchen_models.KitchenTicketItemVariant{
+				ID:                  uuid.New(),
+				KitchenTicketItemID: ticketItem.ID,
+				VaraintID:           vrn.ID,
+				VariantName:         vrn.Name,
+				CreatedAt:           now,
+			}
+
+			if err := s.kitchenRepo.CreateKitchenTicketItemVariant(ctx, varaintsRecords); err != nil {
+				return err
+			}
 		}
 
 		// 3. Handle Addons for this specific item
