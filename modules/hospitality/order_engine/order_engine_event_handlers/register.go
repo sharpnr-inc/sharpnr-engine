@@ -15,6 +15,6 @@ func Register(
 	seroEngine.Subscribe(
 		restaurant_events.OrderCreatedInRestaurant,
 		handleOrder(service),
-		false,
+		true,
 	)
 }
