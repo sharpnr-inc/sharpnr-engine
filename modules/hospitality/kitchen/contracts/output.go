@@ -1,19 +1,31 @@
 package kitchen_contracts
 
-import "github.com/google/uuid"
+import (
+	"time"
 
-type KOTDisplayView struct {
-	TicketID    uuid.UUID
-	TicketNo    string
-	TableSource string
-	Items       []KOTItemView
+	"github.com/google/uuid"
+)
+
+type KOT_resp_dto struct {
+	ID        uuid.UUID          `json:"id"`
+	TicketNo  string             `json:"ticket_no"`
+	Status    string             `json:"status"`
+	CreatedAt time.Time          `json:"created_at"`
+	Items     []KOTItem_resp_dto `json:"items"`
 }
 
-type KOTItemView struct {
-	Name     string
-	Variant  string   // From VariantID
-	Addons   []string // From KitchenTicketItemAddon
-	Quantity int
-	Status   string
-	Remarks  string
+type KOTItem_resp_dto struct {
+	ID         uuid.UUID           `json:"id"`
+	MenuItemID uuid.UUID           `json:"menu_item_id"`
+	VariantID  *uuid.UUID          `json:"variant_id,omitempty"`
+	Quantity   int                 `json:"quantity"`
+	Remarks    string              `json:"remarks"`
+	IsPrinted  bool                `json:"is_printed"`
+	Addons     []KOTAddon_resp_dto `json:"addons"`
+}
+
+type KOTAddon_resp_dto struct {
+	ID       uuid.UUID `json:"id"`
+	AddOnID  uuid.UUID `json:"addon_id"`
+	Quantity int       `json:"quantity"`
 }

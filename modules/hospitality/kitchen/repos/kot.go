@@ -3,6 +3,8 @@ package kitchenrepo
 import (
 	"context"
 	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
+
+	"github.com/google/uuid"
 )
 
 func (r *kitchenRepository) CreateKitchenTicket(ctx context.Context, ticket *kitchen_models.KitchenTicket) error {
@@ -15,4 +17,41 @@ func (r *kitchenRepository) CreateKitchenTicketItem(ctx context.Context, item *k
 
 func (r *kitchenRepository) CreateKitchenTicketItemAddon(ctx context.Context, addon *kitchen_models.KitchenTicketItemAddon) error {
 	return r.db.WithContext(ctx).Create(addon).Error
+}
+
+func (r *kitchenRepository) GetKitchenTicketsByKitchenID(ctx context.Context, kitchenID uuid.UUID) ([]*kitchen_models.KitchenTicket, error) {
+	var tickets []*kitchen_models.KitchenTicket
+
+	// We use WithContext to ensure transaction/tracing support
+	// We order by CreatedAt ASC so the kitchen sees the oldest orders first (FIFO)
+	err := r.db.WithContext(ctx).
+		Table("hospitality.kitchen_ticket").
+		Where("kitchen_id = ?", kitchenID).
+		Order("created_at ASC").
+		Find(&tickets).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return tickets, nil
+}
+
+// Fetches all items belonging to a specific Kitchen Ticket
+func (r *kitchenRepository) GetKitchenTicketItemsByTicketID(ctx context.Context, kitchenTicketID uuid.UUID) ([]*kitchen_models.KitchenTicketItem, error) {
+	var items []*kitchen_models.KitchenTicketItem
+	err := r.db.WithContext(ctx).
+		Where("kitchen_ticket_id = ?", kitchenTicketID).
+		Find(&items).Error
+	return items, err
+}
+
+// Fetches all addons belonging to a specific Kitchen Ticket Item
+func (r *kitchenRepository) GetKitchenTicketItemAddOn(ctx context.Context, kitchenTicketItemID uuid.UUID) ([]*kitchen_models.KitchenTicketItemAddon, error) {
+	var addons []*kitchen_models.KitchenTicketItemAddon
+	err := r.db.WithContext(ctx).
+		Where("kitchen_ticket_item_id = ?", kitchenTicketItemID).
+		Find(&addons).Error
+	return addons, err
 }
