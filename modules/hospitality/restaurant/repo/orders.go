@@ -56,6 +56,45 @@ func (r *restaurantRepo) GetOrderItemsByOrderID(ctx context.Context, restaurantO
 	return items, nil
 }
 
+func (r *restaurantRepo) GetOrderItemVariantByOrderID(ctx context.Context, restaurantOrderID uuid.UUID) ([]*restaurant_models.RestaurantOrderItemsVariants, error) {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	var itemsVariant []*restaurant_models.RestaurantOrderItemsVariants
+
+	err := db.WithContext(ctx).Where("restaurant_order_item_id = ?", restaurantOrderID).
+		Order("created_at ASC").
+		Find(&itemsVariant).
+		Error
+	if err != nil {
+		return nil, err
+	}
+
+	return itemsVariant, nil
+}
+
+func (r *restaurantRepo) GetOrderItemAddOnByOrderID(ctx context.Context, restaurantOrderID uuid.UUID) ([]*restaurant_models.RestaurantOrderItemsAddOns, error) {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	var itemsAddon []*restaurant_models.RestaurantOrderItemsAddOns
+	err := db.WithContext(ctx).Where("restaurant_order_item_id = ?", restaurantOrderID).
+		Order("created_at ASC").
+		Find(&itemsAddon).
+		Error
+	if err != nil {
+		return nil, err
+	}
+
+	return itemsAddon, nil
+
+}
+
 /* ----------------------------------- <*> ---------------------------------- */
 
 func (r *restaurantRepo) CreateOrder(ctx context.Context, order *restaurant_models.RestaurantOrders) error {

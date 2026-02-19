@@ -1,1 +1,47 @@
 package restaurant_contracts
+
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
+type DiningSessionOrders_resp_dto struct {
+	DiningSessionID uuid.UUID        `json:"dining_session_id"`
+	Orders          []Order_resp_dto `json:"orders"`
+	SessionTotal    float64          `json:"session_total"` // Sum of all orders
+}
+
+type Order_resp_dto struct {
+	ID          uuid.UUID            `json:"id"`
+	OrderNumber string               `json:"order_number"`
+	Status      string               `json:"status"` // PENDING, SERVED, etc.
+	CreatedAt   time.Time            `json:"created_at"`
+	Items       []OrderItem_resp_dto `json:"items"`
+}
+
+type OrderItem_resp_dto struct {
+	ID         uuid.UUID `json:"id"`
+	MenuItemID uuid.UUID `json:"menu_item_id"`
+	Name       string    `json:"name"` // UI needs to show "Margherita Pizza"
+	Quantity   int       `json:"quantity"`
+	UnitPrice  float64   `json:"unit_price"` // Price at the time of order
+	Status     string    `json:"status"`     // PENDING, COOKING, READY
+	Notes      string    `json:"notes"`      // Special instructions
+
+	Variants []Variant_resp_dto `json:"variants"`
+	AddOns   []Addon_resp_dto   `json:"addons"`
+}
+
+type Variant_resp_dto struct {
+	ID    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`  // e.g., "Extra Large"
+	Price float64   `json:"price"` // Price of this specific variant
+}
+
+type Addon_resp_dto struct {
+	ID       uuid.UUID `json:"id"`
+	Name     string    `json:"name"` // e.g., "Extra Cheese"
+	Quantity int       `json:"quantity"`
+	Price    float64   `json:"price"` // Price per unit of addon
+}

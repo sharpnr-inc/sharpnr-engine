@@ -2,7 +2,6 @@ package restaurantservices
 
 import (
 	"context"
-	"errors"
 	dbtx "sharpnr-engine/core/dbTx"
 	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
@@ -190,53 +189,70 @@ func (s *restaurantService) AddOrdersInSession(
 
 /* ----------------------------------- <*> ---------------------------------- */
 
-func (s *restaurantService) GetDineSessionOrders(ctx context.Context, dineInSessionID uuid.UUID) (interface{}, error) {
-	// 1. Fetch all orders linked to this session
-	orders, err := s.restaurantRepo.GetOrdersByDiningSessionID(ctx, dineInSessionID)
+func (s *restaurantService) GetDineSessionOrders(ctx context.Context, dineInSessionID uuid.UUID) (*restaurant_contracts.DiningSessionOrders_resp_dto, error) {
 
-	// If no orders exist for this session, return nil/null as requested
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
-	}
+	// 1. Fetch orders from Repo
+	orders, err := s.restaurantRepo.GetOrdersByDiningSessionID(ctx, dineInSessionID)
 	if err != nil {
 		return nil, err
 	}
 
-	var ordersWithItems []OrderWithItemsResponse
-
-	// 2. Loop through each order to find its specific items
-	for _, order := range orders {
-		items, err := s.restaurantRepo.GetOrderItemsByOrderID(ctx, order.ID)
-
-		// Handle "No Items" case gracefully
-		if err != nil {
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				// If an order exists but has no items, we treat items as empty
-				items = []*restaurant_models.RestaurantOrderItems{}
-			} else {
-				return nil, err
-			}
-		}
-
-		ordersWithItems = append(ordersWithItems, OrderWithItemsResponse{
-			Order: order,
-			Items: items,
-		})
+	resp := &restaurant_contracts.DiningSessionOrders_resp_dto{
+		DiningSessionID: dineInSessionID,
+		Orders:          make([]restaurant_contracts.Order_resp_dto, 0),
 	}
 
-	// 3. Return the grouped response
-	return DineSessionOrdersResponse{
-		SessionID: dineInSessionID,
-		Orders:    ordersWithItems,
-	}, nil
-}
+	var runningSessionTotal float64
 
-type OrderWithItemsResponse struct {
-	Order *restaurant_models.RestaurantOrders       `json:"order"`
-	Items []*restaurant_models.RestaurantOrderItems `json:"items"`
-}
+	for _, ord := range orders {
+		orderDTO := restaurant_contracts.Order_resp_dto{
+			ID:          ord.ID,
+			OrderNumber: ord.OrderNumber,
+			Status:      ord.Status,
+			CreatedAt:   ord.CreatedAt,
+			Items:       make([]restaurant_contracts.OrderItem_resp_dto, 0),
+		}
 
-type DineSessionOrdersResponse struct {
-	SessionID uuid.UUID                `json:"session_id"`
-	Orders    []OrderWithItemsResponse `json:"orders"`
+		// 2. Fetch Items for this specific order
+		items, _ := s.restaurantRepo.GetOrderItemsByOrderID(ctx, ord.ID)
+
+		for _, itm := range items {
+			itemDTO := restaurant_contracts.OrderItem_resp_dto{
+				ID:         itm.ID,
+				MenuItemID: itm.MenuItemID,
+				Name:       "Test", // Assumes your model/join has this
+				Quantity:   itm.Quantity,
+				UnitPrice:  itm.UnitPrice,
+				Status:     itm.Status,
+				Notes:      itm.Notes,
+			}
+
+			// 3. Fetch Variants & Addons (Optimization: Use a Join in Repo instead of loops)
+			variants, _ := s.restaurantRepo.GetOrderItemVariantByOrderID(ctx, itm.ID)
+			for _, v := range variants {
+				itemDTO.Variants = append(itemDTO.Variants, restaurant_contracts.Variant_resp_dto{
+					ID:    v.VariantID,
+					Name:  v.Name,
+					Price: v.PriceAtOrder,
+				})
+			}
+
+			addons, _ := s.restaurantRepo.GetOrderItemAddOnByOrderID(ctx, itm.ID)
+			for _, a := range addons {
+				itemDTO.AddOns = append(itemDTO.AddOns, restaurant_contracts.Addon_resp_dto{
+					ID:       a.AddOnID,
+					Name:     a.Name,
+					Quantity: a.Quantity,
+					Price:    a.PriceAtOrder,
+				})
+			}
+
+			orderDTO.Items = append(orderDTO.Items, itemDTO)
+		}
+
+		resp.Orders = append(resp.Orders, orderDTO)
+	}
+
+	resp.SessionTotal = runningSessionTotal
+	return resp, nil
 }
