@@ -84,7 +84,7 @@ func (s *restaurantService) AddOrdersInSession(
 		ord := &restaurant_models.RestaurantOrders{
 			ID:                        eventPayload.OrderID,
 			OrganizationID:            orgID,
-			RestaurantID:              restaurantID,
+			/* ---------------- RestaurantID:              restaurantID, ---------------- */
 			RestaurantDiningSessionID: &dineInSessionID,
 			OrderNumber:               "1", // TODO Needed to fixed
 			Status:                    "PENDING",

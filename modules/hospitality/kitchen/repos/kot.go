@@ -3,6 +3,7 @@ package kitchenrepo
 import (
 	"context"
 	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -66,4 +67,34 @@ func (r *kitchenRepository) GetKitchenTicketItemVariant(ctx context.Context, kit
 		Where("kitchen_ticket_item_id = ?", kitchenTicketItemID).
 		Find(&variant).Error
 	return variant, err
+}
+
+func (r *kitchenRepository) GetKOTByID(ctx context.Context, kotID uuid.UUID) (*kitchen_models.KitchenTicket, error) {
+	var ticket kitchen_models.KitchenTicket
+	err := r.db.WithContext(ctx).
+		Where("id = ?", kotID).
+		First(&ticket).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return &ticket, nil
+}
+
+func (r *kitchenRepository) UpdateKotStatus(ctx context.Context, kotID uuid.UUID, status string) error {
+	updates := map[string]interface{}{
+		"status":     status,
+		"updated_at": time.Now(),
+	}
+
+	// Logic: If status is COMPLETED, set the CompletedAt timestamp
+	if status == "COMPLETED" || status == "SERVED" {
+		now := time.Now()
+		updates["completed_at"] = &now
+	}
+
+	return r.db.WithContext(ctx).
+		Model(&kitchen_models.KitchenTicket{}).
+		Where("id = ?", kotID).
+		Updates(updates).Error
 }

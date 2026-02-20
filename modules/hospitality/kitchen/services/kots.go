@@ -3,7 +3,9 @@ package kitchenservices
 import (
 	"context"
 	"errors"
+	"fmt"
 	kitchen_contracts "sharpnr-engine/modules/hospitality/kitchen/contracts"
+	sse_engine "sharpnr-engine/sse"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -78,4 +80,42 @@ func (s *kitchenService) GetKots(ctx context.Context, kitchenID uuid.UUID) ([]ki
 	}
 
 	return resp, nil
+}
+
+func (s *kitchenService) UpdateKotStatus(ctx context.Context, kitchenID uuid.UUID, kotID uuid.UUID, status string) error {
+
+	// 1. Get the ticket first to know which KitchenID it belongs to
+	// (Required for the SSE Topic)
+	ticket, err := s.kitchenRepo.GetKOTByID(ctx, kotID)
+	if err != nil {
+		return err
+	}
+
+	// 2. Perform the update in DB
+	err = s.kitchenRepo.UpdateKotStatus(ctx, kotID, status)
+	if err != nil {
+		return err
+	}
+
+	// 3. Broadcast updated list to all subscribers of this kitchen
+	// We run this in a goroutine to keep the API response fast
+	go func() {
+		// Using Background context as the request context might be cancelled
+		bgCtx := context.Background()
+
+		// Fetch the full updated list of KOTs for this kitchen
+		updatedKots, err := s.GetKots(bgCtx, ticket.KitchenID)
+		if err != nil {
+			return // Log: "Broadcast fetch failed"
+		}
+
+		// Push to the same engine used by the controllers
+		s.sseEngine.MessageChan <- sse_engine.Event{
+			Topic:   fmt.Sprintf("kitchen_%s", ticket.KitchenID.String()),
+			Payload: updatedKots,
+		}
+	}()
+
+	return nil
+
 }

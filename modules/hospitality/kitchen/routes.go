@@ -18,4 +18,10 @@ func KitchenRoutes(
 	kitchenRoutes := v1.Group("/kitchen/:kitchenID")
 	kitchenRoutes.GET("/get-orders", newKitchenController.GetKots)
 
+	kotRoutes := kitchenRoutes.Group("/kot/:kotID")
+	{
+		// Use PATCH for updating a specific field (status)
+		kotRoutes.PATCH("/status", newKitchenController.UpdateKotsStatus)
+	}
+
 }

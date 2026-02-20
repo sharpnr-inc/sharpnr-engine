@@ -48,7 +48,17 @@ func (c *kitchenController) resolveKitchenID(ctx *gin.Context) (uuid.UUID, bool)
 	kitchenIDstr := ctx.Param("kitchenID")
 	parsedID, err := uuid.Parse(kitchenIDstr)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid restaurantID format"))
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid Kitchen ID format"))
+		return uuid.Nil, false
+	}
+	return parsedID, true
+}
+
+func (c *kitchenController) resolveKOTsID(ctx *gin.Context) (uuid.UUID, bool) {
+	kotIDstr := ctx.Param("kotID")
+	parsedID, err := uuid.Parse(kotIDstr)
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid KOT ID format"))
 		return uuid.Nil, false
 	}
 	return parsedID, true

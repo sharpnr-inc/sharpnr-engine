@@ -3,6 +3,8 @@ package kitchencontrollers
 import (
 	"fmt"
 	"io"
+	"net/http"
+	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -55,4 +57,40 @@ func (c *kitchenController) GetKots(ctx *gin.Context) {
 			return true
 		}
 	})
+}
+
+func (c *kitchenController) UpdateKotsStatus(ctx *gin.Context) {
+
+	_, _, ok := c.resolveContext(ctx)
+	if !ok {
+		return
+	}
+
+	kitchenID, ok := c.resolveKitchenID(ctx)
+	if !ok {
+		return
+	}
+
+	kotID, ok := c.resolveKOTsID(ctx)
+	if !ok {
+		return
+	}
+
+	// 2. Bind the new status from the request body
+	var input struct {
+		Status string `json:"status" binding:"required"`
+	}
+
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, "", err)
+		return
+	}
+
+	if err := c.kitchenService.UpdateKotStatus(ctx.Request.Context(), kitchenID, kotID, input.Status); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "KOT updated successfully")
+
 }

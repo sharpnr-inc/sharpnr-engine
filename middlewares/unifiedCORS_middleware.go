@@ -13,7 +13,7 @@ func UnifiedCORSMiddleware() gin.HandlerFunc {
 			"http://localhost:5173",
 			"http://192.168.1.33:5173",
 		},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "X-CSRF-TOKEN"},
 		AllowCredentials: true,
 	})
