@@ -4,8 +4,10 @@ import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
+	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func (r *restaurantRepo) GetOrdersByDiningSessionID(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantOrders, error) {
@@ -29,6 +31,27 @@ func (r *restaurantRepo) GetOrdersByDiningSessionID(ctx context.Context, session
 	}
 
 	return orders, nil
+}
+
+func (r *restaurantRepo) UpdateOrderStatus(ctx context.Context, orderID uuid.UUID, status string) error {
+	result := r.db.WithContext(ctx).
+		Model(&restaurant_models.RestaurantOrders{}).
+		Where("id = ?", orderID).
+		Updates(map[string]interface{}{
+			"status":     status,
+			"updated_at": time.Now(),
+		})
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	// optional safety check
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return nil
 }
 
 /* ----------------------------------- <*> ---------------------------------- */

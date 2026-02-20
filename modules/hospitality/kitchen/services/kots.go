@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	dbtx "sharpnr-engine/core/dbTx"
 	kitchen_contracts "sharpnr-engine/modules/hospitality/kitchen/contracts"
+	restaurant_events "sharpnr-engine/modules/hospitality/restaurant/events"
 	sse_engine "sharpnr-engine/sse"
 
 	"github.com/google/uuid"
@@ -91,8 +93,24 @@ func (s *kitchenService) UpdateKotStatus(ctx context.Context, kitchenID uuid.UUI
 		return err
 	}
 
-	// 2. Perform the update in DB
-	err = s.kitchenRepo.UpdateKotStatus(ctx, kotID, status)
+	err = s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+		if err := s.kitchenRepo.UpdateKotStatus(txCtx, kotID, status); err != nil {
+			return err
+		}
+
+		payload := restaurant_events.OrderStatusUpdatePayload{
+			OrderID: ticket.OrderID,
+			Status:  status,
+		}
+
+		if err := s.seroEngine.Publish(txCtx, "ORDER_STATUS_UPDATED", payload); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return err
 	}

@@ -51,6 +51,8 @@ type RestaurantRepositoryInterface interface {
 
 	GetOrdersByDiningSessionID(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantOrders, error)
 
+	UpdateOrderStatus(ctx context.Context, orderID uuid.UUID, status string) error
+
 	// Charges
 	CreateCharges(ctx context.Context, charges *restaurant_models.RestaurantCharge) error
 	GetAllChargesOfSession(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantCharge, error)

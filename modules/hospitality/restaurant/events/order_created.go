@@ -8,7 +8,13 @@ import (
 
 const (
 	OrderCreatedInRestaurant sero.SeroEngineEventType = "ORDER_CREATED_IN_RESTAURANT"
+	OrderStatusUpdated       sero.SeroEngineEventType = "ORDER_STATUS_UPDATED"
 )
+
+type OrderStatusUpdatePayload struct {
+	OrderID uuid.UUID `json:"order_id"`
+	Status  string    `json:"status"`
+}
 
 type OrderCreatedPayload struct {
 	OrderID        uuid.UUID           `json:"order_id"`

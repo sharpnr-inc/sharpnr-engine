@@ -37,6 +37,8 @@ type RestaurantServiceInterface interface {
 
 	CreateOrder(ctx context.Context)
 
+	UpdateOrderStatus(ctx context.Context, orderID uuid.UUID, status string) error
+
 	/* -------------------------------------------------------------------------- */
 	/*                               DineIn Services                              */
 	/* -------------------------------------------------------------------------- */

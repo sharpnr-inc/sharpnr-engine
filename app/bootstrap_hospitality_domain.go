@@ -34,7 +34,7 @@ func bootstrapHospitality(
 
 	// Kitchen
 	kitchenRepo := kitchenrepo.NewKitchenRepository(db)
-	kitchenService := kitchenservices.NewKitchenService(kitchenRepo, seroEngine, sseEngine)
+	kitchenService := kitchenservices.NewKitchenService(kitchenRepo, seroEngine, sseEngine, txManager)
 	kitchen_sero_event_handlers.Register(seroEngine, kitchenService)
 
 	// Menu
