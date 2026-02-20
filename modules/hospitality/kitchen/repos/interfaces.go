@@ -27,3 +27,97 @@ type KitchenRepositoryInterface interface {
 	GetKitchenTicketItemAddOn(ctx context.Context, kitchenTicketItemID uuid.UUID) ([]*kitchen_models.KitchenTicketItemAddon, error)
 	GetKitchenTicketItemVariant(ctx context.Context, kitchenTicketItemID uuid.UUID) (*kitchen_models.KitchenTicketItemVariant, error)
 }
+
+type KitchenStagingRepositoryInterface interface {
+
+	// =====================================================
+	// KitchenTicketStaging CRUD
+	// =====================================================
+
+	CreateKitchenTicketStaging(
+		ctx context.Context,
+		ticket *kitchen_models.KitchenTicketStaging,
+	) error
+
+	GetKitchenTicketStagingByID(
+		ctx context.Context,
+		id uuid.UUID,
+	) (*kitchen_models.KitchenTicketStaging, error)
+
+	ListKitchenTicketStagingByKitchenID(
+		ctx context.Context,
+		kitchenID uuid.UUID,
+	) ([]kitchen_models.KitchenTicketStaging, error)
+
+	UpdateKitchenTicketStaging(
+		ctx context.Context,
+		ticket *kitchen_models.KitchenTicketStaging,
+	) error
+
+	DeleteKitchenTicketStaging(
+		ctx context.Context,
+		id uuid.UUID,
+	) error
+
+	// =====================================================
+	// KitchenTicketItemStaging CRUD
+	// =====================================================
+
+	CreateKitchenTicketItemStaging(
+		ctx context.Context,
+		item *kitchen_models.KitchenTicketItemStaging,
+	) error
+
+	ListKitchenTicketItemStagingByTicketID(
+		ctx context.Context,
+		kitchenTicketID uuid.UUID,
+	) ([]kitchen_models.KitchenTicketItemStaging, error)
+
+	UpdateKitchenTicketItemStaging(
+		ctx context.Context,
+		item *kitchen_models.KitchenTicketItemStaging,
+	) error
+
+	DeleteKitchenTicketItemStaging(
+		ctx context.Context,
+		id uuid.UUID,
+	) error
+
+	// =====================================================
+	// KitchenTicketItemVariantStaging CRUD
+	// =====================================================
+
+	CreateKitchenTicketItemVariantStaging(
+		ctx context.Context,
+		variant *kitchen_models.KitchenTicketItemVariantStaging,
+	) error
+
+	ListKitchenTicketItemVariantStagingByItemID(
+		ctx context.Context,
+		kitchenTicketItemID uuid.UUID,
+	) ([]kitchen_models.KitchenTicketItemVariantStaging, error)
+
+	DeleteKitchenTicketItemVariantStaging(
+		ctx context.Context,
+		id uuid.UUID,
+	) error
+
+	// =====================================================
+	// KitchenTicketItemAddonStaging CRUD
+	// =====================================================
+
+	CreateKitchenTicketItemAddonStaging(
+		ctx context.Context,
+		addon *kitchen_models.KitchenTicketItemAddonStaging,
+	) error
+
+	ListKitchenTicketItemAddonStagingByItemID(
+		ctx context.Context,
+		kitchenTicketItemID uuid.UUID,
+	) ([]kitchen_models.KitchenTicketItemAddonStaging, error)
+
+	DeleteKitchenTicketItemAddonStaging(
+		ctx context.Context,
+		id uuid.UUID,
+	) error
+}
