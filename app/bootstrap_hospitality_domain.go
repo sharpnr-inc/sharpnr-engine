@@ -20,6 +20,7 @@ import (
 	restaurantrepo "sharpnr-engine/modules/hospitality/restaurant/repo"
 	restaurantservices "sharpnr-engine/modules/hospitality/restaurant/services"
 	"sharpnr-engine/sero"
+	sse_engine "sharpnr-engine/sse"
 
 	"gorm.io/gorm"
 )
@@ -28,11 +29,12 @@ func bootstrapHospitality(
 	db *gorm.DB,
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
+	sseEngine *sse_engine.StreamManager,
 ) *hospitalitydomain.HospitalityDomain {
 
 	// Kitchen
 	kitchenRepo := kitchenrepo.NewKitchenRepository(db)
-	kitchenService := kitchenservices.NewKitchenService(kitchenRepo, seroEngine)
+	kitchenService := kitchenservices.NewKitchenService(kitchenRepo, seroEngine, sseEngine)
 	kitchen_sero_event_handlers.Register(seroEngine, kitchenService)
 
 	// Menu

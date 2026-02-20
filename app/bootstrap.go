@@ -4,6 +4,7 @@ import (
 	dbtx "sharpnr-engine/core/dbTx"
 	"sharpnr-engine/sero"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
+	sse_engine "sharpnr-engine/sse"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -15,6 +16,7 @@ func BootstrapModules(
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	seroEngine *sero.SEROEngine,
+	sseEngine *sse_engine.StreamManager,
 ) *AppModules {
 
 	iAM := bootstrapSharIAM(db)
@@ -40,7 +42,7 @@ func BootstrapModules(
 
 	identityService := bootstrapIdentity(db, employeeService)
 
-	hospitality := bootstrapHospitality(db, txManager, seroEngine)
+	hospitality := bootstrapHospitality(db, txManager, seroEngine, sseEngine)
 
 	accountingService := bootstrapAccounting(db, txManager)
 
@@ -66,6 +68,7 @@ func BootstrapModules(
 		hospitality:           hospitality,
 		orchestratorService:   orchestratorService,
 		orgSetupWizard:        orgSetupWizardService,
+		sseEngine:             sseEngine,
 	}
 
 }

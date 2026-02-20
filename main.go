@@ -14,6 +14,7 @@ import (
 	"sharpnr-engine/sero"
 	"sharpnr-engine/shared/database"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
+	sse_engine "sharpnr-engine/sse"
 
 	_ "sharpnr-engine/docs"
 
@@ -83,8 +84,8 @@ func main() {
 	})
 
 	txManager := dbtx.NewGormTxManager(db)
-
-	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, mailerEng, seroEngine)
+	sseEngine := sse_engine.NewStreamManager()
+	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, mailerEng, seroEngine, sseEngine)
 
 	// Create and configure the main router
 	r := api.SetupRouter(

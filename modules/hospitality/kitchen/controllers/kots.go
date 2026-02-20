@@ -1,8 +1,8 @@
 package kitchencontrollers
 
 import (
+	"fmt"
 	"io"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,35 +19,40 @@ func (c *kitchenController) GetKots(ctx *gin.Context) {
 		return
 	}
 
-	// 2. Set SSE Headers
+	// 2. Subscribe using the EXACT same string format as the Service
+	// Since kitchenID is a UUID, we use .String() and %s
+	topic := fmt.Sprintf("kitchen_%s", kitchenID.String())
+	clientChan := c.sseEngine.Subscribe(topic)
+
+	// 3. Clean up when the client leaves
+	defer c.sseEngine.Unsubscribe(topic, clientChan)
+
+	// 4. Set Headers for SSE
 	ctx.Header("Content-Type", "text/event-stream")
 	ctx.Header("Cache-Control", "no-cache")
 	ctx.Header("Connection", "keep-alive")
 	ctx.Header("Transfer-Encoding", "chunked")
 
-	// 3. Start the stream
-	ctx.Stream(func(w io.Writer) bool {
-		// Fetch fresh data from service
-		res, err := c.kitchenService.GetKots(ctx.Request.Context(), kitchenID)
-		if err != nil {
-			// In SSE, we send errors as a specific event or log them
-			ctx.SSEvent("error", gin.H{"message": "failed to fetch KOTs"})
-			return false // Stop the stream on critical error
-		}
-
-		// Send the data to the client
-		ctx.SSEvent("message", res)
-
-		// Flush the data immediately to the client
+	// 5. Immediate First Load
+	// This ensures the user sees their KOTs instantly without waiting for an update
+	initialData, err := c.kitchenService.GetKots(ctx.Request.Context(), kitchenID)
+	if err == nil {
+		ctx.SSEvent("message", initialData)
 		ctx.Writer.Flush()
+	}
 
-		// Wait for a few seconds before the next update (polling interval)
-		// Adjust this based on how 'live' you want the kitchen to be
+	// 6. Real-time Stream
+	ctx.Stream(func(w io.Writer) bool {
 		select {
 		case <-ctx.Request.Context().Done():
-			return false // Client disconnected, stop the loop
-		case <-time.After(5 * time.Second):
-			return true // Continue to the next loop iteration
+			// Browser closed or connection lost
+			return false
+
+		case data := <-clientChan:
+			// Triggered by s.sseEngine.MessageChan in the Service
+			ctx.SSEvent("message", data)
+			ctx.Writer.Flush()
+			return true
 		}
 	})
 }

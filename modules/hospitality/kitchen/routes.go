@@ -12,7 +12,8 @@ func KitchenRoutes(
 	modules app.ModulesProvider,
 ) {
 	kitchenService := modules.Hospitality().KitchenService()
-	newKitchenController := kitchencontrollers.NewKitchenController(kitchenService)
+	sse := modules.SseEngine()
+	newKitchenController := kitchencontrollers.NewKitchenController(kitchenService, sse)
 
 	kitchenRoutes := v1.Group("/kitchen/:kitchenID")
 	kitchenRoutes.GET("/get-orders", newKitchenController.GetKots)
