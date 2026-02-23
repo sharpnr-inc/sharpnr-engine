@@ -21,21 +21,21 @@ func (w *writer) set(ctx *gin.Context, def Definition, value string) {
 		def.Name,
 		value,
 		def.TTL,
-		"/",
+		def.Path,
 		w.domain,
-		w.secure,
+		def.Secure,
 		def.Scope == Protected,
 	)
 }
 
 func (w *writer) clear(ctx *gin.Context, def Definition) {
 	ctx.SetCookie(
-		def.Name,
-		"",
-		-1,
-		"/",
-		w.domain,
-		w.secure,
-		def.Scope == Protected,
-	)
+        def.Name,
+        "",
+        -1,
+        "/",
+        w.domain,
+        def.Secure, // 🔹 FIX: Use def.Secure, not w.secure
+        def.Scope == Protected,
+    )
 }

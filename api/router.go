@@ -3,6 +3,7 @@ package api
 import (
 	v1 "sharpnr-engine/api/v1"
 	"sharpnr-engine/app"
+	"sharpnr-engine/config"
 	"sharpnr-engine/cookieManager"
 	dbtx "sharpnr-engine/core/dbTx"
 	org_signup "sharpnr-engine/core/org_signup"
@@ -26,13 +27,14 @@ func SetupRouter(
 	cookies cookieManager.Manager,
 	jwtmgr jwt_manager.Manager,
 	modules app.ModulesProvider,
+	corsConfig config.CORSConfig,
 
 ) *gin.Engine {
 
 	router := gin.Default()
 
 	// ✅ ONE CORS middleware for everything
-	router.Use(middlewares.UnifiedCORSMiddleware())
+	router.Use(middlewares.UnifiedCORSMiddleware(corsConfig))
 
 	// ========================
 	// 🌐 WEB API (cookies)
@@ -45,8 +47,8 @@ func SetupRouter(
 
 		protected := webV1.Group("/")
 		protected.Use(
-			webMiddleware.WebAuthMiddleware(jwtmgr),
-			webMiddleware.CSRFMiddleware(),
+			webMiddleware.WebAuthMiddleware(jwtmgr, cookies),
+			webMiddleware.CSRFMiddleware(cookies),
 		)
 
 		{

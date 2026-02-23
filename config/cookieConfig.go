@@ -35,19 +35,19 @@ func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieM
 				Name:     "__Host_Auth",
 				Scope:    cookieManager.Protected,
 				TTL:      int(ttl.Cookie.Seconds()),
-				SameSite: http.SameSiteStrictMode,
+				SameSite: http.SameSiteNoneMode,
 			},
 			cookieManager.Signup: {
 				Name:     "__Host_Signup",
 				Scope:    cookieManager.Protected,
 				TTL:      int(ttl.Cookie.Seconds()),
-				SameSite: http.SameSiteStrictMode,
+				SameSite: http.SameSiteNoneMode,
 			},
 			cookieManager.CSRF: {
 				Name:     "__Host_CSRF",
 				Scope:    cookieManager.Public,
 				TTL:      int((30 * time.Minute).Seconds()),
-				SameSite: http.SameSiteStrictMode,
+				SameSite: http.SameSiteNoneMode,
 			},
 		}
 	}
@@ -59,18 +59,24 @@ func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieM
 			Scope:    cookieManager.Protected,
 			TTL:      int(ttl.Cookie.Seconds()),
 			SameSite: http.SameSiteLaxMode,
+			Secure:   false,
+			Path:     "/",
 		},
 		cookieManager.Signup: {
 			Name:     "_signup",
 			Scope:    cookieManager.Protected,
 			TTL:      int(ttl.Cookie.Seconds()),
 			SameSite: http.SameSiteLaxMode,
+			Secure:   false,
+			Path:     "/",
 		},
 		cookieManager.CSRF: {
 			Name:     "_dev_csrf",
 			Scope:    cookieManager.Public,
 			TTL:      int((300 * time.Minute).Seconds()),
 			SameSite: http.SameSiteLaxMode,
+			Secure:   false,
+			Path:     "/",
 		},
 	}
 }

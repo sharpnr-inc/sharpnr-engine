@@ -2,6 +2,7 @@ package webMiddleware
 
 import (
 	"net/http"
+	"sharpnr-engine/cookieManager"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,16 +12,8 @@ const (
 	csrfHeaderName = "X-CSRF-Token"
 )
 
-func CSRFMiddleware() gin.HandlerFunc {
+func CSRFMiddleware(cookies cookieManager.Manager) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-
-		// 🔐 Ensure user is authenticated first
-		// if _, exists := ctx.Get(SessionIDContextKey); !exists {
-		// 	ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-		// 		"message": "Authentication required",
-		// 	})
-		// 	return
-		// }
 
 		// Only protect unsafe methods
 		switch ctx.Request.Method {
@@ -29,7 +22,8 @@ func CSRFMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		csrfCookie, err := ctx.Cookie(csrfCookieName)
+		// 1️⃣ Read CSRF cookie via manager
+		csrfCookie, err := cookies.ReadCSRF(ctx)
 		if err != nil || csrfCookie == "" {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"message": "CSRF cookie missing",
@@ -37,6 +31,7 @@ func CSRFMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		// 2️⃣ Read header token
 		csrfHeader := ctx.GetHeader(csrfHeaderName)
 		if csrfHeader == "" || csrfHeader != csrfCookie {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
