@@ -18,14 +18,6 @@ func SignupGuardMiddleware(
 ) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
-		// 1️⃣ If already authenticated → block onboarding
-		if _, err := cookies.ReadAuth(ctx); err == nil {
-			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-				"message": "Already authenticated",
-			})
-			return
-		}
-
 		// 2️⃣ Read signup cookie
 		signupToken, err := cookies.ReadSignup(ctx)
 		if err != nil || signupToken == "" {
