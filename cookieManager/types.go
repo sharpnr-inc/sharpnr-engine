@@ -35,4 +35,6 @@ type Definition struct {
 	SameSite http.SameSite
 	Secure   bool
 	Path     string
+	Domain   string
+	HttpOnly bool
 }

@@ -38,6 +38,7 @@ func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieM
 				SameSite: http.SameSiteNoneMode,
 				Secure:   true,
 				Path:     "/",
+				HttpOnly: true,
 			},
 			cookieManager.Signup: {
 				Name:     "__Host_Signup",
@@ -46,6 +47,7 @@ func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieM
 				SameSite: http.SameSiteNoneMode,
 				Secure:   true,
 				Path:     "/",
+				HttpOnly: true,
 			},
 			cookieManager.CSRF: {
 				Name:     "_CSRF",
@@ -54,6 +56,8 @@ func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieM
 				SameSite: http.SameSiteNoneMode,
 				Secure:   true,
 				Path:     "/",
+				Domain:   ".sharpnr.com",
+				HttpOnly: false,
 			},
 		}
 	}
