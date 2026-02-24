@@ -36,18 +36,24 @@ func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieM
 				Scope:    cookieManager.Protected,
 				TTL:      int(ttl.Cookie.Seconds()),
 				SameSite: http.SameSiteNoneMode,
+				Secure:   true,
+				Path:     "/",
 			},
 			cookieManager.Signup: {
 				Name:     "__Host_Signup",
 				Scope:    cookieManager.Protected,
 				TTL:      int(ttl.Cookie.Seconds()),
 				SameSite: http.SameSiteNoneMode,
+				Secure:   true,
+				Path:     "/",
 			},
 			cookieManager.CSRF: {
 				Name:     "__Host_CSRF",
 				Scope:    cookieManager.Public,
 				TTL:      int((30 * time.Minute).Seconds()),
 				SameSite: http.SameSiteNoneMode,
+				Secure:   true,
+				Path:     "/",
 			},
 		}
 	}
