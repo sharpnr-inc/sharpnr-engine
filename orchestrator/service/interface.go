@@ -66,4 +66,10 @@ type OrchestratorServiceInterface interface {
 	CreateLegalEntity(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.AddLegalEntity_REQ_DTO) error
 	UpdateLegalEntity()
 	GetAllLegalEntity(ctx context.Context, orgID uuid.UUID) ([]*orchestrator_dtos.LegalEntity_Response_dto, error)
+
+	/* -------------------------------------------------------------------------- */
+	/*                                 UI related                                 */
+	/* -------------------------------------------------------------------------- */
+
+	GetSharpnrLauncherData(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) (orchestrator_dtos.OrgLauncherResponse, error)
 }

@@ -11,3 +11,27 @@ type PropertiesOfOrg struct {
 	PropertyName string
 	Restaurents  []uuid.UUID
 }
+
+// DomainConfig represents modules + infra inside a domain
+type DomainConfig struct {
+	Modules []string `json:"Modules"`
+	Infras  []string `json:"Infras"`
+}
+
+/*
+Domains structure:
+
+[
+
+	{
+	  "Hospitality": {
+	    "Modules": [...],
+	    "Infras": [...]
+	  }
+	}
+
+]
+*/
+type OrgLauncherResponse struct {
+	Domains []map[string]DomainConfig `json:"Domains"`
+}

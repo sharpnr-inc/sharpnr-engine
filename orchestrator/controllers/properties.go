@@ -57,6 +57,8 @@ func (c *OrchestratorController) ListAllOrgProperty(ctx *gin.Context) {
 
 }
 
+/* ----------------------------------- <> ----------------------------------- */
+
 func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 	// 1. User Authentication Check
 	orgID, _, ok := c.resolveRequestContexts(ctx)
@@ -81,6 +83,8 @@ func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 	// 5. Success Response
 	utils.Success(ctx, http.StatusOK, "Property details fetch successfully", res)
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (c *OrchestratorController) AddDomainInProperty(ctx *gin.Context) {
 
@@ -143,6 +147,8 @@ func (c *OrchestratorController) AddModulesInProperty(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusOK, "Result", result)
 
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 
