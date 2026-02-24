@@ -48,7 +48,7 @@ func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieM
 				Path:     "/",
 			},
 			cookieManager.CSRF: {
-				Name:     "__Host_CSRF",
+				Name:     "_CSRF",
 				Scope:    cookieManager.Public,
 				TTL:      int((30 * time.Minute).Seconds()),
 				SameSite: http.SameSiteNoneMode,
