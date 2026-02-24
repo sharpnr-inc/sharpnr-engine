@@ -38,6 +38,7 @@ func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieM
 				SameSite: http.SameSiteNoneMode,
 				Secure:   true,
 				Path:     "/",
+				Domain:   "",
 				HttpOnly: true,
 			},
 			cookieManager.Signup: {
@@ -47,6 +48,7 @@ func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieM
 				SameSite: http.SameSiteNoneMode,
 				Secure:   true,
 				Path:     "/",
+				Domain:   "",
 				HttpOnly: true,
 			},
 			cookieManager.CSRF: {
