@@ -13,7 +13,7 @@ type DatabaseConfig struct {
 func loadDatabase() DatabaseConfig {
 	return DatabaseConfig{
 		Driver:   getEnv("DB_DRIVER", "postgres"),
-		Host:     getEnv("DB_HOST", ""),
+		Host:     getEnv("DB_HOST", "postgres"),
 		Port:     getEnv("DB_PORT", "5432"),
 		Name:     getEnv("DB_NAME", ""),
 		User:     getEnv("DB_USER", ""),

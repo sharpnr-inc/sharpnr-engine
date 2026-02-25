@@ -56,3 +56,8 @@ const (
 	Configured    PropertyConfigurationStatus = "CONFIGURED"
 	NotConfigured PropertyConfigurationStatus = "NOT_CONFIGURED"
 )
+
+type PropertyInfraTypes string
+const (
+	InfraKitchen PropertyInfraTypes = "KITCHEN/FOOD_PREP_AREA"
+)

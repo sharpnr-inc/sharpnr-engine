@@ -22,7 +22,7 @@ func (s *orgSetupWizardService) Step_three_AddLegalEntity(
 		Pincode:     step_three_input.Pincode,
 	}
 
-	if err := s.orgLegalEntitySvc.CreateNewLegalEntity(ctx, inputData); err != nil {
+	if _, err := s.orgLegalEntitySvc.CreateNewLegalEntity(ctx, inputData); err != nil {
 		return err
 	}
 

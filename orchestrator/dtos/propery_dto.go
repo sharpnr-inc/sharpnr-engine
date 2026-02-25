@@ -126,3 +126,18 @@ type HotelLayoutSetup_Req_dto struct {
 	FloorName     string `json:"floorName"`
 	NumberOfRooms int    `json:"numberOfRooms"`
 }
+
+/* ------------------------- ModuleOperationsResults ------------------------ */
+
+type ModuleOperationResult struct {
+	Created []string `json:"created"`
+	Skipped []string `json:"skipped"`
+	Message string   `json:"message"`
+}
+
+/* ------------------------------------ . ----------------------------------- */
+
+type ListAllInfraOfProperty_Res_dto struct {
+	PropertyID      uuid.UUID `json:"property_id"`
+	Infrastructures []*PropertyInfra_res_dto
+}

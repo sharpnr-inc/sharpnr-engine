@@ -2,6 +2,7 @@ package kitchen
 
 import (
 	"sharpnr-engine/app"
+	kitchencontrollers "sharpnr-engine/modules/hospitality/kitchen/controllers"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,13 +11,17 @@ func KitchenRoutes(
 	v1 *gin.RouterGroup,
 	modules app.ModulesProvider,
 ) {
-	// kitchenService := modules.Hospitality().KitchenService()
-	// newKitchenController := kitchencontrollers.NewKitchenController(kitchenService)
+	kitchenService := modules.Hospitality().KitchenService()
+	sse := modules.SseEngine()
+	newKitchenController := kitchencontrollers.NewKitchenController(kitchenService, sse)
 
-	// kitchenRoutes := v1.Group("/kitchen")
+	kitchenRoutes := v1.Group("/kitchen/:kitchenID")
+	kitchenRoutes.GET("/get-orders", newKitchenController.GetKots)
 
-	// // 🧾 Regular REST APIs
-	// kitchenRoutes.GET("/get-orders")
-	// kitchenRoutes.POST("/update-orders")
+	kotRoutes := kitchenRoutes.Group("/kot/:kotID")
+	{
+		// Use PATCH for updating a specific field (status)
+		kotRoutes.PATCH("/status", newKitchenController.UpdateKotsStatus)
+	}
 
 }

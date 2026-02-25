@@ -12,6 +12,7 @@ func migrateKitchen(db *gorm.DB) error {
 		&kitchen_models.Kitchen{},
 		&kitchen_models.KitchenTicket{},
 		&kitchen_models.KitchenTicketItem{},
+		&kitchen_models.KitchenTicketItemVariant{},
 		&kitchen_models.KitchenTicketItemAddon{},
 	)
 }

@@ -10,6 +10,7 @@ import (
 type HospitalityOrderEngineRepositoryInterface interface {
 	CreateOrder(ctx context.Context, order *hospitality_order_engine_models.HospitalityOrder) error
 	GetOrderByID(ctx context.Context, orderID uuid.UUID) (*hospitality_order_engine_models.HospitalityOrder, error)
+	GetOrdersByOwnersID(ctx context.Context, ownersID uuid.UUID) ([]*hospitality_order_engine_models.HospitalityOrder, error)
 	GetOrdersByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]*hospitality_order_engine_models.HospitalityOrder, error)
 	UpdateOrderStatus(ctx context.Context, orderID uuid.UUID, status string) error
 

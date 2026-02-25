@@ -14,6 +14,7 @@ import (
 	"sharpnr-engine/sero"
 	"sharpnr-engine/shared/database"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
+	sse_engine "sharpnr-engine/sse"
 
 	_ "sharpnr-engine/docs"
 
@@ -66,6 +67,7 @@ func main() {
 	defer mailerEng.Shutdown()
 
 	defs := config.CookieRegistry(cfg.App, cfg.TTL)
+
 	cookieManager.Init(defs)
 	cookieMgr := cookieManager.New(cookieManager.Config{
 		Secure: cfg.Cookie.Secure,
@@ -83,8 +85,8 @@ func main() {
 	})
 
 	txManager := dbtx.NewGormTxManager(db)
-
-	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, mailerEng, seroEngine)
+	sseEngine := sse_engine.NewStreamManager()
+	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, mailerEng, seroEngine, sseEngine)
 
 	// Create and configure the main router
 	r := api.SetupRouter(
@@ -94,24 +96,17 @@ func main() {
 		cookieMgr,
 		jwtmgr,
 		sharpnrModules,
+		cfg.Cors,
 	)
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// Get local IP
-	localIP, err := config.GetLocalIP()
-	if err != nil || localIP == "" {
-		log.Println("⚠️ Could not determine local IP, using 0.0.0.0")
-		localIP = "0.0.0.0"
-	}
+	port := cfg.App.Port
 
-	port := "8080"
-	address := localIP + ":" + port
-	log.Printf("App started on http://%s ...", address)
+	log.Printf("App started on :%s ...", port)
 
-	// Run Gin server on detected local IP
-	if err := r.Run(address); err != nil {
+	if err := r.Run(":" + port); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }

@@ -10,13 +10,17 @@ import (
 type OrchestratorServiceInterface interface {
 	GetOrganizationStatus(ctx context.Context, orgID uuid.UUID) (bool, error)
 
-	// SetupWiz
+	/* -------------------------------------------------------------------------- */
+	/*                       Setupwizard related operations                       */
+	/* -------------------------------------------------------------------------- */
 	AddOrganizationHQAddress(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupOrganizationHQAddressReqDTO) error
 	StepTwoProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupOrgPropertyReqDTO) error
 	StepThreeLegalEntity(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupLegalEntityReqDTO) error
 	SetUpWizProgress(ctx context.Context, orgID uuid.UUID) (orchestrator_dtos.SetupProgressResponseDTO, error)
 
-	// Property
+	/* -------------------------------------------------------------------------- */
+	/*                         Property related operations                        */
+	/* -------------------------------------------------------------------------- */
 	GetAllPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
 	ConfigurePropertyToDomain(
 		ctx context.Context,
@@ -30,7 +34,7 @@ type OrchestratorServiceInterface interface {
 		orgID uuid.UUID,
 		propertyID uuid.UUID,
 		req *orchestrator_dtos.PropertyModuleConfigurationDTO,
-	) error
+	) (*orchestrator_dtos.ModuleOperationResult, error)
 	ConfigureRestaurant(
 		ctx context.Context,
 		orgID uuid.UUID,
@@ -43,8 +47,29 @@ type OrchestratorServiceInterface interface {
 	GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
 	CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error
 
-	//---------------Legal-Entity----------------------------------//
+	GetPropertiesAndRestaurant(
+		ctx context.Context,
+		orgID uuid.UUID,
+		empID uuid.UUID,
+	) (*orchestrator_dtos.PropertyOfResturants, error)
+
+	GetPropertyInfra(
+		ctx context.Context,
+		propertyID uuid.UUID,
+		orgID uuid.UUID, infraType *string,
+	) (*orchestrator_dtos.ListAllInfraOfProperty_Res_dto, error)
+
+	/* -------------------------------------------------------------------------- */
+	/*                           Legal Entity Operations                          */
+	/* -------------------------------------------------------------------------- */
 
 	CreateLegalEntity(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.AddLegalEntity_REQ_DTO) error
 	UpdateLegalEntity()
+	GetAllLegalEntity(ctx context.Context, orgID uuid.UUID) ([]*orchestrator_dtos.LegalEntity_Response_dto, error)
+
+	/* -------------------------------------------------------------------------- */
+	/*                                 UI related                                 */
+	/* -------------------------------------------------------------------------- */
+
+	GetSharpnrLauncherData(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) (orchestrator_dtos.OrgLauncherResponse, error)
 }

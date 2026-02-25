@@ -23,11 +23,6 @@ type employeeService struct {
 	// HR Details
 	empProfileRepo    employee_repo.EmployeeProfileRepositoryInterface
 	empEmploymentRepo employee_repo.EmployeeEmploymentRepositoryInterface
-
-	// Policy
-	policyRepo           employee_repo.EmployeePolicyRepositoryInterface
-	policyRuleRepo       employee_repo.EmployeePolicyRuleRepositoryInterface
-	policyAssignmentRepo employee_repo.EmployeePrivilegePolicyRepositoryInterface
 }
 
 // NewHrEmployeeService constructs a new employeeService.
@@ -43,21 +38,14 @@ func NewEmployeeService(
 	empProfileRepo employee_repo.EmployeeProfileRepositoryInterface,
 	empEmploymentRepo employee_repo.EmployeeEmploymentRepositoryInterface,
 
-	// Policy
-	policyRepo employee_repo.EmployeePolicyRepositoryInterface,
-	policyRuleRepo employee_repo.EmployeePolicyRuleRepositoryInterface,
-	policyAssignmentRepo employee_repo.EmployeePrivilegePolicyRepositoryInterface,
 ) *employeeService {
 
 	return &employeeService{
-		empIdentityRepo:      empIdentityRepo,
-		empAuthRepo:          empAuthRepo,
-		empOnboardingRepo:    empOnboardingRepo,
-		empVerifyRepo:        empVerifyRepo,
-		empProfileRepo:       empProfileRepo,
-		empEmploymentRepo:    empEmploymentRepo,
-		policyRepo:           policyRepo,
-		policyRuleRepo:       policyRuleRepo,
-		policyAssignmentRepo: policyAssignmentRepo,
+		empIdentityRepo:   empIdentityRepo,
+		empAuthRepo:       empAuthRepo,
+		empOnboardingRepo: empOnboardingRepo,
+		empVerifyRepo:     empVerifyRepo,
+		empProfileRepo:    empProfileRepo,
+		empEmploymentRepo: empEmploymentRepo,
 	}
 }

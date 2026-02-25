@@ -10,15 +10,18 @@ import (
 func loadEnv() {
 	env := os.Getenv("APP_ENV")
 
-	file := ".env"
+	file := ".env.development" // default (local dev)
+
 	switch env {
 	case "development":
 		file = ".env.development"
 	case "production":
 		file = ".env.production"
+	case "docker":
+		file = ".env.docker"
 	}
 
 	if err := godotenv.Load(file); err != nil {
-		log.Printf("⚠️ could not load %s\n", file)
+		log.Printf("⚠️ could not load %s", file)
 	}
 }

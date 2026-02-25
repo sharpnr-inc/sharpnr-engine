@@ -29,6 +29,8 @@ func (r *restaurantService) SetupDefaultRestaurant(ctx context.Context, orgID uu
 
 }
 
+/* ----------------------------------- *** ---------------------------------- */
+
 func (r *restaurantService) GetAllRestaurantOfProperty(
 	ctx context.Context,
 	propertyID uuid.UUID,
@@ -57,22 +59,21 @@ func (r *restaurantService) GetAllRestaurantOfProperty(
 	return result, nil
 }
 
+/* ---------------------------------- <**> ---------------------------------- */
+
 func (r *restaurantService) GetRestaurantLayout(
 	ctx context.Context,
-	orgID uuid.UUID, // PropertyID
-	restaurantID uuid.UUID, // RestaurantID
+	orgID uuid.UUID,
+	restaurantID uuid.UUID,
 ) (layout restaurant_contracts.RestaurantLayout_Response_dto, err error) {
 
-	// 1. Fetch all floors for the restaurant
 	floors, err := r.restaurantRepo.GetAllFloorOfRestaurant(ctx, restaurantID)
 	if err != nil {
 		return layout, err
 	}
 
-	// 2. Initialize the result slice
 	var floorLayouts []restaurant_contracts.RestaurantFloorLayout_Response_dto
 
-	// 3. For each floor, fetch its tables and map to DTO
 	for _, floor := range floors {
 		tables, err := r.restaurantRepo.GetAllTablesOfFloor(ctx, floor.ID)
 		if err != nil {
@@ -80,14 +81,29 @@ func (r *restaurantService) GetRestaurantLayout(
 		}
 
 		var tableDTOs []restaurant_contracts.RestaurantTableLayout_Response_dto
+
 		for _, table := range tables {
+			// 1. Fetch the current session for this table
+			session, err := r.restaurantRepo.GetDiningSessionByTableID(ctx, table.ID)
+
+			var sessionID *uuid.UUID
+			if err == nil && session != nil {
+				// Session found
+				sessionID = &session.ID
+			} else if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+				// Actual DB error (connection, etc.), stop the execution
+				return layout, err
+			}
+			// If err is ErrRecordNotFound, sessionID remains nil, which is correct.
+
 			tableDTOs = append(tableDTOs, restaurant_contracts.RestaurantTableLayout_Response_dto{
-				TableName: table.Name,
-				TableCode: table.Code,
-				FloorID:   table.FloorID.String(),
-				TableID:   table.ID.String(),
-				Status:    table.Status,
-				Capacity:  table.Capacity,
+				TableName:            table.Name,
+				TableCode:            table.Code,
+				FloorID:              table.FloorID.String(),
+				TableID:              table.ID.String(),
+				Status:               table.Status,
+				Capacity:             table.Capacity,
+				CurrentDineSessionID: sessionID, // 2. Attach the ID here
 			})
 		}
 
@@ -98,7 +114,8 @@ func (r *restaurantService) GetRestaurantLayout(
 		})
 	}
 
-	// 4. Wrap in final DTO
 	layout.Layout = floorLayouts
 	return layout, nil
 }
+
+/* -------------------------------- **<***>** ------------------------------- */

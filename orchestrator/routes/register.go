@@ -22,9 +22,11 @@ func RegisterOrchestratorRoutes(
 	orchestService := sharpModules.SharpnrOrchestrator()
 	orchestController := orchestrator_controllers.NewOrchestratorController(orchestService)
 
-	org := webV1.Group("/orchestrator", webMiddleware.WebAuthMiddleware(jwtMgr))
+	org := webV1.Group("/orchestrator", webMiddleware.WebAuthMiddleware(jwtMgr, cookieMgr))
 
 	registerConsoleRoutes(org, orchestController)
 	registerSetupWizardRoutes(org, orchestController)
+	registerHospitalityRoutes(org, orchestController)
+	registersharnprLauncherRoutes(org, orchestController)
 
 }

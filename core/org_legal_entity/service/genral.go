@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *orgLegalEntity) CreateNewLegalEntity(ctx context.Context, input org_legal_entity_contracts.NewLegalEntityInput) error {
+func (r *orgLegalEntity) CreateNewLegalEntity(ctx context.Context, input org_legal_entity_contracts.NewLegalEntityInput) (legalEntityID uuid.UUID, err error) {
 
 	legalEntity := &org_legal_entity_models.OrganizationLegalEntity{
 		ID:             uuid.New(),
@@ -22,7 +22,7 @@ func (r *orgLegalEntity) CreateNewLegalEntity(ctx context.Context, input org_leg
 	}
 
 	if err := r.legalEntityRepo.CreateLegalEntity(ctx, legalEntity); err != nil {
-		return err
+		return uuid.Nil, err
 	}
 
 	legEntAddr := &org_legal_entity_models.LegalEntityAddress{
@@ -38,11 +38,39 @@ func (r *orgLegalEntity) CreateNewLegalEntity(ctx context.Context, input org_leg
 	}
 
 	if err := r.legalEntityRepo.AddAddressInLegalEntity(ctx, legEntAddr); err != nil {
-		return err
+		return uuid.Nil, err
 	}
-	return nil
+	return legalEntity.ID, nil
 }
 
-func (s *orgLegalEntity) GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) (*org_legal_entity_contracts.LegalEntityReader, error) {
-	panic("unimplmented")
+func (s *orgLegalEntity) GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) ([]*org_legal_entity_contracts.LegalEntityReader, error) {
+	// 1. Fetch from Repo
+	legalEntities, err := s.legalEntityRepo.GetLegalEntityByOrgID(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+
+	// 2. Initialize the result slice with the correct length
+	results := make([]*org_legal_entity_contracts.LegalEntityReader, len(legalEntities))
+
+	// 3. Map each repo model to the contract reader
+	for i, le := range legalEntities {
+
+		leAddr, err := s.legalEntityRepo.GetAddressOfLegalEntity(ctx, le.ID)
+		if err != nil {
+			return results, err
+		}
+		results[i] = &org_legal_entity_contracts.LegalEntityReader{
+			LegalEntityID: le.ID,
+			Name:          le.LegalName,
+			EntityType:    le.EntityType,
+			GST:           le.GSTIN,
+			CIN:           le.CIN,
+			PAN:           le.PAN,
+			Country:       leAddr.Country,
+			AddedAt:       le.CreatedAt,
+		}
+	}
+
+	return results, nil
 }

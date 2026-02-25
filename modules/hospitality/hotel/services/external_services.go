@@ -90,3 +90,25 @@ func (h *hotelService) SetupDefaultHotel(ctx context.Context, orgID uuid.UUID, p
 
 	return defHotel.ID, nil
 }
+
+func (h *hotelService) GetHotelByPropertyID(ctx context.Context, propertyID uuid.UUID) (*hotel_contracts.HotelsReader, error) {
+	hotels, err := h.hotelRepo.GetHotelsByPropertyID(ctx, propertyID)
+	if err != nil {
+		return nil, err
+	}
+
+	items := make([]hotel_contracts.HotelReader, len(hotels))
+	for i, hotel := range hotels {
+		items[i] = hotel_contracts.HotelReader{
+			ID:           hotel.ID,
+			Name:         hotel.Name,
+			Status:       hotel.IsActive,
+			IsConfigured: hotel.IsConfigured,
+		}
+	}
+
+	return &hotel_contracts.HotelsReader{
+		Hotels: items,
+	}, nil
+
+}

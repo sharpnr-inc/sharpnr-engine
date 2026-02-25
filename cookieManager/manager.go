@@ -13,6 +13,12 @@ type Manager interface {
 	Set(ctx *gin.Context, t Type, value string) error
 	Clear(ctx *gin.Context, t Type) error
 
+	// 🔥 NEW READ HELPERS
+	ReadAuth(ctx *gin.Context) (string, error)
+	ReadSignup(ctx *gin.Context) (string, error)
+	ReadCSRF(ctx *gin.Context) (string, error)
+	Read(ctx *gin.Context, t Type) (string, error)
+
 	// Signup helpers
 	SetSignup(ctx *gin.Context, value string) error
 	ClearSignup(ctx *gin.Context)
@@ -45,6 +51,41 @@ func (m *manager) Clear(ctx *gin.Context, t Type) error {
 	m.writer.clear(ctx, def)
 	return nil
 }
+
+func (m *manager) Read(
+	ctx *gin.Context,
+	t Type,
+) (string, error) {
+
+	def, ok := registry[t]
+	if !ok {
+		return "", ErrUnknownCookie
+	}
+
+	return ctx.Cookie(def.Name)
+}
+
+// ---- Read helpers ----
+
+func (m *manager) ReadAuth(
+	ctx *gin.Context,
+) (string, error) {
+	return m.Read(ctx, Auth)
+}
+
+func (m *manager) ReadSignup(
+	ctx *gin.Context,
+) (string, error) {
+	return m.Read(ctx, Signup)
+}
+
+func (m *manager) ReadCSRF(
+	ctx *gin.Context,
+) (string, error) {
+	return m.Read(ctx, CSRF)
+}
+
+
 
 // ---- Signup helpers ----
 

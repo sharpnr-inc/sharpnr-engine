@@ -33,4 +33,8 @@ type Definition struct {
 	Scope    Scope
 	TTL      int // seconds
 	SameSite http.SameSite
+	Secure   bool
+	Path     string
+	Domain   string
+	HttpOnly bool
 }

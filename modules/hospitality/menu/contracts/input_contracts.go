@@ -61,3 +61,15 @@ type AddAddOnInput struct {
 	Name       string    `json:"name"`
 	Price      float64   `json:"price"`
 }
+
+/* -------------------------- Configuration Related ------------------------- */
+
+type SetKitchenToMenuItemInput struct {
+	MenuItemID uuid.UUID `json:"menu_item_id"`
+	KitchenID  uuid.UUID `json:"kitchen_id"`
+}
+
+type SetKitchenToWholeMenuInput struct {
+	MenuID    uuid.UUID `json:"menu_id"`
+	KitchenID uuid.UUID `json:"kitchen_id"`
+}

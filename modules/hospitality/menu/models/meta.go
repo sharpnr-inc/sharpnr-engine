@@ -23,3 +23,7 @@ type MenuItemKitchenRegister struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+func (MenuItemKitchenRegister) TableName() string {
+	return "hospitality.menu_item_kitchen_register"
+}

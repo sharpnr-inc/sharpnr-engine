@@ -6,6 +6,8 @@ import (
 	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
 	"sync"
+
+	"github.com/google/uuid"
 )
 
 type Handler func(ctx context.Context, payload interface{}) error
@@ -49,6 +51,7 @@ func (e *SEROEngine) Publish(ctx context.Context, evt SeroEngineEventType, paylo
 	// 2. Persist to Outbox (Atomic with business logic)
 	jsonPayload, _ := json.Marshal(payload)
 	outboxEntry := &SeroOutbox{
+		ID:        uuid.New(),
 		EventName: evt,
 		Payload:   jsonPayload,
 		Status:    "PENDING",
@@ -67,5 +70,20 @@ func (e *SEROEngine) Publish(ctx context.Context, evt SeroEngineEventType, paylo
 			return err // Fail the whole transaction if sync handler fails
 		}
 	}
+	return nil
+}
+
+// MapToStruct converts a generic interface (usually a map) into a specific pointer to a struct
+func MapToStruct(input interface{}, target interface{}) error {
+	bytes, err := json.Marshal(input)
+	if err != nil {
+		return fmt.Errorf("failed to marshal input: %w", err)
+	}
+
+	err = json.Unmarshal(bytes, target)
+	if err != nil {
+		return fmt.Errorf("failed to unmarshal into target struct: %w", err)
+	}
+
 	return nil
 }

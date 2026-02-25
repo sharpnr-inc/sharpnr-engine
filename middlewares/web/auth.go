@@ -3,6 +3,7 @@ package webMiddleware
 import (
 	"net/http"
 
+	"sharpnr-engine/cookieManager"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 
 	"github.com/gin-gonic/gin"
@@ -10,9 +11,6 @@ import (
 )
 
 const (
-	AuthCookie = "_dev_auth"
-
-	// Legacy-compatible context keys
 	UserIDContextKey    = "user_id"
 	OrgUUIDContextKey   = "OrgUUID"
 	SessionIDContextKey = "session_id"
@@ -20,11 +18,11 @@ const (
 
 func WebAuthMiddleware(
 	jwtMgr jwt_manager.Manager,
+	cookies cookieManager.Manager,
 ) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
-		// 1️⃣ Read refresh token from cookie
-		refreshToken, err := ctx.Cookie(AuthCookie)
+		refreshToken, err := cookies.ReadAuth(ctx)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"message": "Authentication required",

@@ -72,21 +72,4 @@ func (RestaurantTable) TableName() string {
 	return "hospitality.restaurant_table"
 }
 
-type RestaurantDiningSession struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	RestaurantID uuid.UUID `gorm:"type:uuid;not null;index"`
-	TableID      uuid.UUID `gorm:"type:uuid;not null;index"`
-
-	Status restaurant_constants.RestaurantDiningSessionStatusType `gorm:"size:20;not null"`
-	// OPEN, CLOSED, CANCELLED
-
-	StartedAt time.Time
-	ClosedAt  *time.Time
-
-	CreatedAt time.Time
-}
-
-func (RestaurantDiningSession) TableName() string {
-	return "hospitality.restaurant_dining_session"
-}

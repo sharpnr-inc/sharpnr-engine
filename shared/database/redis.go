@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"sharpnr-engine/config"
 
@@ -12,16 +13,18 @@ var RedisClient *redis.Client
 
 func ConnectRedis(cfg config.RedisDBConfig) *redis.Client {
 
+	addr := fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)
+
 	RedisClient = redis.NewClient(&redis.Options{
-		Addr:     cfg.Host,
+		Addr:     addr,
 		Password: cfg.Password,
-		DB:       0,
+		DB:       cfg.DB,
 	})
 
-	// check the connection
 	if err := RedisClient.Ping(context.Background()).Err(); err != nil {
 		log.Fatalf("Failed to connect to Redis: %v", err)
 	}
+
 	log.Println("✅ Redis connected successfully.")
 	return RedisClient
 }

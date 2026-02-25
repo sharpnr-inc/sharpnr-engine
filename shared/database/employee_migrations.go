@@ -12,7 +12,6 @@ func migrateEmployee(db *gorm.DB) error {
 		&employee_models.EmployeeOnboarding{},
 		&employee_models.EmployeeVerification{},
 		&employee_models.EmployeeAuth{},
-		&employee_models.EmployeePrivilegePolicy{},
 		&employee_models.EmployeeSession{},
 		&employee_models.EmployeeProfile{},
 		&employee_models.EmployeeBankAccount{},
@@ -24,9 +23,5 @@ func migrateEmployee(db *gorm.DB) error {
 		&employee_models.EmployeeLeaveType{},
 		&employee_models.EmployeeLeaveBalance{},
 		&employee_models.EmployeeLeaveRequest{},
-
-		&employee_models.EmployeePolicy{},
-		&employee_models.EmployeePolicyRule{},
-		&employee_models.EmployeePrivilegePolicy{},
 	)
 }

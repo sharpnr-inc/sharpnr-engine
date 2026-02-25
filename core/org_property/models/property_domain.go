@@ -49,6 +49,7 @@ type OrganizationPropertyDomainInfra struct {
 	OrganizationPropertyID       uuid.UUID
 	OrganizationPropertyDomainID uuid.UUID
 	InfraName                    string
+	InfraType                    property_constants.PropertyInfraTypes
 	IsShared                     *bool
 	// KitchenID or Etc
 	InfraModuleID uuid.UUID

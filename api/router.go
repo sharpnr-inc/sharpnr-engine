@@ -3,10 +3,11 @@ package api
 import (
 	v1 "sharpnr-engine/api/v1"
 	"sharpnr-engine/app"
+	"sharpnr-engine/config"
 	"sharpnr-engine/cookieManager"
 	dbtx "sharpnr-engine/core/dbTx"
 	org_signup "sharpnr-engine/core/org_signup"
-	sharpnr_identity_auth "sharpnr-engine/core/sharpnr_identity"
+	sharpnrIdentity_routes "sharpnr-engine/core/sharpnr_identity/routes"
 	"sharpnr-engine/middlewares"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	orchestrator_routes "sharpnr-engine/orchestrator/routes"
@@ -26,13 +27,14 @@ func SetupRouter(
 	cookies cookieManager.Manager,
 	jwtmgr jwt_manager.Manager,
 	modules app.ModulesProvider,
+	corsConfig config.CORSConfig,
 
 ) *gin.Engine {
 
 	router := gin.Default()
 
 	// ✅ ONE CORS middleware for everything
-	router.Use(middlewares.UnifiedCORSMiddleware())
+	router.Use(middlewares.UnifiedCORSMiddleware(corsConfig))
 
 	// ========================
 	// 🌐 WEB API (cookies)
@@ -41,17 +43,18 @@ func SetupRouter(
 	{
 		org_signup.OrgSignUpRoute(webV1, cookies, jwtmgr, modules)
 
-		sharpnr_identity_auth.SharpnrIdentityAuthWebRoutes(webV1, cookies, jwtmgr, modules)
+		sharpnrIdentity_routes.RegisterSharpnrIdentityWebRoutes(webV1, cookies, jwtmgr, modules)
 
 		protected := webV1.Group("/")
 		protected.Use(
-			webMiddleware.WebAuthMiddleware(jwtmgr),
-			webMiddleware.CSRFMiddleware(),
+			webMiddleware.WebAuthMiddleware(jwtmgr, cookies),
+			webMiddleware.CSRFMiddleware(cookies),
 		)
 
 		{
 			v1.RegisterModuleRoutes(protected, modules)
 			orchestrator_routes.RegisterOrchestratorRoutes(protected, txManager, cookies, jwtmgr, modules)
+			sharpnrIdentity_routes.RegisterSharpnrIdentityProtectedWebRoutes(protected, cookies, jwtmgr, modules)
 		}
 	}
 
@@ -60,7 +63,7 @@ func SetupRouter(
 	// ========================
 	mobileV1 := router.Group("/api/v1/mobile")
 	{
-		sharpnr_identity_auth.SharpnrIdentityAuthMobileRoutes(mobileV1, db, redis)
+		sharpnrIdentity_routes.RegisterSharpnrIdentityMobileRoutes(mobileV1, db, redis)
 	}
 
 	return router

@@ -30,7 +30,7 @@ func OrgSignUpRoute(
 	}
 
 	protectedSignup := v1.Group("/signup")
-	protectedSignup.Use(webMiddleware.SignupGuardMiddleware(jwtmgr))
+	protectedSignup.Use(webMiddleware.SignupGuardMiddleware(jwtmgr, cookies))
 	{
 		protectedSignup.POST("/verify-otp", controller.VerifyOtpForSignup)
 		protectedSignup.GET("/verify-slug", controller.VerifySlug)

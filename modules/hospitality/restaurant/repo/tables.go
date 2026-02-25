@@ -3,18 +3,22 @@ package restaurantrepo
 import (
 	"context"
 	"fmt"
+	dbtx "sharpnr-engine/core/dbTx"
+	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 
 	"github.com/google/uuid"
 )
 
 func (r *restaurantRepo) CreateTables(ctx context.Context, resTable *restaurant_models.RestaurantTable) error {
-	// .Create handles the insertion.
-	// GORM will populate the ID and Timestamps into the resTable pointer.
-	return r.db.WithContext(ctx).Create(resTable).Error
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+	return db.WithContext(ctx).Create(resTable).Error
 }
 
-func (r *restaurantRepo) UpdateTableStatus(ctx context.Context, tableID uuid.UUID, status string) error {
+func (r *restaurantRepo) UpdateTableStatus(ctx context.Context, tableID uuid.UUID, status restaurant_constants.RestaurantTableStatusType) error {
 	// We use .Model() to identify the table and .Update() for the specific column
 	result := r.db.WithContext(ctx).
 		Model(&restaurant_models.RestaurantTable{}).
@@ -35,9 +39,13 @@ func (r *restaurantRepo) UpdateTableStatus(ctx context.Context, tableID uuid.UUI
 
 func (d *restaurantRepo) GetTableById(ctx context.Context, tableId uuid.UUID) (*restaurant_models.RestaurantTable, error) {
 
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = d.db
+	}
 	var table restaurant_models.RestaurantTable
 
-	err := d.db.WithContext(ctx).First(&table, "id = ?", tableId).Error
+	err := db.WithContext(ctx).First(&table, "id = ?", tableId).Error
 	if err != nil {
 		return nil, err
 	}
@@ -45,12 +53,16 @@ func (d *restaurantRepo) GetTableById(ctx context.Context, tableId uuid.UUID) (*
 	return &table, nil
 }
 
-func (r *restaurantRepo) GetTablesByStatus(ctx context.Context, restaurantID uuid.UUID, status string) ([]*restaurant_models.RestaurantTable, error) {
+func (r *restaurantRepo) GetTablesByStatus(ctx context.Context, restaurantID uuid.UUID, status restaurant_constants.RestaurantTableStatusType) ([]*restaurant_models.RestaurantTable, error) {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
 	var tables []*restaurant_models.RestaurantTable
 
 	// We filter by both the parent restaurant ID and the specific status.
 	// Using .Find() ensures we get all matching tables in a slice.
-	err := r.db.WithContext(ctx).
+	err := db.WithContext(ctx).
 		Where("restaurant_id = ? AND status = ?", restaurantID, status).
 		Find(&tables).Error
 
@@ -63,10 +75,14 @@ func (r *restaurantRepo) GetTablesByStatus(ctx context.Context, restaurantID uui
 }
 
 func (r *restaurantRepo) GetAllTablesOfFloor(ctx context.Context, floorID uuid.UUID) ([]*restaurant_models.RestaurantTable, error) {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
 	var tables []*restaurant_models.RestaurantTable
 
 	// Filtering strictly by floor_id without a specific sort order
-	err := r.db.WithContext(ctx).
+	err := db.WithContext(ctx).
 		Where("floor_id = ?", floorID).
 		Find(&tables).Error
 

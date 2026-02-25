@@ -57,33 +57,19 @@ func (c *OrchestratorController) ListAllOrgProperty(ctx *gin.Context) {
 
 }
 
+/* ----------------------------------- <> ----------------------------------- */
+
 func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 	// 1. User Authentication Check
-	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
-		return
-	}
-
-	// 2. Org context check
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
-		return
-	}
-
-	orgID, ok := orgUUIDRaw.(uuid.UUID)
+	orgID, _, ok := c.resolveRequestContexts(ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
-		return
+		return // Response already sent by helper
 	}
 
-	// 3. Param Parsing
-	propertyId := ctx.Param("propertyID")
-	pId, err := uuid.Parse(propertyId)
+	// 2. Param Parsing using your helper
+	pId, err := c.getPropertyFromParams(ctx)
 	if err != nil {
-		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid propertyID format"))
-		return
+		return // getPropertyFromParams already sent the 400 Failure response
 	}
 
 	// 4. Service Call
@@ -98,34 +84,18 @@ func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusOK, "Property details fetch successfully", res)
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (c *OrchestratorController) AddDomainInProperty(ctx *gin.Context) {
 
-	// 1. User Authentication Check
-	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
-		return
-	}
-
-	// 2. Org context check
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
-		return
-	}
-
-	orgID, ok := orgUUIDRaw.(uuid.UUID)
+	orgID, _, ok := c.resolveRequestContexts(ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
-		return
+		return // Response already sent by helper
 	}
-
-	// 3. Param Parsing
-	propertyId := ctx.Param("propertyID")
-	pId, err := uuid.Parse(propertyId)
+	// 2. Param Parsing using your helper
+	pId, err := c.getPropertyFromParams(ctx)
 	if err != nil {
-		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid propertyID format"))
-		return
+		return // getPropertyFromParams already sent the 400 Failure response
 	}
 
 	var req *orchestrator_dtos.AddDomainToPropertyReq_DTO
@@ -146,31 +116,14 @@ func (c *OrchestratorController) AddDomainInProperty(ctx *gin.Context) {
 // ------------------------------------------------------------------------------//
 
 func (c *OrchestratorController) AddModulesInProperty(ctx *gin.Context) {
-	// 1. User Authentication Check
-	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
-		return
-	}
 
-	// 2. Org context check
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
-		return
-	}
-
-	orgID, ok := orgUUIDRaw.(uuid.UUID)
+	orgID, _, ok := c.resolveRequestContexts(ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
 		return
 	}
 
-	// 3. Param Parsing
-	propertyId := ctx.Param("propertyID")
-	pId, err := uuid.Parse(propertyId)
+	pId, err := c.getPropertyFromParams(ctx)
 	if err != nil {
-		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid propertyID format"))
 		return
 	}
 
@@ -180,33 +133,29 @@ func (c *OrchestratorController) AddModulesInProperty(ctx *gin.Context) {
 		return
 	}
 
-	if err := c.orchestService.AddModulesInProperty(ctx.Request.Context(), orgID, pId, req); err != nil {
+	// 1. Capture both the result and the error
+	result, err := c.orchestService.AddModulesInProperty(ctx.Request.Context(), orgID, pId, req)
+
+	if err != nil {
+		// Handle specific errors (like the "Only one module" constraint)
 		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
 		return
 	}
 
-	utils.Success(ctx, 200, "Modules added successfully")
+	// 2. Pass the result object back in the success response
+	// This gives the frontend the 'Created', 'Skipped', and 'Message' fields
+	utils.Success(ctx, http.StatusOK, "Result", result)
 
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 
-	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
-		return
-	}
-
-	// 2. Org context check
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
-		return
-	}
-
-	OrgID, ok := orgUUIDRaw.(uuid.UUID)
+	// 1. User Authentication Check
+	orgID, _, ok := c.resolveRequestContexts(ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
-		return
+		return // Response already sent by helper
 	}
 
 	var req *orchestrator_dtos.CreatePropertyReq_dto
@@ -215,30 +164,19 @@ func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 		return
 	}
 
-	if err := c.orchestService.CreateProperty(ctx.Request.Context(), OrgID, req); err != nil {
-		utils.Success(ctx, http.StatusCreated, "Property Added Successfully")
+	if err := c.orchestService.CreateProperty(ctx.Request.Context(), orgID, req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
 		return
 	}
+
+	utils.Success(ctx, http.StatusOK, "Property Created Successfully")
 
 }
 
 func (c *OrchestratorController) PropertyDomainTypes(ctx *gin.Context) {
 	// 1. User Authentication Check
-	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
-		return
-	}
-
-	// 2. Org context check
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
-		return
-	}
-
-	_, ok := orgUUIDRaw.(uuid.UUID)
+	_, _, ok := c.resolveRequestContexts(ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
 		return
 	}
 
@@ -249,22 +187,10 @@ func (c *OrchestratorController) PropertyDomainTypes(ctx *gin.Context) {
 }
 
 func (c *OrchestratorController) ConfigurePropertiesRestaurant(ctx *gin.Context) {
-	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
-		return
-	}
-
-	// 2. Org context check
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
-		return
-	}
-
-	orgID, ok := orgUUIDRaw.(uuid.UUID)
+	// 1. User Authentication Check
+	orgID, _, ok := c.resolveRequestContexts(ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
-		return
+		return // Response already sent by helper
 	}
 
 	// 3. Param Parsing
@@ -291,22 +217,10 @@ func (c *OrchestratorController) ConfigurePropertiesRestaurant(ctx *gin.Context)
 }
 
 func (c *OrchestratorController) ConfigurePropertyHotel(ctx *gin.Context) {
-	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
-		return
-	}
-
-	// 2. Org context check
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
-		return
-	}
-
-	orgID, ok := orgUUIDRaw.(uuid.UUID)
+	// 1. User Authentication Check
+	orgID, _, ok := c.resolveRequestContexts(ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
-		return
+		return // Response already sent by helper
 	}
 
 	// 3. Param Parsing
@@ -331,4 +245,49 @@ func (c *OrchestratorController) ConfigurePropertyHotel(ctx *gin.Context) {
 	}
 
 	utils.Success(ctx, http.StatusOK, "Configuration Complete")
+}
+
+func (c *OrchestratorController) GetPropertyInfra(ctx *gin.Context) {
+	// 1. User Authentication Check
+	_, _, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return // Response already sent by helper
+	}
+
+	// 2. Param Parsing using your helper
+	_, err := c.getPropertyFromParams(ctx)
+	if err != nil {
+		return // getPropertyFromParams already sent the 400 Failure response
+	}
+
+	// res, err := c.orchestService.GetPropertyInfra(ctx.Request.Context(), orgID, pId)
+	// if err != nil {
+	// 	utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+	// 	return
+	// }
+
+	utils.Success(ctx, http.StatusOK, "Property Infra fetched successfully")
+
+}
+
+func (c *OrchestratorController) GetPropertysInfra(ctx *gin.Context) {
+
+	orgID, _, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return // Response already sent by helper
+	}
+
+	// 2. Param Parsing using your helper
+	pId, err := c.getPropertyFromParams(ctx)
+	if err != nil {
+		return // getPropertyFromParams already sent the 400 Failure response
+	}
+
+	res, err := c.orchestService.GetPropertyInfra(ctx.Request.Context(), orgID, pId, nil)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Property Infra fetched successfully", res)
 }

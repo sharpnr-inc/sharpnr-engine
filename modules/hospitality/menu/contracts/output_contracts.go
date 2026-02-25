@@ -40,6 +40,7 @@ type MenuItemOutput struct {
 	DietaryType       menu_constants.MenuItemDietaryType `json:"dietary_type"`
 	VariantGroups     []VariantGroupOutput               `json:"variant_groups"`
 	AddOns            []AddOnOutput                      `json:"add_ons"`
+	ServedBy          uuid.UUID                          `json:"served_by"` // KitchenID from MenuItemKitchenRegister
 }
 
 type VariantGroupOutput struct {

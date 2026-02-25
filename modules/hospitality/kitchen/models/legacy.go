@@ -30,11 +30,11 @@ type KitchenTicket struct {
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null"`
 	PropertyID     uuid.UUID
 
-	KitchenID      uuid.UUID `gorm:"type:uuid;not null"`
-	ServicePointID uuid.UUID `gorm:"type:uuid;index;not null"`
+	KitchenID uuid.UUID `gorm:"type:uuid;not null"`
 
 	Status   string `gorm:"size:20;default:'PENDING'"`
-	TicketNo string `gorm:"size:50;uniqueIndex"`
+	TicketNo string `gorm:"size:50"`
+	OrderID  uuid.UUID
 
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -53,8 +53,8 @@ type KitchenTicketItem struct {
 	ID              uuid.UUID `gorm:"type:uuid;primaryKey"`
 	KitchenTicketID uuid.UUID `gorm:"type:uuid;not null"`
 
-	MenuItemID uuid.UUID `gorm:"type:uuid;not null"`
-	VariantID  *uuid.UUID
+	MenuItemID   uuid.UUID `gorm:"type:uuid;not null"`
+	MenuItemName string    `gorm:"size:120;default:nil"`
 
 	Quantity  int    `gorm:"not null"`
 	Remarks   string `gorm:"size:255"`
@@ -66,6 +66,18 @@ type KitchenTicketItem struct {
 
 func (KitchenTicketItem) TableName() string {
 	return "hospitality.kitchen_ticket_item"
+}
+
+type KitchenTicketItemVariant struct {
+	ID                  uuid.UUID
+	KitchenTicketItemID uuid.UUID
+	VaraintID           uuid.UUID
+	VariantName         string
+	CreatedAt           time.Time
+}
+
+func (KitchenTicketItemVariant) TableName() string {
+	return "hospitality.kitchen_ticket_item_variants"
 }
 
 type KitchenTicketItemAddon struct {

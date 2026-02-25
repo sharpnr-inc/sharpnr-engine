@@ -9,6 +9,7 @@ type Config struct {
 	Cookie   CookieConfig
 	SMTP     SMTPConfig
 	Email    EmailConfig
+	Cors     CORSConfig
 }
 
 func Load() *Config {
@@ -26,6 +27,7 @@ func Load() *Config {
 		Cookie:   loadCookie(app, ttl),
 		SMTP:     loadSMTP(),
 		Email:    loadEmail(),
+		Cors:     loadCORS(app),
 	}
 
 	validate(cfg)

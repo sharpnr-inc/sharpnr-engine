@@ -1,20 +1,18 @@
 package middlewares
 
 import (
+	"sharpnr-engine/config"
 	"strings"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-func UnifiedCORSMiddleware() gin.HandlerFunc {
+func UnifiedCORSMiddleware(cfg config.CORSConfig) gin.HandlerFunc {
 	webCORS := cors.New(cors.Config{
-		AllowOrigins: []string{
-			"http://localhost:5173",
-			"http://192.168.1.33:5173",
-		},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "X-CSRF-TOKEN"},
+		AllowOrigins:     cfg.WebOrgin,
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "X-CSRF-Token"},
 		AllowCredentials: true,
 	})
 

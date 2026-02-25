@@ -32,4 +32,30 @@ type RestaurantServiceInterface interface {
 		orgID uuid.UUID, // PropertyID
 		restaurantID uuid.UUID, // RestaurantID
 	) (layout restaurant_contracts.RestaurantLayout_Response_dto, err error)
+
+	/* ---------------------------------- Order --------------------------------- */
+
+	CreateOrder(ctx context.Context)
+
+	UpdateOrderStatus(ctx context.Context, orderID uuid.UUID, status string) error
+
+	/* -------------------------------------------------------------------------- */
+	/*                               DineIn Services                              */
+	/* -------------------------------------------------------------------------- */
+
+	StartDineSession(ctx context.Context,
+		restaurantID uuid.UUID,
+		orgID uuid.UUID,
+		employeeID uuid.UUID,
+		tableID uuid.UUID,
+	) (uuid.UUID, error)
+
+	GetDineSessionOrders(ctx context.Context, dineInSessionID uuid.UUID) (*restaurant_contracts.DiningSessionOrders_resp_dto, error)
+	AddOrdersInSession(
+		ctx context.Context,
+		dineInSessionID uuid.UUID,
+		req *restaurant_contracts.DiningSessionOrder_req_dto,
+		orgID uuid.UUID,
+		restaurantID uuid.UUID,
+	) error
 }

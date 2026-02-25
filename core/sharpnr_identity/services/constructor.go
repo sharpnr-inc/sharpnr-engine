@@ -11,11 +11,6 @@ type sharpnrIdentityAuthService struct {
 	employeeService employee_services.EmployeeServiceInterface
 }
 
-// GetRenderer implements SharpnrIdentityAuthServiceInterface.
-func (s *sharpnrIdentityAuthService) GetRenderer(ctx context.Context, orgID uuid.UUID, employeeID uuid.UUID) error {
-	panic("unimplemented")
-}
-
 // VerifyLoggedInEmployee implements SharpnrIdentityAuthServiceInterface.
 func (s *sharpnrIdentityAuthService) VerifyLoggedInEmployee(ctx context.Context, orgID uuid.UUID, employeeID uuid.UUID) error {
 	panic("unimplemented")
