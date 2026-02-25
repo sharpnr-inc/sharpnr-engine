@@ -9,19 +9,29 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "http://sharpnr.com/terms/",
+        "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",
+            "url": "http://www.sharpnr.com/support",
             "email": "support@sharpnr.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
         },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/organization/login": {
-            "post": {
-                "description": "Logs in an organization and returns JWT",
+        "/hospitality/bar": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieves bar information linked to the authenticated organization UUID.",
                 "consumes": [
                     "application/json"
                 ],
@@ -29,30 +39,19 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Organization"
+                    "Hospitality - Bar"
                 ],
-                "summary": "Login for organization root",
-                "parameters": [
-                    {
-                        "description": "Login Credentials",
-                        "name": "login",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.LoginRequest"
-                        }
-                    }
-                ],
+                "summary": "Get bar details for the current organization",
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Bar details retrieved successfully",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Invalid organization UUID format",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -61,7 +60,25 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Unauthorized",
+                        "description": "Organization UUID missing",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No bar found for this organization",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch bar details",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -72,9 +89,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/organization/register": {
-            "post": {
-                "description": "This is Registration for the Organisation",
+        "/orchestrator/setup-status": {
+            "get": {
+                "description": "Detailed explanation of what happens. Note: This requires an 'org_id' inside the session cookie.",
                 "consumes": [
                     "application/json"
                 ],
@@ -82,44 +99,292 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Organization"
+                    "Orchestrator --\u003e Console"
                 ],
-                "summary": "Register for organization Registration",
+                "summary": "Short, punchy summary of the action",
                 "parameters": [
                     {
-                        "description": "Login Credentials",
-                        "name": "login",
+                        "type": "string",
+                        "description": "Session cookie containing org_id",
+                        "name": "Cookie",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/setup-wiz/step3": {
+            "post": {
+                "description": "Third step of the onboarding wizard to define the organization's legal and physical presence.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "core-setup"
+                ],
+                "summary": "Setup Legal Entity",
+                "parameters": [
+                    {
+                        "description": "Legal Entity Details",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.OrganisationRegisterDTO"
+                            "$ref": "#/definitions/orchestrator_dtos.SetupLegalEntityReqDTO"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Legal entity configured successfully",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/utils.Response"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Validation or binding error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/utils.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/setup-wizard/progress": {
+            "get": {
+                "description": "Detailed explanation of what happens (e.g., database changes, emails sent).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CategoryName (e.g.",
+                    "accounting-ap)"
+                ],
+                "summary": "Short, punchy summary of the action",
+                "responses": {
+                    "200": {
+                        "description": "Complete\" \"Success message",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/setup-wizard/step1": {
+            "post": {
+                "description": "Detailed explanation of what happens (e.g., database changes, emails sent).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CategoryName (e.g.",
+                    "accounting-ap)"
+                ],
+                "summary": "Short, punchy summary of the action",
+                "parameters": [
+                    {
+                        "description": "Input description",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/orchestrator_dtos.SetupOrganizationHQAddressReqDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Org HQ successfully\" \"Success message",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/setup-wizard/step2": {
+            "post": {
+                "description": "Second step of the onboarding wizard: Configures the core property attributes for the organization.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "core-setup"
+                ],
+                "summary": "Setup Organization Property",
+                "parameters": [
+                    {
+                        "description": "Property Details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/orchestrator_dtos.SetupOrgPropertyReqDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Property Added Successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/signup/initiate": {
+            "post": {
+                "description": "Validates the request and starts the registration process.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "signup"
+                ],
+                "summary": "Initiate Organization Registration",
+                "parameters": [
+                    {
+                        "description": "Details",
+                        "name": "registration",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/org_signup_dtos.OrganizationRegistrationDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully initiated registration",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
                         }
                     }
                 }
@@ -127,82 +392,164 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.LoginRequest": {
+        "orchestrator_dtos.SetupLegalEntityReqDTO": {
+            "type": "object",
+            "required": [
+                "step_id"
+            ],
+            "properties": {
+                "address_line": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pincode": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "step_id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "orchestrator_dtos.SetupOrgPropertyReqDTO": {
+            "type": "object",
+            "properties": {
+                "accuracy_m": {
+                    "type": "integer"
+                },
+                "address_line": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pincode": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                }
+            }
+        },
+        "orchestrator_dtos.SetupOrganizationHQAddressReqDTO": {
+            "type": "object",
+            "required": [
+                "address_line",
+                "city",
+                "country",
+                "pincode",
+                "state",
+                "step_id"
+            ],
+            "properties": {
+                "accuracy_m": {
+                    "type": "integer"
+                },
+                "address_line": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "pincode": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "step_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "org_signup_dtos.OrganizationRegistrationDTO": {
+            "description": "Organization Registration Data",
             "type": "object",
             "required": [
                 "email",
+                "mobile",
                 "password"
             ],
             "properties": {
                 "email": {
                     "type": "string"
                 },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.OrganisationRegisterDTO": {
-            "type": "object",
-            "required": [
-                "adminName",
-                "bankAccNumber",
-                "email",
-                "name",
-                "organizationID",
-                "password",
-                "phone"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "adminName": {
-                    "type": "string"
-                },
-                "bankAccNumber": {
-                    "type": "string"
-                },
-                "bankBranchName": {
-                    "type": "string"
-                },
-                "banker": {
-                    "type": "string"
-                },
-                "cinNumber": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "gstNumber": {
-                    "type": "string"
-                },
-                "ifscCode": {
-                    "type": "string"
-                },
-                "isPhysicalVerified": {
-                    "description": "optional, pointer so omitted if nil",
-                    "type": "boolean"
-                },
-                "isRegistered": {
-                    "type": "boolean"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "organizationID": {
-                    "type": "string"
-                },
-                "organizationRegType": {
+                "mobile": {
                     "type": "string"
                 },
                 "password": {
                     "type": "string",
-                    "minLength": 6
+                    "minLength": 8
+                }
+            }
+        },
+        "utils.APIError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
                 },
-                "phone": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "integer"
+                }
+            }
+        },
+        "utils.Response": {
+            "description": "Global API Response Wrapper",
+            "type": "object",
+            "properties": {
+                "data": {},
+                "error": {
+                    "$ref": "#/definitions/utils.APIError"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
                 }
             }
         }
@@ -212,11 +559,11 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "192.168.1.35:8080",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
-	Title:            "SharpNR API",
-	Description:      "Backend APIs for SharpNR system.",
+	Title:            "Sharpnr Engine APIs",
+	Description:      "Sharpnr Engine API Documentation",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

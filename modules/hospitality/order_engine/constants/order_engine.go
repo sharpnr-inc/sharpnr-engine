@@ -1,0 +1,3 @@
+package hospitality_order_engine_constants
+
+type OrderStatusType string
