@@ -13,4 +13,5 @@ type OrganizationPropertyServicesInterfaces interface {
 	GetPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*org_property_contracts.OrganizationProperties, error)
 	GetPropertyDetailsByID(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (*org_property_contracts.PropertyDetailsReader, error)
 	AddDomain(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, Domain property_constants.PropertyDomainTypes) error
+	UpdatePropertyConfigurationStatus(ctx context.Context, propertyID uuid.UUID, status bool) error
 }

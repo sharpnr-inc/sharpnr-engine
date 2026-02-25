@@ -2,6 +2,7 @@ package org_property_repo
 
 import (
 	"context"
+	"errors"
 	dbtx "sharpnr-engine/core/dbTx"
 	org_property_models "sharpnr-engine/core/org_property/models"
 
@@ -55,4 +56,23 @@ func (o *organizationPropertyRepo) GetPropertyByID(ctx context.Context, property
 	}
 
 	return &property, nil
+}
+
+func (repo *organizationPropertyRepo) UpdateConfigurationStatus(ctx context.Context, propertyID uuid.UUID, status bool) error {
+	// We use Model() with the ID to ensure GORM knows which record to target
+	// and Update() to change the specific boolean field.
+	result := repo.db.WithContext(ctx).
+		Model(&org_property_models.OrganizationProperty{}).
+		Where("id = ?", propertyID).
+		Update("is_configured", status)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("property not found")
+	}
+
+	return nil
 }

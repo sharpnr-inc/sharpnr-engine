@@ -3,6 +3,7 @@ package org_property_services
 import (
 	"context"
 	"errors"
+	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
 	property_constants "sharpnr-engine/core/org_property/constants"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
@@ -169,6 +170,19 @@ func (r *organizationPropertyService) AddDomain(ctx context.Context, orgID uuid.
 
 	if err := r.orgPropertyRepo.AddDomainOfProperty(ctx, &domain); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (r *organizationPropertyService) UpdatePropertyConfigurationStatus(ctx context.Context, propertyID uuid.UUID, status bool) error {
+	// In the future, you could add business logic here to check if
+	// Bar or Kitchen modules are ready before setting status to true.
+
+	err := r.orgPropertyRepo.UpdateConfigurationStatus(ctx, propertyID, status)
+	if err != nil {
+		// Log error or wrap it with context-specific messages
+		return fmt.Errorf("failed to update property configuration: %w", err)
 	}
 
 	return nil

@@ -331,6 +331,12 @@ func (s *orchestratorService) AddModulesInProperty(
 			}
 		}
 
+		// Here we update the property
+
+		if err := s.orgPropertyService.UpdatePropertyConfigurationStatus(txCtx, propertyID, true); err != nil {
+			return err
+		}
+
 		// 6. Build final message
 		result.Message = fmt.Sprintf("%v created. %v already existed and were skipped.", result.Created, result.Skipped)
 

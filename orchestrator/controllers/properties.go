@@ -116,15 +116,15 @@ func (c *OrchestratorController) AddDomainInProperty(ctx *gin.Context) {
 // ------------------------------------------------------------------------------//
 
 func (c *OrchestratorController) AddModulesInProperty(ctx *gin.Context) {
-	// 1. User Authentication Check
+
 	orgID, _, ok := c.resolveRequestContexts(ctx)
 	if !ok {
-		return // Response already sent by helper
+		return
 	}
-	// 2. Param Parsing using your helper
+
 	pId, err := c.getPropertyFromParams(ctx)
 	if err != nil {
-		return // getPropertyFromParams already sent the 400 Failure response
+		return
 	}
 
 	var req *orchestrator_dtos.PropertyModuleConfigurationDTO
