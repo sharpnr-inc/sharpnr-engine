@@ -1,0 +1,1 @@
+package hospitality_menu_contracts

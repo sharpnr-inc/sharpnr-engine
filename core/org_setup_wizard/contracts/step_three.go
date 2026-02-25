@@ -1,0 +1,15 @@
+package org_setup_wizard_contracts
+
+import "github.com/google/uuid"
+
+type SetupLegalEntityInput struct {
+	StepID      uuid.UUID
+	OrgID       uuid.UUID
+	LegalName   string
+	Type        string
+	AddressLine string
+	City        string
+	State       string
+	Country     string
+	Pincode     string
+}

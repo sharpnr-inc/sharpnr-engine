@@ -1,138 +1,366 @@
 basePath: /api/v1
 definitions:
-  dto.LoginRequest:
+  orchestrator_dtos.SetupLegalEntityReqDTO:
     properties:
-      email:
+      address_line:
         type: string
-      password:
+      city:
         type: string
-    required:
-    - email
-    - password
-    type: object
-  dto.OrganisationRegisterDTO:
-    properties:
-      address:
+      country:
         type: string
-      adminName:
-        type: string
-      bankAccNumber:
-        type: string
-      bankBranchName:
-        type: string
-      banker:
-        type: string
-      cinNumber:
-        type: string
-      email:
-        type: string
-      gstNumber:
-        type: string
-      ifscCode:
-        type: string
-      isPhysicalVerified:
-        description: optional, pointer so omitted if nil
-        type: boolean
-      isRegistered:
-        type: boolean
       name:
         type: string
-      organizationID:
+      pincode:
         type: string
-      organizationRegType:
+      state:
+        type: string
+      step_id:
+        type: string
+      type:
+        type: string
+    required:
+    - step_id
+    type: object
+  orchestrator_dtos.SetupOrgPropertyReqDTO:
+    properties:
+      accuracy_m:
+        type: integer
+      address_line:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        type: string
+      pincode:
+        type: string
+      state:
+        type: string
+    type: object
+  orchestrator_dtos.SetupOrganizationHQAddressReqDTO:
+    properties:
+      accuracy_m:
+        type: integer
+      address_line:
+        type: string
+      city:
+        type: string
+      country:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      pincode:
+        type: string
+      state:
+        type: string
+      step_id:
+        type: string
+    required:
+    - address_line
+    - city
+    - country
+    - pincode
+    - state
+    - step_id
+    type: object
+  org_signup_dtos.OrganizationRegistrationDTO:
+    description: Organization Registration Data
+    properties:
+      email:
+        type: string
+      mobile:
         type: string
       password:
-        minLength: 6
+        minLength: 8
         type: string
-      phone:
-        type: integer
     required:
-    - adminName
-    - bankAccNumber
     - email
-    - name
-    - organizationID
+    - mobile
     - password
-    - phone
     type: object
-host: localhost:8080
+  utils.APIError:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  utils.Response:
+    description: Global API Response Wrapper
+    properties:
+      data: {}
+      error:
+        $ref: '#/definitions/utils.APIError'
+      message:
+        type: string
+      success:
+        type: boolean
+      timestamp:
+        type: string
+      token:
+        type: string
+    type: object
+host: 192.168.1.35:8080
 info:
   contact:
     email: support@sharpnr.com
     name: API Support
-  description: Backend APIs for SharpNR system.
-  termsOfService: http://sharpnr.com/terms/
-  title: SharpNR API
+    url: http://www.sharpnr.com/support
+  description: Sharpnr Engine API Documentation
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Sharpnr Engine APIs
   version: "1.0"
 paths:
-  /organization/login:
-    post:
+  /hospitality/bar:
+    get:
       consumes:
       - application/json
-      description: Logs in an organization and returns JWT
-      parameters:
-      - description: Login Credentials
-        in: body
-        name: login
-        required: true
-        schema:
-          $ref: '#/definitions/dto.LoginRequest'
+      description: Retrieves bar information linked to the authenticated organization
+        UUID.
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Bar details retrieved successfully
           schema:
             additionalProperties: true
             type: object
         "400":
-          description: Bad Request
+          description: Invalid organization UUID format
           schema:
             additionalProperties:
               type: string
             type: object
         "401":
-          description: Unauthorized
+          description: Organization UUID missing
           schema:
             additionalProperties:
               type: string
             type: object
-      summary: Login for organization root
+        "404":
+          description: No bar found for this organization
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Failed to fetch bar details
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get bar details for the current organization
       tags:
-      - Organization
-  /organization/register:
-    post:
+      - Hospitality - Bar
+  /orchestrator/setup-status:
+    get:
       consumes:
       - application/json
-      description: This is Registration for the Organisation
+      description: 'Detailed explanation of what happens. Note: This requires an ''org_id''
+        inside the session cookie.'
       parameters:
-      - description: Login Credentials
-        in: body
-        name: login
+      - description: Session cookie containing org_id
+        in: header
+        name: Cookie
         required: true
-        schema:
-          $ref: '#/definitions/dto.OrganisationRegisterDTO'
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Success
           schema:
-            additionalProperties: true
-            type: object
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  type: boolean
+              type: object
         "400":
-          description: Bad Request
+          description: Validation Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/utils.Response'
+      summary: Short, punchy summary of the action
+      tags:
+      - Orchestrator --> Console
+  /orchestrator/setup-wiz/step3:
+    post:
+      consumes:
+      - application/json
+      description: Third step of the onboarding wizard to define the organization's
+        legal and physical presence.
+      parameters:
+      - description: Legal Entity Details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/orchestrator_dtos.SetupLegalEntityReqDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Legal entity configured successfully
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Validation or binding error
+          schema:
+            $ref: '#/definitions/utils.Response'
         "401":
           description: Unauthorized
           schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Register for organization Registration
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Setup Legal Entity
       tags:
-      - Organization
+      - core-setup
+  /orchestrator/setup-wizard/progress:
+    get:
+      consumes:
+      - application/json
+      description: Detailed explanation of what happens (e.g., database changes, emails
+        sent).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Complete" "Success message
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Short, punchy summary of the action
+      tags:
+      - CategoryName (e.g.
+      - accounting-ap)
+  /orchestrator/setup-wizard/step1:
+    post:
+      consumes:
+      - application/json
+      description: Detailed explanation of what happens (e.g., database changes, emails
+        sent).
+      parameters:
+      - description: Input description
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/orchestrator_dtos.SetupOrganizationHQAddressReqDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Org HQ successfully" "Success message
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Short, punchy summary of the action
+      tags:
+      - CategoryName (e.g.
+      - accounting-ap)
+  /orchestrator/setup-wizard/step2:
+    post:
+      consumes:
+      - application/json
+      description: 'Second step of the onboarding wizard: Configures the core property
+        attributes for the organization.'
+      parameters:
+      - description: Property Details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/orchestrator_dtos.SetupOrgPropertyReqDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Property Added Successfully
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Setup Organization Property
+      tags:
+      - core-setup
+  /signup/initiate:
+    post:
+      consumes:
+      - application/json
+      description: Validates the request and starts the registration process.
+      parameters:
+      - description: Details
+        in: body
+        name: registration
+        required: true
+        schema:
+          $ref: '#/definitions/org_signup_dtos.OrganizationRegistrationDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully initiated registration
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Initiate Organization Registration
+      tags:
+      - signup
 swagger: "2.0"
