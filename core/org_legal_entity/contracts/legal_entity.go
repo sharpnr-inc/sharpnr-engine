@@ -1,6 +1,10 @@
 package org_legal_entity_contracts
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type NewLegalEntityInput struct {
 	OrgID       uuid.UUID
@@ -17,4 +21,9 @@ type LegalEntityReader struct {
 	LegalEntityID uuid.UUID
 	Name          string
 	EntityType    string
+	GST           *string
+	CIN           *string
+	PAN           *string
+	Country       string
+	AddedAt       time.Time
 }

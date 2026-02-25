@@ -55,11 +55,20 @@ func (s *orgLegalEntity) GetLegalEntityByOrgID(ctx context.Context, orgID uuid.U
 
 	// 3. Map each repo model to the contract reader
 	for i, le := range legalEntities {
+
+		leAddr, err := s.legalEntityRepo.GetAddressOfLegalEntity(ctx, le.ID)
+		if err != nil {
+			return results, err
+		}
 		results[i] = &org_legal_entity_contracts.LegalEntityReader{
 			LegalEntityID: le.ID,
 			Name:          le.LegalName,
 			EntityType:    le.EntityType,
-			// ... map other fields like GST, PAN, etc.
+			GST:           le.GSTIN,
+			CIN:           le.CIN,
+			PAN:           le.PAN,
+			Country:       leAddr.Country,
+			AddedAt:       le.CreatedAt,
 		}
 	}
 

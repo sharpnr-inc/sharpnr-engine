@@ -16,7 +16,15 @@ type AddLegalEntity_REQ_DTO struct {
 }
 
 type LegalEntity_Response_dto struct {
-	Name string
-	ID   uuid.UUID
-	Type string
+	Name        string    `json:"name"`
+	ID          uuid.UUID `json:"id"`
+	Type        string    `json:"type"`
+	AddressLine string    `json:"addressLine"`
+	Country     string    `json:"country"`
+	State       string    `json:"state"`
+	City        string    `json:"city"`
+	Pincode     string    `json:"pincode"`
+	GST         *string   `json:"gst"`
+	CIN_Number  *string   `json:"cinNumber"`
+	PAN_Number  *string   `json:"panNumber"`
 }

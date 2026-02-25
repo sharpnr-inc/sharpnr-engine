@@ -61,9 +61,17 @@ func (c *orchestratorService) GetAllLegalEntity(ctx context.Context, orgID uuid.
 	for i, le := range les {
 
 		results[i] = &orchestrator_dtos.LegalEntity_Response_dto{
-			Name: le.Name,
-			ID:   le.LegalEntityID,
-			Type: le.EntityType,
+			Name:        le.Name,
+			ID:          le.LegalEntityID,
+			Type:        le.EntityType,
+			AddressLine: le.Country,
+			GST:         le.GST,
+			CIN_Number:  le.CIN,
+			Country:     le.Country,
+			State:       le.Country,
+			City:        le.Country,
+			Pincode:     le.Country,
+			PAN_Number:  le.PAN,
 		}
 	}
 
