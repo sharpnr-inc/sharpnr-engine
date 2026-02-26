@@ -2,16 +2,6 @@ package orchestrator_dtos
 
 import "github.com/google/uuid"
 
-type PropertyOfResturants struct {
-	Properties []PropertiesOfOrg
-}
-
-type PropertiesOfOrg struct {
-	PropertyID   uuid.UUID
-	PropertyName string
-	Restaurents  []uuid.UUID
-}
-
 // DomainConfig represents modules + infra inside a domain
 type DomainConfig struct {
 	Modules []string `json:"Modules"`
@@ -52,4 +42,12 @@ type RestaurantProperty struct {
 	City        string
 	State       string
 	Country     string
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+type AllKitchenResponseDto struct {
+	ID       uuid.UUID
+	Name     string
+	Property RestaurantProperty
 }

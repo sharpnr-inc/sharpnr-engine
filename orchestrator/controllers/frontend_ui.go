@@ -24,6 +24,23 @@ func (c *OrchestratorController) GetAllRestaurants(ctx *gin.Context) {
 
 /* ---------------------------------- <***> --------------------------------- */
 
+func (c *OrchestratorController) GetAllKitchens(ctx *gin.Context) {
+	orgID, empID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	results, err := c.orchestService.GetAllKitchen(ctx.Request.Context(), orgID, empID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "kitchen fetched successfully", results)
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
 func (c *OrchestratorController) GetOrgLauncher(ctx *gin.Context) {
 
 	orgID, empID, ok := c.resolveRequestContexts(ctx)

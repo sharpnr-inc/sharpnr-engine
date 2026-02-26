@@ -44,9 +44,10 @@ type OrchestratorServiceInterface interface {
 
 	GetSharpnrLauncherData(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) (orchestrator_dtos.OrgLauncherResponse, error)
 
-	PropertyModuleOrchestrationInterface
+	HospitalityPropertyOrchestrationInterface
 }
 
-type PropertyModuleOrchestrationInterface interface {
+type HospitalityPropertyOrchestrationInterface interface {
 	GetAllRestaurant(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]orchestrator_dtos.AllRestaurantsResponseDto, error)
+	GetAllKitchen(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]orchestrator_dtos.AllKitchenResponseDto, error)
 }

@@ -10,4 +10,5 @@ func registerHospitalityRoutes(r *gin.RouterGroup, c *orchestrator_controllers.O
 
 	pr := r.Group("/hospitality")
 	pr.GET("/all-restaurants", c.GetAllRestaurants)
+	pr.GET("/all-kitchen", c.GetAllKitchens)
 }
