@@ -22,36 +22,13 @@ type OrchestratorServiceInterface interface {
 	/*                         Property related operations                        */
 	/* -------------------------------------------------------------------------- */
 	GetAllPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
-	ConfigurePropertyToDomain(
-		ctx context.Context,
-		orgID uuid.UUID,
-		propertyID uuid.UUID,
-		req *orchestrator_dtos.AddDomainToPropertyReq_DTO,
-	) error
-
-	AddModulesInProperty(
-		ctx context.Context,
-		orgID uuid.UUID,
-		propertyID uuid.UUID,
-		req *orchestrator_dtos.PropertyModuleConfigurationDTO,
-	) (*orchestrator_dtos.ModuleOperationResult, error)
-	ConfigureRestaurant(
-		ctx context.Context,
-		orgID uuid.UUID,
-		propertyID uuid.UUID,
-		req *orchestrator_dtos.ConfigurePropertysRestaurant_Req_dto,
-	) error
-
+	ConfigurePropertyToDomain(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, req *orchestrator_dtos.AddDomainToPropertyReq_DTO) error
+	AddModulesInProperty(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, req *orchestrator_dtos.PropertyModuleConfigurationDTO) (*orchestrator_dtos.ModuleOperationResult, error)
+	ConfigureRestaurant(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, req *orchestrator_dtos.ConfigurePropertysRestaurant_Req_dto) error
 	ConfigureHotel(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, req *orchestrator_dtos.ConfigureHotel_Request_dto) error
-
 	GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
 	CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error
-
-	GetPropertyInfra(
-		ctx context.Context,
-		propertyID uuid.UUID,
-		orgID uuid.UUID, infraType *string,
-	) (*orchestrator_dtos.ListAllInfraOfProperty_Res_dto, error)
+	GetPropertyInfra(ctx context.Context, propertyID uuid.UUID, orgID uuid.UUID, infraType *string) (*orchestrator_dtos.ListAllInfraOfProperty_Res_dto, error)
 
 	/* -------------------------------------------------------------------------- */
 	/*                           Legal Entity Operations                          */
@@ -67,5 +44,9 @@ type OrchestratorServiceInterface interface {
 
 	GetSharpnrLauncherData(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) (orchestrator_dtos.OrgLauncherResponse, error)
 
+	PropertyModuleOrchestrationInterface
+}
+
+type PropertyModuleOrchestrationInterface interface {
 	GetAllRestaurant(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]orchestrator_dtos.AllRestaurantsResponseDto, error)
 }
