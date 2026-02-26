@@ -72,4 +72,6 @@ type OrchestratorServiceInterface interface {
 	/* -------------------------------------------------------------------------- */
 
 	GetSharpnrLauncherData(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) (orchestrator_dtos.OrgLauncherResponse, error)
+
+	GetAllRestaurant(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]orchestrator_dtos.AllRestaurantsResponseDto, error)
 }
