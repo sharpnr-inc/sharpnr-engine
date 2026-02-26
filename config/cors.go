@@ -15,7 +15,7 @@ func loadCORS(app AppConfig) CORSConfig {
 
 	return CORSConfig{
 		WebOrgin: []string{
-			"http://localhost:5173",
+			"http://localhost:5174",
 		},
 	}
 }
