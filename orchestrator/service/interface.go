@@ -8,7 +8,7 @@ import (
 )
 
 type OrchestratorServiceInterface interface {
-	GetOrganizationStatus(ctx context.Context, orgID uuid.UUID) (bool, error)
+	GetOrganizationStatus(ctx context.Context, orgID uuid.UUID) (*string, error)
 
 	/* -------------------------------------------------------------------------- */
 	/*                       Setupwizard related operations                       */

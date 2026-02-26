@@ -39,7 +39,7 @@ func (c *OrchestratorController) GetOrgStatus(ctx *gin.Context) {
 
 	// 3. Call Service (using the Request Context)
 	// We pass ctx.Request.Context() so timeouts/cancellations work.
-	done, err := c.orchestService.GetOrganizationStatus(ctx.Request.Context(), orgID)
+	status, err := c.orchestService.GetOrganizationStatus(ctx.Request.Context(), orgID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Service failure"})
 		return
@@ -50,7 +50,7 @@ func (c *OrchestratorController) GetOrgStatus(ctx *gin.Context) {
 		http.StatusOK,
 		"Success",
 		gin.H{
-			"setup_completed": done,
+			"setup_completed": status,
 		},
 	)
 

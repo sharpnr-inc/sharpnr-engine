@@ -436,6 +436,17 @@ func (s *orchestratorService) CreateProperty(ctx context.Context, orgID uuid.UUI
 			return err
 		}
 
+		status, err := s.organizationService.GetStatus(txCtx, orgID)
+		if err != nil {
+			return err
+		}
+
+		if status == "NOT_CONFIGURED" {
+			if err := s.organizationService.UpdateStatus(txCtx, orgID, "CONFIGURED"); err != nil {
+				return err
+			}
+		}
+
 		return nil
 
 	})
