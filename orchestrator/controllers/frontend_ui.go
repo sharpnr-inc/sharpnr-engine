@@ -7,21 +7,39 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *OrchestratorController) GetPropertiesOfRestaurant(ctx *gin.Context) {
-
+func (c *OrchestratorController) GetAllRestaurants(ctx *gin.Context) {
 	orgID, empID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
 		return
 	}
 
-	result, err := c.orchestService.GetPropertiesAndRestaurant(ctx.Request.Context(), orgID, empID)
+	results, err := c.orchestService.GetAllRestaurant(ctx.Request.Context(), orgID, empID)
 	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
 		return
 	}
 
-	utils.Success(ctx, http.StatusOK, "Properties and restaurants fetched successfully", result)
+	utils.Success(ctx, http.StatusOK, "restaurants fetched successfully", results)
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) GetAllKitchens(ctx *gin.Context) {
+	orgID, empID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	results, err := c.orchestService.GetAllKitchen(ctx.Request.Context(), orgID, empID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "kitchen fetched successfully", results)
+}
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (c *OrchestratorController) GetOrgLauncher(ctx *gin.Context) {
 

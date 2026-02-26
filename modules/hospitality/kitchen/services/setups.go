@@ -46,3 +46,26 @@ func (r *kitchenService) GetKitchensByPropertyID(ctx context.Context, propertyID
 
 	return readers, nil
 }
+
+func (r *kitchenService) GetKitchensByOrgID(ctx context.Context, propertyID uuid.UUID) ([]*kitchen_contracts.Kitchen_Reader, error) {
+
+	kitchen, err := r.kitchenRepo.GetKitchenByOrgId(ctx, propertyID)
+	if err != nil {
+		return nil, err
+	}
+	readers := make([]*kitchen_contracts.Kitchen_Reader, 0, len(kitchen))
+
+	for _, k := range kitchen {
+		reader := &kitchen_contracts.Kitchen_Reader{
+			ID:         k.ID,
+			Name:       k.Name,
+			Status:     k.IsActive,
+			OrgID:      k.OrganizationID,
+			PropertyID: k.OrganizationPropertyID,
+		}
+
+		readers = append(readers, reader)
+	}
+
+	return readers, nil
+}

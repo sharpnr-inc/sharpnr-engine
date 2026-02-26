@@ -119,3 +119,37 @@ func (r *restaurantService) GetRestaurantLayout(
 }
 
 /* -------------------------------- **<***>** ------------------------------- */
+
+func (s *restaurantService) GetRestaurantsOfOrg(
+	ctx context.Context,
+	orgID uuid.UUID,
+) ([]restaurant_contracts.RestaurantDetails, error) {
+
+	results := make([]restaurant_contracts.RestaurantDetails, 0)
+
+	restaurants, err := s.restaurantRepo.GetRestaurantByOrgID(ctx, orgID)
+	if err != nil {
+
+		// Handle GORM record not found safely
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return results, nil // return empty list, no error
+		}
+
+		return results, err
+	}
+
+	// Pre-allocate for performance
+	results = make([]restaurant_contracts.RestaurantDetails, 0, len(restaurants))
+
+	for _, r := range restaurants {
+		results = append(results, restaurant_contracts.RestaurantDetails{
+			ID:           r.ID,
+			PropertyID:   r.PropertyID,
+			Name:         r.Name,
+			Status:       r.IsActive,
+			IsConfigured: r.IsConfigured,
+		})
+	}
+
+	return results, nil
+}

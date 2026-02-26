@@ -58,4 +58,9 @@ type RestaurantServiceInterface interface {
 		orgID uuid.UUID,
 		restaurantID uuid.UUID,
 	) error
+
+	GetRestaurantsOfOrg(
+		ctx context.Context,
+		orgID uuid.UUID,
+	) ([]restaurant_contracts.RestaurantDetails, error)
 }
