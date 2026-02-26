@@ -7,22 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *OrchestratorController) GetPropertiesOfRestaurant(ctx *gin.Context) {
-
-	orgID, empID, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return
-	}
-
-	result, err := c.orchestService.GetPropertiesAndRestaurant(ctx.Request.Context(), orgID, empID)
-	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
-		return
-	}
-
-	utils.Success(ctx, http.StatusOK, "Properties and restaurants fetched successfully", result)
-}
-
 func (c *OrchestratorController) GetAllRestaurants(ctx *gin.Context) {
 	orgID, empID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
