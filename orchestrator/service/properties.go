@@ -237,7 +237,7 @@ func (s *orchestratorService) AddModulesInProperty(
 	orgID uuid.UUID,
 	propertyID uuid.UUID,
 	req *orchestrator_dtos.PropertyModuleConfigurationDTO,
-) (*orchestrator_dtos.ModuleOperationResult, error) { // Changed signature
+) (*orchestrator_dtos.ModuleOperationResult, error) {
 
 	result := &orchestrator_dtos.ModuleOperationResult{
 		Created: []string{},
@@ -247,7 +247,9 @@ func (s *orchestratorService) AddModulesInProperty(
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
+		// ----------------------------------------------------
 		// 1. Property Validation
+		// ----------------------------------------------------
 		prt, err := s.orgPropertyService.GetPropertiesOfOrg(txCtx, orgID)
 		if err != nil {
 			return err
@@ -260,28 +262,46 @@ func (s *orchestratorService) AddModulesInProperty(
 				break
 			}
 		}
+
 		if property == nil {
 			return errors.New("property not found")
 		}
 
+		// ----------------------------------------------------
 		// 2. Identification Phase
+		// ----------------------------------------------------
 		var modulesToCreate []string
+
 		if req.Modules != nil {
 			for _, module := range *req.Modules {
+
 				exists := false
+
 				switch module {
+
 				case "HOTEL":
-					h, _ := s.hospitalityDomainSvc.HotelService().GetHotelByPropertyID(ctx, propertyID)
+					h, _ := s.hospitalityDomainSvc.
+						HotelService().
+						GetHotelByPropertyID(txCtx, propertyID)
+
 					if h != nil && len(h.Hotels) > 0 {
 						exists = true
 					}
+
 				case "BAR":
-					b, _ := s.hospitalityDomainSvc.BarService().GetBarDetailsOfProperty(ctx, orgID, propertyID)
+					b, _ := s.hospitalityDomainSvc.
+						BarService().
+						GetBarDetailsOfProperty(txCtx, orgID, propertyID)
+
 					if len(b) > 0 {
 						exists = true
 					}
+
 				case "RESTAURANT":
-					r, _ := s.hospitalityDomainSvc.RestaurantService().GetAllRestaurantOfProperty(ctx, propertyID)
+					r, _ := s.hospitalityDomainSvc.
+						RestaurantService().
+						GetAllRestaurantOfProperty(txCtx, propertyID)
+
 					if len(r) > 0 {
 						exists = true
 					}
@@ -295,50 +315,96 @@ func (s *orchestratorService) AddModulesInProperty(
 			}
 		}
 
-		// 3. Constraint Check
-		if len(modulesToCreate) > 1 {
-			return fmt.Errorf("only one new module type is allowed at a time; requested: %v", modulesToCreate)
-		}
+		// ----------------------------------------------------
+		// 3. Execution Phase (MULTI MODULE SUPPORT)
+		// ----------------------------------------------------
+		for _, target := range modulesToCreate {
 
-		// 4. Execution Phase
-		if len(modulesToCreate) == 1 {
-			target := modulesToCreate[0]
 			var setupErr error
+
 			switch target {
+
 			case "HOTEL":
-				_, setupErr = s.hospitalityDomainSvc.HotelService().SetupDefaultHotel(txCtx, orgID, propertyID)
+				_, setupErr = s.hospitalityDomainSvc.
+					HotelService().
+					SetupDefaultHotel(txCtx, orgID, propertyID)
+
 			case "BAR":
-				_, setupErr = s.hospitalityDomainSvc.BarService().SetupDefaultBar(txCtx, orgID, propertyID)
+				_, setupErr = s.hospitalityDomainSvc.
+					BarService().
+					SetupDefaultBar(txCtx, orgID, propertyID)
+
 			case "RESTAURANT":
-				_, setupErr = s.hospitalityDomainSvc.RestaurantService().SetupDefaultRestaurant(txCtx, orgID, propertyID)
+				_, setupErr = s.hospitalityDomainSvc.
+					RestaurantService().
+					SetupDefaultRestaurant(txCtx, orgID, propertyID)
 			}
 
 			if setupErr != nil {
 				return setupErr
 			}
+
 			result.Created = append(result.Created, target)
 		}
 
-		// 5. Infrastructure (Kitchen)
+		// ----------------------------------------------------
+		// 4. Infrastructure (Kitchen qty support)
+		// ----------------------------------------------------
 		if req.Infrastructure != nil {
+
 			for _, infra := range *req.Infrastructure {
-				if infra.Infra_Name == "KITCHEN" {
-					if err := s.hospitalityDomainSvc.KitchenService().CreateDefaultKitchen(txCtx, orgID, propertyID, "DEFAULT"); err != nil {
-						return err
+
+				if infra.Infra_Name == "Kitchen/Service Point" {
+
+					qty := infra.InfraQty
+					if qty <= 0 {
+						qty = 1
 					}
-					result.Created = append(result.Created, "KITCHEN")
+
+					for i := 0; i < qty; i++ {
+
+						name := fmt.Sprintf("DEFAULT-%d", i+1)
+
+						if err := s.hospitalityDomainSvc.
+							KitchenService().
+							CreateDefaultKitchen(
+								txCtx,
+								orgID,
+								propertyID,
+								name,
+							); err != nil {
+							return err
+						}
+
+						result.Created = append(
+							result.Created,
+							"Kitchen/Service Point",
+						)
+					}
 				}
 			}
 		}
 
-		// Here we update the property
-
-		if err := s.orgPropertyService.UpdatePropertyConfigurationStatus(txCtx, propertyID, true); err != nil {
+		// ----------------------------------------------------
+		// 5. Update Property Configuration Status
+		// ----------------------------------------------------
+		if err := s.orgPropertyService.
+			UpdatePropertyConfigurationStatus(
+				txCtx,
+				propertyID,
+				true,
+			); err != nil {
 			return err
 		}
 
-		// 6. Build final message
-		result.Message = fmt.Sprintf("%v created. %v already existed and were skipped.", result.Created, result.Skipped)
+		// ----------------------------------------------------
+		// 6. Final Message
+		// ----------------------------------------------------
+		result.Message = fmt.Sprintf(
+			"%v created. %v already existed and were skipped.",
+			result.Created,
+			result.Skipped,
+		)
 
 		return nil
 	})

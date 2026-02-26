@@ -131,6 +131,24 @@ func (c *orchestratorService) buildHospitalityLauncher(
 			return nil
 		})
 
+		// g.Go(func() error {
+		// 	restaurant, err := c.hospitalityDomainSvc.
+		// 		BarService().
+		// 		GetAllRestaurantOfProperty(ctx, propertyID)
+
+		// 	if err != nil {
+		// 		if utils.IsNotFoundError(err) {
+		// 			return nil
+		// 		}
+		// 		return err
+		// 	}
+
+		// 	if len(restaurant) > 0 {
+		// 		moduleSet.Store("RESTAURANT", true)
+		// 	}
+		// 	return nil
+		// })
+
 		/* ---------- KITCHEN ---------- */
 		g.Go(func() error {
 			kitchens, err := c.hospitalityDomainSvc.
