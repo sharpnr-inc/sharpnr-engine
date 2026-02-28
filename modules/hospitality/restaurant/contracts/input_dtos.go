@@ -60,3 +60,13 @@ type SelectedAddOn struct {
 	Qty          int       `json:"qty"`
 	PriceAtOrder float64   `json:"price_at_order"`
 }
+
+type UpdateBodyRequestDto struct {
+	Name        *string `json:"name" binding:"omitempty,min=3"`
+	OpeningTime *string `json:"opening_time" binding:"omitempty"`
+	ClosingTime *string `json:"closing_time" binding:"omitempty"`
+}
+
+type AddLayoutRequestDto struct {
+	RestaurantLayout []SetupRestaurantLayoutInput `json:"restaurant_layout"`
+}

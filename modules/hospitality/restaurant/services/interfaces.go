@@ -14,6 +14,13 @@ import (
 
 type RestaurantServiceInterface interface {
 	SetupDefaultRestaurant(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (restuarantID uuid.UUID, err error)
+	GetGeneralDetails(
+		ctx context.Context,
+		orgID uuid.UUID,
+		emplID uuid.UUID,
+		restaurantID uuid.UUID,
+	) (restaurant_contracts.RestaurantGeneralInfo_resp_dto, error)
+	UpdateGeneralDetails(ctx context.Context, orgID, emplID, restaurantID uuid.UUID, req restaurant_contracts.UpdateBodyRequestDto) error
 	AddFloors(ctx context.Context, AddFloorInput *restaurant_contracts.CreateFloorInput) (floorID uuid.UUID, err error)
 	AddTablesInFloor(ctx context.Context, AddTablesInFloorInput *restaurant_contracts.CreateTablesInFloorInput) (tableID uuid.UUID, err error)
 
@@ -25,7 +32,7 @@ type RestaurantServiceInterface interface {
 		restaurantID uuid.UUID,
 		input *restaurant_contracts.UpdateGeneralDetailsInput,
 	) error
-	SetupRestaurantLayout(ctx context.Context, propertyID uuid.UUID, restaurantID uuid.UUID, setupInput []restaurant_contracts.SetupRestaurantLayoutInput) error
+	SetupRestaurantLayout(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, restaurantID uuid.UUID, setupInput restaurant_contracts.AddLayoutRequestDto) error
 
 	GetRestaurantLayout(
 		ctx context.Context,
@@ -36,7 +43,6 @@ type RestaurantServiceInterface interface {
 	/* ---------------------------------- Order --------------------------------- */
 
 	CreateOrder(ctx context.Context)
-
 	UpdateOrderStatus(ctx context.Context, orderID uuid.UUID, status string) error
 
 	/* -------------------------------------------------------------------------- */

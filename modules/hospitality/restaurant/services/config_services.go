@@ -2,6 +2,7 @@ package restaurantservices
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
@@ -9,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // AddFloors implements RestaurantServiceInterface.
@@ -50,14 +52,11 @@ func (r *restaurantService) AddTablesInFloor(ctx context.Context, AddTablesInFlo
 }
 
 func (r *restaurantService) SetupRestaurantLayout(
-	ctx context.Context,
-	propertyID uuid.UUID,
-	restaurantID uuid.UUID,
-	setupInput []restaurant_contracts.SetupRestaurantLayoutInput,
+	ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, restaurantID uuid.UUID, setupInput restaurant_contracts.AddLayoutRequestDto,
 ) error {
 
 	// 1. Loop through each floor in the setup input
-	for _, floorInput := range setupInput {
+	for _, floorInput := range setupInput.RestaurantLayout {
 
 		// 2. Call your existing AddFloors method
 		floorID, err := r.AddFloors(ctx, &restaurant_contracts.CreateFloorInput{
@@ -90,6 +89,8 @@ func (r *restaurantService) SetupRestaurantLayout(
 	return nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (r *restaurantService) UpdateRestaurantGeneralDetails(
 	ctx context.Context,
 	restaurantID uuid.UUID,
@@ -117,4 +118,71 @@ func (r *restaurantService) UpdateRestaurantGeneralDetails(
 
 	// Call the repository method
 	return r.restaurantRepo.UpdateGeneralDetails(ctx, restaurantID, updates)
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *restaurantService) GetGeneralDetails(
+	ctx context.Context,
+	orgID uuid.UUID,
+	emplID uuid.UUID,
+	restaurantID uuid.UUID,
+) (restaurant_contracts.RestaurantGeneralInfo_resp_dto, error) {
+
+	// 1. Fetch the restaurant
+	restaurant, err := s.restaurantRepo.GetRestaurantByID(ctx, restaurantID)
+	if err != nil {
+		return restaurant_contracts.RestaurantGeneralInfo_resp_dto{}, err
+	}
+
+	// 2. Security Check: Ensure the restaurant belongs to the requested Org
+	// This prevents cross-tenant data leakage.
+	if restaurant.OrganizationID != orgID {
+		return restaurant_contracts.RestaurantGeneralInfo_resp_dto{}, errors.New("unauthorized: restaurant does not belong to this organization")
+	}
+
+	// 3. Mapping (Consider adding a .ToDTO() method on your entity later)
+	response := restaurant_contracts.RestaurantGeneralInfo_resp_dto{
+		RestaurantID: restaurant.ID,
+		Name:         restaurant.Name,
+		OpeningTime:  restaurant.OpeningTime,
+		ClosingTime:  restaurant.ClosingTime,
+		IsPureVeg:    restaurant.IsPureVeg,
+		IsActive:     restaurant.IsActive,
+		IsConfigured: restaurant.IsConfigured,
+		LastUpdated:  restaurant.UpdatedAt,
+		// Future: add flags like HasBar: restaurant.HasBar, etc.
+	}
+
+	return response, nil
+}
+
+func (s *restaurantService) UpdateGeneralDetails(
+	ctx context.Context,
+	orgID, emplID, restaurantID uuid.UUID,
+	req restaurant_contracts.UpdateBodyRequestDto,
+) error {
+	// 1. Convert struct pointers to a map
+	updates := make(map[string]any)
+
+	if req.Name != nil {
+		updates["name"] = *req.Name
+	}
+	if req.OpeningTime != nil {
+		updates["opening_time"] = *req.OpeningTime
+	}
+	if req.ClosingTime != nil {
+		updates["closing_time"] = *req.ClosingTime
+	}
+
+	// 2. Check if there's actually anything to update
+	if len(updates) == 0 {
+		return nil // Or return a "No changes provided" error
+	}
+
+	// 3. Execute within Transaction
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		// Use the context that contains the transaction
+		return s.restaurantRepo.UpdateGeneralDetails(ctx, restaurantID, updates)
+	})
 }

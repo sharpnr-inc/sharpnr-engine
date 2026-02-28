@@ -85,28 +85,6 @@ type CreatePropertyReq_dto struct {
 
 // --------------------------------------------------------------------------------------//
 
-type ConfigurePropertysRestaurant_Req_dto struct {
-	PropertyID       uuid.UUID                                           `json:"propertyID"`
-	RestaurantID     uuid.UUID                                           `json:"restaurantID"`
-	GeneralDetails   ConfigurePropertysRestaurant_GeneralDetails_Req_dto `json:"general_details"`
-	RestaurantLayout []RestaurantLayoutSetup_Req_dto                     `json:"restaurant_layout"`
-}
-
-type ConfigurePropertysRestaurant_GeneralDetails_Req_dto struct {
-	Name        string `json:"name"`
-	IsPureVeg   bool   `json:"is_pure_veg"`
-	OpeningTime string `json:"opening_time"`
-	ClosingTime string `json:"closing_time"`
-}
-
-type RestaurantLayoutSetup_Req_dto struct {
-	Floor_Number   int    `json:"floor_number"`
-	FloorName      string `json:"floor_name"`
-	NumberOfTables int    `json:"number_of_tables"`
-}
-
-// --------------------------------------------------------------------------------------//
-
 type ConfigureHotel_Request_dto struct {
 	PropertyID  uuid.UUID                                     `json:"propertyId"`
 	HotelID     uuid.UUID                                     `json:"hotelId"`
