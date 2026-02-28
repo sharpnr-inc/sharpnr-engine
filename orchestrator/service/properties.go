@@ -415,6 +415,47 @@ func (s *orchestratorService) AddModulesInProperty(
 	return result, nil
 }
 
+func (s *orchestratorService) AddInfraInProperty(
+	ctx context.Context,
+	orgID uuid.UUID,
+	propertyID uuid.UUID,
+	req *orchestrator_dtos.PropertyInfraConfiguration,
+) error {
+
+	// Guard clause
+	if req == nil {
+		return fmt.Errorf("infra configuration is nil")
+	}
+
+	// Handle Kitchen / Service Point infra
+	if req.Infra_Name != "Kitchen/Service Point" {
+		return nil
+	}
+
+	// Default quantity fallback
+	qty := req.InfraQty
+	if qty <= 0 {
+		qty = 1
+	}
+
+	kitchenSvc := s.hospitalityDomainSvc.KitchenService()
+
+	for i := 0; i < qty; i++ {
+		name := fmt.Sprintf("DEFAULT-%d", i+1)
+
+		if err := kitchenSvc.CreateDefaultKitchen(
+			ctx,
+			orgID,
+			propertyID,
+			name,
+		); err != nil {
+			return fmt.Errorf("failed creating kitchen %s: %w", name, err)
+		}
+	}
+
+	return nil
+}
+
 // =---------------------------------------------------------------//
 func (s *orchestratorService) CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error {
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {

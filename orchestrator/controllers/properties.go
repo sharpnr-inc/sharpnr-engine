@@ -148,6 +148,35 @@ func (c *OrchestratorController) AddModulesInProperty(ctx *gin.Context) {
 
 }
 
+/* --------------------------------- <****> --------------------------------- */
+
+func (c *OrchestratorController) AddInfraInProperty(ctx *gin.Context) {
+
+	orgID, _, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	pId, err := c.getPropertyFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	var req *orchestrator_dtos.PropertyInfraConfiguration
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		return
+	}
+
+	if err := c.orchestService.AddInfraInProperty(ctx.Request.Context(), orgID, pId, req); err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Result", nil)
+
+}
+
 /* ---------------------------------- <***> --------------------------------- */
 
 func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
