@@ -26,6 +26,8 @@ type KitchenRepositoryInterface interface {
 	GetKitchenTicketItemsByTicketID(ctx context.Context, kitchenTicketItemID uuid.UUID) ([]*kitchen_models.KitchenTicketItem, error)
 	GetKitchenTicketItemAddOn(ctx context.Context, kitchenTicketItemID uuid.UUID) ([]*kitchen_models.KitchenTicketItemAddon, error)
 	GetKitchenTicketItemVariant(ctx context.Context, kitchenTicketItemID uuid.UUID) (*kitchen_models.KitchenTicketItemVariant, error)
+
+	KitchenSettingsRepositoryInterface
 }
 
 type KitchenStagingRepositoryInterface interface {
@@ -120,4 +122,21 @@ type KitchenStagingRepositoryInterface interface {
 		ctx context.Context,
 		id uuid.UUID,
 	) error
+}
+
+type KitchenSettingsRepositoryInterface interface {
+	CreateKitchenAutoAcceptOrders(ctx context.Context, config *kitchen_models.KitchenAutoAcceptOrders) error
+	CreateKitchenPrinterConfig(ctx context.Context, config *kitchen_models.KitchenPrinterConfig) error
+	CreateKitchenThrottlingConfig(ctx context.Context, config *kitchen_models.KitchenThrottlingConfig) error
+	CreateKitchenOperatingHours(ctx context.Context, config *kitchen_models.KitchenOperatingHours) error
+
+	GetKitchenAutoAcceptOrdersByKitchenID(ctx context.Context, kitchenID uuid.UUID) (*kitchen_models.KitchenAutoAcceptOrders, error)
+	GetKitchenPrinterConfigByKitchenID(ctx context.Context, kitchenID uuid.UUID) (*kitchen_models.KitchenPrinterConfig, error)
+	GetKitchenThrottlingConfigByKitchenID(ctx context.Context, kitchenID uuid.UUID) (*kitchen_models.KitchenThrottlingConfig, error)
+	ListKitchenOperatingHoursByKitchenID(ctx context.Context, kitchenID uuid.UUID) ([]kitchen_models.KitchenOperatingHours, error)
+
+	UpdateKitchenAutoAcceptOrders(ctx context.Context, id uuid.UUID, updates map[string]interface{}) error
+	UpdateKitchenPrinterConfig(ctx context.Context, id uuid.UUID, updates map[string]interface{}) error
+	UpdateKitchenThrottlingConfig(ctx context.Context, id uuid.UUID, updates map[string]interface{}) error
+	UpdateKitchenOperatingHours(ctx context.Context, id uuid.UUID, updates map[string]interface{}) error
 }

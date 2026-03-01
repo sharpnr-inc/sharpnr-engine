@@ -5,7 +5,7 @@ import (
 	"sharpnr-engine/modules/hospitality/bar"
 	"sharpnr-engine/modules/hospitality/concierge"
 	hotel_routes "sharpnr-engine/modules/hospitality/hotel/routes"
-	"sharpnr-engine/modules/hospitality/kitchen"
+	kitchen_routes "sharpnr-engine/modules/hospitality/kitchen/routes"
 	menu_routes "sharpnr-engine/modules/hospitality/menu/routes"
 	"sharpnr-engine/modules/hospitality/restaurant"
 	hospitality_utilities "sharpnr-engine/modules/hospitality/utilities_api"
@@ -23,7 +23,7 @@ func RegisterHotelModuleRoutes(
 
 	hotel_routes.RegisterHotelRoutes(sharpHospitality, modules)
 
-	kitchen.KitchenRoutes(sharpHospitality, modules)
+	kitchen_routes.KitchenRoutes(sharpHospitality, modules)
 	menu_routes.RegisterMenuRoutes(sharpHospitality, modules)
 
 	restaurant.RestaurantRoutes(sharpHospitality, modules)

@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *kitchenController) GetKitchenDetails(ctx *gin.Context) {
+func (c *KitchenController) GetKitchenDetails(ctx *gin.Context) {
 	// 1. Resolve Auth and KitchenID
 	_, _, ok := c.resolveContext(ctx)
 	if !ok {
