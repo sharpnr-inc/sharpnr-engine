@@ -17,8 +17,8 @@ func (d *kitchenRepository) CreateKitchen(ctx context.Context, kitchen *kitchen_
 }
 
 // GetKitchenById implements KitchenRepositoryInterface.
-func (d *kitchenRepository) GetKitchenById(ctx context.Context, kitchenId uuid.UUID) ([]*kitchen_models.Kitchen, error) {
-	var kitchens []*kitchen_models.Kitchen
+func (d *kitchenRepository) GetKitchenById(ctx context.Context, kitchenId uuid.UUID) (*kitchen_models.Kitchen, error) {
+	var kitchens *kitchen_models.Kitchen
 
 	// Using Find instead of First because the return type is a slice
 	err := d.db.WithContext(ctx).Where("id = ?", kitchenId).Find(&kitchens).Error

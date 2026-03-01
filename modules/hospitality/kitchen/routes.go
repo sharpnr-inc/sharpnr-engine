@@ -16,6 +16,8 @@ func KitchenRoutes(
 	newKitchenController := kitchencontrollers.NewKitchenController(kitchenService, sse)
 
 	kitchenRoutes := v1.Group("/kitchen/:kitchenID")
+	kitchenRoutes.GET("/get-kitchen-details", newKitchenController.GetKitchenDetails)
+	kitchenRoutes.POST("/update-kitchen-details")
 	kitchenRoutes.GET("/get-orders", newKitchenController.GetKots)
 
 	kotRoutes := kitchenRoutes.Group("/kot/:kotID")
