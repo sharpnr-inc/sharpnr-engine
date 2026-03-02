@@ -115,3 +115,17 @@ func (RestaurantInvoiceSettings) TableName() string {
 }
 
 /* ----------------------------------- <*> ---------------------------------- */
+
+type RestaurantPreferedKitchen struct {
+	ID                   uuid.UUID `gorm:"type:uuid;primaryKey"`
+	RestaurantSettingsID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex"`
+
+	KitchenID uuid.UUID `gorm:"type:uuid;not null"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+func (RestaurantPreferedKitchen) TableName() string {
+	return "hospitality.restaurant_prefered_kitchen"
+}
