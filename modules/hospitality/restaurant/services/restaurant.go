@@ -51,7 +51,7 @@ func (r *restaurantService) GetAllRestaurantOfProperty(
 		result = append(result, &restaurant_contracts.RestaurantDetails{
 			ID:           rs.ID,
 			Name:         rs.Name,
-			Status:       false,
+			Status:       rs.IsActive,
 			IsConfigured: rs.IsConfigured,
 		})
 	}
