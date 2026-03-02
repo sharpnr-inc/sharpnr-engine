@@ -78,11 +78,12 @@ func (r *kitchenService) GetKitchenDetails(ctx context.Context, kitchenID uuid.U
 	}
 
 	reader := &kitchen_contracts.Kitchen_Reader{
-		ID:         kitchen.ID,
-		Name:       kitchen.Name,
-		Status:     kitchen.IsActive,
-		OrgID:      kitchen.OrganizationID,
-		PropertyID: kitchen.OrganizationPropertyID,
+		ID:          kitchen.ID,
+		Name:        kitchen.Name,
+		Description: kitchen.Description,
+		Status:      kitchen.IsActive,
+		OrgID:       kitchen.OrganizationID,
+		PropertyID:  kitchen.OrganizationPropertyID,
 	}
 
 	return reader, nil

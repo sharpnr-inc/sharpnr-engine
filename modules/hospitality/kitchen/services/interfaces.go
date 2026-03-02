@@ -17,4 +17,10 @@ type KitchenServiceInterface interface {
 	UpdateKotStatus(ctx context.Context, kitchenID uuid.UUID, kotID uuid.UUID, status string) error
 
 	GetKitchenDetails(ctx context.Context, kitchenID uuid.UUID) (*kitchen_contracts.Kitchen_Reader, error)
+	KitchenConfigServiceInterface
+}
+
+type KitchenConfigServiceInterface interface {
+	UpdateGeneralDetails(ctx context.Context, kitchenID uuid.UUID, req_dto kitchen_contracts.UpdateKitchenGeneralDetails_req_dto) error
+	GetKitchenConfigs(ctx context.Context, kitchenID uuid.UUID) (*kitchen_contracts.KitchenConfigResponseDto, error)
 }

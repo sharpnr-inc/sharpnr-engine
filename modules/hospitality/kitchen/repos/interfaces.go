@@ -9,6 +9,7 @@ import (
 
 type KitchenRepositoryInterface interface {
 	CreateKitchen(ctx context.Context, kitchen *kitchen_models.Kitchen) error
+	UpdateKitchenGeneralDetails(ctx context.Context, kitchenID uuid.UUID, updates map[string]interface{}) error
 	GetKitchenById(ctx context.Context, kitchenId uuid.UUID) (*kitchen_models.Kitchen, error)
 	GetKitchenByOrgId(ctx context.Context, orgId uuid.UUID) ([]*kitchen_models.Kitchen, error)
 	GetKitchenByPropertyId(ctx context.Context, propertyID uuid.UUID) ([]*kitchen_models.Kitchen, error)

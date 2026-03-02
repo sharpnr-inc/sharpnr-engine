@@ -26,3 +26,8 @@ type KOTExtra_dto struct {
 	Name string    `json:"name"`
 	Qty  int       `json:"qty"`
 }
+
+type UpdateKitchenGeneralDetails_req_dto struct {
+	Name        string `json:"name" binding:"required"`
+	Description string `json:"description,omitempty"`
+}
