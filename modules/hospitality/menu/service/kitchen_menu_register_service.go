@@ -94,14 +94,14 @@ func (s *menuService) SetKitchenToMenuSubCategory(ctx context.Context, req *hosp
 	})
 }
 
-func (c *menuService) GetKitchenOfMenuSubCategory(ctx context.Context, menuItemID uuid.UUID) (uuid.UUID, error) {
-	kitchen, err := c.menuRepo.
-	if err != nil {
-		return uuid.Nil, err
-	}
+// func (c *menuService) GetKitchenOfMenuSubCategory(ctx context.Context, menuItemID uuid.UUID) (uuid.UUID, error) {
+// 	kitchen, err := c.menuRepo.GetKitchenMenuRegisterByMenuItemID(ctx, )
+// 	if err != nil {
+// 		return uuid.Nil, err
+// 	}
 
-	return kitchen.KitchenID, nil
-}
+// 	return kitchen.KitchenID, nil
+// }
 
 /* -------------------------------------------------------------------------- */
 /*                     Menu Item Kitchen Regsiter Services                    */
