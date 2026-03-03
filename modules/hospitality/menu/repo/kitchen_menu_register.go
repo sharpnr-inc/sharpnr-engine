@@ -10,6 +10,54 @@ import (
 )
 
 /* -------------------------------------------------------------------------- */
+/*                         Menu Group Register Methods                        */
+/* -------------------------------------------------------------------------- */
+
+func (r *menuRepo) CreateMenuGroupKitchenRegister(ctx context.Context, entry *hospitalityMenu_models.MenuGroupKitchenRegister) error {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+	// clause.OnConflict allows us to handle the unique constraint on MenuItemID
+	err := db.WithContext(ctx).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "menu_group_id"}}, // The unique index column
+		DoUpdates: clause.AssignmentColumns([]string{"kitchen_id", "owner_type", "updated_at"}),
+	}).Create(entry).Error
+
+	return err
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *menuRepo) GetMenuGroupKitchenByMenuGroupID(ctx context.Context, menuGroupID uuid.UUID, kitchenID uuid.UUID) (*hospitalityMenu_models.MenuGroupKitchenRegister, error) {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+	var register hospitalityMenu_models.MenuGroupKitchenRegister
+	err := db.WithContext(ctx).Where("menu_group_id = ? AND kitchen_id = ?", menuGroupID, kitchenID).First(&register).Error
+	if err != nil {
+		return nil, err
+	}
+	return &register, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *menuRepo) GetMenuGroupPreferredKitchen(ctx context.Context, menuGroupID uuid.UUID) (*hospitalityMenu_models.MenuGroupKitchenRegister, error) {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+	var register hospitalityMenu_models.MenuGroupKitchenRegister
+	err := db.WithContext(ctx).Where("menu_category_id = ?", menuGroupID).First(&register).Error
+	if err != nil {
+		return nil, err
+	}
+	return &register, nil
+}
+
+/* -------------------------------------------------------------------------- */
 /*                       Menu Category Registers Methods                      */
 /* -------------------------------------------------------------------------- */
 

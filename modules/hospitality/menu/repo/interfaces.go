@@ -17,6 +17,10 @@ type MenuRepositoryInterface interface {
 	GetMenuByID(ctx context.Context, menuID uuid.UUID) (*hospitalityMenu_models.MenuGroup, error)
 	UpdateMenuGroup(group *hospitalityMenu_models.MenuGroup) error
 	DeleteMenuGroup(id uuid.UUID) error
+	/* -------------------------------- Register -------------------------------- */
+	CreateMenuGroupKitchenRegister(ctx context.Context, entry *hospitalityMenu_models.MenuGroupKitchenRegister) error
+	GetMenuGroupKitchenByMenuGroupID(ctx context.Context, menuGroupID uuid.UUID, kitchenID uuid.UUID) (*hospitalityMenu_models.MenuGroupKitchenRegister, error)
+	GetMenuGroupPreferredKitchen(ctx context.Context, menuGroupID uuid.UUID) (*hospitalityMenu_models.MenuGroupKitchenRegister, error)
 
 	// -------------------------------
 	// 🗂️ MENU CATEGORIES
@@ -41,7 +45,7 @@ type MenuRepositoryInterface interface {
 	DeleteSubCategory(id uuid.UUID) error
 	/* -------------------------------- Register -------------------------------- */
 	CreateMenuSubCategoryKitchenRegister(ctx context.Context, entry *hospitalityMenu_models.MenuSubCategoryKitchenRegister) error
-	GetSubCategoryKitchenByMenuItemID(ctx context.Context, menuSubCategoryID uuid.UUID, kitchenID uuid.UUID) (*hospitalityMenu_models.MenuSubCategoryKitchenRegister, error)
+	GetSubCategoryKitchenByMenuSubCategoryID(ctx context.Context, menuSubCategoryID uuid.UUID, kitchenID uuid.UUID) (*hospitalityMenu_models.MenuSubCategoryKitchenRegister, error)
 	GetSubCategoryPreferredKitchen(ctx context.Context, menuSubCategoryID uuid.UUID) (*hospitalityMenu_models.MenuSubCategoryKitchenRegister, error)
 
 	// -------------------------------

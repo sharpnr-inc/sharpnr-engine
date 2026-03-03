@@ -7,6 +7,22 @@ import (
 	"github.com/google/uuid"
 )
 
+type MenuGroupKitchenRegister struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	KitchenID   uuid.UUID `gorm:"type:uuid;not null;index"`
+	MenuGroupID uuid.UUID `gorm:"type:uuid;not null;index"`
+
+	OwnersID uuid.UUID `gorm:"type:uuid;not null;index"`
+
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+}
+
+func (MenuGroupKitchenRegister) TableName() string {
+	return "hospitality.menu_group_kitchen_register"
+}
+
 type MenuCategoryKitchenRegister struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
