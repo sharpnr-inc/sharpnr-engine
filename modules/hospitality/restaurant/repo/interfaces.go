@@ -16,6 +16,7 @@ type RestaurantRepositoryInterface interface {
 	GetRestaurantByOrgID(ctx context.Context, orgId uuid.UUID) ([]*restaurant_models.Restaurant, error)
 	GetRestaurantByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]*restaurant_models.Restaurant, error)
 	UpdateGeneralDetails(ctx context.Context, restaurantID uuid.UUID, updates map[string]interface{}) error
+	GetRestaurantPreferredKitchenID(ctx context.Context, restaurantID uuid.UUID) (*restaurant_models.RestaurantPreferedKitchen, error)
 
 	// Restaurant--> Floors
 	CreateFloor(ctx context.Context, floors *restaurant_models.RestaurantFloor) error

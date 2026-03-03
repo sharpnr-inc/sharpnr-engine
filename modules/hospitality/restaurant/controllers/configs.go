@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *restaurantController) GetGeneralDetails(ctx *gin.Context) {
+func (c *RestaurantController) GetGeneralDetails(ctx *gin.Context) {
 
 	orgID, employeeID, ok := c.resolveContext(ctx)
 	if !ok {
@@ -32,7 +32,7 @@ func (c *restaurantController) GetGeneralDetails(ctx *gin.Context) {
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (c *restaurantController) UpdateGeneralDetails(ctx *gin.Context) {
+func (c *RestaurantController) UpdateGeneralDetails(ctx *gin.Context) {
 
 	orgID, employeeID, ok := c.resolveContext(ctx)
 	if !ok {
@@ -62,7 +62,7 @@ func (c *restaurantController) UpdateGeneralDetails(ctx *gin.Context) {
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (c *restaurantController) AddLayout(ctx *gin.Context) {
+func (c *RestaurantController) AddLayout(ctx *gin.Context) {
 
 	orgID, employeeID, ok := c.resolveContext(ctx)
 	if !ok {

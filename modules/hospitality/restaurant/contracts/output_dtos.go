@@ -60,3 +60,8 @@ type RestaurantGeneralInfo_resp_dto struct {
 	IsConfigured bool      `json:"is_configured"`
 	LastUpdated  time.Time `json:"last_updated"`
 }
+
+type RestaurantPreferredKitchen_resp_dto struct {
+	RestaurantID uuid.UUID `json:"restaurant_id"`
+	KitchenID    uuid.UUID `json:"kitchen_id"`
+}

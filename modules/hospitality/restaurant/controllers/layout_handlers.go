@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *restaurantController) GetRestaurantLayout(ctx *gin.Context) {
+func (c *RestaurantController) GetRestaurantLayout(ctx *gin.Context) {
 	// 1. Resolve Org and User context
 	orgID, _, ok := c.resolveContext(ctx)
 	if !ok {

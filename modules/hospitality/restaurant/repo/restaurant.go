@@ -101,3 +101,21 @@ func (r *restaurantRepo) UpdateGeneralDetails(ctx context.Context, restaurantID 
 
 	return nil
 }
+
+func (r *restaurantRepo) GetRestaurantPreferredKitchenID(ctx context.Context, restaurantID uuid.UUID) (*restaurant_models.RestaurantPreferedKitchen, error) {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	var resPrefKitchen restaurant_models.RestaurantPreferedKitchen
+	err := db.WithContext(ctx).
+		Where("restaurant_id = ?", restaurantID).
+		First(&resPrefKitchen).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &resPrefKitchen, nil
+}

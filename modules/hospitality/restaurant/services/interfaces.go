@@ -26,6 +26,10 @@ type RestaurantServiceInterface interface {
 
 	AddRestaurantGeneralDetails(ctx context.Context)
 	GetAllRestaurantOfProperty(ctx context.Context, PropertyID uuid.UUID) (restaurants []*restaurant_contracts.RestaurantDetails, err error)
+	GetRestaurantPreferredKitchenID(
+		ctx context.Context,
+		restaurantID uuid.UUID,
+	) (restaurant_contracts.RestaurantPreferredKitchen_resp_dto, error)
 
 	UpdateRestaurantGeneralDetails(
 		ctx context.Context,

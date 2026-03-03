@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	dbtx "sharpnr-engine/core/dbTx"
 	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
@@ -185,4 +186,35 @@ func (s *restaurantService) UpdateGeneralDetails(
 		// Use the context that contains the transaction
 		return s.restaurantRepo.UpdateGeneralDetails(ctx, restaurantID, updates)
 	})
+}
+
+func (s *restaurantService) GetRestaurantPreferredKitchenID(
+	ctx context.Context,
+	restaurantID uuid.UUID,
+) (restaurant_contracts.RestaurantPreferredKitchen_resp_dto, error) {
+
+	var res restaurant_contracts.RestaurantPreferredKitchen_resp_dto
+
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		preferredKitchen, err := s.restaurantRepo.
+			GetRestaurantPreferredKitchenID(txCtx, restaurantID)
+		if err != nil {
+			return err
+		}
+
+		res = restaurant_contracts.RestaurantPreferredKitchen_resp_dto{
+			RestaurantID: preferredKitchen.RestaurantID,
+			KitchenID:    preferredKitchen.KitchenID,
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return restaurant_contracts.RestaurantPreferredKitchen_resp_dto{}, err
+	}
+
+	return res, nil
 }
