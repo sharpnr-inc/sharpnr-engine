@@ -18,6 +18,7 @@ type CategoryOutput struct {
 	MenuID              uuid.UUID           `json:"menu_id"`
 	CategoryName        string              `json:"category_name"`
 	CategoryDescription string              `json:"category_description"`
+	PreferredKitchenID  *uuid.UUID          `json:"preferred_kitchen"`
 	SubCategories       []SubCategoryOutput `json:"sub_categories"`
 }
 
@@ -26,6 +27,7 @@ type SubCategoryOutput struct {
 	MenuCategoryID    uuid.UUID        `json:"menu_category_id"`
 	SubCatName        string           `json:"sub_cat_name"`
 	SubCatDescription string           `json:"sub_cat_description"`
+	PreferredKitchenID  *uuid.UUID          `json:"preferred_kitchen"`
 	MenuItems         []MenuItemOutput `json:"menu_items"`
 }
 
