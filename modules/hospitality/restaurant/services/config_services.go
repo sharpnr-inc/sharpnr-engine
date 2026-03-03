@@ -190,24 +190,32 @@ func (s *restaurantService) UpdateGeneralDetails(
 
 func (s *restaurantService) GetRestaurantPreferredKitchenID(
 	ctx context.Context,
-	restaurantID uuid.UUID,
+	orgID, employeeID, restaurantID uuid.UUID,
 ) (restaurant_contracts.RestaurantPreferredKitchen_resp_dto, error) {
 
-	var res restaurant_contracts.RestaurantPreferredKitchen_resp_dto
+	// Default response → both nil
+	res := restaurant_contracts.RestaurantPreferredKitchen_resp_dto{
+		RestaurantID: nil,
+		KitchenID:    nil,
+	}
 
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
 		preferredKitchen, err := s.restaurantRepo.
 			GetRestaurantPreferredKitchenID(txCtx, restaurantID)
+
 		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				// Not found → keep nil fields
+				return nil
+			}
 			return err
 		}
 
-		res = restaurant_contracts.RestaurantPreferredKitchen_resp_dto{
-			RestaurantID: preferredKitchen.RestaurantID,
-			KitchenID:    preferredKitchen.KitchenID,
-		}
+		// Set values only if found
+		res.RestaurantID = &preferredKitchen.RestaurantID
+		res.KitchenID = &preferredKitchen.KitchenID
 
 		return nil
 	})
@@ -217,4 +225,29 @@ func (s *restaurantService) GetRestaurantPreferredKitchenID(
 	}
 
 	return res, nil
+}
+
+func (s *restaurantService) AddPreferredKitchen(
+	ctx context.Context,
+	orgID, employeeID,
+	restaurantID, kitchenID uuid.UUID,
+) error {
+
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		pfk := restaurant_models.RestaurantPreferedKitchen{
+			ID:           uuid.New(),
+			RestaurantID: restaurantID,
+			KitchenID:    kitchenID,
+			CreatedAt:    time.Now(),
+			UpdatedAt:    time.Now(),
+		}
+
+		if err := s.restaurantRepo.CreatePreferredKitchen(txCtx, &pfk); err != nil {
+			return err
+		}
+
+		return nil
+	})
 }

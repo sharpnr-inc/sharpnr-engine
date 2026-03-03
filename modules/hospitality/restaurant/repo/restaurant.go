@@ -119,3 +119,18 @@ func (r *restaurantRepo) GetRestaurantPreferredKitchenID(ctx context.Context, re
 
 	return &resPrefKitchen, nil
 }
+
+func (r *restaurantRepo) CreatePreferredKitchen(
+	ctx context.Context,
+	pfktcn *restaurant_models.RestaurantPreferedKitchen,
+) error {
+
+	db := r.db
+	if tx, ok := dbtx.ExtractTx(ctx); ok {
+		db = tx
+	}
+
+	return db.WithContext(ctx).
+		Create(pfktcn).
+		Error
+}

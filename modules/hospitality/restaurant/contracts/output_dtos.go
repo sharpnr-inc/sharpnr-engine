@@ -62,6 +62,6 @@ type RestaurantGeneralInfo_resp_dto struct {
 }
 
 type RestaurantPreferredKitchen_resp_dto struct {
-	RestaurantID uuid.UUID `json:"restaurant_id"`
-	KitchenID    uuid.UUID `json:"kitchen_id"`
+	RestaurantID *uuid.UUID `json:"restaurant_id"`
+	KitchenID    *uuid.UUID `json:"kitchen_id"`
 }

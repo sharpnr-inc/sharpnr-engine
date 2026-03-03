@@ -117,9 +117,8 @@ func (RestaurantInvoiceSettings) TableName() string {
 /* ----------------------------------- <*> ---------------------------------- */
 
 type RestaurantPreferedKitchen struct {
-	ID                   uuid.UUID `gorm:"type:uuid;primaryKey"`
-	RestaurantID         uuid.UUID `gorm:"type:uuid;not null;uniqueIndex"`
-	RestaurantSettingsID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex"`
+	ID           uuid.UUID `gorm:"type:uuid;primaryKey"`
+	RestaurantID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex"`
 
 	KitchenID uuid.UUID `gorm:"type:uuid;not null"`
 
