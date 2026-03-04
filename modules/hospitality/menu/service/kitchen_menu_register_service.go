@@ -2,6 +2,7 @@ package menuservice
 
 import (
 	"context"
+	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
 	hospitality_menu_contracts "sharpnr-engine/modules/hospitality/menu/contracts"
 	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
@@ -119,10 +120,36 @@ func (s *menuService) SetKitchenToMenuItem(ctx context.Context, req *hospitality
 }
 
 func (c *menuService) GetKitchenOfMenuItem(ctx context.Context, menuItemID uuid.UUID) (uuid.UUID, error) {
-	kitchen, err := c.menuRepo.GetMenuItemKitchen(ctx, menuItemID)
-	if err != nil {
-		return uuid.Nil, err
-	}
+    // 1. Check MenuItem Priority (Highest Priority)
+    itemKitchen, err := c.menuRepo.GetMenuItemKitchen(ctx, menuItemID)
+    // If we found a specific kitchen for this item, return it immediately
+    if err == nil && itemKitchen.KitchenID != uuid.Nil {
+        return itemKitchen.KitchenID, nil
+    }
 
-	return kitchen.KitchenID, nil
+    // 2. Fetch the Parents (Category and Sub-Category IDs)
+    // Fixed: Added uuid.Nil and err to the return statement
+    menuItemParent, err := c.GetMenuItemParents(ctx, menuItemID)
+    if err != nil {
+        return uuid.Nil, err
+    }
+
+    // 3. Check Category Priority (Second Priority)
+    if menuItemParent.MenuCategoryID != uuid.Nil {
+        catKitchen, err := c.menuRepo.GetCategoryPreferredKitchen(ctx, menuItemParent.MenuCategoryID)
+        if err == nil && catKitchen.KitchenID != uuid.Nil {
+            return catKitchen.KitchenID, nil
+        }
+    }
+
+    // 4. Check Sub-Category Priority (Third Priority)
+    if menuItemParent.MenuSubCategoryID != uuid.Nil {
+        subCatKitchen, err := c.menuRepo.GetSubCategoryPreferredKitchen(ctx, menuItemParent.MenuSubCategoryID)
+        if err == nil && subCatKitchen.KitchenID != uuid.Nil {
+            return subCatKitchen.KitchenID, nil
+        }
+    }
+
+    // If no kitchen is found at any level
+    return uuid.Nil, fmt.Errorf("no kitchen found for item %s or its parents", menuItemID)
 }

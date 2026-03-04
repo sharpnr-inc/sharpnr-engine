@@ -67,3 +67,9 @@ type AddOnOutput struct {
 	Name       string    `json:"name"`
 	Price      float64   `json:"price"`
 }
+
+type MenuItemParentsDetails struct {
+	MenuCategoryID    uuid.UUID
+	MenuSubCategoryID uuid.UUID
+	MenuGroupID       uuid.UUID
+}
