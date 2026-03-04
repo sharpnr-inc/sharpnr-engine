@@ -25,10 +25,10 @@ type MenuService interface {
 }
 
 type MenuKitchenRegisterServiceInterface interface {
-	SetKitchenToMenuGroup(ctx context.Context, req *hospitality_menu_contracts.SetKitchenToMenuGroupInput) error
-	SetKitchenToMenuCategory(ctx context.Context, req *hospitality_menu_contracts.SetKitchenToMenuCategoryInput) error
-	SetKitchenToMenuSubCategory(ctx context.Context, req *hospitality_menu_contracts.SetKitchenToMenuSubCategoryInput) error
-	SetKitchenToMenuItem(ctx context.Context, req *hospitality_menu_contracts.SetKitchenToMenuItemInput) error
+	SetKitchenToMenuGroup(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, ownerID uuid.UUID, req *hospitality_menu_contracts.SetKitchenToMenuGroupInput) error
+	SetKitchenToMenuCategory(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, ownerID uuid.UUID, req *hospitality_menu_contracts.SetKitchenToMenuCategoryInput) error
+	SetKitchenToMenuSubCategory(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, ownerID uuid.UUID, req *hospitality_menu_contracts.SetKitchenToMenuSubCategoryInput) error
+	SetKitchenToMenuItem(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, ownerID uuid.UUID, req *hospitality_menu_contracts.SetKitchenToMenuItemInput) error
 	/* ---------------------------------- <***> --------------------------------- */
 	GetKitchenfOfMenuGroup(ctx context.Context, menuGroupID uuid.UUID) (uuid.UUID, error)
 	GetKitchenOfMenuCategory(ctx context.Context, menuCategoryID uuid.UUID) (uuid.UUID, error)

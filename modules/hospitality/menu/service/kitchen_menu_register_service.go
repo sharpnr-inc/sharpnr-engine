@@ -15,7 +15,11 @@ import (
 /* -------------------------------------------------------------------------- */
 /*                         Menu Group Register Service                        */
 /* -------------------------------------------------------------------------- */
-func (s *menuService) SetKitchenToMenuGroup(ctx context.Context, req *hospitality_menu_contracts.SetKitchenToMenuGroupInput) error {
+func (s *menuService) SetKitchenToMenuGroup(
+	ctx context.Context,
+	orgID uuid.UUID, emplID uuid.UUID, ownerID uuid.UUID,
+	req *hospitality_menu_contracts.SetKitchenToMenuGroupInput,
+) error {
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
@@ -46,7 +50,10 @@ func (c *menuService) GetKitchenfOfMenuGroup(ctx context.Context, menuGroupID uu
 /*                   Menu Category Kitchen Register Services                  */
 /* -------------------------------------------------------------------------- */
 
-func (s *menuService) SetKitchenToMenuCategory(ctx context.Context, req *hospitality_menu_contracts.SetKitchenToMenuCategoryInput) error {
+func (s *menuService) SetKitchenToMenuCategory(
+	ctx context.Context,
+	orgID uuid.UUID, emplID uuid.UUID, ownerID uuid.UUID,
+	req *hospitality_menu_contracts.SetKitchenToMenuCategoryInput) error {
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
@@ -77,7 +84,10 @@ func (c *menuService) GetKitchenOfMenuCategory(ctx context.Context, menuCategory
 /*                 Menu sub-category Kitchen Register Services                */
 /* -------------------------------------------------------------------------- */
 
-func (s *menuService) SetKitchenToMenuSubCategory(ctx context.Context, req *hospitality_menu_contracts.SetKitchenToMenuSubCategoryInput) error {
+func (s *menuService) SetKitchenToMenuSubCategory(
+	ctx context.Context,
+	orgID uuid.UUID, emplID uuid.UUID, ownerID uuid.UUID,
+	req *hospitality_menu_contracts.SetKitchenToMenuSubCategoryInput) error {
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
@@ -108,7 +118,11 @@ func (c *menuService) GetKitchenOfMenuSubCategory(ctx context.Context, menuSubCa
 /*                     Menu Item Kitchen Regsiter Services                    */
 /* -------------------------------------------------------------------------- */
 
-func (s *menuService) SetKitchenToMenuItem(ctx context.Context, req *hospitality_menu_contracts.SetKitchenToMenuItemInput) error {
+func (s *menuService) SetKitchenToMenuItem(
+	ctx context.Context,
+	orgID uuid.UUID, emplID uuid.UUID, ownerID uuid.UUID,
+	req *hospitality_menu_contracts.SetKitchenToMenuItemInput,
+) error {
 	// Create a new entry in the MenuItemKitchenRegister table
 	entry := &hospitalityMenu_models.MenuItemKitchenRegister{
 		ID:         uuid.New(),
@@ -120,36 +134,36 @@ func (s *menuService) SetKitchenToMenuItem(ctx context.Context, req *hospitality
 }
 
 func (c *menuService) GetKitchenOfMenuItem(ctx context.Context, menuItemID uuid.UUID) (uuid.UUID, error) {
-    // 1. Check MenuItem Priority (Highest Priority)
-    itemKitchen, err := c.menuRepo.GetMenuItemKitchen(ctx, menuItemID)
-    // If we found a specific kitchen for this item, return it immediately
-    if err == nil && itemKitchen.KitchenID != uuid.Nil {
-        return itemKitchen.KitchenID, nil
-    }
+	// 1. Check MenuItem Priority (Highest Priority)
+	itemKitchen, err := c.menuRepo.GetMenuItemKitchen(ctx, menuItemID)
+	// If we found a specific kitchen for this item, return it immediately
+	if err == nil && itemKitchen.KitchenID != uuid.Nil {
+		return itemKitchen.KitchenID, nil
+	}
 
-    // 2. Fetch the Parents (Category and Sub-Category IDs)
-    // Fixed: Added uuid.Nil and err to the return statement
-    menuItemParent, err := c.GetMenuItemParents(ctx, menuItemID)
-    if err != nil {
-        return uuid.Nil, err
-    }
+	// 2. Fetch the Parents (Category and Sub-Category IDs)
+	// Fixed: Added uuid.Nil and err to the return statement
+	menuItemParent, err := c.GetMenuItemParents(ctx, menuItemID)
+	if err != nil {
+		return uuid.Nil, err
+	}
 
-    // 3. Check Category Priority (Second Priority)
-    if menuItemParent.MenuCategoryID != uuid.Nil {
-        catKitchen, err := c.menuRepo.GetCategoryPreferredKitchen(ctx, menuItemParent.MenuCategoryID)
-        if err == nil && catKitchen.KitchenID != uuid.Nil {
-            return catKitchen.KitchenID, nil
-        }
-    }
+	// 3. Check Category Priority (Second Priority)
+	if menuItemParent.MenuCategoryID != uuid.Nil {
+		catKitchen, err := c.menuRepo.GetCategoryPreferredKitchen(ctx, menuItemParent.MenuCategoryID)
+		if err == nil && catKitchen.KitchenID != uuid.Nil {
+			return catKitchen.KitchenID, nil
+		}
+	}
 
-    // 4. Check Sub-Category Priority (Third Priority)
-    if menuItemParent.MenuSubCategoryID != uuid.Nil {
-        subCatKitchen, err := c.menuRepo.GetSubCategoryPreferredKitchen(ctx, menuItemParent.MenuSubCategoryID)
-        if err == nil && subCatKitchen.KitchenID != uuid.Nil {
-            return subCatKitchen.KitchenID, nil
-        }
-    }
+	// 4. Check Sub-Category Priority (Third Priority)
+	if menuItemParent.MenuSubCategoryID != uuid.Nil {
+		subCatKitchen, err := c.menuRepo.GetSubCategoryPreferredKitchen(ctx, menuItemParent.MenuSubCategoryID)
+		if err == nil && subCatKitchen.KitchenID != uuid.Nil {
+			return subCatKitchen.KitchenID, nil
+		}
+	}
 
-    // If no kitchen is found at any level
-    return uuid.Nil, fmt.Errorf("no kitchen found for item %s or its parents", menuItemID)
+	// If no kitchen is found at any level
+	return uuid.Nil, fmt.Errorf("no kitchen found for item %s or its parents", menuItemID)
 }

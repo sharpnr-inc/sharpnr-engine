@@ -53,3 +53,12 @@ func (c *menuController) resolveMenuOwnersID(ctx *gin.Context) (uuid.UUID, bool)
 	}
 	return parsedID, true
 }
+
+// resolveBody binds the JSON request body to the provided struct type.
+func (c *menuController) resolveBody(ctx *gin.Context, target interface{}) bool {
+	if err := ctx.ShouldBindJSON(target); err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, fmt.Errorf("invalid request body: %w", err))
+		return false
+	}
+	return true
+}
