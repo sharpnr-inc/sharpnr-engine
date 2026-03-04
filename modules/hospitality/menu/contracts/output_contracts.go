@@ -7,10 +7,11 @@ import (
 )
 
 type MenuOutput struct {
-	ID              uuid.UUID        `json:"id"`
-	MenuName        string           `json:"menu_name"`
-	MenuDescription *string          `json:"menu_description"`
-	Categories      []CategoryOutput `json:"categories"`
+	ID                 uuid.UUID        `json:"id"`
+	MenuName           string           `json:"menu_name"`
+	MenuDescription    *string          `json:"menu_description"`
+	PreferredKitchenID *uuid.UUID       `json:"preferred_kitchen"`
+	Categories         []CategoryOutput `json:"categories"`
 }
 
 type CategoryOutput struct {
@@ -23,12 +24,12 @@ type CategoryOutput struct {
 }
 
 type SubCategoryOutput struct {
-	ID                uuid.UUID        `json:"id"`
-	MenuCategoryID    uuid.UUID        `json:"menu_category_id"`
-	SubCatName        string           `json:"sub_cat_name"`
-	SubCatDescription string           `json:"sub_cat_description"`
-	PreferredKitchenID  *uuid.UUID          `json:"preferred_kitchen"`
-	MenuItems         []MenuItemOutput `json:"menu_items"`
+	ID                 uuid.UUID        `json:"id"`
+	MenuCategoryID     uuid.UUID        `json:"menu_category_id"`
+	SubCatName         string           `json:"sub_cat_name"`
+	SubCatDescription  string           `json:"sub_cat_description"`
+	PreferredKitchenID *uuid.UUID       `json:"preferred_kitchen"`
+	MenuItems          []MenuItemOutput `json:"menu_items"`
 }
 
 type MenuItemOutput struct {
