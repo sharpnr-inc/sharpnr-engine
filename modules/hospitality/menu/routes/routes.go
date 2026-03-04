@@ -25,9 +25,10 @@ func RegisterMenuRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) {
 
 	mcr := mr.Group("/configs")
 	{
-		mcr.POST("/register/category-kitchen")
-		mcr.POST("/register/sub-category-kitchen")
-		mcr.POST("/register/menu-item-kitchen")
+		mcr.POST("/register/menugroup-kitchen", mc.AddPreferredKitchenForMenuGroup)
+		mcr.POST("/register/category-kitchen", mc.AddPreferredKitchenForMenuCategory)
+		mcr.POST("/register/sub-category-kitchen", mc.AddPreferredKitchenForMenuSubCategory)
+		mcr.POST("/register/menu-item-kitchen", mc.AddPreferredKitchenForMenuItem)
 	}
 
 }

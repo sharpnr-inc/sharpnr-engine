@@ -35,7 +35,7 @@ func (r *menuRepo) GetMenuGroupPreferredKitchen(ctx context.Context, menuGroupID
 		db = r.db
 	}
 	var register hospitalityMenu_models.MenuGroupKitchenRegister
-	err := db.WithContext(ctx).Where("menu_category_id = ?", menuGroupID).First(&register).Error
+	err := db.WithContext(ctx).Where("menu_group_id = ?", menuGroupID).First(&register).Error
 	if err != nil {
 		return nil, err
 	}
