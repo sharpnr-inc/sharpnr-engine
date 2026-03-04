@@ -29,8 +29,8 @@ type MenuKitchenRegisterServiceInterface interface {
 	SetKitchenToMenuSubCategory(ctx context.Context, req *hospitality_menu_contracts.SetKitchenToMenuSubCategoryInput) error
 	SetKitchenToMenuItem(ctx context.Context, req *hospitality_menu_contracts.SetKitchenToMenuItemInput) error
 	/* ---------------------------------- <***> --------------------------------- */
-	GetKitchenfOfMenuGroup(ctx context.Context, menuItemID uuid.UUID) (uuid.UUID, error)
-	GetKitchenOfMenuCategory(ctx context.Context, menuItemID uuid.UUID) (uuid.UUID, error)
-	GetKitchenOfMenuSubCategory(ctx context.Context, menuItemID uuid.UUID) (uuid.UUID, error)
+	GetKitchenfOfMenuGroup(ctx context.Context, menuGroupID uuid.UUID) (uuid.UUID, error)
+	GetKitchenOfMenuCategory(ctx context.Context, menuCategoryID uuid.UUID) (uuid.UUID, error)
+	GetKitchenOfMenuSubCategory(ctx context.Context, menuSubCategoryID uuid.UUID) (uuid.UUID, error)
 	GetKitchenOfMenuItem(ctx context.Context, menuItemID uuid.UUID) (uuid.UUID, error)
 }

@@ -29,21 +29,6 @@ func (r *menuRepo) CreateMenuGroupKitchenRegister(ctx context.Context, entry *ho
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *menuRepo) GetMenuGroupKitchenByMenuGroupID(ctx context.Context, menuGroupID uuid.UUID, kitchenID uuid.UUID) (*hospitalityMenu_models.MenuGroupKitchenRegister, error) {
-	db, ok := dbtx.ExtractTx(ctx)
-	if !ok {
-		db = r.db
-	}
-	var register hospitalityMenu_models.MenuGroupKitchenRegister
-	err := db.WithContext(ctx).Where("menu_group_id = ? AND kitchen_id = ?", menuGroupID, kitchenID).First(&register).Error
-	if err != nil {
-		return nil, err
-	}
-	return &register, nil
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
 func (r *menuRepo) GetMenuGroupPreferredKitchen(ctx context.Context, menuGroupID uuid.UUID) (*hospitalityMenu_models.MenuGroupKitchenRegister, error) {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
@@ -73,21 +58,6 @@ func (r *menuRepo) CreateMenuCategoryKitchenRegister(ctx context.Context, entry 
 	}).Create(entry).Error
 
 	return err
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
-func (r *menuRepo) GetCategoryKitchenByMenuItemID(ctx context.Context, menuCategoryID uuid.UUID, kitchenID uuid.UUID) (*hospitalityMenu_models.MenuCategoryKitchenRegister, error) {
-	db, ok := dbtx.ExtractTx(ctx)
-	if !ok {
-		db = r.db
-	}
-	var register hospitalityMenu_models.MenuCategoryKitchenRegister
-	err := db.WithContext(ctx).Where("menu_category_id = ? AND kitchen_id = ?", menuCategoryID, kitchenID).First(&register).Error
-	if err != nil {
-		return nil, err
-	}
-	return &register, nil
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -125,25 +95,6 @@ func (r *menuRepo) CreateMenuSubCategoryKitchenRegister(ctx context.Context, ent
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *menuRepo) GetSubCategoryKitchenByMenuItemID(
-	ctx context.Context,
-	menuSubCategoryID uuid.UUID,
-	kitchenID uuid.UUID) (*hospitalityMenu_models.MenuSubCategoryKitchenRegister, error) {
-
-	db, ok := dbtx.ExtractTx(ctx)
-	if !ok {
-		db = r.db
-	}
-	var register hospitalityMenu_models.MenuSubCategoryKitchenRegister
-	err := db.WithContext(ctx).Where("menu_sub_category_id = ? AND kitchen_id = ?", menuSubCategoryID, kitchenID).First(&register).Error
-	if err != nil {
-		return nil, err
-	}
-	return &register, nil
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
 func (r *menuRepo) GetSubCategoryPreferredKitchen(ctx context.Context, menuSubCategoryID uuid.UUID) (*hospitalityMenu_models.MenuSubCategoryKitchenRegister, error) {
 
 	db, ok := dbtx.ExtractTx(ctx)
@@ -175,21 +126,6 @@ func (r *menuRepo) CreateEntryInKitchenMenuRegister(ctx context.Context, entry *
 	}).Create(entry).Error
 
 	return err
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
-func (r *menuRepo) GetKitchenMenuRegisterByMenuItemID(ctx context.Context, menuItemID uuid.UUID, kitchenID uuid.UUID) (*hospitalityMenu_models.MenuItemKitchenRegister, error) {
-	db, ok := dbtx.ExtractTx(ctx)
-	if !ok {
-		db = r.db
-	}
-	var register hospitalityMenu_models.MenuItemKitchenRegister
-	err := db.WithContext(ctx).Where("menu_item_id = ? AND kitchen_id = ?", menuItemID, kitchenID).First(&register).Error
-	if err != nil {
-		return nil, err
-	}
-	return &register, nil
 }
 
 /* ---------------------------------- <***> --------------------------------- */

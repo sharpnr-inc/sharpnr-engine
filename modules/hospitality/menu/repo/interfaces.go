@@ -19,7 +19,6 @@ type MenuRepositoryInterface interface {
 	DeleteMenuGroup(id uuid.UUID) error
 	/* -------------------------------- Register -------------------------------- */
 	CreateMenuGroupKitchenRegister(ctx context.Context, entry *hospitalityMenu_models.MenuGroupKitchenRegister) error
-	GetMenuGroupKitchenByMenuGroupID(ctx context.Context, menuGroupID uuid.UUID, kitchenID uuid.UUID) (*hospitalityMenu_models.MenuGroupKitchenRegister, error)
 	GetMenuGroupPreferredKitchen(ctx context.Context, menuGroupID uuid.UUID) (*hospitalityMenu_models.MenuGroupKitchenRegister, error)
 
 	// -------------------------------
@@ -32,7 +31,6 @@ type MenuRepositoryInterface interface {
 	DeleteCategory(id uuid.UUID) error
 	/* -------------------------------- Register -------------------------------- */
 	CreateMenuCategoryKitchenRegister(ctx context.Context, entry *hospitalityMenu_models.MenuCategoryKitchenRegister) error
-	GetCategoryKitchenByMenuItemID(ctx context.Context, menuCategoryID uuid.UUID, kitchenID uuid.UUID) (*hospitalityMenu_models.MenuCategoryKitchenRegister, error)
 	GetCategoryPreferredKitchen(ctx context.Context, menuCategoryID uuid.UUID) (*hospitalityMenu_models.MenuCategoryKitchenRegister, error)
 
 	// -------------------------------
@@ -45,7 +43,6 @@ type MenuRepositoryInterface interface {
 	DeleteSubCategory(id uuid.UUID) error
 	/* -------------------------------- Register -------------------------------- */
 	CreateMenuSubCategoryKitchenRegister(ctx context.Context, entry *hospitalityMenu_models.MenuSubCategoryKitchenRegister) error
-	GetSubCategoryKitchenByMenuSubCategoryID(ctx context.Context, menuSubCategoryID uuid.UUID, kitchenID uuid.UUID) (*hospitalityMenu_models.MenuSubCategoryKitchenRegister, error)
 	GetSubCategoryPreferredKitchen(ctx context.Context, menuSubCategoryID uuid.UUID) (*hospitalityMenu_models.MenuSubCategoryKitchenRegister, error)
 
 	// -------------------------------
@@ -58,7 +55,6 @@ type MenuRepositoryInterface interface {
 	DeleteMenuItem(id uuid.UUID) error
 	/* -------------------------------- Register -------------------------------- */
 	CreateEntryInKitchenMenuRegister(ctx context.Context, entry *hospitalityMenu_models.MenuItemKitchenRegister) error
-	GetKitchenMenuRegisterByMenuItemID(ctx context.Context, menuItemID uuid.UUID, kitchenID uuid.UUID) (*hospitalityMenu_models.MenuItemKitchenRegister, error)
 	GetMenuItemKitchen(ctx context.Context, menuItemID uuid.UUID) (*hospitalityMenu_models.MenuItemKitchenRegister, error)
 
 	// -------------------------------
