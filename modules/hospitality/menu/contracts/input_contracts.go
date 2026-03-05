@@ -64,12 +64,21 @@ type AddAddOnInput struct {
 
 /* -------------------------- Configuration Related ------------------------- */
 
+type SetKitchenToMenuGroupInput struct {
+	MenuID    uuid.UUID `json:"menu_group_id"`
+	KitchenID uuid.UUID `json:"kitchen_id"`
+}
+
+type SetKitchenToMenuCategoryInput struct {
+	MenuCategoryID uuid.UUID `json:"menu_category_id"`
+	KitchenID      uuid.UUID `json:"kitchen_id"`
+}
+type SetKitchenToMenuSubCategoryInput struct {
+	MenuSubCategoryID uuid.UUID `json:"menu_sub_category_id"`
+	KitchenID         uuid.UUID `json:"kitchen_id"`
+}
+
 type SetKitchenToMenuItemInput struct {
 	MenuItemID uuid.UUID `json:"menu_item_id"`
 	KitchenID  uuid.UUID `json:"kitchen_id"`
-}
-
-type SetKitchenToWholeMenuInput struct {
-	MenuID    uuid.UUID `json:"menu_id"`
-	KitchenID uuid.UUID `json:"kitchen_id"`
 }

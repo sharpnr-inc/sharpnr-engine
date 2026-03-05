@@ -45,3 +45,23 @@ type Addon_resp_dto struct {
 	Quantity int       `json:"quantity"`
 	Price    float64   `json:"price"` // Price per unit of addon
 }
+
+/* -------------------------------------------------------------------------- */
+/*                          Restaurant General Stuff                          */
+/* -------------------------------------------------------------------------- */
+
+type RestaurantGeneralInfo_resp_dto struct {
+	RestaurantID uuid.UUID `json:"restaurant_id"`
+	Name         string    `json:"name"`
+	OpeningTime  string    `json:"opening_time"`
+	ClosingTime  string    `json:"closing_time"`
+	IsPureVeg    bool      `json:"is_pure_veg"`
+	IsActive     bool      `json:"is_active"`
+	IsConfigured bool      `json:"is_configured"`
+	LastUpdated  time.Time `json:"last_updated"`
+}
+
+type RestaurantPreferredKitchen_resp_dto struct {
+	RestaurantID *uuid.UUID `json:"restaurant_id"`
+	KitchenID    *uuid.UUID `json:"kitchen_id"`
+}

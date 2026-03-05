@@ -17,11 +17,12 @@ type OrderStatusUpdatePayload struct {
 }
 
 type OrderCreatedPayload struct {
-	OrderID        uuid.UUID           `json:"order_id"`
-	OrganizationID uuid.UUID           `json:"organization_id"`
-	RestaurantID   uuid.UUID           `json:"restaurant_id"`
-	SessionID      uuid.UUID           `json:"session_id"`
-	Items          []OrderItemEventDTO `json:"items"`
+	OrderID            uuid.UUID           `json:"order_id"`
+	OrganizationID     uuid.UUID           `json:"organization_id"`
+	RestaurantID       uuid.UUID           `json:"restaurant_id"`
+	PreferredKitchenID *uuid.UUID          `json:"preferred_kitchen_id,omitempty"`
+	SessionID          uuid.UUID           `json:"session_id"`
+	Items              []OrderItemEventDTO `json:"items"`
 }
 
 type OrderItemEventDTO struct {

@@ -1,4 +1,4 @@
-package kitchen
+package kitchen_routes
 
 import (
 	"sharpnr-engine/app"
@@ -13,15 +13,12 @@ func KitchenRoutes(
 ) {
 	kitchenService := modules.Hospitality().KitchenService()
 	sse := modules.SseEngine()
-	newKitchenController := kitchencontrollers.NewKitchenController(kitchenService, sse)
+	controller := kitchencontrollers.NewKitchenController(kitchenService, sse)
 
 	kitchenRoutes := v1.Group("/kitchen/:kitchenID")
-	kitchenRoutes.GET("/get-orders", newKitchenController.GetKots)
 
-	kotRoutes := kitchenRoutes.Group("/kot/:kotID")
-	{
-		// Use PATCH for updating a specific field (status)
-		kotRoutes.PATCH("/status", newKitchenController.UpdateKotsStatus)
-	}
+	kitchengeneralRoutes(kitchenRoutes, controller)
+	kitchenKOTRoutes(kitchenRoutes, controller)
+	kitchenConfigsAndSettingsRoutes(kitchenRoutes, controller)
 
 }

@@ -16,15 +16,19 @@ func RegisterMenuRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) {
 
 	mr.GET("", mc.GetMenu)
 	mr.POST("/add", mc.AddMenu)
-
 	mr.POST("/addCategory", mc.AddCategoryInMenu)
 	mr.POST("/addSubCategory", mc.AddSubCategory)
 	mr.POST("/add-menu-item", mc.AddMenuItems)
 	mr.POST("/add-variant-group", mc.AddVariantsGroup)
 	mr.POST("/add-variant", mc.AddVariants)
 	mr.POST("/add-addOns", mc.AddAddons)
-	mr.POST("/attchKitchen/menu", mc.SetKitchenToWholeMenu)
-	// mr.POST("/attchKitchenToCategory", mc.SetKitchenToCategory)
-	// mr.POST("/attchKitchenToSubCategory", mc.SetKitchenToSubCategory)
-	// mr.POST("/attchKitchenToMenuItem", mc.SetKitchenToMenuItem)
+
+	mcr := mr.Group("/configs")
+	{
+		mcr.POST("/register/menugroup-kitchen", mc.AddPreferredKitchenForMenuGroup)
+		mcr.POST("/register/category-kitchen", mc.AddPreferredKitchenForMenuCategory)
+		mcr.POST("/register/sub-category-kitchen", mc.AddPreferredKitchenForMenuSubCategory)
+		mcr.POST("/register/menu-item-kitchen", mc.AddPreferredKitchenForMenuItem)
+	}
+
 }

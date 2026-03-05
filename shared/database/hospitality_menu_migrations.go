@@ -17,6 +17,13 @@ func migrateHospitalityMenu(db *gorm.DB) error {
 		&hospitalityMenu_models.MenuVariant{},
 		&hospitalityMenu_models.MenuVariantGroup{},
 		&hospitalityMenu_models.MenuItemAddon{},
+
+		/* -------------------------------------------------------------------------- */
+		/*                           Menu Kitchen Resgisters                          */
+		/* -------------------------------------------------------------------------- */
+		&hospitalityMenu_models.MenuGroupKitchenRegister{},
+		&hospitalityMenu_models.MenuCategoryKitchenRegister{},
+		&hospitalityMenu_models.MenuSubCategoryKitchenRegister{},
 		&hospitalityMenu_models.MenuItemKitchenRegister{},
 	)
 }

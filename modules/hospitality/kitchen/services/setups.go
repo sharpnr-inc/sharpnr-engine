@@ -69,3 +69,22 @@ func (r *kitchenService) GetKitchensByOrgID(ctx context.Context, propertyID uuid
 
 	return readers, nil
 }
+
+func (r *kitchenService) GetKitchenDetails(ctx context.Context, kitchenID uuid.UUID) (*kitchen_contracts.Kitchen_Reader, error) {
+
+	kitchen, err := r.kitchenRepo.GetKitchenById(ctx, kitchenID)
+	if err != nil {
+		return nil, err
+	}
+
+	reader := &kitchen_contracts.Kitchen_Reader{
+		ID:          kitchen.ID,
+		Name:        kitchen.Name,
+		Description: kitchen.Description,
+		Status:      kitchen.IsActive,
+		OrgID:       kitchen.OrganizationID,
+		PropertyID:  kitchen.OrganizationPropertyID,
+	}
+
+	return reader, nil
+}

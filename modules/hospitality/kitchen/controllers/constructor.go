@@ -5,13 +5,13 @@ import (
 	sse_engine "sharpnr-engine/sse"
 )
 
-type kitchenController struct {
+type KitchenController struct {
 	kitchenService kitchenservices.KitchenServiceInterface
 	sseEngine      *sse_engine.StreamManager
 }
 
-func NewKitchenController(kitchenService kitchenservices.KitchenServiceInterface, sseEngine *sse_engine.StreamManager) *kitchenController {
-	return &kitchenController{
+func NewKitchenController(kitchenService kitchenservices.KitchenServiceInterface, sseEngine *sse_engine.StreamManager) *KitchenController {
+	return &KitchenController{
 		kitchenService: kitchenService,
 		sseEngine:      sseEngine,
 	}
