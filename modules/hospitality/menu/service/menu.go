@@ -4,6 +4,7 @@ import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
 	hospitality_menu_contracts "sharpnr-engine/modules/hospitality/menu/contracts"
+	menu_helpers "sharpnr-engine/modules/hospitality/menu/helpers"
 	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
 	"time"
 
@@ -11,7 +12,10 @@ import (
 	"gorm.io/gorm"
 )
 
-func (s *menuService) CreateMenu(ctx context.Context, req *hospitality_menu_contracts.CreateMenuInput) (uuid.UUID, error) {
+func (s *menuService) CreateMenu(
+	ctx context.Context,
+	req *hospitality_menu_contracts.CreateMenuInput,
+) (uuid.UUID, error) {
 
 	var res uuid.UUID
 
@@ -34,14 +38,23 @@ func (s *menuService) CreateMenu(ctx context.Context, req *hospitality_menu_cont
 			return err
 		}
 
-		if req.Categories != nil {
-			for i := range *req.Categories {
-				cat := &(*req.Categories)[i]
-				cat.MenuID = menuGrp.ID
+		// 🔹 Choose categories source
+		var categories []hospitality_menu_contracts.AddMenuCategoryInput
 
-				if _, err := s.AddCategoryInMenu(txCtx, cat); err != nil {
-					return err
-				}
+		if req.Categories == nil || len(*req.Categories) == 0 {
+			categories = menu_helpers.DefaultMenuCategories
+		} else {
+			categories = *req.Categories
+		}
+
+		// 🔹 Create categories
+		for i := range categories {
+
+			cat := &categories[i]
+			cat.MenuID = menuGrp.ID
+
+			if _, err := s.AddCategoryInMenu(txCtx, cat); err != nil {
+				return err
 			}
 		}
 
