@@ -21,7 +21,7 @@ func (r *menuRepo) CreateMenuGroupKitchenRegister(ctx context.Context, entry *ho
 	// clause.OnConflict allows us to handle the unique constraint on MenuItemID
 	err := db.WithContext(ctx).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "menu_group_id"}}, // The unique index column
-		DoUpdates: clause.AssignmentColumns([]string{"kitchen_id", "owner_type", "updated_at"}),
+		DoUpdates: clause.AssignmentColumns([]string{"kitchen_id", "updated_at"}),
 	}).Create(entry).Error
 
 	return err
@@ -54,7 +54,7 @@ func (r *menuRepo) CreateMenuCategoryKitchenRegister(ctx context.Context, entry 
 	// clause.OnConflict allows us to handle the unique constraint on MenuItemID
 	err := db.WithContext(ctx).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "menu_category_id"}}, // The unique index column
-		DoUpdates: clause.AssignmentColumns([]string{"kitchen_id", "owner_type", "updated_at"}),
+		DoUpdates: clause.AssignmentColumns([]string{"kitchen_id", "updated_at"}),
 	}).Create(entry).Error
 
 	return err
@@ -87,7 +87,7 @@ func (r *menuRepo) CreateMenuSubCategoryKitchenRegister(ctx context.Context, ent
 	// clause.OnConflict allows us to handle the unique constraint on MenuItemID
 	err := db.WithContext(ctx).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "menu_sub_category_id"}}, // The unique index column
-		DoUpdates: clause.AssignmentColumns([]string{"kitchen_id", "owner_type", "updated_at"}),
+		DoUpdates: clause.AssignmentColumns([]string{"kitchen_id", "updated_at"}),
 	}).Create(entry).Error
 
 	return err
@@ -122,7 +122,7 @@ func (r *menuRepo) CreateEntryInKitchenMenuRegister(ctx context.Context, entry *
 	// clause.OnConflict allows us to handle the unique constraint on MenuItemID
 	err := db.WithContext(ctx).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "menu_item_id"}}, // The unique index column
-		DoUpdates: clause.AssignmentColumns([]string{"kitchen_id", "owner_type", "updated_at"}),
+		DoUpdates: clause.AssignmentColumns([]string{"kitchen_id", "updated_at"}),
 	}).Create(entry).Error
 
 	return err

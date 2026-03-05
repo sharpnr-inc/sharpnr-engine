@@ -10,8 +10,8 @@ import (
 type MenuGroupKitchenRegister struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	KitchenID   uuid.UUID `gorm:"type:uuid;not null;index"`
-	MenuGroupID uuid.UUID `gorm:"type:uuid;not null;index"`
+	MenuGroupID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex"`
+	KitchenID   uuid.UUID `gorm:"type:uuid;not null"`
 
 	OwnersID uuid.UUID `gorm:"type:uuid;not null;index"`
 
@@ -26,8 +26,8 @@ func (MenuGroupKitchenRegister) TableName() string {
 type MenuCategoryKitchenRegister struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	MenuCategoryID uuid.UUID `gorm:"type:uuid;not null;index"`
-	KitchenID      uuid.UUID `gorm:"type:uuid;not null;index"`
+	MenuCategoryID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex"`
+	KitchenID      uuid.UUID `gorm:"type:uuid;not null"`
 
 	OwnersID uuid.UUID `gorm:"type:uuid;not null;index"`
 
@@ -42,8 +42,8 @@ func (MenuCategoryKitchenRegister) TableName() string {
 type MenuSubCategoryKitchenRegister struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	MenuSubCategoryID uuid.UUID `gorm:"type:uuid;not null;index"`
-	KitchenID         uuid.UUID `gorm:"type:uuid;not null;index"`
+	MenuSubCategoryID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex"`
+	KitchenID         uuid.UUID `gorm:"type:uuid;not null"`
 
 	OwnersID uuid.UUID `gorm:"type:uuid;not null;index"`
 
@@ -58,18 +58,15 @@ func (MenuSubCategoryKitchenRegister) TableName() string {
 type MenuItemKitchenRegister struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	// index ensures fast lookup when the Order Engine checks the menu item
-	MenuItemID uuid.UUID `gorm:"type:uuid;index;unique;not null"`
+	MenuItemID uuid.UUID `gorm:"type:uuid;not null;uniqueIndex"`
+	KitchenID  uuid.UUID `gorm:"type:uuid;not null"`
 
-	KitchenID uuid.UUID `gorm:"type:uuid;not null"`
+	OwnersID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	OwnersID uuid.UUID `gorm:"type:uuid;not null"`
+	OwnerType hospitality_utilities.HospitalityModulesType `gorm:"size:50;not null"`
 
-	// This tells us if it's a BAR, KITCHEN, or BAKERY
-	OwnerType hospitality_utilities.HospitalityModulesType `gorm:"size:50"`
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
 
 func (MenuItemKitchenRegister) TableName() string {

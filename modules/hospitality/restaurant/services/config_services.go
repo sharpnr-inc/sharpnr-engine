@@ -236,18 +236,29 @@ func (s *restaurantService) AddPreferredKitchen(
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
-		pfk := restaurant_models.RestaurantPreferedKitchen{
-			ID:           uuid.New(),
-			RestaurantID: restaurantID,
-			KitchenID:    kitchenID,
-			CreatedAt:    time.Now(),
-			UpdatedAt:    time.Now(),
+		// Check existing preferred kitchen
+		existing, err := s.restaurantRepo.GetRestaurantPreferredKitchenID(txCtx, restaurantID)
+		if err != nil {
+			if !errors.Is(err, gorm.ErrRecordNotFound) {
+				return err
+			}
+
+			// Not found → Create new
+			pfk := restaurant_models.RestaurantPreferedKitchen{
+				ID:           uuid.New(),
+				RestaurantID: restaurantID,
+				KitchenID:    kitchenID,
+				CreatedAt:    time.Now(),
+				UpdatedAt:    time.Now(),
+			}
+
+			return s.restaurantRepo.CreatePreferredKitchen(txCtx, &pfk)
 		}
 
-		if err := s.restaurantRepo.CreatePreferredKitchen(txCtx, &pfk); err != nil {
-			return err
-		}
+		// Found → Update KitchenID
+		existing.KitchenID = kitchenID
+		existing.UpdatedAt = time.Now()
 
-		return nil
+		return s.restaurantRepo.UpdatePreferredKitchen(txCtx, existing)
 	})
 }

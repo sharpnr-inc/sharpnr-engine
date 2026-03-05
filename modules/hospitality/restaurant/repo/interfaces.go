@@ -22,6 +22,8 @@ type RestaurantRepositoryInterface interface {
 		pfktcn *restaurant_models.RestaurantPreferedKitchen,
 	) error
 
+	UpdatePreferredKitchen(ctx context.Context, pfk *restaurant_models.RestaurantPreferedKitchen) error
+
 	// Restaurant--> Floors
 	CreateFloor(ctx context.Context, floors *restaurant_models.RestaurantFloor) error
 	GetFloorByID(ctx context.Context, floorID uuid.UUID) (*restaurant_models.RestaurantFloor, error)

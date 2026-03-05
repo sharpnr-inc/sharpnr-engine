@@ -134,3 +134,22 @@ func (r *restaurantRepo) CreatePreferredKitchen(
 		Create(pfktcn).
 		Error
 }
+
+func (r *restaurantRepo) UpdatePreferredKitchen(
+	ctx context.Context,
+	pfk *restaurant_models.RestaurantPreferedKitchen,
+) error {
+
+	db := r.db
+	if tx, ok := dbtx.ExtractTx(ctx); ok {
+		db = tx
+	}
+
+	return db.
+		Model(&restaurant_models.RestaurantPreferedKitchen{}).
+		Where("restaurant_id = ?", pfk.RestaurantID).
+		Updates(map[string]interface{}{
+			"kitchen_id": pfk.KitchenID,
+			"updated_at": pfk.UpdatedAt,
+		}).Error
+}

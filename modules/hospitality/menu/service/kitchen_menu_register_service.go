@@ -37,6 +37,8 @@ func (s *menuService) SetKitchenToMenuGroup(
 	})
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (c *menuService) GetKitchenfOfMenuGroup(ctx context.Context, menuGroupID uuid.UUID) (uuid.UUID, error) {
 	kitchen, err := c.menuRepo.GetMenuGroupPreferredKitchen(ctx, menuGroupID)
 	if err != nil {
@@ -72,7 +74,7 @@ func (s *menuService) SetKitchenToMenuCategory(
 }
 
 func (c *menuService) GetKitchenOfMenuCategory(ctx context.Context, menuCategoryID uuid.UUID) (uuid.UUID, error) {
-	kitchen, err := c.menuRepo.GetMenuItemKitchen(ctx, menuCategoryID)
+	kitchen, err := c.menuRepo.GetCategoryPreferredKitchen(ctx, menuCategoryID)
 	if err != nil {
 		return uuid.Nil, err
 	}
