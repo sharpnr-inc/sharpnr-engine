@@ -117,7 +117,7 @@ func (s *menuService) GetMenu(ctx context.Context, menuID uuid.UUID) (*hospitali
 					Unit:              item.Unit,
 					BasePrice:         item.BasePrice,
 					DietaryType:       item.DietaryType,
-					ServedBy:          servedBy,
+					ServedBy:          &servedBy,
 					VariantGroups:     make([]hospitality_menu_contracts.VariantGroupOutput, 0),
 					AddOns:            make([]hospitality_menu_contracts.AddOnOutput, 0),
 				}
