@@ -150,6 +150,13 @@ func (c *menuService) GetKitchenOfMenuItem(ctx context.Context, menuItemID uuid.
 		return uuid.Nil, err
 	}
 
+	if menuItemParent.MenuGroupID != uuid.Nil {
+		menuGroupKitchen, err := c.menuRepo.GetMenuGroupPreferredKitchen(ctx, menuItemParent.MenuGroupID)
+		if err == nil && menuGroupKitchen.KitchenID != uuid.Nil {
+			return menuGroupKitchen.KitchenID, nil
+		}
+	}
+
 	// 3. Check Category Priority (Second Priority)
 	if menuItemParent.MenuCategoryID != uuid.Nil {
 		catKitchen, err := c.menuRepo.GetCategoryPreferredKitchen(ctx, menuItemParent.MenuCategoryID)
