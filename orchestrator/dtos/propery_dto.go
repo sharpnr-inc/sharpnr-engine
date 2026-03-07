@@ -9,7 +9,7 @@ import (
 // --------------------------------------------------------------------------------------//
 
 type PropertiesOfOrganization_ResDto struct {
-	Properties []PropertiesReaderSlice `jason:"properties"`
+	Properties []PropertiesReaderSlice `json:"properties"`
 }
 
 type PropertiesReaderSlice struct {
