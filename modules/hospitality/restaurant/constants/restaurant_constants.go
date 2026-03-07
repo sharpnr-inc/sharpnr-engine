@@ -24,13 +24,6 @@ const (
 	NotActive RestaurantRunningStatusType = "NOT_ACTIVE"
 )
 
-type RestaurantConfigurationType string
-
-const (
-	Configured    RestaurantConfigurationType = "CONFIGURED"
-	NotConfigured RestaurantConfigurationType = "NOT_CONFIGURED"
-)
-
 type RestaurantOrderType string
 
 const (
@@ -47,12 +40,10 @@ const (
 type RestaurantConfigurationStatusType string
 
 const (
-	RestaurantStatusCreated RestaurantConfigurationStatusType = "CREATED"
-
+	RestaurantStatusCreated    RestaurantConfigurationStatusType = "CREATED"
 	RestaurantStatusMenuSetup  RestaurantConfigurationStatusType = "MENU_SETUP"
 	RestaurantStatusTableSetup RestaurantConfigurationStatusType = "TABLE_SETUP"
-
-	RestaurantStatusCompleted RestaurantConfigurationStatusType = "COMPLETED"
+	RestaurantStatusCompleted  RestaurantConfigurationStatusType = "COMPLETED"
 )
 
 /* ---------------------------------- <***> --------------------------------- */

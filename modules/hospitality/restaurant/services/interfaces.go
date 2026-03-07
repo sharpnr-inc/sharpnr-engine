@@ -2,6 +2,7 @@ package restaurantservices
 
 import (
 	"context"
+	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
 
 	"github.com/google/uuid"
@@ -80,4 +81,12 @@ type RestaurantServiceInterface interface {
 		ctx context.Context,
 		orgID uuid.UUID,
 	) ([]restaurant_contracts.RestaurantDetails, error)
+
+	RestaurantConfigsServiceInterface
+}
+
+type RestaurantConfigsServiceInterface interface {
+	AddConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID, status restaurant_constants.RestaurantConfigurationStatusType) error
+	UpdateConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID, status restaurant_constants.RestaurantConfigurationStatusType) error
+	// GetConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID) error
 }

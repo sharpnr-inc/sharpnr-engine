@@ -31,7 +31,8 @@ func (r *restaurantService) AddFloors(ctx context.Context, AddFloorInput *restau
 	return input.ID, nil
 }
 
-// AddTablesInFloor implements RestaurantServiceInterface.
+/* ---------------------------------- <***> --------------------------------- */
+
 func (r *restaurantService) AddTablesInFloor(ctx context.Context, AddTablesInFloorInput *restaurant_contracts.CreateTablesInFloorInput) (tableID uuid.UUID, err error) {
 	input := &restaurant_models.RestaurantTable{
 		ID:           uuid.New(),
@@ -51,6 +52,8 @@ func (r *restaurantService) AddTablesInFloor(ctx context.Context, AddTablesInFlo
 
 	return input.ID, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (r *restaurantService) SetupRestaurantLayout(
 	ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, restaurantID uuid.UUID, setupInput restaurant_contracts.AddLayoutRequestDto,
@@ -130,31 +133,57 @@ func (s *restaurantService) GetGeneralDetails(
 	restaurantID uuid.UUID,
 ) (restaurant_contracts.RestaurantGeneralInfo_resp_dto, error) {
 
-	// 1. Fetch the restaurant
-	restaurant, err := s.restaurantRepo.GetRestaurantByID(ctx, restaurantID)
+	var response restaurant_contracts.RestaurantGeneralInfo_resp_dto
+
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		// 1. Fetch restaurant
+		restaurant, err := s.restaurantRepo.GetRestaurantByID(txCtx, restaurantID)
+		if err != nil {
+			return err
+		}
+
+		// 2. Security check (multi-tenant safety)
+		if restaurant.OrganizationID != orgID {
+			return errors.New("unauthorized: restaurant does not belong to this organization")
+		}
+
+		// 3. Fetch configuration
+		resConfig, err := s.restaurantRepo.GetCurrentConfig(txCtx, restaurant.ID)
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return err
+		}
+
+		// 4. Map base restaurant fields
+		response = restaurant_contracts.RestaurantGeneralInfo_resp_dto{
+			RestaurantID: restaurant.ID,
+			Name:         restaurant.Name,
+			OpeningTime:  restaurant.OpeningTime,
+			ClosingTime:  restaurant.ClosingTime,
+			IsPureVeg:    restaurant.IsPureVeg,
+			LastUpdated:  restaurant.UpdatedAt,
+		}
+
+		// 5. Map configuration fields
+		if resConfig != nil {
+			response.IsActive = resConfig.IsActive
+			response.IsConfigured = resConfig.IsConfigured
+			response.CurrentConfigStatus = resConfig.CurrentStatus
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return restaurant_contracts.RestaurantGeneralInfo_resp_dto{}, err
 	}
 
-	// 2. Security Check: Ensure the restaurant belongs to the requested Org
-	// This prevents cross-tenant data leakage.
-	if restaurant.OrganizationID != orgID {
-		return restaurant_contracts.RestaurantGeneralInfo_resp_dto{}, errors.New("unauthorized: restaurant does not belong to this organization")
-	}
-
-	// 3. Mapping (Consider adding a .ToDTO() method on your entity later)
-	response := restaurant_contracts.RestaurantGeneralInfo_resp_dto{
-		RestaurantID: restaurant.ID,
-		Name:         restaurant.Name,
-		OpeningTime:  restaurant.OpeningTime,
-		ClosingTime:  restaurant.ClosingTime,
-		IsPureVeg:    restaurant.IsPureVeg,
-		LastUpdated:  restaurant.UpdatedAt,
-		// Future: add flags like HasBar: restaurant.HasBar, etc.
-	}
-
 	return response, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *restaurantService) UpdateGeneralDetails(
 	ctx context.Context,
@@ -185,6 +214,8 @@ func (s *restaurantService) UpdateGeneralDetails(
 		return s.restaurantRepo.UpdateGeneralDetails(ctx, restaurantID, updates)
 	})
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *restaurantService) GetRestaurantPreferredKitchenID(
 	ctx context.Context,
@@ -225,6 +256,8 @@ func (s *restaurantService) GetRestaurantPreferredKitchenID(
 	return res, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *restaurantService) AddPreferredKitchen(
 	ctx context.Context,
 	orgID, employeeID,
@@ -260,3 +293,45 @@ func (s *restaurantService) AddPreferredKitchen(
 		return s.restaurantRepo.UpdatePreferredKitchen(txCtx, existing)
 	})
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *restaurantService) AddConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID, status restaurant_constants.RestaurantConfigurationStatusType) error {
+
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		config := &restaurant_models.RestaurantConfiguration{
+			ID:             uuid.New(),
+			OrganizationID: orgID,
+			RestaurantID:   restaurantID,
+			IsActive:       false,
+			IsConfigured:   false,
+			CurrentStatus:  status,
+			CreatedAt:      time.Now(),
+			UpdatedAt:      time.Now(),
+		}
+
+		if err := s.restaurantRepo.CreateRestaurantConfiguration(txCtx, config); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *restaurantService) UpdateConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID, status restaurant_constants.RestaurantConfigurationStatusType) error {
+
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		return s.restaurantRepo.UpdateRestuarantConfigStatus(txCtx, restaurantID, status)
+
+	})
+}
+
+/* ---------------------------------- <***> --------------------------------- */

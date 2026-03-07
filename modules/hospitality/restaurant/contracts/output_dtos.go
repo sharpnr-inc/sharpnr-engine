@@ -1,6 +1,7 @@
 package restaurant_contracts
 
 import (
+	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -51,14 +52,15 @@ type Addon_resp_dto struct {
 /* -------------------------------------------------------------------------- */
 
 type RestaurantGeneralInfo_resp_dto struct {
-	RestaurantID uuid.UUID `json:"restaurant_id"`
-	Name         string    `json:"name"`
-	OpeningTime  string    `json:"opening_time"`
-	ClosingTime  string    `json:"closing_time"`
-	IsPureVeg    bool      `json:"is_pure_veg"`
-	IsActive     bool      `json:"is_active"`
-	IsConfigured bool      `json:"is_configured"`
-	LastUpdated  time.Time `json:"last_updated"`
+	RestaurantID        uuid.UUID                                              `json:"restaurant_id"`
+	Name                string                                                 `json:"name"`
+	OpeningTime         string                                                 `json:"opening_time"`
+	ClosingTime         string                                                 `json:"closing_time"`
+	IsPureVeg           bool                                                   `json:"is_pure_veg"`
+	IsActive            bool                                                   `json:"is_active"`
+	IsConfigured        bool                                                   `json:"is_configured"`
+	CurrentConfigStatus restaurant_constants.RestaurantConfigurationStatusType `json:"current_configured_status"`
+	LastUpdated         time.Time                                              `json:"last_updated"`
 }
 
 type RestaurantPreferredKitchen_resp_dto struct {
