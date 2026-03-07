@@ -17,7 +17,6 @@ func registerPropertyRoutes(r *gin.RouterGroup, c *orchestrator_controllers.Orch
 		pr.POST("/:propertyID/add-domain", c.AddDomainInProperty)
 		pr.POST("/:propertyID/add-modules", c.AddModulesInProperty)
 		pr.POST("/:propertyID/add-infra", c.AddInfraInProperty)
-		pr.POST("/:propertyID/configure-hotel", c.ConfigurePropertyHotel)
 		pr.GET("/:propertyID/infra", c.GetPropertyInfra)
 		pr.GET("/allinfra")
 
