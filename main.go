@@ -10,6 +10,7 @@ import (
 	"sharpnr-engine/config"
 	"sharpnr-engine/cookieManager"
 	dbtx "sharpnr-engine/core/dbTx"
+	"sharpnr-engine/migrations"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sero"
 	"sharpnr-engine/shared/database"
@@ -48,6 +49,11 @@ func main() {
 		log.Fatalf("DB migration failed: %v", err)
 	}
 	log.Println("✅ Database migration completed.")
+
+	err = migrations.RunDataMigrations(db)
+	if err != nil {
+		log.Fatalf("Data migration failed: %v", err)
+	}
 
 	// --- Initialize SERO Engine ---
 	seroRepo := sero.NewGormOutboxRepo(db)

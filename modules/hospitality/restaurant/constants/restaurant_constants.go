@@ -37,3 +37,22 @@ const (
 	DineInOrder  RestaurantOrderType = "DINE_IN"
 	TakewayOrder RestaurantOrderType = "TAKEAWAY"
 )
+
+/* ---------------------------------- <***> --------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/*                   Restaurant Configuration Related Enums                   */
+/* -------------------------------------------------------------------------- */
+
+type RestaurantConfigurationStatusType string
+
+const (
+	RestaurantStatusCreated RestaurantConfigurationStatusType = "CREATED"
+
+	RestaurantStatusMenuSetup  RestaurantConfigurationStatusType = "MENU_SETUP"
+	RestaurantStatusTableSetup RestaurantConfigurationStatusType = "TABLE_SETUP"
+
+	RestaurantStatusCompleted RestaurantConfigurationStatusType = "COMPLETED"
+)
+
+/* ---------------------------------- <***> --------------------------------- */

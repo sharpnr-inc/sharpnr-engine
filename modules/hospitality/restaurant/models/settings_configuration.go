@@ -1,6 +1,7 @@
 package restaurant_models
 
 import (
+	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -129,3 +130,26 @@ type RestaurantPreferedKitchen struct {
 func (RestaurantPreferedKitchen) TableName() string {
 	return "hospitality.restaurant_prefered_kitchen"
 }
+
+/* ----------------------------------- <*> ---------------------------------- */
+
+type RestaurantConfiguration struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
+
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index" json:"organization_id"`
+	RestaurantID   uuid.UUID `gorm:"type:uuid;not null;uniqueIndex" json:"restaurant_id"`
+
+	IsActive     bool `gorm:"default:false;not null" json:"is_active"`
+	IsConfigured bool `gorm:"default:false;not null" json:"is_configured"`
+
+	CurrentStatus restaurant_constants.RestaurantConfigurationStatusType `gorm:"type:varchar(50);not null" json:"current_status"`
+
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+func (RestaurantConfiguration) TableName() string {
+	return "hospitality.restaurant_configuration"
+}
+
+/* ----------------------------------- <*> ---------------------------------- */

@@ -149,8 +149,6 @@ func (s *restaurantService) GetGeneralDetails(
 		OpeningTime:  restaurant.OpeningTime,
 		ClosingTime:  restaurant.ClosingTime,
 		IsPureVeg:    restaurant.IsPureVeg,
-		IsActive:     restaurant.IsActive,
-		IsConfigured: restaurant.IsConfigured,
 		LastUpdated:  restaurant.UpdatedAt,
 		// Future: add flags like HasBar: restaurant.HasBar, etc.
 	}

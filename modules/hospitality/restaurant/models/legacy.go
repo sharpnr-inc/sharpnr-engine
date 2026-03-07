@@ -18,8 +18,11 @@ type Restaurant struct {
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
 	PropertyID     uuid.UUID `gorm:"type:uuid;not null;index"`
 	LegalEntityID  uuid.UUID `gorm:"type:uuid;not null;index"`
-	IsActive       bool      `gorm:"default:false"`
-	IsConfigured   bool      `gorm:"default:false"`
+
+	// Deprecated
+	IsActive bool `gorm:"default:false"`
+	// Deprecated
+	IsConfigured bool `gorm:"default:false"`
 
 	IsPureVeg   bool   `gorm:"default:false" json:"is_pure_veg"`
 	OpeningTime string `gorm:"type:varchar(5);not null"` // "06:33"
@@ -71,5 +74,3 @@ type RestaurantTable struct {
 func (RestaurantTable) TableName() string {
 	return "hospitality.restaurant_table"
 }
-
-

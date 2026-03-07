@@ -49,10 +49,8 @@ func (r *restaurantService) GetAllRestaurantOfProperty(
 
 	for _, rs := range restaurants {
 		result = append(result, &restaurant_contracts.RestaurantDetails{
-			ID:           rs.ID,
-			Name:         rs.Name,
-			Status:       rs.IsActive,
-			IsConfigured: rs.IsConfigured,
+			ID:   rs.ID,
+			Name: rs.Name,
 		})
 	}
 
@@ -143,11 +141,9 @@ func (s *restaurantService) GetRestaurantsOfOrg(
 
 	for _, r := range restaurants {
 		results = append(results, restaurant_contracts.RestaurantDetails{
-			ID:           r.ID,
-			PropertyID:   r.PropertyID,
-			Name:         r.Name,
-			Status:       r.IsActive,
-			IsConfigured: r.IsConfigured,
+			ID:         r.ID,
+			PropertyID: r.PropertyID,
+			Name:       r.Name,
 		})
 	}
 
