@@ -14,114 +14,150 @@ import (
 	"gorm.io/gorm"
 )
 
-// AddFloors implements RestaurantServiceInterface.
-func (r *restaurantService) AddFloors(ctx context.Context, AddFloorInput *restaurant_contracts.CreateFloorInput) (floorID uuid.UUID, err error) {
-	input := &restaurant_models.RestaurantFloor{
-		ID:           uuid.New(),
-		Name:         AddFloorInput.FloorName,
-		RestaurantID: AddFloorInput.RestaurantID,
-		FloorNumber:  AddFloorInput.FloorNumber,
-		CreatedAt:    time.Now(),
-	}
+func (r *restaurantService) AddFloors(
+	ctx context.Context,
+	AddFloorInput *restaurant_contracts.CreateFloorInput,
+) (floorID uuid.UUID, err error) {
 
-	if err := r.restaurantRepo.CreateFloor(ctx, input); err != nil {
+	err = r.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		input := &restaurant_models.RestaurantFloor{
+			ID:           uuid.New(),
+			Name:         AddFloorInput.FloorName,
+			RestaurantID: AddFloorInput.RestaurantID,
+			FloorNumber:  AddFloorInput.FloorNumber,
+			CreatedAt:    time.Now(),
+		}
+
+		if err := r.restaurantRepo.CreateFloor(txCtx, input); err != nil {
+			return err
+		}
+
+		floorID = input.ID
+		return nil
+	})
+
+	if err != nil {
 		return uuid.Nil, err
 	}
 
-	return input.ID, nil
+	return floorID, nil
 }
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *restaurantService) AddTablesInFloor(ctx context.Context, AddTablesInFloorInput *restaurant_contracts.CreateTablesInFloorInput) (tableID uuid.UUID, err error) {
-	input := &restaurant_models.RestaurantTable{
-		ID:           uuid.New(),
-		RestaurantID: AddTablesInFloorInput.RestaurantID,
-		FloorID:      AddTablesInFloorInput.FloorID,
-		Code:         *AddTablesInFloorInput.Code,
-		Name:         *AddTablesInFloorInput.Name,
-		Capacity:     4,
-		Status:       restaurant_constants.TableStatusAvailable,
-		CreatedAt:    time.Now(),
-		UpdatedAt:    time.Now(),
-	}
+func (r *restaurantService) AddTablesInFloor(
+	ctx context.Context,
+	AddTablesInFloorInput *restaurant_contracts.CreateTablesInFloorInput,
+) (tableID uuid.UUID, err error) {
 
-	if err := r.restaurantRepo.CreateTables(ctx, input); err != nil {
+	err = r.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		input := &restaurant_models.RestaurantTable{
+			ID:           uuid.New(),
+			RestaurantID: AddTablesInFloorInput.RestaurantID,
+			FloorID:      AddTablesInFloorInput.FloorID,
+			Code:         *AddTablesInFloorInput.Code,
+			Name:         *AddTablesInFloorInput.Name,
+			Capacity:     4,
+			Status:       restaurant_constants.TableStatusAvailable,
+			CreatedAt:    time.Now(),
+			UpdatedAt:    time.Now(),
+		}
+
+		if err := r.restaurantRepo.CreateTables(txCtx, input); err != nil {
+			return err
+		}
+
+		tableID = input.ID
+		return nil
+	})
+
+	if err != nil {
 		return uuid.Nil, err
 	}
 
-	return input.ID, nil
+	return tableID, nil
 }
 
 /* ---------------------------------- <***> --------------------------------- */
 
 func (r *restaurantService) SetupRestaurantLayout(
-	ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, restaurantID uuid.UUID, setupInput restaurant_contracts.AddLayoutRequestDto,
+	ctx context.Context,
+	orgID uuid.UUID,
+	emplID uuid.UUID,
+	restaurantID uuid.UUID,
+	setupInput restaurant_contracts.AddLayoutRequestDto,
 ) error {
 
-	// 1. Loop through each floor in the setup input
-	for _, floorInput := range setupInput.RestaurantLayout {
+	return r.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 
-		// 2. Call your existing AddFloors method
-		floorID, err := r.AddFloors(ctx, &restaurant_contracts.CreateFloorInput{
-			RestaurantID: restaurantID,
-			FloorName:    floorInput.Floor_Name,
-			FloorNumber:  floorInput.Floor_Number,
-		})
-		if err != nil {
-			return fmt.Errorf("failed to create floor %s: %w", floorInput.Floor_Name, err)
-		}
+		txCtx := dbtx.InjectTx(ctx, tx)
 
-		// 3. Loop to create the specified number of tables for this floor
-		for i := 1; i <= floorInput.Number_of_tables; i++ {
-			tableName := fmt.Sprintf("Table %d", i)
-			tableCode := fmt.Sprintf("F%d-T%d", floorInput.Floor_Number, i)
+		// Loop through each floor
+		for _, floorInput := range setupInput.RestaurantLayout {
 
-			// 4. Call your existing AddTablesInFloor method
-			_, err := r.AddTablesInFloor(ctx, &restaurant_contracts.CreateTablesInFloorInput{
+			floorID, err := r.AddFloors(txCtx, &restaurant_contracts.CreateFloorInput{
 				RestaurantID: restaurantID,
-				FloorID:      floorID,
-				Name:         &tableName, // Passing pointers as your method requires
-				Code:         &tableCode,
+				FloorName:    floorInput.Floor_Name,
+				FloorNumber:  floorInput.Floor_Number,
 			})
 			if err != nil {
-				return fmt.Errorf("failed to create table %d on floor %s: %w", i, floorInput.Floor_Name, err)
+				return fmt.Errorf("failed to create floor %s: %w", floorInput.Floor_Name, err)
+			}
+
+			// Create tables for this floor
+			for i := 1; i <= floorInput.Number_of_tables; i++ {
+
+				tableName := fmt.Sprintf("Table %d", i)
+				tableCode := fmt.Sprintf("F%d-T%d", floorInput.Floor_Number, i)
+
+				_, err := r.AddTablesInFloor(txCtx, &restaurant_contracts.CreateTablesInFloorInput{
+					RestaurantID: restaurantID,
+					FloorID:      floorID,
+					Name:         &tableName,
+					Code:         &tableCode,
+				})
+
+				if err != nil {
+					return fmt.Errorf(
+						"failed to create table %d on floor %s: %w",
+						i,
+						floorInput.Floor_Name,
+						err,
+					)
+				}
 			}
 		}
-	}
 
-	return nil
-}
+		configStatus, err := r.restaurantRepo.GetCurrentConfig(txCtx, restaurantID)
+		if err != nil {
+			return err
+		}
 
-/* ---------------------------------- <***> --------------------------------- */
+		if configStatus.CurrentStatus == restaurant_constants.RestaurantStatusGeneralDetailsAdded ||
+			configStatus.CurrentStatus == restaurant_constants.RestaurantStatusCreated {
 
-func (r *restaurantService) UpdateRestaurantGeneralDetails(
-	ctx context.Context,
-	restaurantID uuid.UUID,
-	input *restaurant_contracts.UpdateGeneralDetailsInput,
-) error {
-	// We use a map to ensure boolean 'false' values are not ignored by GORM
-	updates := make(map[string]interface{})
+			if err := r.UpdateConfigurationStatus(
+				txCtx,
+				orgID,
+				restaurantID,
+				restaurant_constants.RestaurantStatusCompleted,
+			); err != nil {
+				return err
+			}
 
-	if input.Name != "" {
-		updates["name"] = input.Name
-	}
+			if err := r.restaurantRepo.UpdateConfiguration(txCtx, restaurantID, true); err != nil {
+				return err
+			}
+		}
 
-	// For Booleans, we directly assign them
-	// (Assuming the Input contract uses pointers or the Orchestrator validates these)
-	updates["is_configured"] = input.IsConfigured
-	updates["is_pure_veg"] = input.IsPureVeg
-
-	if input.OpeningTime != "" {
-		updates["opening_time"] = input.OpeningTime
-	}
-
-	if input.ClosingTime != "" {
-		updates["closing_time"] = input.ClosingTime
-	}
-
-	// Call the repository method
-	return r.restaurantRepo.UpdateGeneralDetails(ctx, restaurantID, updates)
+		return nil
+	})
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -210,8 +246,30 @@ func (s *restaurantService) UpdateGeneralDetails(
 
 	// 3. Execute within Transaction
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
-		// Use the context that contains the transaction
-		return s.restaurantRepo.UpdateGeneralDetails(ctx, restaurantID, updates)
+
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		if err := s.restaurantRepo.UpdateGeneralDetails(txCtx, restaurantID, updates); err != nil {
+			return err
+		}
+
+		configStatus, err := s.restaurantRepo.GetCurrentConfig(txCtx, restaurantID)
+		if err != nil {
+			return err
+		}
+
+		if configStatus.CurrentStatus == restaurant_constants.RestaurantStatusCreated {
+			if err := s.UpdateConfigurationStatus(
+				txCtx,
+				orgID,
+				restaurantID,
+				restaurant_constants.RestaurantStatusGeneralDetailsAdded,
+			); err != nil {
+				return err
+			}
+		}
+
+		return nil
 	})
 }
 

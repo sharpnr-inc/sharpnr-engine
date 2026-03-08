@@ -183,26 +183,50 @@ func (s *restaurantService) GetRestaurantsOfOrg(
 
 	results := make([]restaurant_contracts.RestaurantDetails, 0)
 
-	restaurants, err := s.restaurantRepo.GetRestaurantByOrgID(ctx, orgID)
-	if err != nil {
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 
-		// Handle GORM record not found safely
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return results, nil // return empty list, no error
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		restaurants, err := s.restaurantRepo.GetRestaurantByOrgID(txCtx, orgID)
+		if err != nil {
+
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				results = []restaurant_contracts.RestaurantDetails{}
+				return nil
+			}
+
+			return err
 		}
 
-		return results, err
-	}
+		results = make([]restaurant_contracts.RestaurantDetails, 0, len(restaurants))
 
-	// Pre-allocate for performance
-	results = make([]restaurant_contracts.RestaurantDetails, 0, len(restaurants))
+		for _, r := range restaurants {
 
-	for _, r := range restaurants {
-		results = append(results, restaurant_contracts.RestaurantDetails{
-			ID:         r.ID,
-			PropertyID: r.PropertyID,
-			Name:       r.Name,
-		})
+			resConfig, err := s.restaurantRepo.GetCurrentConfig(txCtx, r.ID)
+			if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+				return err
+			}
+
+			dto := restaurant_contracts.RestaurantDetails{
+				ID:         r.ID,
+				PropertyID: r.PropertyID,
+				Name:       r.Name,
+			}
+
+			if resConfig != nil {
+				dto.Status = resConfig.IsActive
+				dto.IsConfigured = resConfig.IsConfigured
+				dto.ConfigurationStatus = resConfig.CurrentStatus
+			}
+
+			results = append(results, dto)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
 	}
 
 	return results, nil

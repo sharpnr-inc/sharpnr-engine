@@ -209,7 +209,7 @@ func (r *restaurantRepo) UpdateRestuarantConfigStatus(
 	return db.WithContext(ctx).
 		Model(&restaurant_models.RestaurantConfiguration{}).
 		Where("restaurant_id = ?", restaurantID).
-		Update("status", update).Error
+		Update("current_status", update).Error
 }
 
 func (r *restaurantRepo) UpdateConfiguration(

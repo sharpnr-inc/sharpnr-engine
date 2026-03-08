@@ -22,8 +22,6 @@ type RestaurantServiceInterface interface {
 		restaurantID uuid.UUID,
 	) (restaurant_contracts.RestaurantGeneralInfo_resp_dto, error)
 	UpdateGeneralDetails(ctx context.Context, orgID, emplID, restaurantID uuid.UUID, req restaurant_contracts.UpdateBodyRequestDto) error
-	AddFloors(ctx context.Context, AddFloorInput *restaurant_contracts.CreateFloorInput) (floorID uuid.UUID, err error)
-	AddTablesInFloor(ctx context.Context, AddTablesInFloorInput *restaurant_contracts.CreateTablesInFloorInput) (tableID uuid.UUID, err error)
 
 	AddRestaurantGeneralDetails(ctx context.Context)
 	GetAllRestaurantOfProperty(ctx context.Context, PropertyID uuid.UUID) (restaurants []*restaurant_contracts.RestaurantDetails, err error)
@@ -38,13 +36,6 @@ type RestaurantServiceInterface interface {
 		orgID, employeeID,
 		restaurantID, kitchenID uuid.UUID,
 	) error
-
-	UpdateRestaurantGeneralDetails(
-		ctx context.Context,
-		restaurantID uuid.UUID,
-		input *restaurant_contracts.UpdateGeneralDetailsInput,
-	) error
-	SetupRestaurantLayout(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, restaurantID uuid.UUID, setupInput restaurant_contracts.AddLayoutRequestDto) error
 
 	GetRestaurantLayout(
 		ctx context.Context,
@@ -61,6 +52,29 @@ type RestaurantServiceInterface interface {
 	/*                               DineIn Services                              */
 	/* -------------------------------------------------------------------------- */
 
+	GetRestaurantsOfOrg(
+		ctx context.Context,
+		orgID uuid.UUID,
+	) ([]restaurant_contracts.RestaurantDetails, error)
+
+	RestaurantConfigsServiceInterface
+	RestaurantTableAndFloorConfigsServices
+	RestaurantDiningSessionService
+}
+
+type RestaurantConfigsServiceInterface interface {
+	AddConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID, status restaurant_constants.RestaurantConfigurationStatusType) error
+	UpdateConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID, status restaurant_constants.RestaurantConfigurationStatusType) error
+	// GetConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID) error
+}
+
+type RestaurantTableAndFloorConfigsServices interface {
+	AddFloors(ctx context.Context, AddFloorInput *restaurant_contracts.CreateFloorInput) (floorID uuid.UUID, err error)
+	AddTablesInFloor(ctx context.Context, AddTablesInFloorInput *restaurant_contracts.CreateTablesInFloorInput) (tableID uuid.UUID, err error)
+	SetupRestaurantLayout(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, restaurantID uuid.UUID, setupInput restaurant_contracts.AddLayoutRequestDto) error
+}
+
+type RestaurantDiningSessionService interface {
 	StartDineSession(ctx context.Context,
 		restaurantID uuid.UUID,
 		orgID uuid.UUID,
@@ -76,17 +90,4 @@ type RestaurantServiceInterface interface {
 		orgID uuid.UUID,
 		restaurantID uuid.UUID,
 	) error
-
-	GetRestaurantsOfOrg(
-		ctx context.Context,
-		orgID uuid.UUID,
-	) ([]restaurant_contracts.RestaurantDetails, error)
-
-	RestaurantConfigsServiceInterface
-}
-
-type RestaurantConfigsServiceInterface interface {
-	AddConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID, status restaurant_constants.RestaurantConfigurationStatusType) error
-	UpdateConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID, status restaurant_constants.RestaurantConfigurationStatusType) error
-	// GetConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID) error
 }

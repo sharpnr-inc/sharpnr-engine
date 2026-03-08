@@ -40,10 +40,10 @@ const (
 type RestaurantConfigurationStatusType string
 
 const (
-	RestaurantStatusCreated    RestaurantConfigurationStatusType = "CREATED"
-	RestaurantStatusMenuSetup  RestaurantConfigurationStatusType = "MENU_SETUP"
-	RestaurantStatusTableSetup RestaurantConfigurationStatusType = "TABLE_SETUP"
-	RestaurantStatusCompleted  RestaurantConfigurationStatusType = "COMPLETED"
+	RestaurantStatusCreated             RestaurantConfigurationStatusType = "CREATED"
+	RestaurantStatusGeneralDetailsAdded RestaurantConfigurationStatusType = "GENERAL_DETAILS_ADDED"
+	RestaurantStatusTableSetup          RestaurantConfigurationStatusType = "TABLE_SETUP"
+	RestaurantStatusCompleted           RestaurantConfigurationStatusType = "COMPLETED"
 )
 
 /* ---------------------------------- <***> --------------------------------- */
