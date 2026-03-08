@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 )
 
@@ -31,77 +30,82 @@ func (c *kitchenService) UpdateGeneralDetails(ctx context.Context, kitchenID uui
 	})
 }
 
-func (c *kitchenService) GetKitchenConfigs(ctx context.Context, kitchenID uuid.UUID) (*kitchen_contracts.KitchenConfigResponseDto, error) {
+func (c *kitchenService) GetKitchenConfigs(
+	ctx context.Context,
+	kitchenID uuid.UUID,
+) (*kitchen_contracts.KitchenConfigResponseDto, error) {
+
 	resp := &kitchen_contracts.KitchenConfigResponseDto{}
 
-	// We use a Mutex if we were writing to complex shared objects,
-	// but since we are assigning to fields in a single struct,
-	// it is safe as long as no two goroutines write to the same field.
-
 	err := c.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
 		txCtx := dbtx.InjectTx(ctx, tx)
-		g, gCtx := errgroup.WithContext(txCtx)
 
-		g.Go(func() error {
-			cfg, err := c.kitchenRepo.GetKitchenPrinterConfigByKitchenID(gCtx, kitchenID)
-			if err != nil && err != gorm.ErrRecordNotFound {
-				return err
-			}
-			if cfg != nil {
-				resp.PrinterType = cfg.PrinterType
-				resp.PrinterIP = cfg.IPAddress
-				// Note: PrinterPort is not in your model, ensure you have
-				// the right field or add it to the model.
-			}
-			return nil
-		})
+		// 1️⃣ Get kitchen basic info
+		kitchen, err := c.kitchenRepo.GetKitchenById(txCtx, kitchenID)
+		if err != nil {
+			return err
+		}
 
-		g.Go(func() error {
-			cfg, err := c.kitchenRepo.GetKitchenAutoAcceptOrdersByKitchenID(gCtx, kitchenID)
-			if err != nil && err != gorm.ErrRecordNotFound {
-				return err
-			}
-			if cfg != nil {
-				resp.AutoAccept = cfg.IsAutoAcceptEnabled
-			}
-			return nil
-		})
+		resp.IsActive = kitchen.IsActive
 
-		g.Go(func() error {
-			cfg, err := c.kitchenRepo.GetKitchenThrottlingConfigByKitchenID(gCtx, kitchenID)
-			if err != nil && err != gorm.ErrRecordNotFound {
-				return err
-			}
-			if cfg != nil {
-				resp.Throttling.Enabled = cfg.IsEnabled
-				resp.Throttling.MaxOrdersPerSlot = cfg.MaxOrdersPerSlot
-				resp.Throttling.SlotDurationMins = cfg.SlotDurationMinutes
-			}
-			return nil
-		})
+		// 2️⃣ Printer Config
+		printerCfg, err := c.kitchenRepo.GetKitchenPrinterConfigByKitchenID(txCtx, kitchenID)
+		if err != nil && err != gorm.ErrRecordNotFound {
+			return err
+		}
 
-		g.Go(func() error {
-			hours, err := c.kitchenRepo.ListKitchenOperatingHoursByKitchenID(gCtx, kitchenID)
-			if err != nil && err != gorm.ErrRecordNotFound {
-				return err
-			}
+		if printerCfg != nil {
+			resp.PrinterType = printerCfg.PrinterType
+			resp.PrinterIP = printerCfg.IPAddress
+		}
 
-			for _, h := range hours {
-				resp.OperatingHours = append(resp.OperatingHours, struct {
-					DayOfWeek   int    `json:"day_of_week"`
-					OpeningTime string `json:"opening_time"`
-					ClosingTime string `json:"closing_time"`
-				}{
-					DayOfWeek:   h.DayOfWeek,
-					OpeningTime: h.OpeningTime,
-					ClosingTime: h.ClosingTime,
-				})
-			}
-			return nil
-		})
+		// 3️⃣ Auto Accept Config
+		autoCfg, err := c.kitchenRepo.GetKitchenAutoAcceptOrdersByKitchenID(txCtx, kitchenID)
+		if err != nil && err != gorm.ErrRecordNotFound {
+			return err
+		}
 
-		return g.Wait()
+		if autoCfg != nil {
+			resp.AutoAccept = autoCfg.IsAutoAcceptEnabled
+		}
+
+		// 4️⃣ Throttling Config
+		throttleCfg, err := c.kitchenRepo.GetKitchenThrottlingConfigByKitchenID(txCtx, kitchenID)
+		if err != nil && err != gorm.ErrRecordNotFound {
+			return err
+		}
+
+		if throttleCfg != nil {
+			resp.Throttling.Enabled = throttleCfg.IsEnabled
+			resp.Throttling.MaxOrdersPerSlot = throttleCfg.MaxOrdersPerSlot
+			resp.Throttling.SlotDurationMins = throttleCfg.SlotDurationMinutes
+		}
+
+		// 5️⃣ Operating Hours
+		hours, err := c.kitchenRepo.ListKitchenOperatingHoursByKitchenID(txCtx, kitchenID)
+		if err != nil && err != gorm.ErrRecordNotFound {
+			return err
+		}
+
+		for _, h := range hours {
+			resp.OperatingHours = append(resp.OperatingHours, struct {
+				DayOfWeek   int    `json:"day_of_week"`
+				OpeningTime string `json:"opening_time"`
+				ClosingTime string `json:"closing_time"`
+			}{
+				DayOfWeek:   h.DayOfWeek,
+				OpeningTime: h.OpeningTime,
+				ClosingTime: h.ClosingTime,
+			})
+		}
+
+		return nil
 	})
 
-	return resp, err
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
