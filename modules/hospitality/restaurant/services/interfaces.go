@@ -65,6 +65,7 @@ type RestaurantServiceInterface interface {
 type RestaurantConfigsServiceInterface interface {
 	AddConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID, status restaurant_constants.RestaurantConfigurationStatusType) error
 	UpdateConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID, status restaurant_constants.RestaurantConfigurationStatusType) error
+	RestaurantSwitch(ctx context.Context, orgID, emplID, restaurantID uuid.UUID, restaurantSwitch bool) error
 	// GetConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID) error
 }
 

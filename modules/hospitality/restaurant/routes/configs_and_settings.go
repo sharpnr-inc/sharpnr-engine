@@ -30,5 +30,6 @@ func restaurantConfigsRoutes(
 
 	rc.POST("/add-layout", restaurantController.AddLayout)
 	rc.POST("/add-preferred-kitchen/:pfKitchenID", restaurantController.AddRestaurantPreferredKitchen)
+	rc.PATCH("/activate-deactivate/:switch", restaurantController.ActivateDeactivateKitchen)
 
 }

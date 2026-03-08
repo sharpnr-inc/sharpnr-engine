@@ -393,3 +393,12 @@ func (s *restaurantService) UpdateConfigurationStatus(ctx context.Context, orgID
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (s *restaurantService) RestaurantSwitch(ctx context.Context, orgID, emplID, restaurantID uuid.UUID, restaurantSwitch bool) error {
+
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		return s.restaurantRepo.UpdateActivation(txCtx, restaurantID, restaurantSwitch)
+	})
+}
