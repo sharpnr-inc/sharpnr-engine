@@ -8,7 +8,7 @@ import (
 )
 
 type MenuService interface {
-	CreateMenu(ctx context.Context, req *hospitality_menu_contracts.CreateMenuInput) (menuID uuid.UUID, err error)
+	CreateMenu(ctx context.Context, orgID, emplID uuid.UUID, req *hospitality_menu_contracts.CreateMenuInput) (menuID uuid.UUID, err error)
 	AddCategoryInMenu(ctx context.Context, req *hospitality_menu_contracts.AddMenuCategoryInput) (categoryID uuid.UUID, err error)
 	AddSubCategoryInCategory(ctx context.Context, req *hospitality_menu_contracts.AddSubCategoryInput) (subCategoryID uuid.UUID, err error)
 	AddMenuItemInSubCategory(ctx context.Context, req *hospitality_menu_contracts.AddMenuItemInput) (menuItemID uuid.UUID, err error)

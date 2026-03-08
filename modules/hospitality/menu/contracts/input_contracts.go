@@ -8,13 +8,14 @@ import (
 )
 
 type CreateMenuInput struct {
-	MenuName        string                                       `json:"menu_name"`
-	MenuDescription *string                                      `json:"menu_description,omitempty"`
-	OwnerID         uuid.UUID                                    `json:"owner_id"`
-	OrganizationID  *uuid.UUID                                   `json:"organization_id omitempty"`
-	PropertyID      *uuid.UUID                                   `json:"property_id,omitempty"`
-	OwnerModuleType hospitality_utilities.HospitalityModulesType `json:"owner_module_type"`
-	Categories      *[]AddMenuCategoryInput                      `json:"categories,omitempty"`
+	MenuName         string                                       `json:"menu_name"`
+	MenuDescription  *string                                      `json:"menu_description,omitempty"`
+	PreferredKitchen uuid.UUID                                    `json:"preferred_kitchen"`
+	OwnerID          uuid.UUID                                    `json:"owner_id"`
+	OrganizationID   *uuid.UUID                                   `json:"organization_id omitempty"`
+	PropertyID       *uuid.UUID                                   `json:"property_id,omitempty"`
+	OwnerModuleType  hospitality_utilities.HospitalityModulesType `json:"owner_module_type"`
+	Categories       *[]AddMenuCategoryInput                      `json:"categories,omitempty"`
 }
 
 type AddMenuCategoryInput struct {

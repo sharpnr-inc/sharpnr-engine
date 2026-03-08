@@ -14,6 +14,7 @@ import (
 
 func (s *menuService) CreateMenu(
 	ctx context.Context,
+	orgID, emplID uuid.UUID,
 	req *hospitality_menu_contracts.CreateMenuInput,
 ) (uuid.UUID, error) {
 
@@ -36,6 +37,15 @@ func (s *menuService) CreateMenu(
 
 		if err := s.menuRepo.CreateMenuGroup(txCtx, menuGrp); err != nil {
 			return err
+		}
+
+		menuGrpRegister := &hospitality_menu_contracts.SetKitchenToMenuGroupInput{
+			MenuID:    menuGrp.ID,
+			KitchenID: req.PreferredKitchen,
+		}
+
+		if err := s.SetKitchenToMenuGroup(txCtx, orgID, emplID, req.OwnerID, menuGrpRegister); err != nil {
+			return nil
 		}
 
 		// 🔹 Choose categories source
