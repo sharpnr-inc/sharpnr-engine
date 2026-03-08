@@ -23,4 +23,5 @@ type KitchenServiceInterface interface {
 type KitchenConfigServiceInterface interface {
 	UpdateGeneralDetails(ctx context.Context, kitchenID uuid.UUID, req_dto kitchen_contracts.UpdateKitchenGeneralDetails_req_dto) error
 	GetKitchenConfigs(ctx context.Context, kitchenID uuid.UUID) (*kitchen_contracts.KitchenConfigResponseDto, error)
+	ActivateDeactivate(ctx context.Context, orgID, emplID, kitchenID uuid.UUID, kitchenSwitch bool) error
 }

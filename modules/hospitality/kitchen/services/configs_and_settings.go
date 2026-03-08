@@ -109,3 +109,16 @@ func (c *kitchenService) GetKitchenConfigs(
 
 	return resp, nil
 }
+
+func (c *kitchenService) ActivateDeactivate(ctx context.Context, orgID, emplID, kitchenID uuid.UUID, kitchenSwitch bool) error {
+
+	return c.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		if err := c.kitchenRepo.SwitchKitchenOnOff(txCtx, kitchenID, kitchenSwitch); err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
