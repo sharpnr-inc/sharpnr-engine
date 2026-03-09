@@ -22,7 +22,7 @@ func BootstrapModules(
 	iAM := bootstrapSharIAM(db)
 	organizationService := bootstrapOrganization(db, redis, mailerEngine, iAM)
 	orgPropertyService := bootstrapOrgProperty(db, txManager)
-	orgLegalEntityService := bootstrapOrgLegalEntity(db)
+	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
 
 	employeeService := bootstrapEmployee(db)
 	orgSetupWizardService := bootstrapOrgSetupWizard(
