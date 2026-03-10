@@ -1,17 +1,21 @@
 package accountingdtos
 
-type GetAccountBooksOfOrg_Response_dto struct {
-	AccountBooks []AccountingBook_Response_dto `json:"account_books"`
-}
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type AccountingBook_Response_dto struct {
-	ID string `json:"id"`
+    ID     string                       `json:"id"`
+    Name   string                       `json:"name"`
+    Status string                       `json:"status"`
+    Groups []AccountingGroupResponseDto `json:"groups"`
+}
 
-	Name string `json:"name"`
-
-	Module *string `json:"module,omitempty"`
-
-	SubModule *string `json:"sub_module,omitempty"`
-
-	Status string `json:"status"`
+type AccountingGroupResponseDto struct {
+    ID          uuid.UUID `json:"id"`
+    GroupName   string    `json:"group_name"`
+    Type        string    `json:"type"`
+    LastUpdated time.Time `json:"last_updated"`
 }

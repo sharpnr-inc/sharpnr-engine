@@ -18,12 +18,6 @@ import (
  * These are methods for Accounting Setup *
  ******************************************/
 
-func (r *accountingServices) SetupAccountingForLegalEntity() {
-	panic("unimplemented")
-}
-
-//----------------------------------------------------------------//
-
 // this methods creates the Drafts Accounting Setup
 // the Drafts Accounting setup is the 5 Accounting group
 // within 5 accounting group we create the 1 Default Account

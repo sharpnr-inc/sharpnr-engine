@@ -7,6 +7,8 @@ import (
 	"gorm.io/datatypes"
 )
 
+/* ---------------------------------- <***> --------------------------------- */
+
 type LegalEntityTaxRegistration struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
@@ -33,25 +35,22 @@ func (LegalEntityTaxRegistration) TableName() string {
 	return "legal_entity.legal_entity_tax_registration"
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 type LegalEntityTaxCategory struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
+	ID                        uuid.UUID `gorm:"type:uuid;primaryKey"`
 	OrganizationLegalEntityID uuid.UUID `gorm:"type:uuid;index;not null"`
-
-	Code string
-	// ROOM_RENT, FOOD, LIQUOR, SERVICE
-
-	Description string
-
-	IsActive bool
+	CategoryName              string    `gorm:"type:uuid"`
+	Code                      string    // ROOM_RENT, FOOD, LIQUOR, SERVICE
+	Description               string
+	IsActive                  bool
 }
-
-// *the LegalEntityTaxCategory data the user have to create first
-// * in order to apply
 
 func (LegalEntityTaxCategory) TableName() string {
 	return "legal_entity.legal_entity_tax_category"
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 type LegalEntityTaxRule struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
@@ -82,7 +81,7 @@ func (LegalEntityTaxRule) TableName() string {
 type LegalEntityTaxComponent struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	TaxRuleID uuid.UUID `gorm:"type:uuid;index;not null"`
+	LegalEntityTaxRuleID uuid.UUID `gorm:"type:uuid;index;not null"`
 
 	ComponentCode string `gorm:"size:20;not null"`
 	// CGST, SGST, IGST, VAT
@@ -90,4 +89,8 @@ type LegalEntityTaxComponent struct {
 	Rate float64 `gorm:"not null"` // %
 
 	CreatedAt time.Time
+}
+
+func (LegalEntityTaxComponent) TableName() string {
+	return "legal_entity.legal_entity_tax_component"
 }

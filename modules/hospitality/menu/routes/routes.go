@@ -31,4 +31,9 @@ func RegisterMenuRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) {
 		mcr.POST("/register/menu-item-kitchen", mc.AddPreferredKitchenForMenuItem)
 	}
 
+	mtr := mr.Group("/tax-register")
+	{
+		mtr.POST("/")
+	}
+
 }
