@@ -2,6 +2,7 @@ package accounting_repo
 
 import (
 	"context"
+	dbtx "sharpnr-engine/core/dbTx"
 	accounting_models "sharpnr-engine/service_engines/accounting_engine/models"
 
 	"time"
@@ -17,7 +18,12 @@ func (r *accountingRepository) GetJournalLinesByEntryID(
 
 	var lines []accounting_models.JournalLine
 
-	err := r.db.WithContext(ctx).
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	err := db.WithContext(ctx).
 		Preload("Account").
 		Where("journal_entry_id = ?", entryID).
 		Order("created_at ASC").
@@ -41,7 +47,12 @@ func (r *accountingRepository) GetJournalLinesByAccountAndPeriod(
 
 	var lines []accounting_models.JournalLine
 
-	err := r.db.WithContext(ctx).
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	err := db.WithContext(ctx).
 		Joins("JOIN journal_entries je ON je.id = journal_lines.journal_entry_id").
 		Where(
 			"journal_lines.account_id = ? AND je.entry_date >= ? AND je.entry_date <= ?",

@@ -15,5 +15,6 @@ func RegisterAccountingRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) 
 	accRoutes := v1.Group("/accounting/:legalEntityID/")
 
 	RegisterAccBooksRoutes(accRoutes, accController)
+	RegisterAccGroupsRoutes(accRoutes, accController)
 
 }
