@@ -18,7 +18,7 @@ func (o *orgLegalEntityRepo) GetLegalCompliancesByLegalEntityID(ctx context.Cont
 	// We filter by organization_legal_entity_id.
 	// Ordering by 'expiry_date' or 'created_at' is usually helpful for compliance.
 	err := o.db.WithContext(ctx).
-		Where("organization_legal_entity_id = ?", legalEntityID).
+		Where("legal_entity_id = ?", legalEntityID).
 		Order("created_at DESC").
 		Find(&compliances).Error
 

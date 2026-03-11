@@ -30,7 +30,7 @@ func (r *orgLegalEntityRepo) GetTaxRegistrations(ctx context.Context, legalentit
 
 	// Use Where to filter by the Legal Entity and Order by date descending
 	err := db.WithContext(ctx).
-		Where("organization_legal_entity_id = ?", legalentityID).
+		Where("legal_entity_id = ?", legalentityID).
 		Order("created_at DESC").
 		Find(&registrations).
 		Error
@@ -68,7 +68,7 @@ func (r *orgLegalEntityRepo) ListTaxCategories(ctx context.Context, entityID uui
 	var categories []legal_entity_models.LegalEntityTaxCategory
 
 	err := db.WithContext(ctx).
-		Where("organization_legal_entity_id = ?", entityID).
+		Where("legal_entity_id = ?", entityID).
 		Order("code ASC").
 		Find(&categories).
 		Error
@@ -87,7 +87,7 @@ func (r *orgLegalEntityRepo) GetTaxCategoryByCode(ctx context.Context, entityID 
 	var category legal_entity_models.LegalEntityTaxCategory
 
 	err := db.WithContext(ctx).
-		Where("organization_legal_entity_id = ? AND code = ?", entityID, code).
+		Where("legal_entity_id = ? AND code = ?", entityID, code).
 		First(&category).
 		Error
 
