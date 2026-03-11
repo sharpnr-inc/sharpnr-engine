@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	dbtx "sharpnr-engine/core/dbTx"
 	accountingconstants "sharpnr-engine/service_engines/accounting_engine/constants"
 	accounting_models "sharpnr-engine/service_engines/accounting_engine/models"
 
@@ -49,7 +50,6 @@ func (r *accountingRepository) CreateFiscalYear(ctx context.Context, fy *account
 	return r.db.WithContext(ctx).Create(fy).Error
 }
 
-// GetOpenFiscalYearByBookAndDate implements AccountingRepositoryInterface.
 func (r *accountingRepository) GetOpenFiscalYearByBookAndDate(
 	ctx context.Context,
 	bookID uuid.UUID,
@@ -58,8 +58,12 @@ func (r *accountingRepository) GetOpenFiscalYearByBookAndDate(
 
 	var fy accounting_models.FiscalYear
 
-	err := r.db.
-		WithContext(ctx).
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	err := db.WithContext(ctx).
 		Where(`
 			accounting_book_id = ?
 			AND status = ?

@@ -11,7 +11,7 @@ type JournalLine struct {
 
 	JournalEntryID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	AccountID uuid.UUID `gorm:"type:uuid;not null;index"`
+	AccountID uuid.UUID `gorm:"type:uuid;not null;index"` // this is the
 
 	Debit  float64 `gorm:"default:0"`
 	Credit float64 `gorm:"default:0"`
