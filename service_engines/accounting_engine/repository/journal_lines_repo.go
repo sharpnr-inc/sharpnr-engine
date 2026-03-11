@@ -24,7 +24,6 @@ func (r *accountingRepository) GetJournalLinesByEntryID(
 	}
 
 	err := db.WithContext(ctx).
-		Preload("Account").
 		Where("journal_entry_id = ?", entryID).
 		Order("created_at ASC").
 		Find(&lines).

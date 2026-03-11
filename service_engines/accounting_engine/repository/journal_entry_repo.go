@@ -60,8 +60,6 @@ func (r *accountingRepository) GetJournalEntryByID(ctx context.Context, entryID 
 	}
 
 	err := db.WithContext(ctx).
-		Preload("Lines").
-		Preload("Lines.Account").
 		Where("id = ?", entryID).
 		First(&entry).
 		Error
