@@ -8,7 +8,7 @@ import (
 
 func RegisterAccBooksRoutes(ar *gin.RouterGroup, ac *accounting_controllers.AccountingController) {
 
-	br := ar.Group("/:accountingBookID/books")
+	br := ar.Group("/books")
 
 	{
 		br.GET("", ac.GetAccountingBooks)
