@@ -13,6 +13,10 @@ type AccountingServiceInterface interface {
 	AccountingBooksServiceInterface
 
 	GetLegalEntityLedgerEntry(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.LedgerPaginationResponse, error)
+	GetJournalEntryDetails(
+		ctx context.Context,
+		entryID uuid.UUID,
+	) (accountingdtos.JournalEntryDetailsDTO, error)
 }
 
 type AccountingBooksServiceInterface interface {

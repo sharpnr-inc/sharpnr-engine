@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	dbtx "sharpnr-engine/core/dbTx"
+	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"
 	accounting_models "sharpnr-engine/service_engines/accounting_engine/models"
 	"time"
 
@@ -112,3 +113,38 @@ func (r *accountingRepository) GetJournalEntryTotals(
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (r *accountingRepository) GetJournalLinesWithAccount(
+	ctx context.Context,
+	entryID uuid.UUID,
+) ([]accountingdtos.JournalLineDetail, error) {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	var lines []accountingdtos.JournalLineDetail
+
+	err := db.
+		WithContext(ctx).
+		Table("accounting_engine.journal_line jl").
+		Select(`
+			jl.id,
+			jl.account_id,
+			a.name AS account_name,
+			jl.debit,
+			jl.credit
+		`).
+		Joins("JOIN accounting_engine.account a ON a.id = jl.account_id").
+		Where("jl.journal_entry_id = ?", entryID).
+		Order("jl.created_at ASC").
+		Scan(&lines).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return lines, nil
+}

@@ -69,4 +69,9 @@ type AccountingRepositoryInterface interface {
 		page int,
 		limit int,
 	) ([]accountingdtos.LedgerEntryDTO, int64, error)
+
+	GetJournalLinesWithAccount(
+		ctx context.Context,
+		entryID uuid.UUID,
+	) ([]accountingdtos.JournalLineDetail, error)
 }
