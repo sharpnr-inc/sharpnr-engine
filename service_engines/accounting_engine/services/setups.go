@@ -36,7 +36,7 @@ func (r *accountingServices) CreateDraftAccountingSetup(ctx context.Context, inp
 		accBookInput := &accounting_models.AccountingBook{
 			ID:                        uuid.New(),
 			OrganizationID:            input.OrgID,
-			OrganizationLegalEntityID: input.LegalEntityID,
+			LegalEntityID: input.LegalEntityID,
 			Name:                      accbookname(input.Name_of_legalEntity),
 			Status:                    accountingconstants.Active,
 			CreatedAt:                 now,

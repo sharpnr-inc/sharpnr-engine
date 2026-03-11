@@ -1,10 +1,10 @@
-package org_legal_entity_service
+package legal_entity_service
 
 import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
-	org_legal_entity_contracts "sharpnr-engine/core/org_legal_entity/contracts"
-	org_legal_entity_models "sharpnr-engine/core/org_legal_entity/models"
+	legal_entity_contracts "sharpnr-engine/core/org_legal_entity/contracts"
+	legal_entity_models "sharpnr-engine/core/org_legal_entity/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -13,14 +13,14 @@ import (
 
 func (r *orgLegalEntity) CreateNewLegalEntity(
 	ctx context.Context,
-	input org_legal_entity_contracts.NewLegalEntityInput,
+	input legal_entity_contracts.NewLegalEntityInput,
 ) (legalEntityID uuid.UUID, err error) {
 
 	err = r.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 
 		txCtx := dbtx.InjectTx(ctx, tx)
 
-		legalEntity := &org_legal_entity_models.OrganizationLegalEntity{
+		legalEntity := &legal_entity_models.LegalEntity{
 			ID:             uuid.New(),
 			OrganizationID: input.OrgID,
 			LegalName:      input.LegalName,
@@ -34,16 +34,16 @@ func (r *orgLegalEntity) CreateNewLegalEntity(
 			return err
 		}
 
-		legEntAddr := &org_legal_entity_models.LegalEntityAddress{
-			ID:                        uuid.New(),
-			OrganizationLegalEntityID: legalEntity.ID,
-			Type:                      "OPERATION",
-			AddressLine:               input.AddressLine,
-			City:                      input.City,
-			State:                     input.State,
-			Pincode:                   input.Pincode,
-			Country:                   input.Country,
-			IsPrimary:                 true,
+		legEntAddr := &legal_entity_models.LegalEntityAddress{
+			ID:            uuid.New(),
+			LegalEntityID: legalEntity.ID,
+			Type:          "OPERATION",
+			AddressLine:   input.AddressLine,
+			City:          input.City,
+			State:         input.State,
+			Pincode:       input.Pincode,
+			Country:       input.Country,
+			IsPrimary:     true,
 		}
 
 		if err := r.legalEntityRepo.AddAddressInLegalEntity(txCtx, legEntAddr); err != nil {
@@ -64,9 +64,9 @@ func (r *orgLegalEntity) CreateNewLegalEntity(
 func (s *orgLegalEntity) GetLegalEntityByOrgID(
 	ctx context.Context,
 	orgID uuid.UUID,
-) ([]*org_legal_entity_contracts.LegalEntityReader, error) {
+) ([]*legal_entity_contracts.LegalEntityReader, error) {
 
-	var results []*org_legal_entity_contracts.LegalEntityReader
+	var results []*legal_entity_contracts.LegalEntityReader
 
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 
@@ -78,7 +78,7 @@ func (s *orgLegalEntity) GetLegalEntityByOrgID(
 			return err
 		}
 
-		results = make([]*org_legal_entity_contracts.LegalEntityReader, len(legalEntities))
+		results = make([]*legal_entity_contracts.LegalEntityReader, len(legalEntities))
 
 		for i, le := range legalEntities {
 
@@ -87,7 +87,7 @@ func (s *orgLegalEntity) GetLegalEntityByOrgID(
 				return err
 			}
 
-			results[i] = &org_legal_entity_contracts.LegalEntityReader{
+			results[i] = &legal_entity_contracts.LegalEntityReader{
 				LegalEntityID: le.ID,
 				Name:          le.LegalName,
 				EntityType:    le.EntityType,

@@ -1,4 +1,4 @@
-package org_legal_entity_models
+package legal_entity_models
 
 import (
 	"time"
@@ -7,10 +7,10 @@ import (
 )
 
 type LegalEntityAccountingMapping struct {
-	ID                        uuid.UUID `gorm:"type:uuid;primaryKey"`
-	OrganizationLegalEntityID uuid.UUID `gorm:"type:uuid;index;not null"`
-	LegalEntityTaxCategoryID  uuid.UUID `gorm:"type:uuid;index;not null"`
-	AccountingBookID          uuid.UUID `gorm:"type:uuid;index;not null"`
+	ID                       uuid.UUID `gorm:"type:uuid;primaryKey"`
+	LegalEntityID            uuid.UUID `gorm:"type:uuid;index;not null"`
+	LegalEntityTaxCategoryID uuid.UUID `gorm:"type:uuid;index;not null"`
+	AccountingBookID         uuid.UUID `gorm:"type:uuid;index;not null"`
 
 	DebitAccountCode  string
 	CreditAccountCode string

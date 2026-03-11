@@ -1,4 +1,4 @@
-package org_legal_entity_repo
+package legal_entity_repo
 
 import (
 	"gorm.io/gorm"

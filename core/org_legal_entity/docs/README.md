@@ -56,6 +56,7 @@ Imagine a company, "Sunrise Hospitality," runs a hotel, a restaurant, and a bar.
 In our system, "Sunrise Hospitality" is the **Organization**, but it contains **three separate Legal Entities** (the hotel, restaurant, and bar) because each one handles its taxes independently.
 
 This setup allows the system to:
+
 - Apply different tax rates for services at the hotel vs. the bar.
 - Manage separate accounting books for each business.
 - Ensure each business unit complies with its specific legal requirements.
@@ -116,7 +117,7 @@ graph LR
 
 This is how we store this information in the database.
 
-### `OrganizationLegalEntity`
+### `LegalEntity`
 
 This table represents a legally registered business and links it to an Organization account.
 

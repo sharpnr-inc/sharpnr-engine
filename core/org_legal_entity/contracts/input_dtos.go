@@ -1,4 +1,4 @@
-package org_legal_entity_contracts
+package legal_entity_contracts
 
 import (
 	"time"

@@ -1,16 +1,16 @@
-package org_legal_entity_repo
+package legal_entity_repo
 
 import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
-	org_legal_entity_models "sharpnr-engine/core/org_legal_entity/models"
+	legal_entity_models "sharpnr-engine/core/org_legal_entity/models"
 
 	"github.com/google/uuid"
 )
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *orgLegalEntityRepo) CreateTaxRegistration(ctx context.Context, reg *org_legal_entity_models.LegalEntityTaxRegistration) error {
+func (r *orgLegalEntityRepo) CreateTaxRegistration(ctx context.Context, reg *legal_entity_models.LegalEntityTaxRegistration) error {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db
@@ -20,13 +20,13 @@ func (r *orgLegalEntityRepo) CreateTaxRegistration(ctx context.Context, reg *org
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *orgLegalEntityRepo) GetTaxRegistrations(ctx context.Context, legalentityID uuid.UUID) ([]org_legal_entity_models.LegalEntityTaxRegistration, error) {
+func (r *orgLegalEntityRepo) GetTaxRegistrations(ctx context.Context, legalentityID uuid.UUID) ([]legal_entity_models.LegalEntityTaxRegistration, error) {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db
 	}
 
-	var registrations []org_legal_entity_models.LegalEntityTaxRegistration
+	var registrations []legal_entity_models.LegalEntityTaxRegistration
 
 	// Use Where to filter by the Legal Entity and Order by date descending
 	err := db.WithContext(ctx).
@@ -44,7 +44,7 @@ func (r *orgLegalEntityRepo) GetTaxRegistrations(ctx context.Context, legalentit
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *orgLegalEntityRepo) CreateTaxCategory(ctx context.Context, category *org_legal_entity_models.LegalEntityTaxCategory) error {
+func (r *orgLegalEntityRepo) CreateTaxCategory(ctx context.Context, category *legal_entity_models.LegalEntityTaxCategory) error {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db
@@ -59,13 +59,13 @@ func (r *orgLegalEntityRepo) CreateTaxCategory(ctx context.Context, category *or
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *orgLegalEntityRepo) ListTaxCategories(ctx context.Context, entityID uuid.UUID) ([]org_legal_entity_models.LegalEntityTaxCategory, error) {
+func (r *orgLegalEntityRepo) ListTaxCategories(ctx context.Context, entityID uuid.UUID) ([]legal_entity_models.LegalEntityTaxCategory, error) {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db
 	}
 
-	var categories []org_legal_entity_models.LegalEntityTaxCategory
+	var categories []legal_entity_models.LegalEntityTaxCategory
 
 	err := db.WithContext(ctx).
 		Where("organization_legal_entity_id = ?", entityID).
@@ -78,13 +78,13 @@ func (r *orgLegalEntityRepo) ListTaxCategories(ctx context.Context, entityID uui
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *orgLegalEntityRepo) GetTaxCategoryByCode(ctx context.Context, entityID uuid.UUID, code string) (*org_legal_entity_models.LegalEntityTaxCategory, error) {
+func (r *orgLegalEntityRepo) GetTaxCategoryByCode(ctx context.Context, entityID uuid.UUID, code string) (*legal_entity_models.LegalEntityTaxCategory, error) {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db
 	}
 
-	var category org_legal_entity_models.LegalEntityTaxCategory
+	var category legal_entity_models.LegalEntityTaxCategory
 
 	err := db.WithContext(ctx).
 		Where("organization_legal_entity_id = ? AND code = ?", entityID, code).

@@ -1,17 +1,17 @@
-package org_legal_entity_repo
+package legal_entity_repo
 
 import (
 	"context"
 	"errors"
 	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
-	org_legal_entity_models "sharpnr-engine/core/org_legal_entity/models"
+	legal_entity_models "sharpnr-engine/core/org_legal_entity/models"
 
 	"github.com/google/uuid"
 )
 
 // CreateLegalEntity implements OrgLegalEntityRepoInterface.
-func (o *orgLegalEntityRepo) CreateLegalEntity(ctx context.Context, legalEntity *org_legal_entity_models.OrganizationLegalEntity) error {
+func (o *orgLegalEntityRepo) CreateLegalEntity(ctx context.Context, legalEntity *legal_entity_models.LegalEntity) error {
 
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
@@ -25,7 +25,7 @@ func (o *orgLegalEntityRepo) CreateLegalEntity(ctx context.Context, legalEntity 
 }
 
 // AddAddressInLegalEntity implements OrgLegalEntityRepoInterface.
-func (o *orgLegalEntityRepo) AddAddressInLegalEntity(ctx context.Context, address *org_legal_entity_models.LegalEntityAddress) error {
+func (o *orgLegalEntityRepo) AddAddressInLegalEntity(ctx context.Context, address *legal_entity_models.LegalEntityAddress) error {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = o.db
@@ -41,17 +41,17 @@ func (o *orgLegalEntityRepo) AddAddressInLegalEntity(ctx context.Context, addres
 	return nil
 }
 
-func (o *orgLegalEntityRepo) GetAddressOfLegalEntity(ctx context.Context, legalEntityID uuid.UUID) (*org_legal_entity_models.LegalEntityAddress, error) {
-	var address org_legal_entity_models.LegalEntityAddress
+func (o *orgLegalEntityRepo) GetAddressOfLegalEntity(ctx context.Context, legalEntityID uuid.UUID) (*legal_entity_models.LegalEntityAddress, error) {
+	var address legal_entity_models.LegalEntityAddress
 
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = o.db
 	}
-	// We filter by the specific foreign key OrganizationLegalEntityID.
+	// We filter by the specific foreign key LegalEntityID.
 	// .First() is used assuming each legal entity has a primary/singular address.
 	err := db.WithContext(ctx).
-		Where("organization_legal_entity_id = ?", legalEntityID).
+		Where("legal_entity_id = ?", legalEntityID).
 		First(&address).Error
 
 	if err != nil {
@@ -62,8 +62,8 @@ func (o *orgLegalEntityRepo) GetAddressOfLegalEntity(ctx context.Context, legalE
 	return &address, nil
 }
 
-func (o *orgLegalEntityRepo) GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) ([]*org_legal_entity_models.OrganizationLegalEntity, error) {
-	var legalEntities []*org_legal_entity_models.OrganizationLegalEntity
+func (o *orgLegalEntityRepo) GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) ([]*legal_entity_models.LegalEntity, error) {
+	var legalEntities []*legal_entity_models.LegalEntity
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = o.db
@@ -81,8 +81,8 @@ func (o *orgLegalEntityRepo) GetLegalEntityByOrgID(ctx context.Context, orgID uu
 	return legalEntities, nil
 }
 
-func (o *orgLegalEntityRepo) GetLegalEntityByID(ctx context.Context, legalEntityID uuid.UUID) (*org_legal_entity_models.OrganizationLegalEntity, error) {
-	var legalEntity org_legal_entity_models.OrganizationLegalEntity
+func (o *orgLegalEntityRepo) GetLegalEntityByID(ctx context.Context, legalEntityID uuid.UUID) (*legal_entity_models.LegalEntity, error) {
+	var legalEntity legal_entity_models.LegalEntity
 
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
@@ -110,7 +110,7 @@ func (o *orgLegalEntityRepo) UpdateLegalEntityAddress(ctx context.Context, addre
 	}
 	// Using .Updates(map) is safer as it only changes the fields provided
 	result := db.WithContext(ctx).
-		Model(&org_legal_entity_models.LegalEntityAddress{}).
+		Model(&legal_entity_models.LegalEntityAddress{}).
 		Where("id = ?", addressID).
 		Updates(updates)
 
@@ -132,7 +132,7 @@ func (o *orgLegalEntityRepo) UpdateLegalEntityStatus(ctx context.Context, legalE
 	// We use .Model() to target the table and .Update() for the specific column.
 	// This is more efficient than fetching the whole record first.
 	result := db.WithContext(ctx).
-		Model(&org_legal_entity_models.OrganizationLegalEntity{}).
+		Model(&legal_entity_models.LegalEntity{}).
 		Where("id = ?", legalEntityID).
 		Update("is_active", isActive)
 

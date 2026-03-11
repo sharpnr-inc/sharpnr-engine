@@ -1,4 +1,4 @@
-package org_legal_entity_models
+package legal_entity_models
 
 import (
 	"time"
@@ -12,7 +12,7 @@ import (
 type LegalEntityTaxRegistration struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	OrganizationLegalEntityID uuid.UUID `gorm:"type:uuid;index;not null"`
+	LegalEntityID uuid.UUID `gorm:"type:uuid;index;not null"`
 
 	TaxType string
 	// GST, VAT, SERVICE_TAX (future)
@@ -38,14 +38,14 @@ func (LegalEntityTaxRegistration) TableName() string {
 /* ---------------------------------- <***> --------------------------------- */
 
 type LegalEntityTaxCategory struct {
-	ID                        uuid.UUID `gorm:"type:uuid;primaryKey"`
-	OrganizationLegalEntityID uuid.UUID `gorm:"type:uuid;index;not null"`
-	CategoryName              string    `gorm:"type:uuid"`
-	Code                      string    // ROOM_RENT, FOOD, LIQUOR, SERVICE
-	Description               string
-	IsActive                  bool
-	CreatedAt                 time.Time
-	UpdatedAt                 time.Time
+	ID            uuid.UUID `gorm:"type:uuid;primaryKey"`
+	LegalEntityID uuid.UUID `gorm:"type:uuid;index;not null"`
+	CategoryName  string    `gorm:"type:uuid"`
+	Code          string    // ROOM_RENT, FOOD, LIQUOR, SERVICE
+	Description   string
+	IsActive      bool
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 func (LegalEntityTaxCategory) TableName() string {
@@ -57,8 +57,8 @@ func (LegalEntityTaxCategory) TableName() string {
 type LegalEntityTaxRule struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	OrganizationLegalEntityID uuid.UUID `gorm:"type:uuid;index;not null"`
-	LegalEntityTaxCategoryID  uuid.UUID `gorm:"type:uuid;index;not null"`
+	LegalEntityID            uuid.UUID `gorm:"type:uuid;index;not null"`
+	LegalEntityTaxCategoryID uuid.UUID `gorm:"type:uuid;index;not null"`
 
 	TaxType string // GST
 

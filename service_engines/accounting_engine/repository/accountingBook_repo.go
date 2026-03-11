@@ -59,7 +59,7 @@ func (r *accountingRepository) GetAccountingBookByLegalEntityID(
 	// Use .Where to filter by the Legal Entity ID
 	// Use .First to retrieve a single record
 	err := db.WithContext(ctx).
-		Where("organization_legal_entity_id = ?", legal_entityId).
+		Where("legal_entity_id = ?", legal_entityId).
 		First(&book).Error
 
 	if err != nil {

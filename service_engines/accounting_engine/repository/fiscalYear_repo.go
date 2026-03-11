@@ -83,7 +83,7 @@ func (r *accountingRepository) GetOpenFiscalYearByBookAndDate(
 			return nil, fmt.Errorf(
 				"no open fiscal year found for book %s on date %s",
 				bookID,
-				date.Format("2006-01-02"),
+				date.Format("2006-Jan-02"),
 			)
 		}
 		return nil, err

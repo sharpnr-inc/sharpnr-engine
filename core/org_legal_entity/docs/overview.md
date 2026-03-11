@@ -1,24 +1,22 @@
-
-
-``` mermaid 
+```mermaid
 erDiagram
 
-Organization ||--o{ OrganizationLegalEntity : owns
+Organization ||--o{ LegalEntity : owns
 Organization ||--o{ OrganizationProperty : has
 
 OrganizationProperty ||--o{ PropertyLegalEntity : mapped_to
-OrganizationLegalEntity ||--o{ PropertyLegalEntity : operates
+LegalEntity ||--o{ PropertyLegalEntity : operates
 
 OrganizationProperty ||--o{ Hotel : contains
 OrganizationProperty ||--o{ Restaurant : contains
 OrganizationProperty ||--o{ Bar : contains
 
-OrganizationLegalEntity ||--o{ LegalEntityTaxRegistration : registers
-OrganizationLegalEntity ||--o{ LegalEntityTaxCategory : defines
-OrganizationLegalEntity ||--o{ LegalEntityTaxRule : owns
+LegalEntity ||--o{ LegalEntityTaxRegistration : registers
+LegalEntity ||--o{ LegalEntityTaxCategory : defines
+LegalEntity ||--o{ LegalEntityTaxRule : owns
 LegalEntityTaxRule ||--o{ LegalEntityTaxComponent : splits
 
-OrganizationLegalEntity ||--o{ AccountingBook : owns
+LegalEntity ||--o{ AccountingBook : owns
 AccountingBook ||--o{ AccountGroup : groups
 AccountGroup ||--o{ Account : contains
 

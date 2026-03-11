@@ -1,4 +1,4 @@
-package org_legal_entity_models
+package legal_entity_models
 
 import (
 	"time"
@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type OrganizationLegalEntity struct {
+type LegalEntity struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
 	OrganizationID uuid.UUID `gorm:"type:uuid;index;not null"`
@@ -27,14 +27,14 @@ type OrganizationLegalEntity struct {
 	UpdatedAt time.Time
 }
 
-func (OrganizationLegalEntity) TableName() string {
-	return "legal_entity.organization_legal_entity"
+func (LegalEntity) TableName() string {
+	return "legal_entity.legal_entity"
 }
 
 type LegalEntityAddress struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	OrganizationLegalEntityID uuid.UUID `gorm:"type:uuid;index"`
+	LegalEntityID uuid.UUID `gorm:"type:uuid;index"`
 
 	Type string
 	// REGISTERED, OPERATING
@@ -55,8 +55,8 @@ func (LegalEntityAddress) TableName() string {
 type PropertyLegalEntity struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	PropertyID                uuid.UUID `gorm:"type:uuid;index"`
-	OrganizationLegalEntityID uuid.UUID `gorm:"type:uuid;index"`
+	PropertyID    uuid.UUID `gorm:"type:uuid;index"`
+	LegalEntityID uuid.UUID `gorm:"type:uuid;index"`
 
 	Role string
 	// OWNER, OPERATOR, FRANCHISEE
@@ -73,9 +73,9 @@ func (PropertyLegalEntity) TableName() string {
 type ModuleLegalEntity struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	PropertyID                uuid.UUID `gorm:"type:uuid;index"`
-	Module                    string    // HOTEL, RESTAURANT, BAR
-	OrganizationLegalEntityID uuid.UUID `gorm:"type:uuid;index"`
+	PropertyID    uuid.UUID `gorm:"type:uuid;index"`
+	Module        string    // HOTEL, RESTAURANT, BAR
+	LegalEntityID uuid.UUID `gorm:"type:uuid;index"`
 
 	CreatedAt time.Time
 }
@@ -87,7 +87,7 @@ func (ModuleLegalEntity) TableName() string {
 type LegalEntityCompliance struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
-	OrganizationLegalEntityID uuid.UUID `gorm:"type:uuid;index"`
+	LegalEntityID uuid.UUID `gorm:"type:uuid;index"`
 
 	Type string // FSSAI, LIQUOR, FIRE, HEALTH, TRADE
 

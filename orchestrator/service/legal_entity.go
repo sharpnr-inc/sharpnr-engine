@@ -3,7 +3,7 @@ package orchestrator_service
 import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
-	org_legal_entity_contracts "sharpnr-engine/core/org_legal_entity/contracts"
+	legal_entity_contracts "sharpnr-engine/core/org_legal_entity/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	accounting_engine_contracts "sharpnr-engine/service_engines/accounting_engine/contracts"
 
@@ -17,7 +17,7 @@ func (c *orchestratorService) CreateLegalEntity(ctx context.Context, orgID uuid.
 	return c.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
-		input := org_legal_entity_contracts.NewLegalEntityInput{
+		input := legal_entity_contracts.NewLegalEntityInput{
 			OrgID:       orgID,
 			LegalName:   req.Name,
 			Type:        req.Type,

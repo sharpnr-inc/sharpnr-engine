@@ -1,9 +1,9 @@
-package org_legal_entity_repo
+package legal_entity_repo
 
 import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
-	org_legal_entity_models "sharpnr-engine/core/org_legal_entity/models"
+	legal_entity_models "sharpnr-engine/core/org_legal_entity/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -12,8 +12,8 @@ import (
 
 func (r *orgLegalEntityRepo) CreateTaxRuleWithComponents(
 	ctx context.Context,
-	rule *org_legal_entity_models.LegalEntityTaxRule,
-	components []org_legal_entity_models.LegalEntityTaxComponent,
+	rule *legal_entity_models.LegalEntityTaxRule,
+	components []legal_entity_models.LegalEntityTaxComponent,
 ) error {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
@@ -47,13 +47,13 @@ func (r *orgLegalEntityRepo) CreateTaxRuleWithComponents(
 	})
 }
 
-func (r *orgLegalEntityRepo) GetActiveRulesByCategory(ctx context.Context, categoryID uuid.UUID) ([]org_legal_entity_models.LegalEntityTaxRule, error) {
+func (r *orgLegalEntityRepo) GetActiveRulesByCategory(ctx context.Context, categoryID uuid.UUID) ([]legal_entity_models.LegalEntityTaxRule, error) {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db
 	}
 
-	var rules []org_legal_entity_models.LegalEntityTaxRule
+	var rules []legal_entity_models.LegalEntityTaxRule
 	now := time.Now()
 
 	err := db.WithContext(ctx).
@@ -69,13 +69,13 @@ func (r *orgLegalEntityRepo) GetActiveRulesByCategory(ctx context.Context, categ
 	return rules, err
 }
 
-func (r *orgLegalEntityRepo) GetRuleComponents(ctx context.Context, ruleID uuid.UUID) ([]org_legal_entity_models.LegalEntityTaxComponent, error) {
+func (r *orgLegalEntityRepo) GetRuleComponents(ctx context.Context, ruleID uuid.UUID) ([]legal_entity_models.LegalEntityTaxComponent, error) {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db
 	}
 
-	var components []org_legal_entity_models.LegalEntityTaxComponent
+	var components []legal_entity_models.LegalEntityTaxComponent
 
 	err := db.WithContext(ctx).
 		Where("legal_entity_tax_rule_id = ?", ruleID).
@@ -89,7 +89,7 @@ func (r *orgLegalEntityRepo) GetRuleComponents(ctx context.Context, ruleID uuid.
 // --- Accounting Mapping (The "Where" in the Ledger) ---
 // Links a Tax Category to specific Ledger Accounts in a specific Book
 
-func (r *orgLegalEntityRepo) UpsertAccountingMapping(ctx context.Context, mapping *org_legal_entity_models.LegalEntityAccountingMapping) error {
+func (r *orgLegalEntityRepo) UpsertAccountingMapping(ctx context.Context, mapping *legal_entity_models.LegalEntityAccountingMapping) error {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db
@@ -99,13 +99,13 @@ func (r *orgLegalEntityRepo) UpsertAccountingMapping(ctx context.Context, mappin
 	return db.WithContext(ctx).Save(mapping).Error
 }
 
-func (r *orgLegalEntityRepo) GetMappingByCategory(ctx context.Context, categoryID uuid.UUID, bookID uuid.UUID) (*org_legal_entity_models.LegalEntityAccountingMapping, error) {
+func (r *orgLegalEntityRepo) GetMappingByCategory(ctx context.Context, categoryID uuid.UUID, bookID uuid.UUID) (*legal_entity_models.LegalEntityAccountingMapping, error) {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db
 	}
 
-	var mapping org_legal_entity_models.LegalEntityAccountingMapping
+	var mapping legal_entity_models.LegalEntityAccountingMapping
 
 	err := db.WithContext(ctx).
 		Where("legal_entity_tax_category_id = ? AND accounting_book_id = ?", categoryID, bookID).
@@ -128,7 +128,7 @@ func (r *orgLegalEntityRepo) ToggleRuleStatus(ctx context.Context, ruleID uuid.U
 
 	// Using .Model and .Update for a partial update (efficient)
 	return db.WithContext(ctx).
-		Model(&org_legal_entity_models.LegalEntityTaxRule{}).
+		Model(&legal_entity_models.LegalEntityTaxRule{}).
 		Where("id = ?", ruleID).
 		Update("is_active", isActive).
 		Error
