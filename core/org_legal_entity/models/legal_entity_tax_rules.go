@@ -44,6 +44,8 @@ type LegalEntityTaxCategory struct {
 	Code                      string    // ROOM_RENT, FOOD, LIQUOR, SERVICE
 	Description               string
 	IsActive                  bool
+	CreatedAt                 time.Time
+	UpdatedAt                 time.Time
 }
 
 func (LegalEntityTaxCategory) TableName() string {
