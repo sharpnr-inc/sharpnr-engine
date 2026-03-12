@@ -2,8 +2,8 @@ package app
 
 import (
 	dbtx "sharpnr-engine/core/dbTx"
-	legal_entity_repo "sharpnr-engine/core/org_legal_entity/repo"
-	legal_entity_service "sharpnr-engine/core/org_legal_entity/service"
+	legal_entity_repo "sharpnr-engine/core/legal_entity/repo"
+	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
 	"gorm.io/gorm"

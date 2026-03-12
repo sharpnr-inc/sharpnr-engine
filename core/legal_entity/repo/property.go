@@ -3,7 +3,7 @@ package legal_entity_repo
 import (
 	"context"
 	"fmt"
-	legal_entity_models "sharpnr-engine/core/org_legal_entity/models"
+	legal_entity_models "sharpnr-engine/core/legal_entity/models"
 )
 
 func (o *orgLegalEntityRepo) AddPropertyInLegalEntity(ctx context.Context, relation *legal_entity_models.PropertyLegalEntity) error {

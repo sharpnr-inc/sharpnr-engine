@@ -2,7 +2,7 @@ package app
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
-	legal_entity_service "sharpnr-engine/core/org_legal_entity/service"
+	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"

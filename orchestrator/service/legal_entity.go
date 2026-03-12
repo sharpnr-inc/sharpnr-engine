@@ -3,7 +3,7 @@ package orchestrator_service
 import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
-	legal_entity_contracts "sharpnr-engine/core/org_legal_entity/contracts"
+	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	accounting_engine_contracts "sharpnr-engine/service_engines/accounting_engine/contracts"
 

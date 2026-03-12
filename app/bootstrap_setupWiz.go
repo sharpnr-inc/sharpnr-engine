@@ -1,7 +1,7 @@
 package app
 
 import (
-	legal_entity_service "sharpnr-engine/core/org_legal_entity/service"
+	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_repos "sharpnr-engine/core/org_setup_wizard/repos"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"

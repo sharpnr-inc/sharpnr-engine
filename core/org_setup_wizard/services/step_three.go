@@ -2,7 +2,7 @@ package org_setup_wizard_services
 
 import (
 	"context"
-	legal_entity_contracts "sharpnr-engine/core/org_legal_entity/contracts"
+	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
 )
 

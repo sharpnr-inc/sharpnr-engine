@@ -2,7 +2,7 @@ package legal_entity_repo
 
 import (
 	"context"
-	legal_entity_models "sharpnr-engine/core/org_legal_entity/models"
+	legal_entity_models "sharpnr-engine/core/legal_entity/models"
 
 	"github.com/google/uuid"
 )
@@ -50,8 +50,6 @@ type LegalEntityTaxRepoInterface interface {
 
 	// --- Accounting Mapping (The "Where" in the Ledger) ---
 	// Links a Tax Category to specific Ledger Accounts in a specific Book
-	UpsertAccountingMapping(ctx context.Context, mapping *legal_entity_models.LegalEntityAccountingMapping) error
-	GetMappingByCategory(ctx context.Context, categoryID uuid.UUID, bookID uuid.UUID) (*legal_entity_models.LegalEntityAccountingMapping, error)
 
 	// --- Maintenance ---
 	ToggleRuleStatus(ctx context.Context, ruleID uuid.UUID, isActive bool) error

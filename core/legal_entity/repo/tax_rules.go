@@ -3,7 +3,7 @@ package legal_entity_repo
 import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
-	legal_entity_models "sharpnr-engine/core/org_legal_entity/models"
+	legal_entity_models "sharpnr-engine/core/legal_entity/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -89,7 +89,7 @@ func (r *orgLegalEntityRepo) GetRuleComponents(ctx context.Context, ruleID uuid.
 // --- Accounting Mapping (The "Where" in the Ledger) ---
 // Links a Tax Category to specific Ledger Accounts in a specific Book
 
-func (r *orgLegalEntityRepo) UpsertAccountingMapping(ctx context.Context, mapping *legal_entity_models.LegalEntityAccountingMapping) error {
+func (r *orgLegalEntityRepo) UpsertAccountingMapping(ctx context.Context, mapping *legal_entity_models.TaxCategoryAccountMapping) error {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db
@@ -97,27 +97,6 @@ func (r *orgLegalEntityRepo) UpsertAccountingMapping(ctx context.Context, mappin
 
 	// .Save handles both INSERT and UPDATE based on the Primary Key (ID)
 	return db.WithContext(ctx).Save(mapping).Error
-}
-
-func (r *orgLegalEntityRepo) GetMappingByCategory(ctx context.Context, categoryID uuid.UUID, bookID uuid.UUID) (*legal_entity_models.LegalEntityAccountingMapping, error) {
-	db, ok := dbtx.ExtractTx(ctx)
-	if !ok {
-		db = r.db
-	}
-
-	var mapping legal_entity_models.LegalEntityAccountingMapping
-
-	err := db.WithContext(ctx).
-		Where("legal_entity_tax_category_id = ? AND accounting_book_id = ?", categoryID, bookID).
-		Where("is_active = ?", true).
-		First(&mapping).
-		Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &mapping, nil
 }
 
 func (r *orgLegalEntityRepo) ToggleRuleStatus(ctx context.Context, ruleID uuid.UUID, isActive bool) error {

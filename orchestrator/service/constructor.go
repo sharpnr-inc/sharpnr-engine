@@ -3,7 +3,7 @@ package orchestrator_service
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	dbtx "sharpnr-engine/core/dbTx"
-	legal_entity_service "sharpnr-engine/core/org_legal_entity/service"
+	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	organization_services "sharpnr-engine/core/organization/services"

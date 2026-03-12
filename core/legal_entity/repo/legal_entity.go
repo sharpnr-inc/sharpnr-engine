@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
-	legal_entity_models "sharpnr-engine/core/org_legal_entity/models"
+	legal_entity_models "sharpnr-engine/core/legal_entity/models"
 
 	"github.com/google/uuid"
 )
