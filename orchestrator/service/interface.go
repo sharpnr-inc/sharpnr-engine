@@ -78,7 +78,7 @@ type LegalEntityOrchestrationServiceInterface interface {
 	ListAllTaxCategoryOfLegalEntity(
 		ctx context.Context,
 		orgID, emplID, legalEntity uuid.UUID,
-	) (interface{}, error)
+	) ([]legal_entity_contracts.LegalEntityTaxCategoryResponseDto, error)
 }
 
 /* ---------------------------------- <***> --------------------------------- */

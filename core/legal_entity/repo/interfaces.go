@@ -50,10 +50,13 @@ type LegalEntityTaxRepoInterface interface {
 
 	// Fetching active rules for the Accounting Engine to calculate tax
 	GetActiveRulesByCategory(ctx context.Context, categoryID uuid.UUID) ([]legal_entity_models.LegalEntityTaxRule, error)
-	GetRuleComponents(ctx context.Context, ruleID uuid.UUID) ([]legal_entity_models.LegalEntityTaxComponent, error)
+	GetTaxRuleComponents(ctx context.Context, ruleID uuid.UUID) ([]legal_entity_models.LegalEntityTaxComponent, error)
 
 	// --- Accounting Mapping (The "Where" in the Ledger) ---
 	// Links a Tax Category to specific Ledger Accounts in a specific Book
+
+	CreateTaxCategoryAccountMapping(ctx context.Context, mapping *legal_entity_models.TaxCategoryAccountMapping) error
+	GetTaxCategoryAccountMappingByTaxCategoryID(ctx context.Context, LegalEntityTaxCategoryID uuid.UUID) (*legal_entity_models.TaxCategoryAccountMapping, error)
 
 	// --- Maintenance ---
 	ToggleRuleStatus(ctx context.Context, ruleID uuid.UUID, isActive bool) error

@@ -149,8 +149,29 @@ func (c *orchestratorService) AddTaxCategoryInLegalEntiy(
 func (c *orchestratorService) ListAllTaxCategoryOfLegalEntity(
 	ctx context.Context,
 	orgID, emplID, legalEntity uuid.UUID,
-) (interface{}, error) {
-	return nil, nil
+) ([]legal_entity_contracts.LegalEntityTaxCategoryResponseDto, error) {
+
+	var response []legal_entity_contracts.LegalEntityTaxCategoryResponseDto
+
+	err := c.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		taxCategories, err := c.legalEntityService.GetAllLegalEntityTaxCategory(txCtx, orgID, emplID, legalEntity)
+		if err != nil {
+			return err
+		}
+
+		response = taxCategories
+		return nil
+
+	})
+
+	if err != nil {
+		return response, err
+	}
+
+	return response, nil
+
 }
 
 /* ---------------------------------- <***> --------------------------------- */

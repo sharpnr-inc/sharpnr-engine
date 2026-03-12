@@ -31,4 +31,9 @@ type LegalEntityTaxCongfigsServiceInterface interface {
 		orgID, emplID, legalEntityID uuid.UUID,
 		request legal_entity_contracts.CreateLegalEntityTaxCategory,
 	) error
+
+	GetAllLegalEntityTaxCategory(
+		ctx context.Context,
+		orgID, emplID, legalEntityID uuid.UUID,
+	) ([]legal_entity_contracts.LegalEntityTaxCategoryResponseDto, error)
 }

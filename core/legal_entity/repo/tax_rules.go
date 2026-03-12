@@ -67,7 +67,7 @@ func (r *orgLegalEntityRepo) GetActiveRulesByCategory(ctx context.Context, categ
 	return rules, err
 }
 
-func (r *orgLegalEntityRepo) GetRuleComponents(ctx context.Context, ruleID uuid.UUID) ([]legal_entity_models.LegalEntityTaxComponent, error) {
+func (r *orgLegalEntityRepo) GetTaxRuleComponents(ctx context.Context, ruleID uuid.UUID) ([]legal_entity_models.LegalEntityTaxComponent, error) {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db

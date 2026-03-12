@@ -25,5 +25,6 @@ func migrateLegalEntity(db *gorm.DB) error {
 		&legal_entity_models.TaxCategoryAccountMapping{},
 		&legal_entity_models.LegalEntityTaxCategory{},
 		&legal_entity_models.LegalEntityTaxRule{},
+		&legal_entity_models.LegalEntityTaxComponent{},
 	)
 }
