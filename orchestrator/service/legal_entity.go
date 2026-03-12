@@ -11,7 +11,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// This service method creates the Legal entity
 func (c *orchestratorService) CreateLegalEntity(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.AddLegalEntity_REQ_DTO) error {
 
 	return c.txManager.WithTx(ctx, func(tx *gorm.DB) error {
@@ -46,9 +45,7 @@ func (c *orchestratorService) CreateLegalEntity(ctx context.Context, orgID uuid.
 	})
 }
 
-func (c *orchestratorService) UpdateLegalEntity() {
-
-}
+/* ---------------------------------- <***> --------------------------------- */
 
 func (c *orchestratorService) GetAllLegalEntity(ctx context.Context, orgID uuid.UUID) ([]*orchestrator_dtos.LegalEntity_Response_dto, error) {
 	les, err := c.legalEntityService.GetLegalEntityByOrgID(ctx, orgID)
@@ -78,3 +75,82 @@ func (c *orchestratorService) GetAllLegalEntity(ctx context.Context, orgID uuid.
 	return results, nil
 
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) AddTaxRegsitrationInLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntity uuid.UUID,
+	req legal_entity_contracts.CreateLegalEntityTaxRegistrationRequestDto,
+) error {
+
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		if err := s.legalEntityService.AddLegalEntityTaxRegistration(
+			txCtx, orgID, emplID, legalEntity, req,
+		); err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) GetAllTaxRegistrationOfLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntity uuid.UUID,
+) ([]legal_entity_contracts.LegalEntityTaxRegistrationResponseDto, error) {
+
+	var res []legal_entity_contracts.LegalEntityTaxRegistrationResponseDto
+
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		txCtx := dbtx.InjectTx(ctx, tx)
+		taxRegistration, err := s.legalEntityService.GetAllLegelEntityTaxRegistration(txCtx, orgID, emplID, legalEntity)
+		if err != nil {
+			return err
+		}
+
+		res = taxRegistration
+
+		return nil
+	})
+
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *orchestratorService) AddTaxCategoryInLegalEntiy(
+	ctx context.Context,
+	orgID, emplID, legalEntity uuid.UUID,
+	req legal_entity_contracts.CreateLegalEntityTaxCategory,
+) error {
+
+	return c.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		txCtx := dbtx.InjectTx(ctx, tx)
+		if err := c.legalEntityService.AddLegalEntityTaxCategory(txCtx, orgID, emplID, legalEntity, req); err != nil {
+			return err
+		}
+		return nil
+	})
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *orchestratorService) ListAllTaxCategoryOfLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntity uuid.UUID,
+) (interface{}, error) {
+	return nil, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */

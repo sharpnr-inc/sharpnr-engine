@@ -10,10 +10,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func (r *orgLegalEntityRepo) CreateTaxRuleWithComponents(
+func (r *orgLegalEntityRepo) CreateTaxRuleOfTaxCategory(
 	ctx context.Context,
 	rule *legal_entity_models.LegalEntityTaxRule,
-	components []legal_entity_models.LegalEntityTaxComponent,
 ) error {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
@@ -30,21 +29,20 @@ func (r *orgLegalEntityRepo) CreateTaxRuleWithComponents(
 			return err
 		}
 
-		// Link components to the newly created Rule
-		for i := range components {
-			if components[i].ID == uuid.Nil {
-				components[i].ID = uuid.New()
-			}
-			components[i].LegalEntityTaxRuleID = rule.ID
-		}
-
-		if len(components) > 0 {
-			if err := tx.Create(&components).Error; err != nil {
-				return err
-			}
-		}
 		return nil
 	})
+}
+
+func (r *orgLegalEntityRepo) CreateTaxComponentOfTaxRule(
+	ctx context.Context,
+	tax_components *legal_entity_models.LegalEntityTaxComponent,
+) error {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	return db.WithContext(ctx).Create(tax_components).Error
 }
 
 func (r *orgLegalEntityRepo) GetActiveRulesByCategory(ctx context.Context, categoryID uuid.UUID) ([]legal_entity_models.LegalEntityTaxRule, error) {

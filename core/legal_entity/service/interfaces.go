@@ -11,7 +11,7 @@ type OrgLegalEntityServiceInterface interface {
 	CreateNewLegalEntity(ctx context.Context, input legal_entity_contracts.NewLegalEntityInput) (legalEntityID uuid.UUID, err error)
 	GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) ([]*legal_entity_contracts.LegalEntityReader, error)
 
-	// LegalEntityTaxCongfigsServiceInterface
+	LegalEntityTaxCongfigsServiceInterface
 }
 
 type LegalEntityTaxCongfigsServiceInterface interface {

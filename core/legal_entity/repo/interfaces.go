@@ -38,10 +38,14 @@ type LegalEntityTaxRepoInterface interface {
 
 	// --- Tax Rules & Components (The "How Much") ---
 	// Atomic creation of a rule and its constituent parts (CGST, SGST, etc.)
-	CreateTaxRuleWithComponents(
+	CreateTaxRuleOfTaxCategory(
 		ctx context.Context,
 		rule *legal_entity_models.LegalEntityTaxRule,
-		components []legal_entity_models.LegalEntityTaxComponent,
+	) error
+
+	CreateTaxComponentOfTaxRule(
+		ctx context.Context,
+		tax_components *legal_entity_models.LegalEntityTaxComponent,
 	) error
 
 	// Fetching active rules for the Accounting Engine to calculate tax
