@@ -80,6 +80,8 @@ type MenuRepositoryInterface interface {
 	GetAddOnsByMenuItemID(ctx context.Context, menuItemID uuid.UUID) ([]hospitalityMenu_models.MenuItemAddon, error)
 	UpdateAddon(addon *hospitalityMenu_models.MenuItemAddon) error
 	DeleteAddon(id uuid.UUID) error
+
+	MenuTaxationRepositoryInterface
 }
 
 type MenuTaxationRepositoryInterface interface {
@@ -88,34 +90,29 @@ type MenuTaxationRepositoryInterface interface {
 
 	CreateMenuGroupTaxCategory(
 		ctx context.Context,
-		data *hospitalityMenu_models.MenuGroupTaxCategory,
+		menuGroupTaxCategory *hospitalityMenu_models.MenuGroupTaxCategory,
 	) error
 
 	UpdateMenuGroupTaxCategory(
 		ctx context.Context,
-		data *hospitalityMenu_models.MenuGroupTaxCategory,
+		menuGroupID uuid.UUID,
+		updates map[string]interface{}, // Pass a map of fields to update
 	) error
 
 	GetMenuGroupTaxCategoryByMenuGroupID(
 		ctx context.Context,
 		menuGroupID uuid.UUID,
-	) ([]*hospitalityMenu_models.MenuGroupTaxCategory, error)
+	) (*hospitalityMenu_models.MenuGroupTaxCategory, error)
 
 	GetMenuGroupTaxCategoryByLegalEntityID(
 		ctx context.Context,
 		legalEntityID uuid.UUID,
-	) ([]*hospitalityMenu_models.MenuGroupTaxCategory, error)
-
-	GetMenuGroupTaxCategoryByTaxCategoryID(
-		ctx context.Context,
-		taxCategoryID uuid.UUID,
-	) ([]*hospitalityMenu_models.MenuGroupTaxCategory, error)
+	) (*hospitalityMenu_models.MenuGroupTaxCategory, error)
 
 	DeleteMenuGroupTaxCategory(
 		ctx context.Context,
 		id uuid.UUID,
 	) error
-
 
 	// ================= MENU CATEGORY =================
 
@@ -126,29 +123,24 @@ type MenuTaxationRepositoryInterface interface {
 
 	UpdateMenuCategoryTaxCategory(
 		ctx context.Context,
-		data *hospitalityMenu_models.MenuCategoryTaxCategory,
+		menuCategoryID uuid.UUID,
+		updates map[string]interface{},
 	) error
 
 	GetMenuCategoryTaxCategoryByMenuCategoryID(
 		ctx context.Context,
 		menuCategoryID uuid.UUID,
-	) ([]*hospitalityMenu_models.MenuCategoryTaxCategory, error)
+	) (*hospitalityMenu_models.MenuCategoryTaxCategory, error)
 
 	GetMenuCategoryTaxCategoryByLegalEntityID(
 		ctx context.Context,
 		legalEntityID uuid.UUID,
-	) ([]*hospitalityMenu_models.MenuCategoryTaxCategory, error)
-
-	GetMenuCategoryTaxCategoryByTaxCategoryID(
-		ctx context.Context,
-		taxCategoryID uuid.UUID,
-	) ([]*hospitalityMenu_models.MenuCategoryTaxCategory, error)
+	) (*hospitalityMenu_models.MenuCategoryTaxCategory, error)
 
 	DeleteMenuCategoryTaxCategory(
 		ctx context.Context,
 		id uuid.UUID,
 	) error
-
 
 	// ================= MENU SUB CATEGORY =================
 
@@ -159,29 +151,24 @@ type MenuTaxationRepositoryInterface interface {
 
 	UpdateMenuSubCategoryTaxCategory(
 		ctx context.Context,
-		data *hospitalityMenu_models.MenuSubCategoryTaxCategory,
+		menuSubCategoryID uuid.UUID,
+		updates map[string]interface{},
 	) error
 
 	GetMenuSubCategoryTaxCategoryBySubCategoryID(
 		ctx context.Context,
 		subCategoryID uuid.UUID,
-	) ([]*hospitalityMenu_models.MenuSubCategoryTaxCategory, error)
+	) (*hospitalityMenu_models.MenuSubCategoryTaxCategory, error)
 
 	GetMenuSubCategoryTaxCategoryByLegalEntityID(
 		ctx context.Context,
 		legalEntityID uuid.UUID,
-	) ([]*hospitalityMenu_models.MenuSubCategoryTaxCategory, error)
-
-	GetMenuSubCategoryTaxCategoryByTaxCategoryID(
-		ctx context.Context,
-		taxCategoryID uuid.UUID,
-	) ([]*hospitalityMenu_models.MenuSubCategoryTaxCategory, error)
+	) (*hospitalityMenu_models.MenuSubCategoryTaxCategory, error)
 
 	DeleteMenuSubCategoryTaxCategory(
 		ctx context.Context,
 		id uuid.UUID,
 	) error
-
 
 	// ================= MENU ITEM =================
 
@@ -192,23 +179,19 @@ type MenuTaxationRepositoryInterface interface {
 
 	UpdateMenuItemTaxCategory(
 		ctx context.Context,
-		data *hospitalityMenu_models.MenuItemTaxCategory,
+		menuItemID uuid.UUID,
+		updates map[string]interface{},
 	) error
 
 	GetMenuItemTaxCategoryByMenuItemID(
 		ctx context.Context,
 		menuItemID uuid.UUID,
-	) ([]*hospitalityMenu_models.MenuItemTaxCategory, error)
+	) (*hospitalityMenu_models.MenuItemTaxCategory, error)
 
 	GetMenuItemTaxCategoryByLegalEntityID(
 		ctx context.Context,
 		legalEntityID uuid.UUID,
-	) ([]*hospitalityMenu_models.MenuItemTaxCategory, error)
-
-	GetMenuItemTaxCategoryByTaxCategoryID(
-		ctx context.Context,
-		taxCategoryID uuid.UUID,
-	) ([]*hospitalityMenu_models.MenuItemTaxCategory, error)
+	) (*hospitalityMenu_models.MenuItemTaxCategory, error)
 
 	DeleteMenuItemTaxCategory(
 		ctx context.Context,

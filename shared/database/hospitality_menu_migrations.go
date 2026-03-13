@@ -25,5 +25,14 @@ func migrateHospitalityMenu(db *gorm.DB) error {
 		&hospitalityMenu_models.MenuCategoryKitchenRegister{},
 		&hospitalityMenu_models.MenuSubCategoryKitchenRegister{},
 		&hospitalityMenu_models.MenuItemKitchenRegister{},
+
+		/* -------------------------------------------------------------------------- */
+		/*                         Menu Tax Category Register                         */
+		/* -------------------------------------------------------------------------- */
+
+		&hospitalityMenu_models.MenuGroupTaxCategory{},
+		&hospitalityMenu_models.MenuCategoryTaxCategory{},
+		&hospitalityMenu_models.MenuSubCategoryTaxCategory{},
+		&hospitalityMenu_models.MenuItemTaxCategory{},
 	)
 }
