@@ -194,12 +194,13 @@ func (s *restaurantService) GetGeneralDetails(
 
 		// 4. Map base restaurant fields
 		response = restaurant_contracts.RestaurantGeneralInfo_resp_dto{
-			RestaurantID: restaurant.ID,
-			Name:         restaurant.Name,
-			OpeningTime:  restaurant.OpeningTime,
-			ClosingTime:  restaurant.ClosingTime,
-			IsPureVeg:    restaurant.IsPureVeg,
-			LastUpdated:  restaurant.UpdatedAt,
+			RestaurantID:            restaurant.ID,
+			RestaurantLegalEntityID: restaurant.LegalEntityID,
+			Name:                    restaurant.Name,
+			OpeningTime:             restaurant.OpeningTime,
+			ClosingTime:             restaurant.ClosingTime,
+			IsPureVeg:               restaurant.IsPureVeg,
+			LastUpdated:             restaurant.UpdatedAt,
 		}
 
 		// 5. Map configuration fields
@@ -237,6 +238,10 @@ func (s *restaurantService) UpdateGeneralDetails(
 	}
 	if req.ClosingTime != nil {
 		updates["closing_time"] = *req.ClosingTime
+	}
+
+	if req.LegalEntityID != nil {
+		updates["legal_entity_id"] = *req.LegalEntityID
 	}
 
 	// 2. Check if there's actually anything to update
