@@ -79,3 +79,21 @@ type HotelRoomRate struct {
 func (HotelRoomRate) TableName() string {
 	return "hospitality.hotel_room_rate"
 }
+
+type HotelRoomRateHistory struct {
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+
+	HotelID     uuid.UUID `gorm:"type:uuid;not null;index"`
+	HotelRoomID uuid.UUID `gorm:"type:uuid;not null;index"`
+
+	LastPrice    float64 `gorm:"not null"`
+	UpdatedPrice float64 `gorm:"not null"`
+	Reason       string
+	ExecutedBy   *string
+
+	CreatedAt time.Time
+}
+
+func (HotelRoomRateHistory) TableName() string {
+	return "hospitality.hotel_room_rate_history"
+}

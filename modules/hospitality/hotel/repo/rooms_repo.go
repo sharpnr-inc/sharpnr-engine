@@ -145,6 +145,14 @@ func (h *hotelRepository) CreateRoomRate(ctx context.Context, roomRate *hotel_mo
 	return nil
 }
 
+func (h *hotelRepository) CreateRoomRateHistory(ctx context.Context, roomRateHistory *hotel_models.HotelRoomRateHistory) error {
+	if err := h.db.WithContext(ctx).Create(roomRateHistory).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (h *hotelRepository) GetHotelRoomsByFloorID(ctx context.Context, floorID uuid.UUID) ([]*hotel_models.HotelRoom, error) {
 	var rooms []*hotel_models.HotelRoom
 

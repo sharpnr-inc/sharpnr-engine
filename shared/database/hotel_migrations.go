@@ -24,6 +24,7 @@ func migrateHotel(db *gorm.DB) error {
 		//--------Rooms--------------//
 		&hotel_models.HotelRoom{},
 		&hotel_models.HotelRoomRate{},
+		&hotel_models.HotelRoomRateHistory{},
 		&hotel_models.HotelRoomDetail{},
 
 		&hotel_models.HotelStay{},
