@@ -76,3 +76,7 @@ func (m *AppModules) OrgSetupWiz() org_setup_wizard_services.OrgSetupWizardServi
 func (m *AppModules) SseEngine() *sse_engine.StreamManager {
 	return m.sseEngine
 }
+
+func (m *AppModules) LegalEntityService() legal_entity_service.OrgLegalEntityServiceInterface {
+	return m.orgLegalEntityService
+}

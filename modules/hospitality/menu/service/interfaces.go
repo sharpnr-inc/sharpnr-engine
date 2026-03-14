@@ -38,6 +38,14 @@ type MenuKitchenRegisterServiceInterface interface {
 }
 
 type MenuTaxationRegisterServiceInterface interface {
+	AddTaxCategoryInMenuGroup(
+		ctx context.Context,
+		orgID, emplID, menuGroupOwnerID uuid.UUID,
+		req hospitality_menu_contracts.MenuGroupTaxCategoryRequestDto,
+	) error
 
-	
+	GetTaxCategoryOfMenuItem(
+		ctx context.Context,
+		orgID, emplID, menuItemID uuid.UUID,
+	) (*uuid.UUID, error)
 }
