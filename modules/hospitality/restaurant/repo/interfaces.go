@@ -16,6 +16,13 @@ type RestaurantRepositoryInterface interface {
 	GetRestaurantByOrgID(ctx context.Context, orgId uuid.UUID) ([]*restaurant_models.Restaurant, error)
 	GetRestaurantByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]*restaurant_models.Restaurant, error)
 	UpdateGeneralDetails(ctx context.Context, restaurantID uuid.UUID, updates map[string]interface{}) error
+	GetRestaurantPreferredKitchenID(ctx context.Context, restaurantID uuid.UUID) (*restaurant_models.RestaurantPreferedKitchen, error)
+	CreatePreferredKitchen(
+		ctx context.Context,
+		pfktcn *restaurant_models.RestaurantPreferedKitchen,
+	) error
+
+	UpdatePreferredKitchen(ctx context.Context, pfk *restaurant_models.RestaurantPreferedKitchen) error
 
 	// Restaurant--> Floors
 	CreateFloor(ctx context.Context, floors *restaurant_models.RestaurantFloor) error
@@ -56,4 +63,17 @@ type RestaurantRepositoryInterface interface {
 	// Charges
 	CreateCharges(ctx context.Context, charges *restaurant_models.RestaurantCharge) error
 	GetAllChargesOfSession(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantCharge, error)
+
+	RestaurantConfigurationRepoInterface
+}
+
+type RestaurantConfigurationRepoInterface interface {
+	CreateRestaurantConfiguration(ctx context.Context, restaurantConfig *restaurant_models.RestaurantConfiguration) error
+	GetCurrentConfig(ctx context.Context, restaurantID uuid.UUID) (*restaurant_models.RestaurantConfiguration, error)
+	UpdateRestuarantConfigStatus(ctx context.Context, restaurantID uuid.UUID, update restaurant_constants.RestaurantConfigurationStatusType) error
+
+	// Methods for active and configuration
+
+	UpdateConfiguration(ctx context.Context, restaurantID uuid.UUID, config bool) error
+	UpdateActivation(ctx context.Context, restaurantID uuid.UUID, isActive bool) error
 }

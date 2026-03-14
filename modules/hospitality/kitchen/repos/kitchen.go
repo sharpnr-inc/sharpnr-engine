@@ -2,26 +2,48 @@ package kitchenrepo
 
 import (
 	"context"
+	dbtx "sharpnr-engine/core/dbTx"
 	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
 
 	"github.com/google/uuid"
 )
 
 // CreateKitchen inserts a new kitchen record into the database
-func (d *kitchenRepository) CreateKitchen(ctx context.Context, kitchen *kitchen_models.Kitchen) error {
+func (r *kitchenRepository) CreateKitchen(ctx context.Context, kitchen *kitchen_models.Kitchen) error {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
 	// Use WithContext to respect request timeouts and cancellations
-	if err := d.db.WithContext(ctx).Create(kitchen).Error; err != nil {
+	if err := db.WithContext(ctx).Create(kitchen).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
+func (r *kitchenRepository) UpdateKitchenGeneralDetails(ctx context.Context, kitchenID uuid.UUID, updates map[string]interface{}) error {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+	err := db.WithContext(ctx).Model(&kitchen_models.Kitchen{}).
+		Where("id = ?", kitchenID).
+		Updates(updates).Error
+
+	return err
+}
+
 // GetKitchenById implements KitchenRepositoryInterface.
-func (d *kitchenRepository) GetKitchenById(ctx context.Context, kitchenId uuid.UUID) ([]*kitchen_models.Kitchen, error) {
-	var kitchens []*kitchen_models.Kitchen
+func (r *kitchenRepository) GetKitchenById(ctx context.Context, kitchenId uuid.UUID) (*kitchen_models.Kitchen, error) {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+	var kitchens *kitchen_models.Kitchen
 
 	// Using Find instead of First because the return type is a slice
-	err := d.db.WithContext(ctx).Where("id = ?", kitchenId).Find(&kitchens).Error
+	err := db.WithContext(ctx).Where("id = ?", kitchenId).Find(&kitchens).Error
 	if err != nil {
 		return nil, err
 	}
@@ -30,10 +52,15 @@ func (d *kitchenRepository) GetKitchenById(ctx context.Context, kitchenId uuid.U
 }
 
 // GetKitchenByOrgId implements KitchenRepositoryInterface.
-func (d *kitchenRepository) GetKitchenByOrgId(ctx context.Context, orgId uuid.UUID) ([]*kitchen_models.Kitchen, error) {
+func (r *kitchenRepository) GetKitchenByOrgId(ctx context.Context, orgId uuid.UUID) ([]*kitchen_models.Kitchen, error) {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
 	var kitchens []*kitchen_models.Kitchen
 
-	err := d.db.WithContext(ctx).Where("organization_id = ?", orgId).Find(&kitchens).Error
+	err := db.WithContext(ctx).Where("organization_id = ?", orgId).Find(&kitchens).Error
 	if err != nil {
 		return nil, err
 	}
@@ -42,10 +69,15 @@ func (d *kitchenRepository) GetKitchenByOrgId(ctx context.Context, orgId uuid.UU
 }
 
 // GetKitchenByPropertyId implements KitchenRepositoryInterface.
-func (d *kitchenRepository) GetKitchenByPropertyId(ctx context.Context, propertyID uuid.UUID) ([]*kitchen_models.Kitchen, error) {
+func (r *kitchenRepository) GetKitchenByPropertyId(ctx context.Context, propertyID uuid.UUID) ([]*kitchen_models.Kitchen, error) {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
 	var kitchens []*kitchen_models.Kitchen
 
-	err := d.db.WithContext(ctx).Where("organization_property_id = ?", propertyID).Find(&kitchens).Error
+	err := db.WithContext(ctx).Where("organization_property_id = ?", propertyID).Find(&kitchens).Error
 	if err != nil {
 		return nil, err
 	}
@@ -54,9 +86,14 @@ func (d *kitchenRepository) GetKitchenByPropertyId(ctx context.Context, property
 }
 
 // SwitchKitchenOnOff implements KitchenRepositoryInterface.
-func (d *kitchenRepository) SwitchKitchenOnOff(ctx context.Context, kitchenID uuid.UUID, b bool) error {
+func (r *kitchenRepository) SwitchKitchenOnOff(ctx context.Context, kitchenID uuid.UUID, b bool) error {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
 	// Updates the 'is_active' or 'status' column. Adjust column name as per your schema.
-	err := d.db.WithContext(ctx).Model(&kitchen_models.Kitchen{}).
+	err := db.WithContext(ctx).Model(&kitchen_models.Kitchen{}).
 		Where("id = ?", kitchenID).
 		Update("is_active", b).Error
 

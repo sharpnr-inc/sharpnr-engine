@@ -2,6 +2,7 @@ package restaurantservices
 
 import (
 	"context"
+	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
 
 	"github.com/google/uuid"
@@ -14,18 +15,27 @@ import (
 
 type RestaurantServiceInterface interface {
 	SetupDefaultRestaurant(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (restuarantID uuid.UUID, err error)
-	AddFloors(ctx context.Context, AddFloorInput *restaurant_contracts.CreateFloorInput) (floorID uuid.UUID, err error)
-	AddTablesInFloor(ctx context.Context, AddTablesInFloorInput *restaurant_contracts.CreateTablesInFloorInput) (tableID uuid.UUID, err error)
+	GetGeneralDetails(
+		ctx context.Context,
+		orgID uuid.UUID,
+		emplID uuid.UUID,
+		restaurantID uuid.UUID,
+	) (restaurant_contracts.RestaurantGeneralInfo_resp_dto, error)
+	UpdateGeneralDetails(ctx context.Context, orgID, emplID, restaurantID uuid.UUID, req restaurant_contracts.UpdateBodyRequestDto) error
 
 	AddRestaurantGeneralDetails(ctx context.Context)
 	GetAllRestaurantOfProperty(ctx context.Context, PropertyID uuid.UUID) (restaurants []*restaurant_contracts.RestaurantDetails, err error)
-
-	UpdateRestaurantGeneralDetails(
+	GetRestaurantPreferredKitchenID(
 		ctx context.Context,
+		orgID, employeeID,
 		restaurantID uuid.UUID,
-		input *restaurant_contracts.UpdateGeneralDetailsInput,
+	) (restaurant_contracts.RestaurantPreferredKitchen_resp_dto, error)
+
+	AddPreferredKitchen(
+		ctx context.Context,
+		orgID, employeeID,
+		restaurantID, kitchenID uuid.UUID,
 	) error
-	SetupRestaurantLayout(ctx context.Context, propertyID uuid.UUID, restaurantID uuid.UUID, setupInput []restaurant_contracts.SetupRestaurantLayoutInput) error
 
 	GetRestaurantLayout(
 		ctx context.Context,
@@ -36,13 +46,36 @@ type RestaurantServiceInterface interface {
 	/* ---------------------------------- Order --------------------------------- */
 
 	CreateOrder(ctx context.Context)
-
 	UpdateOrderStatus(ctx context.Context, orderID uuid.UUID, status string) error
 
 	/* -------------------------------------------------------------------------- */
 	/*                               DineIn Services                              */
 	/* -------------------------------------------------------------------------- */
 
+	GetRestaurantsOfOrg(
+		ctx context.Context,
+		orgID uuid.UUID,
+	) ([]restaurant_contracts.RestaurantDetails, error)
+
+	RestaurantConfigsServiceInterface
+	RestaurantTableAndFloorConfigsServices
+	RestaurantDiningSessionService
+}
+
+type RestaurantConfigsServiceInterface interface {
+	AddConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID, status restaurant_constants.RestaurantConfigurationStatusType) error
+	UpdateConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID, status restaurant_constants.RestaurantConfigurationStatusType) error
+	RestaurantSwitch(ctx context.Context, orgID, emplID, restaurantID uuid.UUID, restaurantSwitch bool) error
+	// GetConfigurationStatus(ctx context.Context, orgID uuid.UUID, restaurantID uuid.UUID) error
+}
+
+type RestaurantTableAndFloorConfigsServices interface {
+	AddFloors(ctx context.Context, AddFloorInput *restaurant_contracts.CreateFloorInput) (floorID uuid.UUID, err error)
+	AddTablesInFloor(ctx context.Context, AddTablesInFloorInput *restaurant_contracts.CreateTablesInFloorInput) (tableID uuid.UUID, err error)
+	SetupRestaurantLayout(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, restaurantID uuid.UUID, setupInput restaurant_contracts.AddLayoutRequestDto) error
+}
+
+type RestaurantDiningSessionService interface {
 	StartDineSession(ctx context.Context,
 		restaurantID uuid.UUID,
 		orgID uuid.UUID,

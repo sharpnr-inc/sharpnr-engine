@@ -9,6 +9,7 @@ import (
 type Account struct {
 	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
 	AccountGroupID uuid.UUID `gorm:"type:uuid;index"`
+	
 
 	Name string `gorm:"not null"`
 	Code string `gorm:"not null"`

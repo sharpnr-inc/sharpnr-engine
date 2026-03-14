@@ -1,13 +1,13 @@
 Organization
- └── OrganizationLegalEntity
-      └── AccountingBook
-           ├── FiscalYear
-           │     └── JournalEntry
-           │           └── JournalLine
-           │                 └── Account
-           │
-           └── AccountGroup
-                 └── Account
+└── LegalEntity
+└── AccountingBook
+├── FiscalYear
+│ └── JournalEntry
+│ └── JournalLine
+│ └── Account
+│
+└── AccountGroup
+└── Account
 
 🔴 Important clarification
 

@@ -7,6 +7,8 @@ import (
 
 // ---------- Access Token ----------
 
+// Access Claims is the Structs for the token for the access token
+// This is the Stucture
 type AccessClaims struct {
 	UserID string `json:"uid"`
 	OrgID  string `json:"oid"` // SharpnrID (public)
@@ -37,6 +39,5 @@ type WebCookieTokenClaims struct {
 
 type SignupClaims struct {
 	UserID string `json:"uid"`
-
 	jwt.RegisteredClaims
 }

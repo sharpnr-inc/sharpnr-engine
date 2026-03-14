@@ -9,5 +9,6 @@ import (
 func registerHospitalityRoutes(r *gin.RouterGroup, c *orchestrator_controllers.OrchestratorController) {
 
 	pr := r.Group("/hospitality")
-	pr.GET("/restaurant", c.GetPropertiesOfRestaurant)
+	pr.GET("/all-restaurants", c.GetAllRestaurants)
+	pr.GET("/all-kitchen", c.GetAllKitchens)
 }

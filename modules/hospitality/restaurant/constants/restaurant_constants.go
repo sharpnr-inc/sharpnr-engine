@@ -24,16 +24,26 @@ const (
 	NotActive RestaurantRunningStatusType = "NOT_ACTIVE"
 )
 
-type RestaurantConfigurationType string
-
-const (
-	Configured    RestaurantConfigurationType = "CONFIGURED"
-	NotConfigured RestaurantConfigurationType = "NOT_CONFIGURED"
-)
-
 type RestaurantOrderType string
 
 const (
 	DineInOrder  RestaurantOrderType = "DINE_IN"
 	TakewayOrder RestaurantOrderType = "TAKEAWAY"
 )
+
+/* ---------------------------------- <***> --------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/*                   Restaurant Configuration Related Enums                   */
+/* -------------------------------------------------------------------------- */
+
+type RestaurantConfigurationStatusType string
+
+const (
+	RestaurantStatusCreated             RestaurantConfigurationStatusType = "CREATED"
+	RestaurantStatusGeneralDetailsAdded RestaurantConfigurationStatusType = "GENERAL_DETAILS_ADDED"
+	RestaurantStatusTableSetup          RestaurantConfigurationStatusType = "TABLE_SETUP"
+	RestaurantStatusCompleted           RestaurantConfigurationStatusType = "COMPLETED"
+)
+
+/* ---------------------------------- <***> --------------------------------- */

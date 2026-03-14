@@ -54,3 +54,18 @@ func (c *OrchestratorController) getPropertyFromParams(ctx *gin.Context) (uuid.U
 
 	return pId, err
 }
+
+func (c *OrchestratorController) getLegalEntityIDFromParams(ctx *gin.Context) (uuid.UUID, error) {
+
+	// 3. Param Parsing
+	legalEntityID := ctx.Param("legalEntityID")
+	pId, err := uuid.Parse(legalEntityID)
+	if err != nil {
+		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid legalEntityID format"))
+		return uuid.Nil, err
+	}
+
+	return pId, err
+}
+

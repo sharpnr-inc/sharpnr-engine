@@ -46,7 +46,9 @@ type HotelRepositoryInterface interface {
 	GetRoomDetail(ctx context.Context, roomID uuid.UUID) (*hotel_models.HotelRoomDetail, error)
 
 	GetRoomRate(ctx context.Context, roomID uuid.UUID) (*hotel_models.HotelRoomRate, error)
+
 	CreateRoomRate(ctx context.Context, roomRate *hotel_models.HotelRoomRate) error
+	CreateRoomRateHistory(ctx context.Context, roomRateHistory *hotel_models.HotelRoomRateHistory) error
 
 	GetHotelRoomsByFloorID(ctx context.Context, floorID uuid.UUID) ([]*hotel_models.HotelRoom, error)
 	DeleteRoom(ctx context.Context, roomID uuid.UUID) error

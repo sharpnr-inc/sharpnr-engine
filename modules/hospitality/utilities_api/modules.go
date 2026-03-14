@@ -41,7 +41,7 @@ var HospitalityModules = []HospitalityDomainModule{
 		ID:          "BAR",
 		ModuleName:  Bar,
 		Description: "Bar and lounge management system focusing on inventory tracking, liquor control, bartender sales monitoring, and daily revenue insights.",
-		IsAvailable: true,
+		IsAvailable: false,
 	},
 	{
 		ID:          "CLOUD_KITCHEN_TAKEAWAYS",
@@ -70,7 +70,7 @@ var HospitalityDomainInfraModules = []HospitalityDomainInfraModule{
 		ID:          "8756RQ",
 		ModuleName:  "Bar Counter",
 		Description: "Dedicated module for beverage preparation, mixology, and direct guest service.",
-		IsAvailable: true,
+		IsAvailable: false,
 	},
 	{
 		ID:          "9910DH",

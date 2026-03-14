@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
+	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 
 	"github.com/google/uuid"
@@ -100,4 +101,149 @@ func (r *restaurantRepo) UpdateGeneralDetails(ctx context.Context, restaurantID 
 	}
 
 	return nil
+}
+
+func (r *restaurantRepo) GetRestaurantPreferredKitchenID(ctx context.Context, restaurantID uuid.UUID) (*restaurant_models.RestaurantPreferedKitchen, error) {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	var resPrefKitchen restaurant_models.RestaurantPreferedKitchen
+	err := db.WithContext(ctx).
+		Where("restaurant_id = ?", restaurantID).
+		First(&resPrefKitchen).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &resPrefKitchen, nil
+}
+
+func (r *restaurantRepo) CreatePreferredKitchen(
+	ctx context.Context,
+	pfktcn *restaurant_models.RestaurantPreferedKitchen,
+) error {
+
+	db := r.db
+	if tx, ok := dbtx.ExtractTx(ctx); ok {
+		db = tx
+	}
+
+	return db.WithContext(ctx).
+		Create(pfktcn).
+		Error
+}
+
+func (r *restaurantRepo) UpdatePreferredKitchen(
+	ctx context.Context,
+	pfk *restaurant_models.RestaurantPreferedKitchen,
+) error {
+
+	db := r.db
+	if tx, ok := dbtx.ExtractTx(ctx); ok {
+		db = tx
+	}
+
+	return db.
+		Model(&restaurant_models.RestaurantPreferedKitchen{}).
+		Where("restaurant_id = ?", pfk.RestaurantID).
+		Updates(map[string]interface{}{
+			"kitchen_id": pfk.KitchenID,
+			"updated_at": pfk.UpdatedAt,
+		}).Error
+}
+
+/* -------------------------------------------------------------------------- */
+/*                      Configuration Related Repo Method                     */
+/* -------------------------------------------------------------------------- */
+
+func (r *restaurantRepo) CreateRestaurantConfiguration(
+	ctx context.Context,
+	restaurantConfig *restaurant_models.RestaurantConfiguration,
+) error {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	return db.WithContext(ctx).Create(restaurantConfig).Error
+}
+
+func (r *restaurantRepo) GetCurrentConfig(
+	ctx context.Context,
+	restaurantID uuid.UUID,
+) (*restaurant_models.RestaurantConfiguration, error) {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	var config restaurant_models.RestaurantConfiguration
+
+	err := db.WithContext(ctx).
+		Where("restaurant_id = ?", restaurantID).
+		First(&config).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &config, nil
+}
+
+func (r *restaurantRepo) UpdateRestuarantConfigStatus(
+	ctx context.Context,
+	restaurantID uuid.UUID,
+	update restaurant_constants.RestaurantConfigurationStatusType,
+) error {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	return db.WithContext(ctx).
+		Model(&restaurant_models.RestaurantConfiguration{}).
+		Where("restaurant_id = ?", restaurantID).
+		Update("current_status", update).Error
+}
+
+func (r *restaurantRepo) UpdateConfiguration(
+	ctx context.Context,
+	restaurantID uuid.UUID,
+	config bool,
+) error {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	return db.WithContext(ctx).
+		Model(&restaurant_models.RestaurantConfiguration{}).
+		Where("restaurant_id = ?", restaurantID).
+		Update("is_configured", config).
+		Error
+}
+
+func (r *restaurantRepo) UpdateActivation(
+	ctx context.Context,
+	restaurantID uuid.UUID,
+	isActive bool,
+) error {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	return db.WithContext(ctx).
+		Model(&restaurant_models.RestaurantConfiguration{}).
+		Where("restaurant_id = ?", restaurantID).
+		Update("is_active", isActive).
+		Error
 }

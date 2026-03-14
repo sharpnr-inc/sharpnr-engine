@@ -2,7 +2,7 @@ package org_setup_wizard_services
 
 import (
 	"context"
-	org_legal_entity_contracts "sharpnr-engine/core/org_legal_entity/contracts"
+	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
 )
 
@@ -11,7 +11,7 @@ func (s *orgSetupWizardService) Step_three_AddLegalEntity(
 	step_three_input org_setup_wizard_contracts.SetupLegalEntityInput,
 ) error {
 
-	inputData := org_legal_entity_contracts.NewLegalEntityInput{
+	inputData := legal_entity_contracts.NewLegalEntityInput{
 		OrgID:       step_three_input.OrgID,
 		LegalName:   step_three_input.LegalName,
 		Type:        step_three_input.Type,

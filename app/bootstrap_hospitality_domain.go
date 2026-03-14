@@ -20,6 +20,7 @@ import (
 	restaurantrepo "sharpnr-engine/modules/hospitality/restaurant/repo"
 	restaurantservices "sharpnr-engine/modules/hospitality/restaurant/services"
 	"sharpnr-engine/sero"
+	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"
 	sse_engine "sharpnr-engine/sse"
 
 	"gorm.io/gorm"
@@ -30,6 +31,7 @@ func bootstrapHospitality(
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
 	sseEngine *sse_engine.StreamManager,
+	taxEngine tax_engine_service.TaxEngineServiceInterface,
 ) *hospitalitydomain.HospitalityDomain {
 
 	// Kitchen
@@ -40,7 +42,7 @@ func bootstrapHospitality(
 
 	// Menu
 	menuRepo := menurepo.NewHospitalityMenuRepository(db)
-	menuService := menuservice.NewHospitalityMenuService(menuRepo, txManager)
+	menuService := menuservice.NewHospitalityMenuService(menuRepo, txManager, taxEngine)
 
 	// order engine
 	orderEnginerepo := hospitality_order_engine_repository.NewHospitalityOrderEngine(db)

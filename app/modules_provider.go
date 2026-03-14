@@ -2,6 +2,7 @@ package app
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
+	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
@@ -10,6 +11,7 @@ import (
 	employee_services "sharpnr-engine/modules/hr/employees/services"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
+	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"
 	sse_engine "sharpnr-engine/sse"
 )
 
@@ -26,4 +28,6 @@ type ModulesProvider interface {
 	EmployeeService() employee_services.EmployeeServiceInterface
 	AccountingService() accounting_service.AccountingServiceInterface
 	SseEngine() *sse_engine.StreamManager
+	LegalEntityService() legal_entity_service.OrgLegalEntityServiceInterface
+	TaxEngineService() tax_engine_service.TaxEngineServiceInterface
 }
