@@ -34,6 +34,7 @@ type LegalEntityTaxRepoInterface interface {
 	// --- Tax Categories (The "What": FOOD, ROOM, LIQUOR) ---
 	CreateTaxCategory(ctx context.Context, category *legal_entity_models.LegalEntityTaxCategory) error
 	ListTaxCategories(ctx context.Context, entityID uuid.UUID) ([]legal_entity_models.LegalEntityTaxCategory, error)
+	GetTaxCategoryByID(ctx context.Context, taxCategoryID uuid.UUID) (legal_entity_models.LegalEntityTaxCategory, error)
 	GetTaxCategoryByCode(ctx context.Context, entityID uuid.UUID, code string) (*legal_entity_models.LegalEntityTaxCategory, error)
 
 	// --- Tax Rules & Components (The "How Much") ---

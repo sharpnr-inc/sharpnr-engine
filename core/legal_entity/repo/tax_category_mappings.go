@@ -18,6 +18,28 @@ func (r *orgLegalEntityRepo) CreateTaxCategoryAccountMapping(ctx context.Context
 	return db.WithContext(ctx).Create(mapping).Error
 }
 
+func (r *orgLegalEntityRepo) GetTaxCategoryByID(ctx context.Context, taxCategoryID uuid.UUID) (legal_entity_models.LegalEntityTaxCategory, error) {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	var taxCategory legal_entity_models.LegalEntityTaxCategory
+
+	err := db.
+		Where("id = ?", taxCategoryID).
+		First(&taxCategory).
+		Error
+
+	if err != nil {
+		return legal_entity_models.LegalEntityTaxCategory{}, err
+	}
+
+	return taxCategory, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
 func (r *orgLegalEntityRepo) GetTaxCategoryAccountMappingByTaxCategoryID(
 	ctx context.Context,
 	LegalEntityTaxCategoryID uuid.UUID,

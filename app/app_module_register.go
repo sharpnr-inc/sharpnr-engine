@@ -11,6 +11,7 @@ import (
 	employee_services "sharpnr-engine/modules/hr/employees/services"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
+	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"
 	sse_engine "sharpnr-engine/sse"
 )
 
@@ -33,6 +34,7 @@ type AppModules struct {
 	employeeService   employee_services.EmployeeServiceInterface
 	accountingService accounting_service.AccountingServiceInterface
 	sseEngine         *sse_engine.StreamManager
+	taxEngineService  tax_engine_service.TaxEngineServiceInterface
 }
 
 func (m *AppModules) SharpnrOrchestrator() orchestrator_service.OrchestratorServiceInterface {
@@ -79,4 +81,8 @@ func (m *AppModules) SseEngine() *sse_engine.StreamManager {
 
 func (m *AppModules) LegalEntityService() legal_entity_service.OrgLegalEntityServiceInterface {
 	return m.orgLegalEntityService
+}
+
+func (m *AppModules) TaxEngineService() tax_engine_service.TaxEngineServiceInterface {
+	return m.taxEngineService
 }
