@@ -12,7 +12,8 @@ import (
 
 // AddMenu handles the root menu creation (Recursive or hollow)
 func (c *menuController) AddMenu(ctx *gin.Context) {
-	_, ok := c.validateContext(ctx)
+
+	orgID, emplID, ok := c.resolveContext(ctx)
 	if !ok {
 		return
 	}
@@ -30,7 +31,7 @@ func (c *menuController) AddMenu(ctx *gin.Context) {
 		return
 	}
 
-	if _, err := c.menuService.CreateMenu(ctx, &req); err != nil {
+	if _, err := c.menuService.CreateMenu(ctx, orgID, emplID, &req); err != nil {
 		utils.Failure(ctx, http.StatusBadGateway, utils.CodeInternalError, err)
 		return
 	}
@@ -39,7 +40,7 @@ func (c *menuController) AddMenu(ctx *gin.Context) {
 
 func (c *menuController) AddCategoryInMenu(ctx *gin.Context) {
 
-	_, ok := c.validateContext(ctx)
+	_, _, ok := c.resolveContext(ctx)
 	if !ok {
 		return
 	}
@@ -200,5 +201,3 @@ func (c *menuController) AddAddons(ctx *gin.Context) {
 	}
 	utils.Success(ctx, http.StatusOK, "success")
 }
-
-

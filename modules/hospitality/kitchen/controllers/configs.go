@@ -4,6 +4,7 @@ import (
 	"net/http"
 	kitchen_contracts "sharpnr-engine/modules/hospitality/kitchen/contracts"
 	"sharpnr-engine/shared/utils"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -76,5 +77,33 @@ func (c *KitchenController) UpdateKitchenGenralDetails(ctx *gin.Context) {
 	}
 
 	utils.Success(ctx, http.StatusOK, "Kitchen configs updated successfully")
+
+}
+
+func (c *KitchenController) ActivateDeactivateKitchen(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveContext(ctx)
+	if !ok {
+		return
+	}
+
+	kitchenID, ok := c.resolveKitchenID(ctx)
+	if !ok {
+		return
+	}
+
+	switchParam := ctx.Param("kitchen_switch")
+
+	active, err := strconv.ParseBool(switchParam)
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, "switch must be true or false", err)
+		return
+	}
+
+	if err := c.kitchenService.ActivateDeactivate(ctx.Request.Context(), orgID, emplID, kitchenID, active); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something went Wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Kitchen operation done")
 
 }

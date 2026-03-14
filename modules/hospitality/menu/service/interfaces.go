@@ -8,7 +8,7 @@ import (
 )
 
 type MenuService interface {
-	CreateMenu(ctx context.Context, req *hospitality_menu_contracts.CreateMenuInput) (menuID uuid.UUID, err error)
+	CreateMenu(ctx context.Context, orgID, emplID uuid.UUID, req *hospitality_menu_contracts.CreateMenuInput) (menuID uuid.UUID, err error)
 	AddCategoryInMenu(ctx context.Context, req *hospitality_menu_contracts.AddMenuCategoryInput) (categoryID uuid.UUID, err error)
 	AddSubCategoryInCategory(ctx context.Context, req *hospitality_menu_contracts.AddSubCategoryInput) (subCategoryID uuid.UUID, err error)
 	AddMenuItemInSubCategory(ctx context.Context, req *hospitality_menu_contracts.AddMenuItemInput) (menuItemID uuid.UUID, err error)
@@ -22,6 +22,7 @@ type MenuService interface {
 	GetMenuItemParents(ctx context.Context, menuItemID uuid.UUID) (parents hospitality_menu_contracts.MenuItemParentsDetails, err error)
 
 	MenuKitchenRegisterServiceInterface
+	MenuTaxationRegisterServiceInterface
 }
 
 type MenuKitchenRegisterServiceInterface interface {
@@ -34,4 +35,17 @@ type MenuKitchenRegisterServiceInterface interface {
 	GetKitchenOfMenuCategory(ctx context.Context, menuCategoryID uuid.UUID) (uuid.UUID, error)
 	GetKitchenOfMenuSubCategory(ctx context.Context, menuSubCategoryID uuid.UUID) (uuid.UUID, error)
 	GetKitchenOfMenuItem(ctx context.Context, menuItemID uuid.UUID) (uuid.UUID, error)
+}
+
+type MenuTaxationRegisterServiceInterface interface {
+	AddTaxCategoryInMenuGroup(
+		ctx context.Context,
+		orgID, emplID, menuGroupOwnerID uuid.UUID,
+		req hospitality_menu_contracts.MenuGroupTaxCategoryRequestDto,
+	) error
+
+	GetTaxCategoryOfMenuItem(
+		ctx context.Context,
+		orgID, emplID, menuItemID uuid.UUID,
+	) (*uuid.UUID, error)
 }

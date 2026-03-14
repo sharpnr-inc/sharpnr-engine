@@ -15,7 +15,7 @@ import (
 type AccountingBook struct {
 	ID                        uuid.UUID `gorm:"type:uuid;primaryKey"`
 	OrganizationID            uuid.UUID `gorm:"type:uuid;not null;index"`
-	OrganizationLegalEntityID uuid.UUID `gorm:"type:uuid;not null;index"`
+	LegalEntityID uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	Name string `gorm:"not null"`
 

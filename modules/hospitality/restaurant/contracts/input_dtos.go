@@ -62,11 +62,14 @@ type SelectedAddOn struct {
 }
 
 type UpdateBodyRequestDto struct {
-	Name        *string `json:"name" binding:"omitempty,min=3"`
-	OpeningTime *string `json:"opening_time" binding:"omitempty"`
-	ClosingTime *string `json:"closing_time" binding:"omitempty"`
+	Name          *string `json:"name" binding:"omitempty,min=3"`
+	OpeningTime   *string `json:"opening_time" binding:"omitempty"`
+	ClosingTime   *string `json:"closing_time" binding:"omitempty"`
+	LegalEntityID *string `json:"legal_entity_id" binding:"omitempty"`
 }
 
 type AddLayoutRequestDto struct {
 	RestaurantLayout []SetupRestaurantLayoutInput `json:"restaurant_layout"`
 }
+
+/* ---------------------------------- <***> --------------------------------- */

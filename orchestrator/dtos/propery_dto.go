@@ -9,7 +9,7 @@ import (
 // --------------------------------------------------------------------------------------//
 
 type PropertiesOfOrganization_ResDto struct {
-	Properties []PropertiesReaderSlice `jason:"properties"`
+	Properties []PropertiesReaderSlice `json:"properties"`
 }
 
 type PropertiesReaderSlice struct {
@@ -81,28 +81,6 @@ type CreatePropertyReq_dto struct {
 	State       string `json:"state"`
 	Country     string `json:"country"`
 	Pincode     string `json:"pincode"`
-}
-
-// --------------------------------------------------------------------------------------//
-
-type ConfigureHotel_Request_dto struct {
-	PropertyID  uuid.UUID                                     `json:"propertyId"`
-	HotelID     uuid.UUID                                     `json:"hotelId"`
-	GenDetails  ConfigurationPropertyHotel_GenDetails_Req_dto `json:"genDetails"`
-	HotelLayout []HotelLayoutSetup_Req_dto                    `json:"hotelLayout"`
-}
-
-type ConfigurationPropertyHotel_GenDetails_Req_dto struct {
-	HotelDisplayName string `json:"hotelDisplayName"`
-	Is24X7           bool   `json:"is24x7"`
-	OpeningTime      string `json:"openingTime"`
-	ClosingTime      string `json:"closingTime"`
-}
-
-type HotelLayoutSetup_Req_dto struct {
-	FloorNumber   int    `json:"floorNumber"`
-	FloorName     string `json:"floorName"`
-	NumberOfRooms int    `json:"numberOfRooms"`
 }
 
 /* ------------------------- ModuleOperationsResults ------------------------ */

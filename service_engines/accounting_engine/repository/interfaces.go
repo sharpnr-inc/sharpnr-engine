@@ -5,6 +5,7 @@ package accounting_repo
 
 import (
 	"context"
+	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"
 	accounting_models "sharpnr-engine/service_engines/accounting_engine/models"
 
 	"time"
@@ -60,4 +61,17 @@ type AccountingRepositoryInterface interface {
 	// ------------------------
 
 	GetJournalLinesByEntryID(ctx context.Context, entryID uuid.UUID) ([]accounting_models.JournalLine, error)
+	GetLedgerEntries(
+		ctx context.Context,
+		bookID uuid.UUID,
+		fiscalYearID uuid.UUID,
+		accountID *uuid.UUID,
+		page int,
+		limit int,
+	) ([]accountingdtos.LedgerEntryDTO, int64, error)
+
+	GetJournalLinesWithAccount(
+		ctx context.Context,
+		entryID uuid.UUID,
+	) ([]accountingdtos.JournalLineDetail, error)
 }

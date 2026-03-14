@@ -5,6 +5,7 @@ import (
 	"net/http"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
 	"sharpnr-engine/shared/utils"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -138,4 +139,38 @@ func (c *RestaurantController) AddRestaurantPreferredKitchen(ctx *gin.Context) {
 	}
 
 	utils.Success(ctx, http.StatusOK, "Preferred KitchenID", nil)
+}
+
+func (c *RestaurantController) ActivateDeactivateKitchen(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveContext(ctx)
+	if !ok {
+		return
+	}
+
+	restaurantID, ok := c.resolveRestaurantID(ctx)
+	if !ok {
+		return
+	}
+
+	switchParam := ctx.Param("switch")
+
+	active, err := strconv.ParseBool(switchParam)
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, "switch must be true or false", err)
+		return
+	}
+
+	err = c.resSvc.RestaurantSwitch(
+		ctx.Request.Context(),
+		orgID,
+		emplID,
+		restaurantID,
+		active,
+	)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Restaurant switch operation failed", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Restaurant operation completed successfully", nil)
 }

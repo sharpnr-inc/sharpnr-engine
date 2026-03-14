@@ -215,37 +215,6 @@ func (c *OrchestratorController) PropertyDomainTypes(ctx *gin.Context) {
 
 }
 
-func (c *OrchestratorController) ConfigurePropertyHotel(ctx *gin.Context) {
-	// 1. User Authentication Check
-	orgID, _, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return // Response already sent by helper
-	}
-
-	// 3. Param Parsing
-	propertyId := ctx.Param("propertyID")
-	pId, err := uuid.Parse(propertyId)
-	if err != nil {
-		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid propertyID format"))
-		return
-	}
-
-	var req *orchestrator_dtos.ConfigureHotel_Request_dto
-
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
-		return
-	}
-
-	if err := c.orchestService.ConfigureHotel(ctx.Request.Context(), orgID, pId, req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
-		return
-	}
-
-	utils.Success(ctx, http.StatusOK, "Configuration Complete")
-}
-
 func (c *OrchestratorController) GetPropertyInfra(ctx *gin.Context) {
 	// 1. User Authentication Check
 	_, _, ok := c.resolveRequestContexts(ctx)

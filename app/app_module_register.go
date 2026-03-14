@@ -2,7 +2,7 @@ package app
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
-	org_legal_entity_service "sharpnr-engine/core/org_legal_entity/service"
+	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
@@ -11,6 +11,7 @@ import (
 	employee_services "sharpnr-engine/modules/hr/employees/services"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
+	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"
 	sse_engine "sharpnr-engine/sse"
 )
 
@@ -20,7 +21,7 @@ type AppModules struct {
 	// Redis and Main Pgsql DB
 	organizationService organization_services.OrganizationServiceInterface
 
-	orgLegalEntityService org_legal_entity_service.OrgLegalEntityServiceInterface
+	orgLegalEntityService legal_entity_service.OrgLegalEntityServiceInterface
 	//Signup service
 	orgSignupService    org_signup_services.OrganizationSignUpServiceInterfaces
 	sharpAuthService    sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
@@ -33,6 +34,7 @@ type AppModules struct {
 	employeeService   employee_services.EmployeeServiceInterface
 	accountingService accounting_service.AccountingServiceInterface
 	sseEngine         *sse_engine.StreamManager
+	taxEngineService  tax_engine_service.TaxEngineServiceInterface
 }
 
 func (m *AppModules) SharpnrOrchestrator() orchestrator_service.OrchestratorServiceInterface {
@@ -75,4 +77,12 @@ func (m *AppModules) OrgSetupWiz() org_setup_wizard_services.OrgSetupWizardServi
 
 func (m *AppModules) SseEngine() *sse_engine.StreamManager {
 	return m.sseEngine
+}
+
+func (m *AppModules) LegalEntityService() legal_entity_service.OrgLegalEntityServiceInterface {
+	return m.orgLegalEntityService
+}
+
+func (m *AppModules) TaxEngineService() tax_engine_service.TaxEngineServiceInterface {
+	return m.taxEngineService
 }

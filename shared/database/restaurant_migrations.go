@@ -30,6 +30,7 @@ func migrateRestaurant(db *gorm.DB) error {
 		&restaurant_models.RestaurantKitchenSettings{},
 		&restaurant_models.RestaurantPOSSettings{},
 		&restaurant_models.RestaurantPreferedKitchen{},
+		&restaurant_models.RestaurantConfiguration{},
 
 		// =====================================================
 		// Dining Flow

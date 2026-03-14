@@ -18,12 +18,6 @@ import (
  * These are methods for Accounting Setup *
  ******************************************/
 
-func (r *accountingServices) SetupAccountingForLegalEntity() {
-	panic("unimplemented")
-}
-
-//----------------------------------------------------------------//
-
 // this methods creates the Drafts Accounting Setup
 // the Drafts Accounting setup is the 5 Accounting group
 // within 5 accounting group we create the 1 Default Account
@@ -42,7 +36,7 @@ func (r *accountingServices) CreateDraftAccountingSetup(ctx context.Context, inp
 		accBookInput := &accounting_models.AccountingBook{
 			ID:                        uuid.New(),
 			OrganizationID:            input.OrgID,
-			OrganizationLegalEntityID: input.LegalEntityID,
+			LegalEntityID: input.LegalEntityID,
 			Name:                      accbookname(input.Name_of_legalEntity),
 			Status:                    accountingconstants.Active,
 			CreatedAt:                 now,

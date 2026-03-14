@@ -33,6 +33,7 @@ type KOTAddon_resp_dto struct {
 }
 
 type KitchenConfigResponseDto struct {
+	IsActive    bool   `json:"is_active"`
 	PrinterType string `json:"printer_type"`
 	PrinterIP   string `json:"printer_ip"`
 	PrinterPort int    `json:"printer_port"`
