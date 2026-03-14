@@ -42,6 +42,8 @@ func RegisterSharpnrIdentityProtectedWebRoutes(
 	idProtectedWebRoutes := routeGroup.Group("/identity/web")
 	{
 		idProtectedWebRoutes.GET("/profile", sharpIdController.GetMyProfile)
-		idProtectedWebRoutes.POST("/update")
+		idProtectedWebRoutes.GET("/me", sharpIdController.GetMe)
+		idProtectedWebRoutes.GET("/logout", sharpIdController.LogoutUser)
+		idProtectedWebRoutes.POST("/update", sharpIdController.UpdateMyProfile)
 	}
 }

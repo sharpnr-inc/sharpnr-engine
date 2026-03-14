@@ -9,7 +9,7 @@ import (
 // --------------------------------------------------------------------------------------//
 
 type PropertiesOfOrganization_ResDto struct {
-	Properties []PropertiesReaderSlice `jason:"properties"`
+	Properties []PropertiesReaderSlice `json:"properties"`
 }
 
 type PropertiesReaderSlice struct {
@@ -81,50 +81,6 @@ type CreatePropertyReq_dto struct {
 	State       string `json:"state"`
 	Country     string `json:"country"`
 	Pincode     string `json:"pincode"`
-}
-
-// --------------------------------------------------------------------------------------//
-
-type ConfigurePropertysRestaurant_Req_dto struct {
-	PropertyID       uuid.UUID                                           `json:"propertyID"`
-	RestaurantID     uuid.UUID                                           `json:"restaurantID"`
-	GeneralDetails   ConfigurePropertysRestaurant_GeneralDetails_Req_dto `json:"general_details"`
-	RestaurantLayout []RestaurantLayoutSetup_Req_dto                     `json:"restaurant_layout"`
-}
-
-type ConfigurePropertysRestaurant_GeneralDetails_Req_dto struct {
-	Name        string `json:"name"`
-	IsPureVeg   bool   `json:"is_pure_veg"`
-	OpeningTime string `json:"opening_time"`
-	ClosingTime string `json:"closing_time"`
-}
-
-type RestaurantLayoutSetup_Req_dto struct {
-	Floor_Number   int    `json:"floor_number"`
-	FloorName      string `json:"floor_name"`
-	NumberOfTables int    `json:"number_of_tables"`
-}
-
-// --------------------------------------------------------------------------------------//
-
-type ConfigureHotel_Request_dto struct {
-	PropertyID  uuid.UUID                                     `json:"propertyId"`
-	HotelID     uuid.UUID                                     `json:"hotelId"`
-	GenDetails  ConfigurationPropertyHotel_GenDetails_Req_dto `json:"genDetails"`
-	HotelLayout []HotelLayoutSetup_Req_dto                    `json:"hotelLayout"`
-}
-
-type ConfigurationPropertyHotel_GenDetails_Req_dto struct {
-	HotelDisplayName string `json:"hotelDisplayName"`
-	Is24X7           bool   `json:"is24x7"`
-	OpeningTime      string `json:"openingTime"`
-	ClosingTime      string `json:"closingTime"`
-}
-
-type HotelLayoutSetup_Req_dto struct {
-	FloorNumber   int    `json:"floorNumber"`
-	FloorName     string `json:"floorName"`
-	NumberOfRooms int    `json:"numberOfRooms"`
 }
 
 /* ------------------------- ModuleOperationsResults ------------------------ */

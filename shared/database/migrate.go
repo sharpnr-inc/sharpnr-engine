@@ -17,7 +17,7 @@ func MigrateDB(db *gorm.DB) error {
 
 		migrateCore,
 		migrateOrgProperty,
-		migrateOrgLegalEntity,
+		migrateLegalEntity,
 		migrateEmployee,
 		migrateHotel,
 		migrateRestaurant,

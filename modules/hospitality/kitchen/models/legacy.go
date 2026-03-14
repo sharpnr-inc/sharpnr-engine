@@ -14,7 +14,7 @@ type Kitchen struct {
 
 	Name        string `gorm:"size:100;not null"`
 	Description string
-	Type        string `gorm:"size:50"` // e.g., MAIN, BAR, BAKERY, ROOM_SERVICE
+	Type        string `gorm:"size:50"`
 	IsActive    bool
 
 	CreatedAt time.Time

@@ -6,8 +6,6 @@ import (
 	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
-	hotel_contracts "sharpnr-engine/modules/hospitality/hotel/contracts"
-	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	"sharpnr-engine/shared/utils"
 	"sync"
@@ -237,7 +235,7 @@ func (s *orchestratorService) AddModulesInProperty(
 	orgID uuid.UUID,
 	propertyID uuid.UUID,
 	req *orchestrator_dtos.PropertyModuleConfigurationDTO,
-) (*orchestrator_dtos.ModuleOperationResult, error) { // Changed signature
+) (*orchestrator_dtos.ModuleOperationResult, error) {
 
 	result := &orchestrator_dtos.ModuleOperationResult{
 		Created: []string{},
@@ -247,7 +245,9 @@ func (s *orchestratorService) AddModulesInProperty(
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
+		// ----------------------------------------------------
 		// 1. Property Validation
+		// ----------------------------------------------------
 		prt, err := s.orgPropertyService.GetPropertiesOfOrg(txCtx, orgID)
 		if err != nil {
 			return err
@@ -260,28 +260,46 @@ func (s *orchestratorService) AddModulesInProperty(
 				break
 			}
 		}
+
 		if property == nil {
 			return errors.New("property not found")
 		}
 
+		// ----------------------------------------------------
 		// 2. Identification Phase
+		// ----------------------------------------------------
 		var modulesToCreate []string
+
 		if req.Modules != nil {
 			for _, module := range *req.Modules {
+
 				exists := false
+
 				switch module {
+
 				case "HOTEL":
-					h, _ := s.hospitalityDomainSvc.HotelService().GetHotelByPropertyID(ctx, propertyID)
+					h, _ := s.hospitalityDomainSvc.
+						HotelService().
+						GetHotelByPropertyID(txCtx, propertyID)
+
 					if h != nil && len(h.Hotels) > 0 {
 						exists = true
 					}
+
 				case "BAR":
-					b, _ := s.hospitalityDomainSvc.BarService().GetBarDetailsOfProperty(ctx, orgID, propertyID)
+					b, _ := s.hospitalityDomainSvc.
+						BarService().
+						GetBarDetailsOfProperty(txCtx, orgID, propertyID)
+
 					if len(b) > 0 {
 						exists = true
 					}
+
 				case "RESTAURANT":
-					r, _ := s.hospitalityDomainSvc.RestaurantService().GetAllRestaurantOfProperty(ctx, propertyID)
+					r, _ := s.hospitalityDomainSvc.
+						RestaurantService().
+						GetAllRestaurantOfProperty(txCtx, propertyID)
+
 					if len(r) > 0 {
 						exists = true
 					}
@@ -295,50 +313,96 @@ func (s *orchestratorService) AddModulesInProperty(
 			}
 		}
 
-		// 3. Constraint Check
-		if len(modulesToCreate) > 1 {
-			return fmt.Errorf("only one new module type is allowed at a time; requested: %v", modulesToCreate)
-		}
+		// ----------------------------------------------------
+		// 3. Execution Phase (MULTI MODULE SUPPORT)
+		// ----------------------------------------------------
+		for _, target := range modulesToCreate {
 
-		// 4. Execution Phase
-		if len(modulesToCreate) == 1 {
-			target := modulesToCreate[0]
 			var setupErr error
+
 			switch target {
+
 			case "HOTEL":
-				_, setupErr = s.hospitalityDomainSvc.HotelService().SetupDefaultHotel(txCtx, orgID, propertyID)
+				_, setupErr = s.hospitalityDomainSvc.
+					HotelService().
+					SetupDefaultHotel(txCtx, orgID, propertyID)
+
 			case "BAR":
-				_, setupErr = s.hospitalityDomainSvc.BarService().SetupDefaultBar(txCtx, orgID, propertyID)
+				_, setupErr = s.hospitalityDomainSvc.
+					BarService().
+					SetupDefaultBar(txCtx, orgID, propertyID)
+
 			case "RESTAURANT":
-				_, setupErr = s.hospitalityDomainSvc.RestaurantService().SetupDefaultRestaurant(txCtx, orgID, propertyID)
+				_, setupErr = s.hospitalityDomainSvc.
+					RestaurantService().
+					SetupDefaultRestaurant(txCtx, orgID, propertyID)
 			}
 
 			if setupErr != nil {
 				return setupErr
 			}
+
 			result.Created = append(result.Created, target)
 		}
 
-		// 5. Infrastructure (Kitchen)
+		// ----------------------------------------------------
+		// 4. Infrastructure (Kitchen qty support)
+		// ----------------------------------------------------
 		if req.Infrastructure != nil {
+
 			for _, infra := range *req.Infrastructure {
-				if infra.Infra_Name == "KITCHEN" {
-					if err := s.hospitalityDomainSvc.KitchenService().CreateDefaultKitchen(txCtx, orgID, propertyID, "DEFAULT"); err != nil {
-						return err
+
+				if infra.Infra_Name == "Kitchen/Service Point" {
+
+					qty := infra.InfraQty
+					if qty <= 0 {
+						qty = 1
 					}
-					result.Created = append(result.Created, "KITCHEN")
+
+					for i := 0; i < qty; i++ {
+
+						name := fmt.Sprintf("DEFAULT-%d", i+1)
+
+						if err := s.hospitalityDomainSvc.
+							KitchenService().
+							CreateDefaultKitchen(
+								txCtx,
+								orgID,
+								propertyID,
+								name,
+							); err != nil {
+							return err
+						}
+
+						result.Created = append(
+							result.Created,
+							"Kitchen/Service Point",
+						)
+					}
 				}
 			}
 		}
 
-		// Here we update the property
-
-		if err := s.orgPropertyService.UpdatePropertyConfigurationStatus(txCtx, propertyID, true); err != nil {
+		// ----------------------------------------------------
+		// 5. Update Property Configuration Status
+		// ----------------------------------------------------
+		if err := s.orgPropertyService.
+			UpdatePropertyConfigurationStatus(
+				txCtx,
+				propertyID,
+				true,
+			); err != nil {
 			return err
 		}
 
-		// 6. Build final message
-		result.Message = fmt.Sprintf("%v created. %v already existed and were skipped.", result.Created, result.Skipped)
+		// ----------------------------------------------------
+		// 6. Final Message
+		// ----------------------------------------------------
+		result.Message = fmt.Sprintf(
+			"%v created. %v already existed and were skipped.",
+			result.Created,
+			result.Skipped,
+		)
 
 		return nil
 	})
@@ -350,7 +414,51 @@ func (s *orchestratorService) AddModulesInProperty(
 	return result, nil
 }
 
-// =---------------------------------------------------------------//
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) AddInfraInProperty(
+	ctx context.Context,
+	orgID uuid.UUID,
+	propertyID uuid.UUID,
+	req *orchestrator_dtos.PropertyInfraConfiguration,
+) error {
+
+	// Guard clause
+	if req == nil {
+		return fmt.Errorf("infra configuration is nil")
+	}
+
+	// Handle Kitchen / Service Point infra
+	if req.Infra_Name != "Kitchen/Service Point" {
+		return nil
+	}
+
+	// Default quantity fallback
+	qty := req.InfraQty
+	if qty <= 0 {
+		qty = 1
+	}
+
+	kitchenSvc := s.hospitalityDomainSvc.KitchenService()
+
+	for i := 0; i < qty; i++ {
+		name := fmt.Sprintf("DEFAULT-%d", i+1)
+
+		if err := kitchenSvc.CreateDefaultKitchen(
+			ctx,
+			orgID,
+			propertyID,
+			name,
+		); err != nil {
+			return fmt.Errorf("failed creating kitchen %s: %w", name, err)
+		}
+	}
+
+	return nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *orchestratorService) CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error {
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
@@ -370,100 +478,24 @@ func (s *orchestratorService) CreateProperty(ctx context.Context, orgID uuid.UUI
 			return err
 		}
 
+		status, err := s.organizationService.GetStatus(txCtx, orgID)
+		if err != nil {
+			return err
+		}
+
+		if status == "NOT_CONFIGURED" {
+			if err := s.organizationService.UpdateStatus(txCtx, orgID, "CONFIGURED"); err != nil {
+				return err
+			}
+		}
+
 		return nil
 
 	})
 
 }
 
-//=---------------------------------------------------------------//
-
-func (s *orchestratorService) ConfigureRestaurant(
-	ctx context.Context,
-	orgID uuid.UUID,
-	propertyID uuid.UUID,
-	req *orchestrator_dtos.ConfigurePropertysRestaurant_Req_dto,
-) error {
-	// 1. Initialize the slice for the domain service contract
-	// We use the length of the incoming layout to allocate memory efficiently
-	generalDetails := &restaurant_contracts.UpdateGeneralDetailsInput{
-		Name:         req.GeneralDetails.Name,
-		IsConfigured: true,
-		IsPureVeg:    req.GeneralDetails.IsPureVeg,
-		OpeningTime:  req.GeneralDetails.OpeningTime,
-		ClosingTime:  req.GeneralDetails.ClosingTime,
-	}
-
-	err := s.hospitalityDomainSvc.
-		RestaurantService().
-		UpdateRestaurantGeneralDetails(ctx, req.RestaurantID, generalDetails)
-	if err != nil {
-		return err
-	}
-	layoutInputs := make([]restaurant_contracts.SetupRestaurantLayoutInput, 0, len(req.RestaurantLayout))
-
-	// 2. Map the DTO data to the Service Contract
-	for _, f := range req.RestaurantLayout {
-		layoutInputs = append(layoutInputs, restaurant_contracts.SetupRestaurantLayoutInput{
-			Floor_Name:       f.FloorName, // Map from DTO field to Contract field
-			Floor_Number:     f.Floor_Number,
-			Number_of_tables: f.NumberOfTables,
-		})
-	}
-
-	// 3. Pass the mapped slice to your domain service
-	// Ensure you pass layoutInputs as the final argument
-	if err := s.hospitalityDomainSvc.RestaurantService().SetupRestaurantLayout(
-		ctx,
-		propertyID,
-		req.RestaurantID,
-		layoutInputs,
-	); err != nil {
-		return err
-	}
-
-	// Future: Add logic here to configure Bar and Kitchen modules
-
-	return nil
-}
-
-func (c *orchestratorService) ConfigureHotel(
-	ctx context.Context,
-	orgID uuid.UUID,
-	propertyID uuid.UUID,
-	req *orchestrator_dtos.ConfigureHotel_Request_dto,
-) error {
-
-	hotelLayouts := make([]hotel_contracts.FloorInput, 0, len(req.HotelLayout))
-
-	for _, floorReq := range req.HotelLayout {
-		hotelLayouts = append(hotelLayouts, hotel_contracts.FloorInput{
-			HotelID:       req.HotelID,
-			FloorName:     floorReq.FloorName,
-			FloorNumber:   floorReq.FloorNumber,
-			NumberOfRooms: floorReq.NumberOfRooms,
-		})
-	}
-
-	if err := c.hospitalityDomainSvc.HotelService().SetUpLayout(ctx, hotelLayouts); err != nil {
-		return err
-	}
-
-	genDetails := hotel_contracts.AddHotelGeneralInfoInput{
-		HotelID:          req.HotelID,
-		HotelName:        req.GenDetails.HotelDisplayName,
-		HotelOpeningTime: req.GenDetails.OpeningTime,
-		HotelClosingTime: req.GenDetails.ClosingTime,
-		Is24X7:           req.GenDetails.Is24X7,
-	}
-
-	if err := c.hospitalityDomainSvc.HotelService().AddHotelGenDetails(ctx, &genDetails); err != nil {
-		return err
-	}
-
-	return nil
-
-}
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) GetPropertyInfra(
 	ctx context.Context,
@@ -498,3 +530,5 @@ func (s *orchestratorService) GetPropertyInfra(
 	}, nil
 
 }
+
+/* ---------------------------------- <***> --------------------------------- */

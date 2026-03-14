@@ -1,6 +1,8 @@
 package orchestrator_dtos
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+)
 
 type AddLegalEntity_REQ_DTO struct {
 	Type         string  `json:"type"`
@@ -28,3 +30,7 @@ type LegalEntity_Response_dto struct {
 	CIN_Number  *string   `json:"cinNumber"`
 	PAN_Number  *string   `json:"panNumber"`
 }
+
+/* -------------------------------------------------------------------------- */
+/*                              Tax Registration                              */
+/* -------------------------------------------------------------------------- */

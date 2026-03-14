@@ -1,1 +1,0 @@
-package org_legal_entity_repo

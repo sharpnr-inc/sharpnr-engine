@@ -2,72 +2,110 @@ package menuservice
 
 import (
 	"context"
+	"errors"
 	hospitality_menu_contracts "sharpnr-engine/modules/hospitality/menu/contracts"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func (s *menuService) GetMenu(ctx context.Context, menuID uuid.UUID) (*hospitality_menu_contracts.MenuOutput, error) {
-	// 1. Get the Root Menu
+
 	menu, err := s.menuRepo.GetMenuByID(ctx, menuID)
 	if err != nil {
 		return nil, err
 	}
 
-	output := &hospitality_menu_contracts.MenuOutput{
-		ID:              menu.ID,
-		MenuName:        menu.Name,
-		MenuDescription: &menu.Description,
-		Categories:      []hospitality_menu_contracts.CategoryOutput{},
+	// Preferred Kitchen (Menu)
+	var menuPreferredKitchen *uuid.UUID
+	menuKitchenID, err := s.GetKitchenfOfMenuGroup(ctx, menu.ID)
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		}
+	} else {
+		menuPreferredKitchen = &menuKitchenID
 	}
 
-	// 2. Get Categories
+	output := &hospitality_menu_contracts.MenuOutput{
+		ID:                 menu.ID,
+		MenuName:           menu.Name,
+		MenuDescription:    &menu.Description,
+		PreferredKitchenID: menuPreferredKitchen,
+		Categories:         make([]hospitality_menu_contracts.CategoryOutput, 0),
+	}
+
 	categories, err := s.menuRepo.GetAllCategoriesByMenuID(ctx, menu.ID)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, cat := range categories {
+
+		// Preferred Kitchen (Category)
+		var categoryPreferredKitchen *uuid.UUID
+		categoryKitchenID, err := s.GetKitchenOfMenuCategory(ctx, cat.ID)
+		if err != nil {
+			if !errors.Is(err, gorm.ErrRecordNotFound) {
+				return nil, err
+			}
+		} else {
+			categoryPreferredKitchen = &categoryKitchenID
+		}
+
 		catOut := hospitality_menu_contracts.CategoryOutput{
 			ID:                  cat.ID,
 			MenuID:              cat.MenuGroupID,
 			CategoryName:        cat.Name,
 			CategoryDescription: cat.Description,
-			SubCategories:       []hospitality_menu_contracts.SubCategoryOutput{},
+			PreferredKitchenID:  categoryPreferredKitchen,
+			SubCategories:       make([]hospitality_menu_contracts.SubCategoryOutput, 0),
 		}
 
-		// 3. Get Sub-Categories
 		subCats, err := s.menuRepo.GetSubCategoriesByCategoryID(ctx, cat.ID)
 		if err != nil {
 			return nil, err
 		}
 
 		for _, sub := range subCats {
-			subOut := hospitality_menu_contracts.SubCategoryOutput{
-				ID:                sub.ID,
-				MenuCategoryID:    sub.MenuCategoryID,
-				SubCatName:        sub.Name,
-				SubCatDescription: sub.Description,
-				MenuItems:         []hospitality_menu_contracts.MenuItemOutput{},
+
+			// Preferred Kitchen (SubCategory)
+			var subCategoryPreferredKitchen *uuid.UUID
+			subKitchenID, err := s.GetKitchenOfMenuSubCategory(ctx, sub.ID)
+			if err != nil {
+				if !errors.Is(err, gorm.ErrRecordNotFound) {
+					return nil, err
+				}
+			} else {
+				subCategoryPreferredKitchen = &subKitchenID
 			}
 
-			// 4. Get Menu Items
+			subOut := hospitality_menu_contracts.SubCategoryOutput{
+				ID:                 sub.ID,
+				MenuCategoryID:     sub.MenuCategoryID,
+				SubCatName:         sub.Name,
+				SubCatDescription:  sub.Description,
+				PreferredKitchenID: subCategoryPreferredKitchen,
+				MenuItems:          make([]hospitality_menu_contracts.MenuItemOutput, 0),
+			}
+
 			items, err := s.menuRepo.GetItemsBySubCategoryID(ctx, sub.ID)
 			if err != nil {
 				return nil, err
 			}
 
 			for _, item := range items {
-				// 1. Fetch the kitchen registration
-				kitchenReg, err := s.menuRepo.GetMenuItemKitchen(ctx, item.ID)
 
-				// 2. Safely determine the value for ServedBy
-				// If there's an error or the record is nil, use an empty string
+				kitchenReg, err := s.menuRepo.GetMenuItemKitchen(ctx, item.ID)
+				if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+					return nil, err
+				}
+
 				var servedBy uuid.UUID
-				if err == nil && kitchenReg != nil {
+				if kitchenReg != nil {
 					servedBy = kitchenReg.KitchenID
 				} else {
-					servedBy = uuid.Nil // Explicitly sending empty string if not available
+					servedBy = uuid.Nil
 				}
 
 				itemOut := hospitality_menu_contracts.MenuItemOutput{
@@ -79,60 +117,65 @@ func (s *menuService) GetMenu(ctx context.Context, menuID uuid.UUID) (*hospitali
 					Unit:              item.Unit,
 					BasePrice:         item.BasePrice,
 					DietaryType:       item.DietaryType,
-					ServedBy:          servedBy, // Default to Nil, will update if kitchenReg exists
-					VariantGroups:     []hospitality_menu_contracts.VariantGroupOutput{},
-					AddOns:            []hospitality_menu_contracts.AddOnOutput{},
+					ServedBy:          &servedBy,
+					VariantGroups:     make([]hospitality_menu_contracts.VariantGroupOutput, 0),
+					AddOns:            make([]hospitality_menu_contracts.AddOnOutput, 0),
 				}
 
-				// 5. Get Variant Groups
 				vGroups, err := s.menuRepo.GetVariantGroupsByMenuItemID(ctx, item.ID)
 				if err != nil {
 					return nil, err
 				}
 
 				for _, vg := range vGroups {
+
 					vgOut := hospitality_menu_contracts.VariantGroupOutput{
 						ID:               vg.ID,
 						MenuItemID:       vg.MenuItemID,
 						VariantGroupName: vg.Name,
-						Variants:         []hospitality_menu_contracts.VariantOutput{},
+						Variants:         make([]hospitality_menu_contracts.VariantOutput, 0),
 					}
 
-					// 6. Get Variants
 					vars, err := s.menuRepo.GetVariantsByVariantGroupID(ctx, vg.ID)
 					if err != nil {
 						return nil, err
 					}
+
 					for _, v := range vars {
-						vgOut.Variants = append(vgOut.Variants, hospitality_menu_contracts.VariantOutput{
-							ID:             v.ID,
-							VariantGroupID: v.MenuVariantGroupID,
-							MenuItemID:     v.MenuItemID,
-							Name:           v.Name,
-							Price:          v.Price,
-						})
+						vgOut.Variants = append(vgOut.Variants,
+							hospitality_menu_contracts.VariantOutput{
+								ID:             v.ID,
+								VariantGroupID: v.MenuVariantGroupID,
+								MenuItemID:     v.MenuItemID,
+								Name:           v.Name,
+								Price:          v.Price,
+							})
 					}
+
 					itemOut.VariantGroups = append(itemOut.VariantGroups, vgOut)
 				}
 
-				// 7. Get Add-ons
 				addOns, err := s.menuRepo.GetAddOnsByMenuItemID(ctx, item.ID)
 				if err != nil {
 					return nil, err
 				}
+
 				for _, ao := range addOns {
-					itemOut.AddOns = append(itemOut.AddOns, hospitality_menu_contracts.AddOnOutput{
-						ID:         ao.ID,
-						MenuItemID: ao.MenuItemID,
-						Name:       ao.Name,
-						Price:      ao.Price,
-					})
+					itemOut.AddOns = append(itemOut.AddOns,
+						hospitality_menu_contracts.AddOnOutput{
+							ID:         ao.ID,
+							MenuItemID: ao.MenuItemID,
+							Name:       ao.Name,
+							Price:      ao.Price,
+						})
 				}
 
 				subOut.MenuItems = append(subOut.MenuItems, itemOut)
 			}
+
 			catOut.SubCategories = append(catOut.SubCategories, subOut)
 		}
+
 		output.Categories = append(output.Categories, catOut)
 	}
 

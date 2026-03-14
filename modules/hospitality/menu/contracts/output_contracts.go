@@ -7,10 +7,11 @@ import (
 )
 
 type MenuOutput struct {
-	ID              uuid.UUID        `json:"id"`
-	MenuName        string           `json:"menu_name"`
-	MenuDescription *string          `json:"menu_description"`
-	Categories      []CategoryOutput `json:"categories"`
+	ID                 uuid.UUID        `json:"id"`
+	MenuName           string           `json:"menu_name"`
+	MenuDescription    *string          `json:"menu_description"`
+	PreferredKitchenID *uuid.UUID       `json:"preferred_kitchen"`
+	Categories         []CategoryOutput `json:"categories"`
 }
 
 type CategoryOutput struct {
@@ -18,15 +19,17 @@ type CategoryOutput struct {
 	MenuID              uuid.UUID           `json:"menu_id"`
 	CategoryName        string              `json:"category_name"`
 	CategoryDescription string              `json:"category_description"`
+	PreferredKitchenID  *uuid.UUID          `json:"preferred_kitchen"`
 	SubCategories       []SubCategoryOutput `json:"sub_categories"`
 }
 
 type SubCategoryOutput struct {
-	ID                uuid.UUID        `json:"id"`
-	MenuCategoryID    uuid.UUID        `json:"menu_category_id"`
-	SubCatName        string           `json:"sub_cat_name"`
-	SubCatDescription string           `json:"sub_cat_description"`
-	MenuItems         []MenuItemOutput `json:"menu_items"`
+	ID                 uuid.UUID        `json:"id"`
+	MenuCategoryID     uuid.UUID        `json:"menu_category_id"`
+	SubCatName         string           `json:"sub_cat_name"`
+	SubCatDescription  string           `json:"sub_cat_description"`
+	PreferredKitchenID *uuid.UUID       `json:"preferred_kitchen"`
+	MenuItems          []MenuItemOutput `json:"menu_items"`
 }
 
 type MenuItemOutput struct {
@@ -40,7 +43,7 @@ type MenuItemOutput struct {
 	DietaryType       menu_constants.MenuItemDietaryType `json:"dietary_type"`
 	VariantGroups     []VariantGroupOutput               `json:"variant_groups"`
 	AddOns            []AddOnOutput                      `json:"add_ons"`
-	ServedBy          uuid.UUID                          `json:"served_by"` // KitchenID from MenuItemKitchenRegister
+	ServedBy          *uuid.UUID                         `json:"served_by"` // KitchenID from MenuItemKitchenRegister
 }
 
 type VariantGroupOutput struct {
@@ -63,4 +66,10 @@ type AddOnOutput struct {
 	MenuItemID uuid.UUID `json:"menu_item_id"`
 	Name       string    `json:"name"`
 	Price      float64   `json:"price"`
+}
+
+type MenuItemParentsDetails struct {
+	MenuCategoryID    uuid.UUID
+	MenuSubCategoryID uuid.UUID
+	MenuGroupID       uuid.UUID
 }

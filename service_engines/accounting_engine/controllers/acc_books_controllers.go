@@ -1,53 +1,29 @@
 package accounting_controllers
 
 import (
+	"net/http"
+	"sharpnr-engine/shared/utils"
+
 	"github.com/gin-gonic/gin"
 )
 
-func (c *accountingController) GetAccountingBooks(ctx *gin.Context) {
-	// 1. Extract Org UUID from context (set by auth middleware)
-	// orgUUIDVal, exists := ctx.Get("OrgUUID")
-	// if !exists {
-	// 	utils.ErrorResponse(
-	// 		ctx,
-	// 		http.StatusUnauthorized,
-	// 		"Organization UUID missing",
-	// 		nil,
-	// 	)
-	// 	return
-	// }
+func (c *AccountingController) GetAccountingBooks(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContext(ctx)
+	if !ok {
+		return
+	}
 
-	// orgID, ok := orgUUIDVal.(uuid.UUID)
-	// if !ok {
-	// 	utils.ErrorResponse(
-	// 		ctx,
-	// 		http.StatusBadRequest,
-	// 		"Invalid organization UUID",
-	// 		nil,
-	// 	)
-	// 	return
-	// }
+	legalEntityID, ok := c.resolveLegalEntityID(ctx)
+	if !ok {
+		return
+	}
 
-	// // 2. Call service layer
-	// resp, err := c.accSvc.GetAccountingBooksOfOrg(
-	// 	ctx.Request.Context(),
-	// 	orgID,
-	// )
-	// if err != nil {
-	// 	utils.ErrorResponse(
-	// 		ctx,
-	// 		http.StatusInternalServerError,
-	// 		"Failed to fetch accounting books",
-	// 		err,
-	// 	)
-	// 	return
-	// }
+	response, err := c.accSvc.GetAccountingBook(ctx.Request.Context(), orgID, emplID, legalEntityID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Error Fetching AccountingBook", err)
+		return
+	}
 
-	// // 3. Success response (envelope)
-	// utils.SuccessResponse(
-	// 	ctx,
-	// 	http.StatusOK,
-	// 	"Accounting books fetched successfully",
-	// 	resp,
-	// )
+	utils.Success(ctx, http.StatusOK, "Books Fetched Successfully", response)
+
 }

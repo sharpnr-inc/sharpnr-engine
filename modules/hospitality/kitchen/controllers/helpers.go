@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (c *kitchenController) resolveContext(ctx *gin.Context) (orgID uuid.UUID, employeeID uuid.UUID, ok bool) {
+func (c *KitchenController) resolveContext(ctx *gin.Context) (orgID uuid.UUID, employeeID uuid.UUID, ok bool) {
 	// 1. Resolve and Parse Employee/User ID
 	userIDRaw, exists := ctx.Get(webMiddleware.UserIDContextKey)
 	if !exists {
@@ -44,7 +44,7 @@ func (c *kitchenController) resolveContext(ctx *gin.Context) (orgID uuid.UUID, e
 	return orgID, employeeID, true
 }
 
-func (c *kitchenController) resolveKitchenID(ctx *gin.Context) (uuid.UUID, bool) {
+func (c *KitchenController) resolveKitchenID(ctx *gin.Context) (uuid.UUID, bool) {
 	kitchenIDstr := ctx.Param("kitchenID")
 	parsedID, err := uuid.Parse(kitchenIDstr)
 	if err != nil {
@@ -54,7 +54,7 @@ func (c *kitchenController) resolveKitchenID(ctx *gin.Context) (uuid.UUID, bool)
 	return parsedID, true
 }
 
-func (c *kitchenController) resolveKOTsID(ctx *gin.Context) (uuid.UUID, bool) {
+func (c *KitchenController) resolveKOTsID(ctx *gin.Context) (uuid.UUID, bool) {
 	kotIDstr := ctx.Param("kotID")
 	parsedID, err := uuid.Parse(kotIDstr)
 	if err != nil {

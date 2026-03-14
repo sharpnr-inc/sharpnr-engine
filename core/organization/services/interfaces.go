@@ -13,6 +13,7 @@ type OrganizationServiceInterface interface {
 	IsOrgExists(ctx context.Context, rootEmail string) (bool, error)
 	VerifyOrgByID(ctx context.Context, orgID uuid.UUID) (bool, error)
 	GetStatus(ctx context.Context, orgID uuid.UUID) (string, error)
+	UpdateStatus(ctx context.Context, orgID uuid.UUID, status string) error
 
 	GetSignupSlug(ctx context.Context, tempId uuid.UUID) (string, error)
 	VerifySlugCreateDefaultOrg(ctx context.Context, otp string, slugID uuid.UUID) (output organization_contracts.InputDataForOrgAndEmp, err error)

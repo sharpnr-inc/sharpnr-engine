@@ -31,3 +31,22 @@ type KOTAddon_resp_dto struct {
 	AddOnID  uuid.UUID `json:"addon_id"`
 	Quantity int       `json:"quantity"`
 }
+
+type KitchenConfigResponseDto struct {
+	IsActive    bool   `json:"is_active"`
+	PrinterType string `json:"printer_type"`
+	PrinterIP   string `json:"printer_ip"`
+	PrinterPort int    `json:"printer_port"`
+	AutoAccept  bool   `json:"auto_accept"`
+	Throttling  struct {
+		Enabled          bool `json:"enabled"`
+		MaxOrdersPerSlot int  `json:"max_orders_per_slot"`
+		SlotDurationMins int  `json:"slot_duration_mins"`
+	} `json:"throttling"`
+
+	OperatingHours []struct {
+		DayOfWeek   int    `json:"day_of_week"`
+		OpeningTime string `json:"opening_time"`
+		ClosingTime string `json:"closing_time"`
+	} `json:"operating_hours"`
+}

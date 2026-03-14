@@ -23,8 +23,3 @@ func (c *sharpnrIdentityAuthControllers) GetMyProfile(ctx *gin.Context) {
 	utils.Success(ctx, 200, "Profile fetched successfully", profile)
 
 }
-
-
-func (c *sharpnrIdentityAuthControllers) GetUserProfile(ctx *gin.Context) {
-	
-}

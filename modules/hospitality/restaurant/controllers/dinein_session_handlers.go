@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *restaurantController) CreateDineSession(ctx *gin.Context) {
+func (c *RestaurantController) CreateDineSession(ctx *gin.Context) {
 
 	orgID, empID, ok := c.resolveContext(ctx)
 	if !ok {
@@ -38,7 +38,7 @@ func (c *restaurantController) CreateDineSession(ctx *gin.Context) {
 
 /* ----------------- <**Add Order in the Dining Session ** > ---------------- */
 
-func (c *restaurantController) AddOrderInDiningSession(ctx *gin.Context) {
+func (c *RestaurantController) AddOrderInDiningSession(ctx *gin.Context) {
 
 	orgID, _, ok := c.resolveContext(ctx)
 	if !ok {
@@ -78,7 +78,7 @@ func (c *restaurantController) AddOrderInDiningSession(ctx *gin.Context) {
 
 /* ----------------------------------- <*> ---------------------------------- */
 
-func (c *restaurantController) GetDineInSessionOrders(ctx *gin.Context) {
+func (c *RestaurantController) GetDineInSessionOrders(ctx *gin.Context) {
 	_, _, ok := c.resolveContext(ctx)
 	if !ok {
 		return

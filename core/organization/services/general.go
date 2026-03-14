@@ -76,6 +76,22 @@ func (r *organizationService) GetStatus(ctx context.Context, orgID uuid.UUID) (s
 	return org.Status, nil
 }
 
+func (r *organizationService) UpdateStatus(ctx context.Context, orgID uuid.UUID, status string) error {
+	org, err := r.orgMainRepo.GetOrganizationByID(ctx, orgID)
+	if err != nil {
+		return err
+	}
+
+	org.Status = status
+	org.UpdatedAt = time.Now()
+
+	if err := r.orgMainRepo.UpdateOrganizationStatus(ctx, org.ID, status); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (r *organizationService) VerifyOrgByID(ctx context.Context, orgID uuid.UUID) (bool, error) {
 	org, err := r.orgMainRepo.GetOrganizationByID(ctx, orgID)
 	if err != nil {

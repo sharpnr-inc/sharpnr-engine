@@ -12,7 +12,7 @@ import (
 )
 
 // resolveContext extracts the OrgID and EmployeeID (UserID) from the middleware context.
-func (c *restaurantController) resolveContext(ctx *gin.Context) (orgID uuid.UUID, employeeID uuid.UUID, ok bool) {
+func (c *RestaurantController) resolveContext(ctx *gin.Context) (orgID uuid.UUID, employeeID uuid.UUID, ok bool) {
 	// 1. Resolve and Parse Employee/User ID
 	userIDRaw, exists := ctx.Get(webMiddleware.UserIDContextKey)
 	if !exists {
@@ -46,7 +46,7 @@ func (c *restaurantController) resolveContext(ctx *gin.Context) (orgID uuid.UUID
 }
 
 // resolveRestaurantID extracts and parses the "restaurantID" from the URL parameters.
-func (c *restaurantController) resolveRestaurantID(ctx *gin.Context) (uuid.UUID, bool) {
+func (c *RestaurantController) resolveRestaurantID(ctx *gin.Context) (uuid.UUID, bool) {
 	restaurantIDStr := ctx.Param("restaurantID")
 	parsedID, err := uuid.Parse(restaurantIDStr)
 	if err != nil {
@@ -57,7 +57,7 @@ func (c *restaurantController) resolveRestaurantID(ctx *gin.Context) (uuid.UUID,
 }
 
 // resolveRestaurantID extracts and parses the "tableID" from the URL parameters.
-func (c *restaurantController) resolveTableID(ctx *gin.Context) (uuid.UUID, bool) {
+func (c *RestaurantController) resolveTableID(ctx *gin.Context) (uuid.UUID, bool) {
 	tableIDStr := ctx.Param("tableID")
 	parsedID, err := uuid.Parse(tableIDStr)
 	if err != nil {
@@ -67,7 +67,7 @@ func (c *restaurantController) resolveTableID(ctx *gin.Context) (uuid.UUID, bool
 	return parsedID, true
 }
 
-func (c *restaurantController) resolveDineInSessionID(ctx *gin.Context) (uuid.UUID, bool) {
+func (c *RestaurantController) resolveDineInSessionID(ctx *gin.Context) (uuid.UUID, bool) {
 	dineSessionIDStr := ctx.Param("dineSessionID")
 	parsedID, err := uuid.Parse(dineSessionIDStr)
 	if err != nil {
@@ -78,7 +78,7 @@ func (c *restaurantController) resolveDineInSessionID(ctx *gin.Context) (uuid.UU
 }
 
 // resolveBody binds the JSON request body to the provided struct type.
-func (c *restaurantController) resolveBody(ctx *gin.Context, target interface{}) bool {
+func (c *RestaurantController) resolveBody(ctx *gin.Context, target interface{}) bool {
 	if err := ctx.ShouldBindJSON(target); err != nil {
 		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, fmt.Errorf("invalid request body: %w", err))
 		return false

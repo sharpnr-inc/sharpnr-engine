@@ -22,7 +22,7 @@ func BootstrapModules(
 	iAM := bootstrapSharIAM(db)
 	organizationService := bootstrapOrganization(db, redis, mailerEngine, iAM)
 	orgPropertyService := bootstrapOrgProperty(db, txManager)
-	orgLegalEntityService := bootstrapOrgLegalEntity(db)
+	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
 
 	employeeService := bootstrapEmployee(db)
 	orgSetupWizardService := bootstrapOrgSetupWizard(
@@ -42,7 +42,9 @@ func BootstrapModules(
 
 	identityService := bootstrapIdentity(db, employeeService)
 
-	hospitality := bootstrapHospitality(db, txManager, seroEngine, sseEngine)
+	taxEngineService := bootstrapTaxEngine(orgLegalEntityService, txManager, seroEngine)
+
+	hospitality := bootstrapHospitality(db, txManager, seroEngine, sseEngine, taxEngineService)
 
 	accountingService := bootstrapAccounting(db, txManager)
 
@@ -69,6 +71,7 @@ func BootstrapModules(
 		orchestratorService:   orchestratorService,
 		orgSetupWizard:        orgSetupWizardService,
 		sseEngine:             sseEngine,
+		taxEngineService:      taxEngineService,
 	}
 
 }

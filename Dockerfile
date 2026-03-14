@@ -9,7 +9,7 @@ RUN go mod download
 
 # copy source
 COPY . .
-
+COPY .env.production .env.production
 # build binary (name changed to avoid folder conflict)
 RUN CGO_ENABLED=0 GOOS=linux go build -o server .
 
@@ -27,6 +27,8 @@ RUN apt-get update && \
 # 👇 COPY FROM CORRECT LOCATION
 COPY --from=builder /src/server .
 COPY --from=builder /src/sharp_mailer_engine/templates ./sharp_mailer_engine/templates
+# ⭐ ADD THIS (IMPORTANT)
+COPY --from=builder /src/.env.production .env.production
 
 EXPOSE 8080
 
