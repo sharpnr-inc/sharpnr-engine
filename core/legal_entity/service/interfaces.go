@@ -37,8 +37,12 @@ type LegalEntityTaxCongfigsServiceInterface interface {
 		ctx context.Context,
 		orgID, emplID, legalEntityID uuid.UUID,
 	) ([]legal_entity_contracts.LegalEntityTaxCategoryResponseDto, error)
+
+	GetTaxCategoryByID(ctx context.Context, taxCategoryID uuid.UUID) (legal_entity_contracts.TaxCategoryReader, error)
 }
 
 type LegalEntityTaxEngineAdapterInterface interface {
-	GetTaxCategoryDetails(ctx context.Context, taxCategoryID uuid.UUID, LegalEntityID uuid.UUID) (legal_entity_contracts.LegalEntityTaxCategoryResponseDto, error)
+	GetTaxCategoryDetails(
+		ctx context.Context, taxCategoryID uuid.UUID,
+	) (legal_entity_contracts.TaxCategoryReader, error)
 }

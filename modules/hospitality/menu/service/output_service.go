@@ -16,14 +16,6 @@ func (s *menuService) GetMenu(ctx context.Context, orgID, emplID, menuID uuid.UU
 		return nil, err
 	}
 
-	// legalEntityID, err := s.menuRepo.GetMenuGroupTaxCategoryByMenuGroupID(ctx, menu.ID)
-	// fmt.Println(legalEntityID)
-	// if err != nil {
-
-	// 	return nil, err
-	// }
-
-	// Preferred Kitchen (Menu)
 	var menuPreferredKitchen *uuid.UUID
 	menuKitchenID, err := s.GetKitchenfOfMenuGroup(ctx, menu.ID)
 	if err != nil {
@@ -103,6 +95,25 @@ func (s *menuService) GetMenu(ctx context.Context, orgID, emplID, menuID uuid.UU
 
 			for _, item := range items {
 
+				// 1. Force initialization to an empty slice (This kills the "null" in JSON)
+				itemTaxDetails := make([]hospitality_menu_contracts.ItemTaxDetails, 0)
+
+				// 2. Resolve Tax (Tracing through the hierarchy)
+				taxCatID, _, err := s.GetTaxCategoryOfMenuItem(ctx, orgID, emplID, item.ID)
+
+				// Only fetch breakdown if a Category ID was actually found
+				if err == nil && taxCatID != uuid.Nil {
+					breakdown, err := s.taxEngine.GetTaxCategoryTaxBreakdown(ctx, taxCatID, item.BasePrice)
+					if err == nil && breakdown != nil {
+						for _, b := range breakdown {
+							itemTaxDetails = append(itemTaxDetails, hospitality_menu_contracts.ItemTaxDetails{
+								TaxComponentName: b.Name,
+								TaxRate:          b.Rate,
+							})
+						}
+					}
+				}
+
 				kitchenReg, err := s.menuRepo.GetMenuItemKitchen(ctx, item.ID)
 				if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 					return nil, err
@@ -123,35 +134,12 @@ func (s *menuService) GetMenu(ctx context.Context, orgID, emplID, menuID uuid.UU
 					Description:       item.Description,
 					Unit:              item.Unit,
 					BasePrice:         item.BasePrice,
+					TaxDetails:        itemTaxDetails,
 					DietaryType:       item.DietaryType,
 					ServedBy:          &servedBy,
 					VariantGroups:     make([]hospitality_menu_contracts.VariantGroupOutput, 0),
 					AddOns:            make([]hospitality_menu_contracts.AddOnOutput, 0),
 				}
-
-				taxDetails := make([]hospitality_menu_contracts.ItemTaxDetails, 0)
-
-				// Inside your for _, item := range items loop
-				taxCat, legEnt, err := s.GetTaxCategoryOfMenuItem(ctx, orgID, emplID, item.ID)
-
-				if err == nil && taxCat != uuid.Nil {
-
-					taxDe, err := s.taxEngine.GetTaxDetails(ctx, taxCat, legEnt)
-
-					if err == nil && len(taxDe) > 0 {
-
-						for _, t := range taxDe {
-
-							taxDetails = append(taxDetails,
-								hospitality_menu_contracts.ItemTaxDetails{
-									TaxComponentName: t.Name,
-									TaxRate:          t.Rate,
-								},
-							)
-						}
-					}
-				}
-				itemOut.TaxDetails = taxDetails
 
 				vGroups, err := s.menuRepo.GetVariantGroupsByMenuItemID(ctx, item.ID)
 				if err != nil {
