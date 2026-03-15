@@ -33,12 +33,12 @@ func (MenuCategoryTaxCategory) TableName() string {
 }
 
 type MenuSubCategoryTaxCategory struct {
-	ID              uuid.UUID
-	MenuSubCategory uuid.UUID
-	LegalEntityID   uuid.UUID
-	TaxCategoryID   uuid.UUID
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	ID                uuid.UUID
+	MenuSubCategoryID uuid.UUID
+	LegalEntityID     uuid.UUID
+	TaxCategoryID     uuid.UUID
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
 }
 
 func (MenuSubCategoryTaxCategory) TableName() string {
@@ -46,12 +46,12 @@ func (MenuSubCategoryTaxCategory) TableName() string {
 }
 
 type MenuItemTaxCategory struct {
-	ID               uuid.UUID
-	MenuItemCategory uuid.UUID
-	LegalEntityID    uuid.UUID
-	TaxCategoryID    uuid.UUID
-	CreatedAt        time.Time
-	UpdatedAt        time.Time
+	ID            uuid.UUID
+	MenuItemID    uuid.UUID
+	LegalEntityID uuid.UUID
+	TaxCategoryID uuid.UUID
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 func (MenuItemTaxCategory) TableName() string {

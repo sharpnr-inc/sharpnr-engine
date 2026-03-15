@@ -9,12 +9,19 @@ import (
 	"gorm.io/gorm"
 )
 
-func (s *menuService) GetMenu(ctx context.Context, menuID uuid.UUID) (*hospitality_menu_contracts.MenuOutput, error) {
+func (s *menuService) GetMenu(ctx context.Context, orgID, emplID, menuID uuid.UUID) (*hospitality_menu_contracts.MenuOutput, error) {
 
 	menu, err := s.menuRepo.GetMenuByID(ctx, menuID)
 	if err != nil {
 		return nil, err
 	}
+
+	// legalEntityID, err := s.menuRepo.GetMenuGroupTaxCategoryByMenuGroupID(ctx, menu.ID)
+	// fmt.Println(legalEntityID)
+	// if err != nil {
+
+	// 	return nil, err
+	// }
 
 	// Preferred Kitchen (Menu)
 	var menuPreferredKitchen *uuid.UUID
@@ -122,6 +129,30 @@ func (s *menuService) GetMenu(ctx context.Context, menuID uuid.UUID) (*hospitali
 					AddOns:            make([]hospitality_menu_contracts.AddOnOutput, 0),
 				}
 
+				taxDetails := make([]hospitality_menu_contracts.ItemTaxDetails, 0)
+
+				// Inside your for _, item := range items loop
+				taxCat, legEnt, err := s.GetTaxCategoryOfMenuItem(ctx, orgID, emplID, item.ID)
+
+				if err == nil && taxCat != uuid.Nil {
+
+					taxDe, err := s.taxEngine.GetTaxDetails(ctx, taxCat, legEnt)
+
+					if err == nil && len(taxDe) > 0 {
+
+						for _, t := range taxDe {
+
+							taxDetails = append(taxDetails,
+								hospitality_menu_contracts.ItemTaxDetails{
+									TaxComponentName: t.Name,
+									TaxRate:          t.Rate,
+								},
+							)
+						}
+					}
+				}
+				itemOut.TaxDetails = taxDetails
+
 				vGroups, err := s.menuRepo.GetVariantGroupsByMenuItemID(ctx, item.ID)
 				if err != nil {
 					return nil, err
@@ -182,7 +213,7 @@ func (s *menuService) GetMenu(ctx context.Context, menuID uuid.UUID) (*hospitali
 	return output, nil
 }
 
-func (s *menuService) GetMenusOfOwners(ctx context.Context, ownersID uuid.UUID) ([]hospitality_menu_contracts.MenuOutput, error) {
+func (s *menuService) GetMenusOfOwners(ctx context.Context, orgID, emplID, ownersID uuid.UUID) ([]hospitality_menu_contracts.MenuOutput, error) {
 	// Initialize as an empty slice to ensure JSON returns [] instead of null
 	finalMenus := []hospitality_menu_contracts.MenuOutput{}
 
@@ -196,7 +227,7 @@ func (s *menuService) GetMenusOfOwners(ctx context.Context, ownersID uuid.UUID) 
 	// 2. For each menu group, build the full nested tree
 	for _, m := range menus {
 		// We reuse the existing GetMenu logic
-		fullMenu, err := s.GetMenu(ctx, m.ID)
+		fullMenu, err := s.GetMenu(ctx, orgID, emplID, m.ID)
 		if err != nil {
 			// If one menu fails to load, we can skip it or return error
 			continue

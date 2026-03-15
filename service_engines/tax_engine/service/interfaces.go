@@ -9,5 +9,5 @@ import (
 
 type TaxEngineServiceInterface interface {
 	CalculateTax(str string) string
-	GetTaxDetails(ctx context.Context, taxCategoryID uuid.UUID, legalEntityID uuid.UUID) (*tax_engine_contracts.TaxComponentBreakdown, error)
+	GetTaxDetails(ctx context.Context, taxCategoryID uuid.UUID, legalEntityID uuid.UUID) ([]tax_engine_contracts.TaxComponentBreakdown, error)
 }

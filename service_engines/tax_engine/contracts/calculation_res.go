@@ -16,8 +16,7 @@ type TaxCalculationResponse struct {
 }
 
 type TaxComponentBreakdown struct {
-	Name               string    `json:"name"` // e.g., "CGST"
-	Rate               float64   `json:"rate"` // e.g., 9.0
-	Amount             float64   `json:"amount"`
-	LiabilityAccountID uuid.UUID `json:"liability_account_id"`
+	Name   string  `json:"name"` // e.g., "CGST"
+	Rate   float64 `json:"rate"` // e.g., 9.0
+	Amount float64 `json:"amount"`
 }

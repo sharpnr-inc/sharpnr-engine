@@ -2,7 +2,6 @@ package menuservice
 
 import (
 	"context"
-	"errors"
 	dbtx "sharpnr-engine/core/dbTx"
 	hospitality_menu_contracts "sharpnr-engine/modules/hospitality/menu/contracts"
 	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
@@ -42,76 +41,45 @@ func (s *menuService) AddTaxCategoryInMenuGroup(
 func (s *menuService) GetTaxCategoryOfMenuItem(
 	ctx context.Context,
 	orgID, emplID, menuItemID uuid.UUID,
-) (*uuid.UUID, error) {
-	var foundID uuid.UUID
-	txCtx := dbtx.InjectTx(ctx, nil) // Assuming tx is managed by manager
+) (uuid.UUID, uuid.UUID, error) {
 
-	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
-		txCtx = dbtx.InjectTx(ctx, tx)
-
-		// Helper to handle the "RecordNotFound" noise
-		tryFetch := func(fetchFn func() (uuid.UUID, error)) (bool, error) {
-			id, err := fetchFn()
-			if err == nil {
-				foundID = id
-				return true, nil // Found it
-			}
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return false, nil // Keep hunting
-			}
-			return false, err // Real DB error, stop everything
-		}
-
-		// 1. Fetch Item Lineage
-		item, err := s.menuRepo.GetMenuItemByID(txCtx, menuItemID)
-		if err != nil {
-			return err
-		}
-
-		// 2. The Chain of Command
-		// Level: Item
-		if found, err := tryFetch(func() (uuid.UUID, error) {
-			m, e := s.menuRepo.GetMenuItemTaxCategoryByMenuItemID(txCtx, item.ID)
-			return m.TaxCategoryID, e
-		}); found || err != nil {
-			return err
-		}
-
-		// Level: SubCategory
-		if item.MenuSubCategoryID != uuid.Nil {
-			if found, err := tryFetch(func() (uuid.UUID, error) {
-				m, e := s.menuRepo.GetMenuSubCategoryTaxCategoryBySubCategoryID(txCtx, item.MenuSubCategoryID)
-				return m.TaxCategoryID, e
-			}); found || err != nil {
-				return err
-			}
-		}
-
-		// Level: Category
-		// (Assuming you fetch the CategoryID from the SubCategory here)
-		subCat, _ := s.menuRepo.GetSubCategoryByID(txCtx, item.MenuSubCategoryID)
-		if subCat.MenuCategoryID != uuid.Nil {
-			if found, err := tryFetch(func() (uuid.UUID, error) {
-				m, e := s.menuRepo.GetMenuCategoryTaxCategoryByMenuCategoryID(txCtx, subCat.MenuCategoryID)
-				return m.TaxCategoryID, e
-			}); found || err != nil {
-				return err
-			}
-		}
-
-		// Level: Group (The Final Stand)
-		if found, err := tryFetch(func() (uuid.UUID, error) {
-			m, e := s.menuRepo.GetMenuGroupTaxCategoryByMenuGroupID(txCtx, item.MenuGroupID)
-			return m.TaxCategoryID, e
-		}); found || err != nil {
-			return err
-		}
-
-		return gorm.ErrRecordNotFound
-	})
-
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
+	// 1. Always get the item lineage first
+	item, err := s.menuRepo.GetMenuItemByID(ctx, menuItemID)
+	if err != nil {
+		return uuid.Nil, uuid.Nil, err
 	}
-	return &foundID, err
+
+	// LEVEL 1: ITEM
+	mItem, _ := s.menuRepo.GetMenuItemTaxCategoryByMenuItemID(ctx, item.ID)
+	if mItem != nil {
+		return mItem.TaxCategoryID, mItem.LegalEntityID, nil
+	}
+
+	// LEVEL 2: SUBCATEGORY
+	if item.MenuSubCategoryID != uuid.Nil {
+		mSub, _ := s.menuRepo.GetMenuSubCategoryTaxCategoryBySubCategoryID(ctx, item.MenuSubCategoryID)
+		if mSub != nil {
+			return mSub.TaxCategoryID, mSub.LegalEntityID, nil
+		}
+
+		// LEVEL 3: CATEGORY (Parent of SubCategory)
+		subCat, _ := s.menuRepo.GetSubCategoryByID(ctx, item.MenuSubCategoryID)
+		if subCat != nil && subCat.MenuCategoryID != uuid.Nil {
+			mCat, _ := s.menuRepo.GetMenuCategoryTaxCategoryByMenuCategoryID(ctx, subCat.MenuCategoryID)
+			if mCat != nil {
+				return mCat.TaxCategoryID, mCat.LegalEntityID, nil
+			}
+		}
+	}
+
+	// LEVEL 4: MENU GROUP (The one you just confirmed works)
+	if item.MenuGroupID != uuid.Nil {
+		mGroup, err := s.menuRepo.GetMenuGroupTaxCategoryByMenuGroupID(ctx, item.MenuGroupID)
+		if err == nil && mGroup != nil {
+			return mGroup.TaxCategoryID, mGroup.LegalEntityID, nil
+		}
+	}
+
+	// If we reached here, absolutely nothing was found
+	return uuid.Nil, uuid.Nil, nil
 }
