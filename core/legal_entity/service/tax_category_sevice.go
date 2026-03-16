@@ -191,3 +191,120 @@ func (c *orgLegalEntity) buildRuleDtos(
 
 	return ruleDtos, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orgLegalEntity) GetTaxCategoryByID(ctx context.Context, taxCategoryID uuid.UUID) (legal_entity_contracts.TaxCategoryReader, error) {
+	var res legal_entity_contracts.TaxCategoryReader
+
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		// 1. Fetch the data from the repository
+		taxCategory, err := s.legalEntityRepo.GetTaxCategoryByID(txCtx, taxCategoryID)
+		if err != nil {
+			return err
+		}
+
+		// 2. Map the model to the Reader struct
+		res = legal_entity_contracts.TaxCategoryReader{
+			TaxCategoryID:   taxCategory.ID,
+			LegalEntityID:   taxCategory.LegalEntityID,
+			TaxCategoryName: taxCategory.Name,
+			TaxCategoryCode: taxCategory.Code,
+			Description:     taxCategory.Description,
+			IsActive:        taxCategory.IsActive,
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return legal_entity_contracts.TaxCategoryReader{}, err
+	}
+
+	return res, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orgLegalEntity) GetTaxCategoryDetails(
+	ctx context.Context, taxCategoryID uuid.UUID,
+) (legal_entity_contracts.TaxCategoryReader, error) {
+
+	var response legal_entity_contracts.TaxCategoryReader
+
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		// 1. Fetch the base Tax Category
+		taxCategory, err := s.legalEntityRepo.GetTaxCategoryByID(txCtx, taxCategoryID)
+		if err != nil {
+			return err
+		}
+
+		// Initialize response with base fields
+		response = legal_entity_contracts.TaxCategoryReader{
+			TaxCategoryID:   taxCategory.ID,
+			LegalEntityID:   taxCategory.LegalEntityID,
+			TaxCategoryName: taxCategory.Name,
+			TaxCategoryCode: taxCategory.Code,
+			Description:     taxCategory.Description,
+			IsActive:        taxCategory.IsActive,
+			Rule:            []legal_entity_contracts.TaxCategoryRule{},
+		}
+
+		// 2. Fetch all Active Rules for this Category
+		dbRules, err := s.legalEntityRepo.GetActiveRulesByCategory(txCtx, taxCategory.ID)
+		if err != nil {
+			return err
+		}
+
+		for _, dbRule := range dbRules {
+			ruleItem := legal_entity_contracts.TaxCategoryRule{
+				TaxCategoryRuleID: dbRule.ID,
+				TaxCategoryID:     dbRule.LegalEntityTaxCategoryID,
+				TaxRegistrationID: dbRule.LegalEntityTaxRegistrationID,
+				TaxType:           dbRule.TaxType,
+				Rate:              dbRule.Rate,
+				EffectiveFrom:     dbRule.EffectiveFrom,
+				EffectiveTo:       dbRule.EffectiveTo,
+				IsActive:          dbRule.IsActive,
+				TaxBreakdown:      []legal_entity_contracts.TaxCategoryRule{},
+			}
+
+			// Safe assignment for optional numeric pointers
+			if dbRule.MinValue != nil {
+				ruleItem.MinValue = *dbRule.MinValue
+			}
+			if dbRule.MaxValue != nil {
+				ruleItem.MaxValue = *dbRule.MaxValue
+			}
+
+			// 3. Fetch Components (Tax Breakdown) for this specific Rule
+			components, err := s.legalEntityRepo.GetTaxRuleComponents(txCtx, dbRule.ID)
+			if err != nil {
+				return err
+			}
+
+			for _, comp := range components {
+				ruleItem.TaxBreakdown = append(ruleItem.TaxBreakdown, legal_entity_contracts.TaxCategoryRule{
+					TaxCategoryRuleID: comp.ID,
+					TaxType:           comp.ComponentCode, // Mapping ComponentCode to TaxType for breakdown
+					Rate:              comp.Rate,
+				})
+			}
+
+			// Add the fully populated rule to the response slice
+			response.Rule = append(response.Rule, ruleItem)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return legal_entity_contracts.TaxCategoryReader{}, err
+	}
+
+	return response, nil
+}
