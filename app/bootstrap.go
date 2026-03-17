@@ -41,10 +41,12 @@ func BootstrapModules(
 	)
 
 	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
-
+	
 	identityService := bootstrapIdentity(db, employeeService)
 
 	invoiceEngine := bootStrapInvoicingEngine(db, txManager, seroEngine)
+
+	paymentsEngine := bootstrapPaymentEngine(db, mailerEngine, txManager, seroEngine)
 
 	taxEngineService := bootstrapTaxEngine(orgLegalEntityService, txManager, seroEngine)
 
@@ -56,6 +58,7 @@ func BootstrapModules(
 		taxEngineService,
 		orgCustomerService,
 		invoiceEngine,
+		paymentsEngine,
 	)
 
 	accountingService := bootstrapAccounting(db, txManager, taxEngineService)
@@ -70,6 +73,7 @@ func BootstrapModules(
 		orgCustomerService,
 		txManager,
 		seroEngine,
+		paymentsEngine,
 	)
 
 	return &AppModules{
