@@ -1,6 +1,6 @@
 package payment_service
 
-import "sharpnr-engine/payment/payment_repo"
+import "sharpnr-engine/payment/repo"
 
 type PaymentService struct {
 	paymentRepo payment_repo.PaymentRepositoryInterface

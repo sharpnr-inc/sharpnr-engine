@@ -2,6 +2,7 @@ package app
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
+	org_customer_service "sharpnr-engine/core/customer/service"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
@@ -31,10 +32,11 @@ type AppModules struct {
 
 	hospitality *hospitalitydomain.HospitalityDomain
 
-	employeeService   employee_services.EmployeeServiceInterface
-	accountingService accounting_service.AccountingServiceInterface
-	sseEngine         *sse_engine.StreamManager
-	taxEngineService  tax_engine_service.TaxEngineServiceInterface
+	employeeService    employee_services.EmployeeServiceInterface
+	accountingService  accounting_service.AccountingServiceInterface
+	orgCustomerService org_customer_service.OrgCustomerServiceInterface
+	sseEngine          *sse_engine.StreamManager
+	taxEngineService   tax_engine_service.TaxEngineServiceInterface
 }
 
 func (m *AppModules) SharpnrOrchestrator() orchestrator_service.OrchestratorServiceInterface {
@@ -85,4 +87,8 @@ func (m *AppModules) LegalEntityService() legal_entity_service.OrgLegalEntitySer
 
 func (m *AppModules) TaxEngineService() tax_engine_service.TaxEngineServiceInterface {
 	return m.taxEngineService
+}
+
+func (m *AppModules) CustomerEngineService() org_customer_service.OrgCustomerServiceInterface {
+	return m.orgCustomerService
 }

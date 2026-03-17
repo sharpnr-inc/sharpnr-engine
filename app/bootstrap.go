@@ -40,13 +40,25 @@ func BootstrapModules(
 		orgSetupWizardService,
 	)
 
+	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
+
 	identityService := bootstrapIdentity(db, employeeService)
+
+	invoiceEngine := bootStrapInvoicingEngine(db, txManager, seroEngine)
 
 	taxEngineService := bootstrapTaxEngine(orgLegalEntityService, txManager, seroEngine)
 
-	hospitality := bootstrapHospitality(db, txManager, seroEngine, sseEngine, taxEngineService)
+	hospitality := bootstrapHospitality(
+		db,
+		txManager,
+		seroEngine,
+		sseEngine,
+		taxEngineService,
+		orgCustomerService,
+		invoiceEngine,
+	)
 
-	accountingService := bootstrapAccounting(db, txManager)
+	accountingService := bootstrapAccounting(db, txManager, taxEngineService)
 
 	orchestratorService := bootstrapSharpnrOrchestrator(
 		organizationService,
@@ -55,6 +67,7 @@ func BootstrapModules(
 		hospitality,
 		accountingService,
 		orgLegalEntityService,
+		orgCustomerService,
 		txManager,
 		seroEngine,
 	)
@@ -72,6 +85,7 @@ func BootstrapModules(
 		orgSetupWizard:        orgSetupWizardService,
 		sseEngine:             sseEngine,
 		taxEngineService:      taxEngineService,
+		orgCustomerService:    orgCustomerService,
 	}
 
 }

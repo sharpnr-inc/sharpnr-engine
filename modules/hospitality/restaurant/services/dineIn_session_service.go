@@ -82,8 +82,8 @@ func (s *restaurantService) AddOrdersInSession(
 
 		// 2. Create Order Header
 		ord := &restaurant_models.RestaurantOrders{
-			ID:                        eventPayload.OrderID,
-			OrganizationID:            orgID,
+			ID:             eventPayload.OrderID,
+			OrganizationID: orgID,
 			/* ---------------- RestaurantID:              restaurantID, ---------------- */
 			RestaurantDiningSessionID: &dineInSessionID,
 			OrderNumber:               "1", // TODO Needed to fixed

@@ -2,15 +2,19 @@ package restaurantservices
 
 import (
 	"context"
+	org_customer_service "sharpnr-engine/core/customer/service"
 	dbtx "sharpnr-engine/core/dbTx"
 	restaurantrepo "sharpnr-engine/modules/hospitality/restaurant/repo"
 	"sharpnr-engine/sero"
+	invoice_engine_services "sharpnr-engine/service_engines/invoicing_engine/services"
 )
 
 type restaurantService struct {
 	restaurantRepo restaurantrepo.RestaurantRepositoryInterface
 	seroEngine     *sero.SEROEngine
 	txManager      dbtx.TxManager
+	customerEngine org_customer_service.OrgCustomerServiceInterface
+	invoiceEngine  invoice_engine_services.InvoiceEngineServiceInterface
 }
 
 // CreateOrder implements RestaurantServiceInterface.
@@ -27,11 +31,15 @@ func NewRestaurantService(
 	restaurantRepo restaurantrepo.RestaurantRepositoryInterface,
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
+	customerEngine org_customer_service.OrgCustomerServiceInterface,
+	invoiceEngine invoice_engine_services.InvoiceEngineServiceInterface,
 ) *restaurantService {
 	return &restaurantService{
 		restaurantRepo: restaurantRepo,
 		seroEngine:     seroEngine,
 		txManager:      txManager,
+		customerEngine: customerEngine,
+		invoiceEngine:  customerEngine,
 	}
 
 }

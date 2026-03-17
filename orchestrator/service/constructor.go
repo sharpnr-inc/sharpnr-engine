@@ -2,6 +2,7 @@ package orchestrator_service
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
+	org_customer_service "sharpnr-engine/core/customer/service"
 	dbtx "sharpnr-engine/core/dbTx"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
@@ -20,6 +21,7 @@ type orchestratorService struct {
 	legalEntityService      legal_entity_service.OrgLegalEntityServiceInterface
 	txManager               dbtx.TxManager
 	seroEngine              *sero.SEROEngine
+	customerEngine          org_customer_service.OrgCustomerServiceInterface
 }
 
 func NewSharpnrOrchestratorService(
@@ -31,6 +33,7 @@ func NewSharpnrOrchestratorService(
 	legalEntityService legal_entity_service.OrgLegalEntityServiceInterface,
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
+	customerEngine org_customer_service.OrgCustomerServiceInterface,
 ) *orchestratorService {
 	return &orchestratorService{
 		organizationService:     organizationService,
@@ -41,5 +44,6 @@ func NewSharpnrOrchestratorService(
 		legalEntityService:      legalEntityService,
 		txManager:               txManager,
 		seroEngine:              seroEngine,
+		customerEngine:          customerEngine,
 	}
 }

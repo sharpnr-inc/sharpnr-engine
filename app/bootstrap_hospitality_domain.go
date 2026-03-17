@@ -2,6 +2,7 @@ package app
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
+	org_customer_service "sharpnr-engine/core/customer/service"
 	dbtx "sharpnr-engine/core/dbTx"
 	barrepo "sharpnr-engine/modules/hospitality/bar/repo"
 	barservices "sharpnr-engine/modules/hospitality/bar/services"
@@ -20,6 +21,7 @@ import (
 	restaurantrepo "sharpnr-engine/modules/hospitality/restaurant/repo"
 	restaurantservices "sharpnr-engine/modules/hospitality/restaurant/services"
 	"sharpnr-engine/sero"
+	invoice_engine_services "sharpnr-engine/service_engines/invoicing_engine/services"
 	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"
 	sse_engine "sharpnr-engine/sse"
 
@@ -32,6 +34,8 @@ func bootstrapHospitality(
 	seroEngine *sero.SEROEngine,
 	sseEngine *sse_engine.StreamManager,
 	taxEngine tax_engine_service.TaxEngineServiceInterface,
+	customerEngineService org_customer_service.OrgCustomerServiceInterface,
+	invoiceEngine invoice_engine_services.InvoiceEngineServiceInterface,
 ) *hospitalitydomain.HospitalityDomain {
 
 	// Kitchen
@@ -60,7 +64,13 @@ func bootstrapHospitality(
 
 	// Restaurant
 	restaurantRepo := restaurantrepo.NewRestaurantRepository(db)
-	restaurantService := restaurantservices.NewRestaurantService(restaurantRepo, seroEngine, txManager)
+	restaurantService := restaurantservices.NewRestaurantService(
+		restaurantRepo,
+		seroEngine,
+		txManager,
+		customerEngineService,
+		invoiceEngine,
+	)
 	restaurant_event_handlers.Register(seroEngine, restaurantService)
 
 	return hospitalitydomain.NewHospitalityDomain(

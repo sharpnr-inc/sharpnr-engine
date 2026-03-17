@@ -43,8 +43,6 @@ type RestaurantRepositoryInterface interface {
 	GetDiningSessionByTableID(ctx context.Context, tableID uuid.UUID) (*restaurant_models.RestaurantDiningSession, error)
 
 	// Dining Session payments
-	CreateSessionPayment(ctx context.Context, sessionPayment *restaurant_models.RestaurantSessionPayment) error
-	GetAllPaymentsOfDiningSession(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantSessionPayment, error)
 
 	// Orders
 	CreateOrder(ctx context.Context, order *restaurant_models.RestaurantOrders) error
@@ -59,10 +57,6 @@ type RestaurantRepositoryInterface interface {
 	GetOrdersByDiningSessionID(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantOrders, error)
 
 	UpdateOrderStatus(ctx context.Context, orderID uuid.UUID, status string) error
-
-	// Charges
-	CreateCharges(ctx context.Context, charges *restaurant_models.RestaurantCharge) error
-	GetAllChargesOfSession(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantCharge, error)
 
 	RestaurantConfigurationRepoInterface
 }
