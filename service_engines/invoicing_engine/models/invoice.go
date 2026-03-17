@@ -13,7 +13,6 @@ type Invoice struct {
 	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
 
 	OrganizationID   uuid.UUID  `gorm:"type:uuid;not null;index"`
-	AccountingBookID uuid.UUID  `gorm:"type:uuid;not null;index"`
 	LegalEntityID    *uuid.UUID `gorm:"type:uuid;index"`
 
 	InvoiceNumber string     `gorm:"type:varchar(50);uniqueIndex;not null"`

@@ -1,4 +1,4 @@
-package payment_repo
+package payment_engine_repo
 
 import "gorm.io/gorm"
 

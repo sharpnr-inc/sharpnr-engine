@@ -1,21 +1,21 @@
-package payment_service
+package payment_engine_service
 
 import (
 	dbtx "sharpnr-engine/core/dbTx"
-	payment_repo "sharpnr-engine/payment_engine/repo"
+	payment_engine_repo "sharpnr-engine/payment_engine/repo"
 	"sharpnr-engine/sero"
 	"sharpnr-engine/sharp_mailer_engine"
 )
 
 type paymentEngine struct {
-	paymentRepo  payment_repo.PaymentRepositoryInterface
+	paymentRepo  payment_engine_repo.PaymentRepositoryInterface
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine
 	txManager    dbtx.TxManager
 	seroEngine   *sero.SEROEngine
 }
 
 func NewPaymentService(
-	paymentRepo payment_repo.PaymentRepositoryInterface,
+	paymentRepo payment_engine_repo.PaymentRepositoryInterface,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
