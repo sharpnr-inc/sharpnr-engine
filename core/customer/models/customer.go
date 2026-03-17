@@ -17,3 +17,7 @@ type Customer struct {
 	GSTIN          *string
 	gorm.Model
 }
+
+func (Customer) TableName() string {
+	return "customers.customer"
+}

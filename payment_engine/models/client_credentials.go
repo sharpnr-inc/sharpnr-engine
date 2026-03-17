@@ -19,3 +19,7 @@ type OrgPaymentGetawayCredentials struct {
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
 }
+
+func (OrgPaymentGetawayCredentials) TableName() string {
+	return "payments.org_payment_gataway_credentials"
+}

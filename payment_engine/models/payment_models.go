@@ -6,8 +6,8 @@ import (
 	"github.com/google/uuid"
 )
 
-type Payment struct {
-	ID           uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
+type Payments struct {
+	ID           uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
 	OrgID        uuid.UUID `gorm:"type:uuid;index" json:"org_id"`
 	CustomerUPI  string    `gorm:"size:100;index" json:"customer_upi"`
 	AmountPaise  int64     `json:"amount_paise"`                            // store in paise (e.g., 45600)
@@ -19,4 +19,8 @@ type Payment struct {
 	ResponseData string    `gorm:"type:text" json:"response_data"`          // raw response JSON / callback
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
+}
+
+func (Payments) TableName() string {
+	return "payments.payments"
 }
