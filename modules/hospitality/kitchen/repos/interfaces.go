@@ -3,6 +3,7 @@ package kitchenrepo
 import (
 	"context"
 	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -27,6 +28,7 @@ type KitchenRepositoryInterface interface {
 	GetKitchenTicketItemsByTicketID(ctx context.Context, kitchenTicketItemID uuid.UUID) ([]*kitchen_models.KitchenTicketItem, error)
 	GetKitchenTicketItemAddOn(ctx context.Context, kitchenTicketItemID uuid.UUID) ([]*kitchen_models.KitchenTicketItemAddon, error)
 	GetKitchenTicketItemVariant(ctx context.Context, kitchenTicketItemID uuid.UUID) (*kitchen_models.KitchenTicketItemVariant, error)
+	GetKOTSequence(ctx context.Context, kitchenID uuid.UUID, orgID uuid.UUID, nowTime time.Time) (string, error)
 
 	KitchenSettingsRepositoryInterface
 }
