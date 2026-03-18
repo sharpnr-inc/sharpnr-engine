@@ -21,6 +21,7 @@ type PaymentGatewayConfig struct {
 	// Razorpay: { "key_id": "", "key_secret": "" }
 	// Stripe:   { "publishable_key": "", "secret_key": "", "webhook_secret": "" }
 	ConfigEncrypted string `gorm:"type:text;not null"`
+	WebhookURL      string `gorm:"type:text;not null"` // ← add
 
 	// Sandbox vs Production
 	IsTestMode bool `gorm:"default:false"`

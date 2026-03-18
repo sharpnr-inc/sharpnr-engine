@@ -69,7 +69,7 @@ type RestaurantDiningSessionPayment struct {
 	PaymentID      *uuid.UUID `gorm:"type:uuid;index"` // set when payment confirmed
 
 	// For online gateways — frontend redirects here
-	GatewayOrderRef *string `gorm:"type:varchar(200)"`
+	QRData *string `gorm:"type:text"` // ← replaces GatewayOrderRef
 
 	// PENDING, CONFIRMED, FAILED
 	Status string `gorm:"type:varchar(20);not null;default:'PENDING'"`

@@ -55,7 +55,8 @@ type RestaurantPickUpOrderPayment struct {
 	PaymentID      *uuid.UUID `gorm:"type:uuid;index"` // ← actual payment record
 
 	// Opaque refs for online gateways
-	GatewayOrderRef *string `gorm:"type:varchar(200)"` // payment URL / gateway order ID
+	QRData *string `gorm:"type:text"` // ← replaces GatewayOrderRef
+	Status string  `gorm:"type:varchar(30);not null;default:'PENDING'"`
 
 	CreatedAt   time.Time
 	ConfirmedAt *time.Time `gorm:"type:timestamp"`

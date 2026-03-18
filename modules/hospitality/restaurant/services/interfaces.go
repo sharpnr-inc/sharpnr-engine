@@ -92,3 +92,6 @@ type RestaurantDiningSessionService interface {
 		restaurantID uuid.UUID,
 	) error
 }
+
+type RestaurantPickUpOrderServiceInterface interface {
+}

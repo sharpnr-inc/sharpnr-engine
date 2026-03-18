@@ -8,14 +8,14 @@ import (
 )
 
 type paymentEngine struct {
-	paymentRepo  payment_engine_repo.PaymentRepositoryInterface
+	paymentRepo  payment_engine_repo.PaymentEngineRepoInterface
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine
 	txManager    dbtx.TxManager
 	seroEngine   *sero.SEROEngine
 }
 
 func NewPaymentService(
-	paymentRepo payment_engine_repo.PaymentRepositoryInterface,
+	paymentRepo payment_engine_repo.PaymentEngineRepoInterface,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
