@@ -80,13 +80,18 @@ func (s *restaurantService) AddOrdersInSession(
 			Items:          make([]restaurant_events.OrderItemEventDTO, 0),
 		}
 
+		orderSequence, errr := s.restaurantRepo.GetOrderSequenceNumber(txCtx, restaurantID, orgID, time.Now())
+		if errr != nil {
+			return errr
+		}
+
 		// 2. Create Order Header
 		ord := &restaurant_models.RestaurantOrders{
-			ID:             eventPayload.OrderID,
-			OrganizationID: orgID,
-			/* ---------------- RestaurantID:              restaurantID, ---------------- */
+			ID:                        eventPayload.OrderID,
+			OrganizationID:            orgID,
+			RestaurantID:              restaurantID,
 			RestaurantDiningSessionID: &dineInSessionID,
-			OrderNumber:               "1", // TODO Needed to fixed
+			OrderNumber:               orderSequence,
 			Status:                    "PENDING",
 			CreatedAt:                 time.Now(),
 			UpdatedAt:                 time.Now(),

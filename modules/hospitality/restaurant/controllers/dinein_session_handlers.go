@@ -73,7 +73,6 @@ func (c *RestaurantController) AddOrderInDiningSession(ctx *gin.Context) {
 	}
 
 	utils.Success(ctx, http.StatusOK, "", "Add successfully")
-
 }
 
 /* ----------------------------------- <*> ---------------------------------- */

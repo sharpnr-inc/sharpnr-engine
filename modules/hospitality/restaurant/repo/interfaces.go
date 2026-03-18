@@ -4,6 +4,7 @@ import (
 	"context"
 	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -53,6 +54,8 @@ type RestaurantRepositoryInterface interface {
 	GetOrdersByDiningSessionID(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantOrders, error)
 
 	UpdateOrderStatus(ctx context.Context, orderID uuid.UUID, status string) error
+
+	GetOrderSequenceNumber(ctx context.Context, restaurantID uuid.UUID, orgID uuid.UUID, nowTime time.Time) (string, error)
 
 	RestaurantConfigurationRepoInterface
 	RestaurantDiningFlowRepoInterface
