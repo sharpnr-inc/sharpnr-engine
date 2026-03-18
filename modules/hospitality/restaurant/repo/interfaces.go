@@ -37,10 +37,6 @@ type RestaurantRepositoryInterface interface {
 	GetAllTablesOfFloor(ctx context.Context, floorID uuid.UUID) ([]*restaurant_models.RestaurantTable, error)
 
 	// Restaurant -- Floors --> Tables --> Dining Session
-	CreateRestaurantDiningSession(ctx context.Context, diningSession *restaurant_models.RestaurantDiningSession) error
-	UpdateDiningSessionStatus(ctx context.Context, diningSessionID uuid.UUID, status string) error
-	GetDiningSessionByStatus(ctx context.Context, restaurantID uuid.UUID, status restaurant_constants.RestaurantDiningSessionStatusType) ([]*restaurant_models.RestaurantDiningSession, error)
-	GetDiningSessionByTableID(ctx context.Context, tableID uuid.UUID) (*restaurant_models.RestaurantDiningSession, error)
 
 	// Dining Session payments
 
@@ -59,6 +55,8 @@ type RestaurantRepositoryInterface interface {
 	UpdateOrderStatus(ctx context.Context, orderID uuid.UUID, status string) error
 
 	RestaurantConfigurationRepoInterface
+	RestaurantDiningFlowServiceInterface
+	RestaurantPickUpOrderFlowServiceInterface
 }
 
 type RestaurantConfigurationRepoInterface interface {
@@ -70,4 +68,14 @@ type RestaurantConfigurationRepoInterface interface {
 
 	UpdateConfiguration(ctx context.Context, restaurantID uuid.UUID, config bool) error
 	UpdateActivation(ctx context.Context, restaurantID uuid.UUID, isActive bool) error
+}
+
+type RestaurantDiningFlowServiceInterface interface {
+	CreateRestaurantDiningSession(ctx context.Context, diningSession *restaurant_models.RestaurantDiningSession) error
+	UpdateDiningSessionStatus(ctx context.Context, diningSessionID uuid.UUID, status string) error
+	GetDiningSessionByStatus(ctx context.Context, restaurantID uuid.UUID, status restaurant_constants.RestaurantDiningSessionStatusType) ([]*restaurant_models.RestaurantDiningSession, error)
+	GetDiningSessionByTableID(ctx context.Context, tableID uuid.UUID) (*restaurant_models.RestaurantDiningSession, error)
+}
+
+type RestaurantPickUpOrderFlowServiceInterface interface {
 }
