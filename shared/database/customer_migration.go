@@ -8,6 +8,8 @@ import (
 
 func mingrateCustomerEngine(db *gorm.DB) error {
 	return db.AutoMigrate(
-		org_customer_models.Customer{},
+		&org_customer_models.Customer{},
+		&org_customer_models.CustomerDetails{},
+		&org_customer_models.CustomerOrgMeta{},
 	)
 }

@@ -2,6 +2,8 @@ package orchestrator_service
 
 import (
 	"context"
+	org_customer_contracts "sharpnr-engine/core/customer/contracts"
+	org_customer_models "sharpnr-engine/core/customer/models"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 
@@ -12,6 +14,7 @@ type OrchestratorServiceInterface interface {
 	OrganizationOrchestartionInterface
 	OrganizationPropertyOrchestrationInterface
 	LegalEntityOrchestrationServiceInterface
+	CustomerOrchestratorServiceInterface
 	/* -------------------------------------------------------------------------- */
 	/*                       Setupwizard related operations                       */
 	/* -------------------------------------------------------------------------- */
@@ -82,3 +85,8 @@ type LegalEntityOrchestrationServiceInterface interface {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+type CustomerOrchestratorServiceInterface interface {
+	AddCustomer(ctx context.Context, orgID, emplID uuid.UUID, req org_customer_contracts.AddCustomerRequestDto) error
+	SearchCustomer(ctx context.Context, orgID, emplID uuid.UUID, searchQuery string) ([]org_customer_models.Customer, error)
+}

@@ -9,6 +9,5 @@ import (
 
 type PaymentEngineRepoInterface interface {
 	GetGatewayConfigByID(ctx context.Context, configID uuid.UUID) (*payment_engine_models.PaymentGatewayConfig, error)
-
 	GetActiveGatewayConfig(ctx context.Context, tenantID uuid.UUID, legalEntityID *uuid.UUID, providerCode string) (*payment_engine_models.PaymentGatewayConfig, error)
 }

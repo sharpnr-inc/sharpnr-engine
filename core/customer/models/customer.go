@@ -47,3 +47,5 @@ type CustomerOrgMeta struct {
 func (CustomerOrgMeta) TableName() string {
 	return "customers.customer_org_meta"
 }
+
+
