@@ -10,8 +10,10 @@ import (
 // The intent — created before money moves
 // One order can have multiple payment attempts (retries, partial pays)
 type PaymentOrder struct {
-	ID       uuid.UUID `gorm:"type:uuid;primaryKey"`
-	TenantID uuid.UUID `gorm:"type:uuid;not null;index"`
+	ID               uuid.UUID `gorm:"type:uuid;primaryKey"`
+	TenantID         uuid.UUID `gorm:"type:uuid;not null;index"`
+	LegalEntityID    uuid.UUID `gorm:"type:uuid;not null;index"`
+	PaymentAccountID uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	OrderNumber string `gorm:"type:varchar(50);not null;uniqueIndex:idx_order_number_tenant"`
 

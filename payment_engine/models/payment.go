@@ -8,11 +8,12 @@ import (
 )
 
 type Payment struct {
-	ID       uuid.UUID `gorm:"type:uuid;primaryKey"`
-	TenantID uuid.UUID `gorm:"type:uuid;not null;index"`
-
-	PaymentOrderID uuid.UUID `gorm:"type:uuid;not null;index"`
-	PaymentNumber  string    `gorm:"type:varchar(50);not null;uniqueIndex:idx_pay_number_tenant"`
+	ID               uuid.UUID `gorm:"type:uuid;primaryKey"`
+	TenantID         uuid.UUID `gorm:"type:uuid;not null;index"`
+	LegalEntityID    uuid.UUID `gorm:"type:uuid;not null;index"`
+	PaymentAccountID uuid.UUID `gorm:"type:uuid;not null;index"`
+	PaymentOrderID   uuid.UUID `gorm:"type:uuid;not null;index"`
+	PaymentNumber    string    `gorm:"type:varchar(50);not null;uniqueIndex:idx_pay_number_tenant"`
 
 	CurrencyCode string  `gorm:"type:char(3);not null;default:'INR'"`
 	AmountPaise  int64   `gorm:"not null"`

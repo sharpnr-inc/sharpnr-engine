@@ -65,10 +65,10 @@ func (r *GatewayResolver) ResolveByProvider(
 ) (*ResolvedGateway, error) {
 
 	// 1. Try legal entity specific config first
-	config, err := r.repo.GetActiveGatewayConfig(ctx, tenantID, &legalEntityID, providerCode)
+	config, err := r.repo.GetActiveGatewayConfig(ctx, tenantID,  providerCode)
 	if err != nil {
 		// 2. Fall back to tenant-wide config (LegalEntityID = nil)
-		config, err = r.repo.GetActiveGatewayConfig(ctx, tenantID, nil, providerCode)
+		config, err = r.repo.GetActiveGatewayConfig(ctx, tenantID, providerCode)
 		if err != nil {
 			return nil, fmt.Errorf(
 				"no active gateway config found for provider '%s' (tenant: %s, legalEntity: %s)",

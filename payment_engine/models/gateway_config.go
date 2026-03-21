@@ -10,11 +10,12 @@ import (
 // Provider-specific keys (SaltKey, KeySecret etc.) live in ConfigEncrypted as JSON
 // Never add provider-specific columns here
 type PaymentGatewayConfig struct {
-	ID       uuid.UUID `gorm:"type:uuid;primaryKey"`
-	TenantID uuid.UUID `gorm:"type:uuid;not null;index"`
-
-	ProviderCode string `gorm:"type:varchar(30);not null"` // PHONEPE, RAZORPAY, CASHFREE, STRIPE
-	DisplayName  string `gorm:"type:varchar(100);not null"`
+	ID               uuid.UUID `gorm:"type:uuid;primaryKey"`
+	TenantID         uuid.UUID `gorm:"type:uuid;not null;index"`
+	LegalEntityID    uuid.UUID `gorm:"type:uuid;not null;index"`
+	PaymentAccountID uuid.UUID `gorm:"type:uuid;not null;index"`
+	ProviderCode     string    `gorm:"type:varchar(30);not null"` // PHONEPE, RAZORPAY, CASHFREE, STRIPE
+	DisplayName      string    `gorm:"type:varchar(100);not null"`
 
 	// Encrypted JSON — shape is provider-specific
 	// PhonePe:  { "merchant_id": "", "salt_key": "", "salt_index": "" }
