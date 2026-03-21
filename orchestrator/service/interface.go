@@ -6,6 +6,7 @@ import (
 	org_customer_models "sharpnr-engine/core/customer/models"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
+	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 
 	"github.com/google/uuid"
 )
@@ -89,4 +90,9 @@ type LegalEntityOrchestrationServiceInterface interface {
 type CustomerOrchestratorServiceInterface interface {
 	AddCustomer(ctx context.Context, orgID, emplID uuid.UUID, req org_customer_contracts.AddCustomerRequestDto) error
 	SearchCustomer(ctx context.Context, orgID, emplID uuid.UUID, searchQuery string) ([]org_customer_models.Customer, error)
+}
+
+type PaymentOrchestratorServiceInterface interface {
+	AddPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req orchestrator_dtos.CreatePaymentAccountRequestDto) error
+	GetAllPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]payment_engine_contracts.PaymentAccountResponseDto, error)
 }

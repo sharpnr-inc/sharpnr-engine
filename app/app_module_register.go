@@ -11,6 +11,7 @@ import (
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
 	employee_services "sharpnr-engine/modules/hr/employees/services"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
+	payment_engine_service "sharpnr-engine/payment_engine/services"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
 	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"
 	sse_engine "sharpnr-engine/sse"
@@ -32,11 +33,12 @@ type AppModules struct {
 
 	hospitality *hospitalitydomain.HospitalityDomain
 
-	employeeService    employee_services.EmployeeServiceInterface
-	accountingService  accounting_service.AccountingServiceInterface
-	orgCustomerService org_customer_service.OrgCustomerServiceInterface
-	sseEngine          *sse_engine.StreamManager
-	taxEngineService   tax_engine_service.TaxEngineServiceInterface
+	employeeService      employee_services.EmployeeServiceInterface
+	accountingService    accounting_service.AccountingServiceInterface
+	orgCustomerService   org_customer_service.OrgCustomerServiceInterface
+	sseEngine            *sse_engine.StreamManager
+	taxEngineService     tax_engine_service.TaxEngineServiceInterface
+	paymentEngineService payment_engine_service.PaymentServiceInterface
 }
 
 func (m *AppModules) SharpnrOrchestrator() orchestrator_service.OrchestratorServiceInterface {
@@ -91,4 +93,8 @@ func (m *AppModules) TaxEngineService() tax_engine_service.TaxEngineServiceInter
 
 func (m *AppModules) CustomerEngineService() org_customer_service.OrgCustomerServiceInterface {
 	return m.orgCustomerService
+}
+
+func (m *AppModules) PaymentEngineService() payment_engine_service.PaymentServiceInterface {
+	return m.paymentEngineService
 }

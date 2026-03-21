@@ -11,6 +11,7 @@ import (
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
 	employee_services "sharpnr-engine/modules/hr/employees/services"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
+	payment_engine_service "sharpnr-engine/payment_engine/services"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
 	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"
 	sse_engine "sharpnr-engine/sse"
@@ -32,4 +33,5 @@ type ModulesProvider interface {
 	LegalEntityService() legal_entity_service.OrgLegalEntityServiceInterface
 	TaxEngineService() tax_engine_service.TaxEngineServiceInterface
 	CustomerEngineService() org_customer_service.OrgCustomerServiceInterface
+	PaymentEngineService() payment_engine_service.PaymentServiceInterface
 }
