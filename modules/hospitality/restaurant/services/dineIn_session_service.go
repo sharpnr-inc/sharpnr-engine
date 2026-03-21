@@ -264,71 +264,73 @@ func (s *restaurantService) GetDineSessionOrders(ctx context.Context, dineInSess
 
 /* ----------------------- Closing the session Method ----------------------- */
 
-// func (s *restaurantService) CloseDineInSession(
-// 	ctx context.Context,
-// 	orgID, emplID, restaurantID, dineInSessionID uuid.UUID,
-// 	request restaurant_contracts.CloseSessionRequest,
-// ) (*restaurant_contracts.CloseSessionResponse, error) {
+func (s *restaurantService) CloseDineInSession(
+	ctx context.Context,
+	orgID, emplID, restaurantID, dineInSessionID uuid.UUID,
+	request restaurant_contracts.CloseSessionRequest,
+) (*restaurant_contracts.CloseSessionResponse, error) {
 
-// 	sessionOrders, err := s.restaurantRepo.GetOrdersByDiningSessionID(ctx, dineInSessionID)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	// so a session can Have Multiple Orders and each Order can have multiple Items
-// 	// so once we get the session Order we fetch order items based on session Items
-// 	// Step 2
-// 	var items []invoice_engine_contracts.InvoiceItemRequest
-// 	for _, so := range sessionOrders {
+	// sessionOrders, err := s.restaurantRepo.GetOrdersByDiningSessionID(ctx, dineInSessionID)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// // so a session can Have Multiple Orders and each Order can have multiple Items
+	// // so once we get the session Order we fetch order items based on session Items
+	// // Step 2
+	// var items []invoice_engine_contracts.InvoiceItemRequest
+	// for _, so := range sessionOrders {
 
-// 		sessionOrderItems, err := s.restaurantRepo.GetOrderItemsByOrderID(ctx, so.ID)
-// 		if err != nil {
-// 			return nil, err
-// 		}
+	// 	sessionOrderItems, err := s.restaurantRepo.GetOrderItemsByOrderID(ctx, so.ID)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
 
-// 		for _, item := range sessionOrderItems {
-// 			items = append(items, invoice_engine_contracts.InvoiceItemRequest{
-// 				Description: item.MenuItemName,
-// 				Quantity:    float64(item.Quantity),
-// 				Rate:        item.UnitPrice,
-// 			})
-// 		}
-// 	}
+	// 	for _, item := range sessionOrderItems {
+	// 		items = append(items, invoice_engine_contracts.InvoiceItemRequest{
+	// 			Description: item.MenuItemName,
+	// 			Quantity:    float64(item.Quantity),
+	// 			Rate:        item.UnitPrice,
+	// 		})
+	// 	}
+	// }
 
-// 	invoice, err := s.invoiceEngine.GenerateInvoice(ctx, invoice_engine_contracts.CreateInvoiceRequest{
-// 		OrganizationID: orgID,
-// 		CustomerID:     request.CustomerID,
-// 		CustomerName:   request.CustomerName,
-// 		Source:         "RESTAURANT DINING SESSION",
-// 		SourceRefID:    &dineInSessionID,
-// 		Items:          items,
-// 	})
+	// invoice, err := s.invoiceEngine.GenerateInvoice(ctx, invoice_engine_contracts.CreateInvoiceRequest{
+	// 	OrganizationID: orgID,
+	// 	CustomerID:     request.CustomerID,
+	// 	CustomerName:   request.CustomerName,
+	// 	Source:         "RESTAURANT DINING SESSION",
+	// 	SourceRefID:    &dineInSessionID,
+	// 	Items:          items,
+	// })
 
-// 	if err != nil {
-// 		return nil, fmt.Errorf("generate invoice: %w", err)
-// 	}
+	// if err != nil {
+	// 	return nil, fmt.Errorf("generate invoice: %w", err)
+	// }
 
-// 	// this need the correction
-// 	invoice, err = s.invoiceEngine.IssueInvoice(ctx, invoice.ID)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("issue invoice: %w", err)
-// 	}
+	// // this need the correction
+	// invoice, err = s.invoiceEngine.IssueInvoice(ctx, invoice.ID)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("issue invoice: %w", err)
+	// }
 
-// 	// ── Step 2: Create Payment Order ──────────────────────────
+	// // ── Step 2: Create Payment Order ──────────────────────────
 
-// 	// SourceMeta carries session context — payment engine echoes this
-// 	// back in webhooks so your callback handler knows what to close
+	// // SourceMeta carries session context — payment engine echoes this
+	// // back in webhooks so your callback handler knows what to close
 
-// 	paymentOrder, err := s.paymentsEngine.CreateOrder(ctx, payment_engine_contracts.CreateOrderRequest{
-// 		TenantID:  orgID,
-// 		PayerName: "String",
-// 		Source:    "INVOICE",
-// 	})
-// 	if err != nil {
-// 		return nil, fmt.Errorf("create payment order: %w", err)
-// 	}
+	// paymentOrder, err := s.paymentsEngine.CreateOrder(ctx, payment_engine_contracts.CreateOrderRequest{
+	// 	TenantID:  orgID,
+	// 	PayerName: "String",
+	// 	Source:    "INVOICE",
+	// })
+	// if err != nil {
+	// 	return nil, fmt.Errorf("create payment order: %w", err)
+	// }
 
-// 	payment, err := s.paymentsEngine.Pay(ctx, payment_engine_contracts.PayRequest{
-// 		PaymentOrderID: paymentOrder.ID,
-// 		AmountPaise:    paymentOrder.AmountPaise,
-// 	})
-// }
+	// payment, err := s.paymentsEngine.Pay(ctx, payment_engine_contracts.PayRequest{
+	// 	PaymentOrderID: paymentOrder.ID,
+	// 	AmountPaise:    paymentOrder.AmountPaise,
+	// })
+
+	panic("unimplemented")
+}
