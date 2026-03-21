@@ -87,4 +87,5 @@ type RestaurantPickUpOrderFlowRepoInterface interface {
 
 	CreatePickUpOrderCustomer(ctx context.Context, pickUpOrderCustomer *restaurant_models.RestaurantPickUpOrderCustomer) error
 	GetPickUpOrderCustomerByPickUpOrderID(ctx context.Context, pickUpOrderID uuid.UUID) (*restaurant_models.RestaurantPickUpOrderCustomer, error)
+	
 }

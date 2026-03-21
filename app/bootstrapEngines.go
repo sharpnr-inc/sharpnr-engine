@@ -45,12 +45,14 @@ func bootStrapInvoicingEngine(
 	db *gorm.DB,
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
+	legalEntityService legal_entity_service.OrgLegalEntityServiceInterface,
 ) invoice_engine_services.InvoiceEngineServiceInterface {
 	repo := invoice_engine_repos.NewInvoiceEngineRepo(db)
 	return invoice_engine_services.NewInvoicingEngineService(
 		repo,
 		txManager,
 		seroEngine,
+		legalEntityService,
 	)
 }
 

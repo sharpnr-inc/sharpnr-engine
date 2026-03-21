@@ -4,38 +4,53 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // -------------------------------
 // 1️⃣ INVOICE HEADER
 // -------------------------------
 type Invoice struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+	ID             uuid.UUID  `gorm:"type:uuid;primaryKey"`
+	OrganizationID uuid.UUID  `gorm:"type:uuid;not null;index"`
+	LegalEntityID  *uuid.UUID `gorm:"type:uuid;index"`
 
-	OrganizationID   uuid.UUID  `gorm:"type:uuid;not null;index"`
-	LegalEntityID    *uuid.UUID `gorm:"type:uuid;index"`
-
-	InvoiceNumber string     `gorm:"type:varchar(50);uniqueIndex;not null"`
+	InvoiceNumber string     `gorm:"type:varchar(50);not null;uniqueIndex:idx_inv_num_org"`
 	InvoiceDate   time.Time  `gorm:"type:date;not null"`
 	DueDate       *time.Time `gorm:"type:date"`
 
-	CustomerName string  `gorm:"type:varchar(200);not null"`
-	CustomerGST  *string `gorm:"type:varchar(20)"`
+	// Customer snapshot — never fetch live for issued invoices
+	CustomerID        *uuid.UUID `gorm:"type:uuid;index"` // FK to CRM — opaque
+	CustomerName      string     `gorm:"type:varchar(200);not null"`
+	CustomerGST       *string    `gorm:"type:varchar(20)"`
+	CustomerStateCode *string    `gorm:"type:varchar(3)"` // drives CGST/SGST vs IGST
 
-	// Financial Totals
+	// Legal entity GSTIN snapshot — which registration applied at invoice time
+	LegalEntityGSTIN *string `gorm:"type:varchar(20)"`
+
+	// Financials — all stored as float, paise cached separately for calculations
 	SubTotal float64 `gorm:"type:decimal(15,2);not null"`
 	TaxTotal float64 `gorm:"type:decimal(15,2);not null"`
 	Total    float64 `gorm:"type:decimal(15,2);not null"`
 
-	// Status: DRAFT, ISSUED, PAID, CANCELLED
-	Status string `gorm:"type:varchar(20);index;default:'DRAFT'"`
+	// Cached payment state — updated by RecordPayment / ReversePayment
+	PaidPaise  int64   `gorm:"default:0"`
+	PaidAmount float64 `gorm:"-"` // derived: PaidPaise / 100
 
-	// Source: STANDALONE, HOTEL_STAY, RESTAURANT_SESSION
-	Source      string     `gorm:"type:varchar(50);index"`
-	SourceRefID *uuid.UUID `gorm:"type:uuid;index"`
+	// DRAFT, ISSUED, PAID, CANCELLED
+	Status string `gorm:"type:varchar(20);not null;default:'DRAFT';index"`
 
+	// UNPAID, PARTIALLY_PAID, PAID, OVERPAID
+	PaymentStatus string `gorm:"type:varchar(20);not null;default:'UNPAID';index"`
+
+	// Source — opaque to invoice engine
+	Source      string     `gorm:"type:varchar(50);index"` // RESTAURANT_SESSION, HOTEL_STAY, STANDALONE
+	SourceRefID *uuid.UUID `gorm:"type:uuid;index"`        // session ID, stay ID
+
+	CreatedBy string `gorm:"type:varchar(100)"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 func (Invoice) TableName() string {
@@ -50,11 +65,18 @@ type InvoiceItem struct {
 	InvoiceID uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	Description string  `gorm:"type:text;not null"`
-	Quantity    float64 `gorm:"type:decimal(12,2);default:1"`
-	Rate        float64 `gorm:"type:decimal(15,2);not null"`
-	Amount      float64 `gorm:"type:decimal(15,2);not null"`
+	Quantity    float64 `gorm:"type:decimal(12,2);not null;default:1"`
+	Rate        float64 `gorm:"type:decimal(15,2);not null"` // pre-tax unit price
+	Amount      float64 `gorm:"type:decimal(15,2);not null"` // Quantity * Rate
 
+	// Tax
 	TaxCategoryID *uuid.UUID `gorm:"type:uuid;index"`
+	HSNCode       *string    `gorm:"type:varchar(10)"`  // GST HSN / SAC code
+	TaxRate       float64    `gorm:"type:decimal(5,2)"` // e.g. 18.00
+	TaxAmount     float64    `gorm:"type:decimal(15,2)"`
+	TotalAmount   float64    `gorm:"type:decimal(15,2);not null"` // Amount + TaxAmount
+
+	CreatedAt time.Time
 }
 
 func (InvoiceItem) TableName() string {
@@ -62,15 +84,17 @@ func (InvoiceItem) TableName() string {
 }
 
 // -------------------------------
-// 3️⃣ TAX BREAKUP (Statutory Compliance)
+// 3️⃣ TAX BREAKUP
+// Header level — one row per tax component
+// CGST, SGST, IGST broken out separately for GST filing
 // -------------------------------
 type InvoiceTaxBreakup struct {
 	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
 	InvoiceID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	// TaxType: CGST, SGST, IGST, VAT, SERVICE_TAX
+	// CGST, SGST, IGST, VAT
 	TaxType string  `gorm:"type:varchar(20);not null"`
-	Rate    float64 `gorm:"type:decimal(5,2);not null"` // e.g., 9.00
+	Rate    float64 `gorm:"type:decimal(5,2);not null"`
 	Amount  float64 `gorm:"type:decimal(15,2);not null"`
 
 	CreatedAt time.Time
@@ -81,16 +105,31 @@ func (InvoiceTaxBreakup) TableName() string {
 }
 
 // -------------------------------
-// 4️⃣ PAYMENT MAPPING (Reconciliation)
+// 4️⃣ INVOICE PAYMENT LINK
+// Invoice engine's side of the payment ↔ invoice relationship
+// PaymentRef is opaque — no FK to payments schema
 // -------------------------------
 type InvoicePaymentLink struct {
 	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
 	InvoiceID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	// Link to the generic payment record in your accounting module
-	PaymentID uuid.UUID `gorm:"type:uuid;not null;index"`
+	// Opaque reference to payment engine
+	// Stores Payment.ID as string — no FK constraint
+	PaymentRef    string `gorm:"type:varchar(100);not null;index"`
+	PaymentMethod string `gorm:"type:varchar(30);not null"` // snapshot: CASH, UPI, PHONEPE
 
-	AppliedAmount float64 `gorm:"type:decimal(15,2);not null"`
+	CurrencyCode    string  `gorm:"type:char(3);not null;default:'INR'"`
+	AllocatedPaise  int64   `gorm:"not null"`
+	AllocatedAmount float64 `gorm:"-"` // derived
+
+	// APPLIED, REVERSED, REFUNDED
+	Status string `gorm:"type:varchar(20);not null;default:'APPLIED';index"`
+
+	// Snapshot — so invoice engine never queries payment engine for display
+	PaidAt time.Time `gorm:"not null"`
+
+	CreatedAt  time.Time
+	ReversedAt *time.Time
 }
 
 func (InvoicePaymentLink) TableName() string {

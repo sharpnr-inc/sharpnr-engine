@@ -91,6 +91,12 @@ type RestaurantDiningSessionService interface {
 		orgID uuid.UUID,
 		restaurantID uuid.UUID,
 	) error
+
+	CloseDineInSession(
+		ctx context.Context,
+		orgID, emplID, restaurantID, dineInSessionID uuid.UUID,
+		request restaurant_contracts.CloseSessionRequest,
+	) (*restaurant_contracts.CloseSessionResponse, error)
 }
 
 type RestaurantPickUpOrderServiceInterface interface {

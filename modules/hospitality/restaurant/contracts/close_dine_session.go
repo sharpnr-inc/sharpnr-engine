@@ -1,7 +1,6 @@
 package restaurant_contracts
 
 import (
-	"fmt"
 	payment_engine_models "sharpnr-engine/payment_engine/models"
 
 	"github.com/google/uuid"
@@ -10,18 +9,21 @@ import (
 // ─── INPUT ───────────────────────────────────────────────────────────────────
 
 type CloseSessionRequest struct {
-	SessionID uuid.UUID
 
 	// CASH, CARD, UPI
 	PaymentMethod string
+	Amount        float64
 
 	// Walk-in customer override
 	// If session has a RestaurantDiningSessionCustomer row already — ignored
 	// If no customer row yet (pure walk-in) — used to build snapshot
-	CustomerName      string
-	CustomerGST       *string
-	CustomerStateCode *string // drives CGST/SGST vs IGST
+	CustomerName  string
+	CustomerEmail *string
+	CustomerPhone *string
+	CustomerGST   *string
 
+	// if customer exist
+	CustomerID *uuid.UUID
 }
 
 // ─── OUTPUT ──────────────────────────────────────────────────────────────────
@@ -77,17 +79,4 @@ type ConfirmSessionCardPaymentResponse struct {
 type SessionPaymentConfirmedRequest struct {
 	SourceMeta string // JSON from PaymentOrder.SourceMeta
 	Payment    *payment_engine_models.Payment
-}
-
-// ─── VALIDATION ──────────────────────────────────────────────────────────────
-
-func (r *CloseSessionRequest) Validate() error {
-	if r.SessionID == uuid.Nil {
-		return fmt.Errorf("session ID is required")
-	}
-
-	if err := validatePaymentMethod(r.PaymentMethod); err != nil {
-		return err
-	}
-	return nil
 }
