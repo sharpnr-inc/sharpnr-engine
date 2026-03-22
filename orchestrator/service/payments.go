@@ -56,3 +56,62 @@ func (c *orchestratorService) GetAllPaymentAccount(ctx context.Context, orgID uu
 
 	return results, nil
 }
+
+func (s *orchestratorService) AddGatewayConfigInPaymentAccount(
+	ctx context.Context,
+	orgID, emplID uuid.UUID,
+	req payment_engine_contracts.AddGatewayConfigRequest,
+) error {
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		_, err := s.paymentsEngine.AddGatewayConfig(txCtx, req)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+func (s *orchestratorService) GetPaymentAccountDetails(
+	ctx context.Context,
+	orgID uuid.UUID,
+	emplID uuid.UUID,
+	paymentAccountID uuid.UUID,
+) ([]payment_engine_contracts.GatewayConfigResponse, error) {
+
+	var result []payment_engine_contracts.GatewayConfigResponse
+
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		// 1. Fetch the gateway configurations from the engine
+		configs, err := s.paymentsEngine.ListGatewayConfigs(txCtx, paymentAccountID)
+		if err != nil {
+			return err
+		}
+
+		// 2. Map models to response contracts
+		for _, cfg := range configs {
+
+			result = append(result, payment_engine_contracts.GatewayConfigResponse{
+				ID:               cfg.ID,
+				PaymentAccountID: cfg.PaymentAccountID,
+				ProviderCode:     cfg.ProviderCode,
+				DisplayName:      cfg.DisplayName,
+				IsTestMode:       cfg.IsTestMode,
+				IsActive:         cfg.IsActive,
+				CreatedAt:        cfg.CreatedAt,
+			})
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}

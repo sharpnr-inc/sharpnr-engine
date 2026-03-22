@@ -19,13 +19,11 @@ type AddGatewayConfigRequest struct {
 	ProviderCode     string            `json:"provider_code" binding:"required"`
 	DisplayName      string            `json:"display_name" binding:"required"`
 	Config           map[string]string `json:"config" binding:"required"` // plain — service encrypts
-	WebhookURL       string            `json:"webhook_url" binding:"required"`
 	IsTestMode       bool              `json:"is_test_mode"`
 }
 
 type UpdateGatewayConfigRequest struct {
 	Config     map[string]string `json:"config"`
-	WebhookURL string            `json:"webhook_url"`
 }
 
 // ─── Payment Order ────────────────────────────────────────────────────────────

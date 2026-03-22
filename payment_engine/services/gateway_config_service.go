@@ -20,9 +20,9 @@ func (s *paymentEngine) AddGatewayConfig(
 		return nil, fmt.Errorf("payment account not found: %w", err)
 	}
 
-	// if !s.gatewayRegistry.IsRegistered(req.ProviderCode) {
-	// 	return nil, fmt.Errorf("provider '%s' is not registered", req.ProviderCode)
-	// }
+	if !s.gatewayRegistry.IsRegistered(req.ProviderCode) {
+		return nil, fmt.Errorf("provider '%s' is not registered", req.ProviderCode)
+	}
 
 	existing, err := s.paymentRepo.GetActiveGatewayConfig(ctx, req.PaymentAccountID, req.ProviderCode)
 	if err == nil && existing != nil {
@@ -42,7 +42,6 @@ func (s *paymentEngine) AddGatewayConfig(
 		ProviderCode:     req.ProviderCode,
 		DisplayName:      req.DisplayName,
 		ConfigEncrypted:  encrypted,
-		WebhookURL:       req.WebhookURL,
 		IsTestMode:       req.IsTestMode,
 		IsActive:         true,
 	}
@@ -80,7 +79,7 @@ func (s *paymentEngine) UpdateGatewayConfig(
 	req contracts.UpdateGatewayConfigRequest,
 ) error {
 
-	existing, err := s.paymentRepo.GetGatewayConfigByID(ctx, id)
+	_, err := s.paymentRepo.GetGatewayConfigByID(ctx, id)
 	if err != nil {
 		return fmt.Errorf("gateway config not found: %w", err)
 	}
@@ -90,12 +89,7 @@ func (s *paymentEngine) UpdateGatewayConfig(
 		return fmt.Errorf("encrypt updated config: %w", err)
 	}
 
-	webhookURL := existing.WebhookURL
-	if req.WebhookURL != "" {
-		webhookURL = req.WebhookURL
-	}
-
-	return s.paymentRepo.UpdateGatewayConfig(ctx, id, encrypted, webhookURL)
+	return s.paymentRepo.UpdateGatewayConfig(ctx, id, encrypted)
 }
 
 /* ---------------------------------- <***> --------------------------------- */

@@ -30,7 +30,7 @@ type PaymentEngineRepoInterface interface {
 	GetGatewayConfigByID(ctx context.Context, id uuid.UUID) (*payment_engine_models.PaymentGatewayConfig, error)
 	GetActiveGatewayConfig(ctx context.Context, paymentAccountID uuid.UUID, providerCode string) (*payment_engine_models.PaymentGatewayConfig, error)
 	ListGatewayConfigsByAccount(ctx context.Context, paymentAccountID uuid.UUID) ([]*payment_engine_models.PaymentGatewayConfig, error)
-	UpdateGatewayConfig(ctx context.Context, id uuid.UUID, configEncrypted string, webhookURL string) error
+	UpdateGatewayConfig(ctx context.Context, id uuid.UUID, configEncrypted string) error
 	ToggleGatewayConfig(ctx context.Context, id uuid.UUID, isActive bool) error
 	DeleteGatewayConfig(ctx context.Context, id uuid.UUID) error
 

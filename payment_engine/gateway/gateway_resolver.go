@@ -65,7 +65,7 @@ func (r *GatewayResolver) ResolveByProvider(
 ) (*ResolvedGateway, error) {
 
 	// 1. Try legal entity specific config first
-	config, err := r.repo.GetActiveGatewayConfig(ctx, tenantID,  providerCode)
+	config, err := r.repo.GetActiveGatewayConfig(ctx, tenantID, providerCode)
 	if err != nil {
 		// 2. Fall back to tenant-wide config (LegalEntityID = nil)
 		config, err = r.repo.GetActiveGatewayConfig(ctx, tenantID, providerCode)
@@ -108,7 +108,6 @@ func (r *GatewayResolver) build(config *models.PaymentGatewayConfig) (*ResolvedG
 
 	// Inject webhook URL — gateway provider reads from config map
 	// This URL is registered on PhonePe/Razorpay dashboard by tenant during setup
-	decrypted["webhook_url"] = config.WebhookURL
 	decrypted["is_test_mode"] = boolToString(config.IsTestMode)
 
 	// Resolve provider from registry

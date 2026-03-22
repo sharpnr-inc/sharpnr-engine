@@ -70,7 +70,7 @@ func (r *paymentRepo) ListGatewayConfigsByAccount(ctx context.Context, paymentAc
 	return configs, nil
 }
 
-func (r *paymentRepo) UpdateGatewayConfig(ctx context.Context, id uuid.UUID, configEncrypted string, webhookURL string) error {
+func (r *paymentRepo) UpdateGatewayConfig(ctx context.Context, id uuid.UUID, configEncrypted string) error {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db
@@ -80,7 +80,6 @@ func (r *paymentRepo) UpdateGatewayConfig(ctx context.Context, id uuid.UUID, con
 		Where("id = ?", id).
 		Updates(map[string]interface{}{
 			"config_encrypted": configEncrypted,
-			"webhook_url":      webhookURL,
 		})
 
 	if result.Error != nil {

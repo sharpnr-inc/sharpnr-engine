@@ -96,4 +96,11 @@ type CustomerOrchestratorServiceInterface interface {
 type PaymentOrchestratorServiceInterface interface {
 	AddPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req payment_engine_contracts.CreatePaymentAccountRequest) error
 	GetAllPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]payment_engine_contracts.PaymentAccountResponseDto, error)
+	AddGatewayConfigInPaymentAccount(
+		ctx context.Context,
+		orgID, emplID uuid.UUID,
+		req payment_engine_contracts.AddGatewayConfigRequest,
+	) error
+
+	GetPaymentAccountDetails(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, paymentAccountID uuid.UUID) ([]payment_engine_contracts.GatewayConfigResponse, error)
 }
