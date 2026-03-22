@@ -16,6 +16,7 @@ type OrchestratorServiceInterface interface {
 	OrganizationPropertyOrchestrationInterface
 	LegalEntityOrchestrationServiceInterface
 	CustomerOrchestratorServiceInterface
+	PaymentOrchestratorServiceInterface
 	/* -------------------------------------------------------------------------- */
 	/*                       Setupwizard related operations                       */
 	/* -------------------------------------------------------------------------- */
@@ -93,6 +94,6 @@ type CustomerOrchestratorServiceInterface interface {
 }
 
 type PaymentOrchestratorServiceInterface interface {
-	AddPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req orchestrator_dtos.CreatePaymentAccountRequestDto) error
+	AddPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req payment_engine_contracts.CreatePaymentAccountRequest) error
 	GetAllPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]payment_engine_contracts.PaymentAccountResponseDto, error)
 }

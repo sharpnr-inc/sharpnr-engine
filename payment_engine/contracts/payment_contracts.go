@@ -7,7 +7,6 @@ import "github.com/google/uuid"
 // ─── Account ──────────────────────────────────────────────────────────────────
 
 type CreatePaymentAccountRequest struct {
-	TenantID      uuid.UUID `json:"tenant_id" binding:"required"`
 	LegalEntityID uuid.UUID `json:"legal_entity_id" binding:"required"`
 	AccountRef    string    `json:"account_ref" binding:"required"`
 	CurrencyCode  string    `json:"currency_code"`
@@ -57,7 +56,6 @@ type PayRequest struct {
 	PayerPhone      *string   `json:"payer_phone"`
 	PayerEmail      *string   `json:"payer_email"`
 	CallbackURL     string    `json:"callback_url"`
-	RedirectURL     *string   `json:"redirect_url"`
 	Notes           *string   `json:"notes"`
 	CreatedBy       string    `json:"created_by" binding:"required"`
 }

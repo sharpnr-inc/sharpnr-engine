@@ -11,7 +11,7 @@ import (
 type PaymentServiceInterface interface {
 
 	// ─── Account ──────────────────────────────────────────────────────────────
-	CreatePaymentAccount(ctx context.Context, req payment_engine_contracts.CreatePaymentAccountRequest) (*payment_engine_models.PaymentAccount, error)
+	CreatePaymentAccount(ctx context.Context, orgID, emplID uuid.UUID, req payment_engine_contracts.CreatePaymentAccountRequest) (*payment_engine_models.PaymentAccount, error)
 	ListPaymentAccounts(ctx context.Context, tenantID uuid.UUID) ([]*payment_engine_models.PaymentAccount, error)
 	TogglePaymentAccount(ctx context.Context, id uuid.UUID, active bool) error
 

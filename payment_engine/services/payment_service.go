@@ -67,12 +67,10 @@ func (s *paymentEngine) Pay(
 		InternalOrderID: payment.ID.String(),
 		AmountPaise:     req.AmountPaise,
 		CurrencyCode:    order.CurrencyCode,
-		// PayerName:       order.PayerName,
-		// PayerPhone:      req.PayerPhone,
-		// PayerEmail:      req.PayerEmail,
-		// CallbackURL:     req.CallbackURL,
-		// RedirectURL:     req.RedirectURL,
-		Config: gateway.Config,
+		Config:          gateway.Config,
+		Meta: map[string]string{
+			"payer_name": order.PayerName,
+		},
 	})
 	if err != nil {
 		_ = s.paymentRepo.UpdatePaymentStatus(ctx, payment.ID, payment_constants.StatusFailed)

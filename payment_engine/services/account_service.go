@@ -3,6 +3,7 @@ package payment_engine_service
 import (
 	"context"
 	"fmt"
+	"time"
 
 	contracts "sharpnr-engine/payment_engine/contracts"
 	models "sharpnr-engine/payment_engine/models"
@@ -12,10 +13,11 @@ import (
 
 func (s *paymentEngine) CreatePaymentAccount(
 	ctx context.Context,
+	orgID, emplID uuid.UUID,
 	req contracts.CreatePaymentAccountRequest,
 ) (*models.PaymentAccount, error) {
 
-	existing, err := s.paymentRepo.GetPaymentAccountByLegalEntity(ctx, req.TenantID, req.LegalEntityID)
+	existing, err := s.paymentRepo.GetPaymentAccountByLegalEntity(ctx, orgID, req.LegalEntityID)
 	if err == nil && existing != nil {
 		return nil, fmt.Errorf("a payment account already exists for this legal entity")
 	}
@@ -26,11 +28,13 @@ func (s *paymentEngine) CreatePaymentAccount(
 
 	account := &models.PaymentAccount{
 		ID:            uuid.New(),
-		TenantID:      req.TenantID,
+		TenantID:      orgID,
 		LegalEntityID: req.LegalEntityID,
 		AccountRef:    req.AccountRef,
 		CurrencyCode:  req.CurrencyCode,
 		IsActive:      true,
+		CreatedAt:     time.Now(),
+		UpdatedAt:     time.Now(),
 	}
 
 	if err := s.paymentRepo.CreatePaymentAccount(ctx, account); err != nil {
