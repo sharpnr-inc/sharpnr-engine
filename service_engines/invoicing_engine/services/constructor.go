@@ -1,8 +1,6 @@
 package invoice_engine_services
 
 import (
-	"context"
-	"github.com/google/uuid"
 	dbtx "sharpnr-engine/core/dbTx"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	"sharpnr-engine/sero"
@@ -14,11 +12,6 @@ type invoiceEngineService struct {
 	seroEngine         *sero.SEROEngine
 	invoicingRepo      invoice_engine_repos.InvoicingEngineRepositoryInterface
 	legalEntityService legal_entity_service.OrgLegalEntityServiceInterface
-}
-
-// IssueInvoice implements [InvoiceEngineServiceInterface].
-func (s *invoiceEngineService) IssueInvoice(ctx context.Context, invoiceID uuid.UUID) (interface{}, error) {
-	panic("unimplemented")
 }
 
 func NewInvoicingEngineService(

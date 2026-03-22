@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/uuid"
 	payment_gateway "sharpnr-engine/payment_engine/gateway"
+
+	"github.com/google/uuid"
 )
 
 type resolvedGateway struct {
@@ -42,6 +43,8 @@ func (s *paymentEngine) resolveGateway(
 	}, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *paymentEngine) resolveGatewayByConfigID(
 	ctx context.Context,
 	configID uuid.UUID,
@@ -71,3 +74,5 @@ func (s *paymentEngine) resolveGatewayByConfigID(
 		ConfigID: config.ID,
 	}, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */

@@ -90,6 +90,8 @@ func (s *paymentEngine) Pay(
 	return payment, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *paymentEngine) ConfirmPayment(
 	ctx context.Context,
 	req contracts.ConfirmPaymentRequest,
@@ -154,6 +156,8 @@ func (s *paymentEngine) ConfirmPayment(
 	return payment, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *paymentEngine) GetPayment(
 	ctx context.Context,
 	paymentID uuid.UUID,
@@ -166,6 +170,8 @@ func (s *paymentEngine) GetPayment(
 	return payment, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *paymentEngine) GetPaymentsByOrder(
 	ctx context.Context,
 	orderID uuid.UUID,
@@ -177,6 +183,8 @@ func (s *paymentEngine) GetPaymentsByOrder(
 	}
 	return payments, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *paymentEngine) confirmOfflinePayment(
 	ctx context.Context,
@@ -208,6 +216,8 @@ func (s *paymentEngine) confirmOfflinePayment(
 	return payment, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func validateOrderPayable(order *models.PaymentOrder) error {
 	switch order.Status {
 	case payment_constants.OrderStatusPaid:
@@ -223,6 +233,8 @@ func validateOrderPayable(order *models.PaymentOrder) error {
 	return nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func isOfflineMethod(method string) bool {
 	switch method {
 	case "CASH", "CHEQUE", "BANK_TRANSFER":
@@ -230,6 +242,8 @@ func isOfflineMethod(method string) bool {
 	}
 	return false
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func mapGatewayStatus(s string) string {
 	switch s {
@@ -241,3 +255,5 @@ func mapGatewayStatus(s string) string {
 		return payment_constants.StatusProcessing
 	}
 }
+
+/* ---------------------------------- <***> --------------------------------- */

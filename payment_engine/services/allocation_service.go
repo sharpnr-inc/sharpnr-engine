@@ -58,6 +58,8 @@ func (s *paymentEngine) AllocatePayment(
 	return allocation, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *paymentEngine) ReverseAllocation(
 	ctx context.Context,
 	req contracts.ReverseAllocationRequest,
@@ -73,6 +75,8 @@ func (s *paymentEngine) ReverseAllocation(
 	return s.paymentRepo.ReverseAllocation(ctx, req.AllocationID, req.By, req.Note)
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *paymentEngine) GetAllocationsByTarget(
 	ctx context.Context,
 	targetType string,
@@ -85,6 +89,8 @@ func (s *paymentEngine) GetAllocationsByTarget(
 	}
 	return allocations, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *paymentEngine) GetOutstandingAmount(
 	ctx context.Context,
@@ -99,6 +105,8 @@ func (s *paymentEngine) GetOutstandingAmount(
 	return total, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func isValidAllocationTarget(targetType string) bool {
 	switch targetType {
 	case payment_constants.AllocationTargetInvoice,
@@ -108,3 +116,5 @@ func isValidAllocationTarget(targetType string) bool {
 	}
 	return false
 }
+
+/* ---------------------------------- <***> --------------------------------- */

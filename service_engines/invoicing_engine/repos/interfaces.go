@@ -15,7 +15,7 @@ type InvoicingEngineRepositoryInterface interface {
 	CreateInvoiceItem(ctx context.Context, invoiceItem *invoice_engine_models.InvoiceItem) error
 	CreateInvoiceTaxBreakUp(ctx context.Context, taxBreakUp *invoice_engine_models.InvoiceTaxBreakup) error
 
-	CreateInvoicePaymentLink(ctx context.Context, invoicePaymentLink *invoice_engine_models.InvoicePaymentLink)
+	CreateInvoicePaymentLink(ctx context.Context, invoicePaymentLink *invoice_engine_models.InvoicePaymentLink) error
 	GetInvoicePaymentLinkByInvoiceID(ctx context.Context, invoiceID uuid.UUID) (*invoice_engine_models.InvoicePaymentLink, error)
 	UpdateInvoicePaymentLinkStatus(ctx context.Context, invoicePaymentLinkID uuid.UUID, status string) error
 }

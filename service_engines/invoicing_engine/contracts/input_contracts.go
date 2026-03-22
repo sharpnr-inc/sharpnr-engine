@@ -22,6 +22,7 @@ type CreateInvoiceRequest struct {
 }
 
 type InvoiceItemRequest struct {
+	InvoiceID     uuid.UUID
 	Description   string
 	Quantity      float64
 	Rate          float64

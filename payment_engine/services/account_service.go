@@ -40,6 +40,8 @@ func (s *paymentEngine) CreatePaymentAccount(
 	return account, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *paymentEngine) ListPaymentAccounts(
 	ctx context.Context,
 	tenantID uuid.UUID,
@@ -63,3 +65,5 @@ func (s *paymentEngine) TogglePaymentAccount(
 	}
 	return s.paymentRepo.UpdatePaymentAccountStatus(ctx, id, active)
 }
+
+/* ---------------------------------- <***> --------------------------------- */

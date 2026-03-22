@@ -55,6 +55,8 @@ func (s *paymentEngine) AddGatewayConfig(
 	return config, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *paymentEngine) ListGatewayConfigs(
 	ctx context.Context,
 	paymentAccountID uuid.UUID,
@@ -69,6 +71,8 @@ func (s *paymentEngine) ListGatewayConfigs(
 	}
 	return configs, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *paymentEngine) UpdateGatewayConfig(
 	ctx context.Context,
@@ -94,6 +98,8 @@ func (s *paymentEngine) UpdateGatewayConfig(
 	return s.paymentRepo.UpdateGatewayConfig(ctx, id, encrypted, webhookURL)
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *paymentEngine) ToggleGatewayConfig(
 	ctx context.Context,
 	id uuid.UUID,
@@ -116,3 +122,5 @@ func (s *paymentEngine) RemoveGatewayConfig(
 	}
 	return s.paymentRepo.DeleteGatewayConfig(ctx, id)
 }
+
+/* ---------------------------------- <***> --------------------------------- */
