@@ -75,6 +75,7 @@ type RestaurantConfigurationRepoInterface interface {
 
 type RestaurantDiningFlowRepoInterface interface {
 	CreateRestaurantDiningSession(ctx context.Context, diningSession *restaurant_models.RestaurantDiningSession) error
+	GetDiningSessionByID(ctx context.Context, sessionID uuid.UUID) (*restaurant_models.RestaurantDiningSession, error)
 	UpdateDiningSessionStatus(ctx context.Context, diningSessionID uuid.UUID, status string) error
 	GetDiningSessionByStatus(ctx context.Context, restaurantID uuid.UUID, status restaurant_constants.RestaurantDiningSessionStatusType) ([]*restaurant_models.RestaurantDiningSession, error)
 	GetDiningSessionByTableID(ctx context.Context, tableID uuid.UUID) (*restaurant_models.RestaurantDiningSession, error)
@@ -87,5 +88,4 @@ type RestaurantPickUpOrderFlowRepoInterface interface {
 
 	CreatePickUpOrderCustomer(ctx context.Context, pickUpOrderCustomer *restaurant_models.RestaurantPickUpOrderCustomer) error
 	GetPickUpOrderCustomerByPickUpOrderID(ctx context.Context, pickUpOrderID uuid.UUID) (*restaurant_models.RestaurantPickUpOrderCustomer, error)
-	
 }

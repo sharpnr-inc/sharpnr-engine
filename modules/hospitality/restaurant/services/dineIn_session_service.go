@@ -268,6 +268,8 @@ func (s *restaurantService) GetDineSessionOrders(ctx context.Context, dineInSess
 	return resp, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 /* ----------------------- Closing the session Method ----------------------- */
 
 func (s *restaurantService) CloseDineInSession(
@@ -275,6 +277,11 @@ func (s *restaurantService) CloseDineInSession(
 	orgID, emplID, restaurantID, dineInSessionID uuid.UUID,
 	request restaurant_contracts.CloseSessionRequest,
 ) (*restaurant_contracts.CloseSessionResponse, error) {
+
+	session, err := s.restaurantRepo.GetDiningSessionByID(ctx, dineInSessionID)
+	if err != nil {
+		return nil, err
+	}
 
 	sessionOrders, err := s.restaurantRepo.GetOrdersByDiningSessionID(ctx, dineInSessionID)
 	if err != nil {
@@ -388,11 +395,16 @@ func (s *restaurantService) CloseDineInSession(
 		return nil, fmt.Errorf("settle invoice: %w", err)
 	}
 
+	if err := s.restaurantRepo.UpdateTableStatus(ctx, session.TableID, restaurant_constants.TableStatusAvailable); err != nil {
+		return nil, err
+	}
+
 	if err := s.restaurantRepo.UpdateDiningSessionStatus(ctx, dineInSessionID, "CLOSED"); err != nil {
 		return nil, err
 	}
 
 	return &restaurant_contracts.CloseSessionResponse{
+		SessionID:     dineInSessionID,
 		InvoiceID:     invoice.ID,
 		InvoiceNumber: invoice.InvoiceNumber,
 		Total:         invoice.Total,
