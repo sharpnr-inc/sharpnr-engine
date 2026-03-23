@@ -9,16 +9,19 @@ import (
 )
 
 type AccountingServiceInterface interface {
-	CreateDraftAccountingSetup(ctx context.Context, input *accounting_engine_contracts.DraftAccountingSetupInput) error
 	AccountingBooksServiceInterface
+	// AccountingJournalServiceInterface
 
+	CreateDraftAccountingSetup(ctx context.Context, input *accounting_engine_contracts.DraftAccountingSetupInput) error
 	GetLegalEntityLedgerEntry(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.LedgerPaginationResponse, error)
-	GetJournalEntryDetails(
-		ctx context.Context,
-		entryID uuid.UUID,
-	) (accountingdtos.JournalEntryDetailsDTO, error)
+	GetJournalEntryDetails(ctx context.Context, entryID uuid.UUID) (accountingdtos.JournalEntryDetailsDTO, error)
 }
 
 type AccountingBooksServiceInterface interface {
 	GetAccountingBook(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.AccountingBook_Response_dto, error)
+}
+
+type AccountingJournalServiceInterface interface {
+	AddJournalEntry(ctx context.Context, orgID, emplID uuid.UUID, entryRequest accountingdtos.JournalEntryRequestDto) error
+	AddJournalLines(ctx context.Context, orgID, emplID uuid.UUID, line accountingdtos.JournalLineRequestDto) error
 }
