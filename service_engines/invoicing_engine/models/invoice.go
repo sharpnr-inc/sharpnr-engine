@@ -54,7 +54,7 @@ type Invoice struct {
 }
 
 func (Invoice) TableName() string {
-	return "invoicing_engine.invoice"
+	return "invoice_engine.invoice"
 }
 
 // -------------------------------
@@ -80,7 +80,7 @@ type InvoiceItem struct {
 }
 
 func (InvoiceItem) TableName() string {
-	return "invoicing_engine.invoice_item"
+	return "invoice_engine.invoice_item"
 }
 
 // -------------------------------
@@ -101,7 +101,7 @@ type InvoiceTaxBreakup struct {
 }
 
 func (InvoiceTaxBreakup) TableName() string {
-	return "invoicing_engine.invoice_tax_breakup"
+	return "invoice_engine.invoice_tax_breakup"
 }
 
 // -------------------------------
@@ -133,5 +133,5 @@ type InvoicePaymentLink struct {
 }
 
 func (InvoicePaymentLink) TableName() string {
-	return "invoicing_engine.invoice_payment_link"
+	return "invoice_engine.invoice_payment_link"
 }

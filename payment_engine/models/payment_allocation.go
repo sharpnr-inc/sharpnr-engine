@@ -30,8 +30,9 @@ type PaymentAllocation struct {
 	CreatedBy    string `gorm:"type:varchar(100);not null"`
 	CreatedAt    time.Time
 	ReversedAt   *time.Time `gorm:"type:timestamp"`
-	ReversedBy   *string    `gorm:"type:varchar(100)"`
-	ReversalNote *string    `gorm:"type:text"`
+	IsReversed   bool
+	ReversedBy   *string `gorm:"type:varchar(100)"`
+	ReversalNote *string `gorm:"type:text"`
 }
 
 func (PaymentAllocation) TableName() string { return "payments.payment_allocations" }

@@ -111,8 +111,8 @@ func (s *paymentEngine) ConfirmPayment(
 	}
 
 	verifyResp, err := gateway.Provider.VerifyPayment(ctx, payment_gateway.GatewayVerifyRequest{
-		GatewayTxnID:    req.GatewayTxnID,
-		GatewayOrderID:  req.GatewayOrderRef,
+		GatewayTxnID:   req.GatewayTxnID,
+		GatewayOrderID: req.GatewayOrderRef,
 		AmountPaise:     payment.AmountPaise,
 		RawCallbackBody: req.RawCallbackBody,
 		Headers:         req.Headers,

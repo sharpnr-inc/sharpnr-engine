@@ -292,7 +292,7 @@ func (s *restaurantService) CloseDineInSession(
 
 		for _, item := range sessionOrderItems {
 
-			menuItemTaxCategoryID, _, err := s.menuService.GetTaxCategoryOfMenuItem(ctx, orgID, emplID, item.ID)
+			menuItemTaxCategoryID, _, err := s.menuService.GetTaxCategoryOfMenuItem(ctx, orgID, emplID, item.MenuItemID)
 			if err != nil {
 				return nil, err
 			}

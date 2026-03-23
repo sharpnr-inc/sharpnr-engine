@@ -9,22 +9,20 @@ import (
 // ─── INPUT ───────────────────────────────────────────────────────────────────
 
 type CloseSessionRequest struct {
-
 	// CASH, CARD, UPI
-	PaymentMethod    string
-	PaymentAccountID uuid.UUID
-	Amount           float64
+	PaymentMethod    string    `json:"payment_method"`
+	PaymentAccountID uuid.UUID `json:"payment_account_id"`
 
 	// Walk-in customer override
 	// If session has a RestaurantDiningSessionCustomer row already — ignored
 	// If no customer row yet (pure walk-in) — used to build snapshot
-	CustomerName  string
-	CustomerEmail *string
-	CustomerPhone *string
-	CustomerGST   *string
+	CustomerName  string  `json:"customer_name"`
+	CustomerEmail *string `json:"customer_email,omitempty"`
+	CustomerPhone *string `json:"customer_phone,omitempty"`
+	CustomerGST   *string `json:"customer_gst,omitempty"`
 
 	// if customer exist
-	CustomerID *uuid.UUID
+	CustomerID *uuid.UUID `json:"customer_id,omitempty"`
 }
 
 // ─── OUTPUT ──────────────────────────────────────────────────────────────────

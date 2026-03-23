@@ -78,7 +78,7 @@ func (r *paymentRepo) GetTotalAllocatedByPayment(ctx context.Context, paymentID 
 	var total int64
 	err := db.WithContext(ctx).Model(&payment_engine_models.PaymentAllocation{}).
 		Where("payment_id = ? AND is_reversed = ?", paymentID, false).
-		Select("COALESCE(SUM(amount_paise), 0)").
+		Select("COALESCE(SUM(allocated_paise), 0)").
 		Scan(&total).Error
 
 	if err != nil {
@@ -97,7 +97,7 @@ func (r *paymentRepo) GetTotalAllocatedByTarget(ctx context.Context, targetType 
 	var total int64
 	err := db.WithContext(ctx).Model(&payment_engine_models.PaymentAllocation{}).
 		Where("target_type = ? AND target_id = ? AND is_reversed = ?", targetType, targetID, false).
-		Select("COALESCE(SUM(amount_paise), 0)").
+		Select("COALESCE(SUM(allocated_paise), 0)").
 		Scan(&total).Error
 
 	if err != nil {
