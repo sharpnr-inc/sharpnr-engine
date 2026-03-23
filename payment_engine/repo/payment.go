@@ -100,20 +100,25 @@ func (r *paymentRepo) UpdatePaymentStatus(ctx context.Context, id uuid.UUID, sta
 	return nil
 }
 
-func (r *paymentRepo) UpdatePaymentGatewayRefs(ctx context.Context, payment *payment_engine_models.Payment) error {
+func (r *paymentRepo) UpdatePaymentGatewayRefs(
+	ctx context.Context,
+	payment *payment_engine_models.Payment,
+) error {
+
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db
 	}
 
-	err := db.WithContext(ctx).Model(payment).
-		Select("gateway_order_ref", "gateway_txn_ref", "updated_at").
-		Updates(payment).Error
-	if err != nil {
-		return fmt.Errorf("failed to update gateway refs for payment %s: %w", payment.ID, err)
-	}
-
-	return nil
+	return db.Model(&payment_engine_models.Payment{}).
+		Where("id = ?", payment.ID).
+		Updates(map[string]any{
+			"gateway_order_ref": payment.GatewayOrderRef,
+			"gateway_response":  payment.GatewayResponse,
+			"qr_code":           payment.QRCode,
+			"expires_at":        payment.ExpiresAt,
+			"status":            payment.Status,
+		}).Error
 }
 
 func (r *paymentRepo) UpdatePaymentConfirmation(ctx context.Context, payment *payment_engine_models.Payment) error {
