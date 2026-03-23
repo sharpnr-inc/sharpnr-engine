@@ -68,6 +68,7 @@ func bootstrapHospitality(
 	restaurantRepo := restaurantrepo.NewRestaurantRepository(db)
 	restaurantService := restaurantservices.NewRestaurantService(
 		restaurantRepo,
+		menuService,
 		seroEngine,
 		txManager,
 		customerEngineService,

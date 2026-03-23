@@ -44,6 +44,7 @@ type MenuTaxationRegisterServiceInterface interface {
 		req hospitality_menu_contracts.MenuGroupTaxCategoryRequestDto,
 	) error
 
+	// This returns the TaxCategoryID and LegalEntityID
 	GetTaxCategoryOfMenuItem(
 		ctx context.Context,
 		orgID, emplID, menuItemID uuid.UUID,

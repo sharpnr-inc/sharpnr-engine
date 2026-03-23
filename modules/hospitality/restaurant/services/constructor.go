@@ -4,6 +4,7 @@ import (
 	"context"
 	org_customer_service "sharpnr-engine/core/customer/service"
 	dbtx "sharpnr-engine/core/dbTx"
+	menuservice "sharpnr-engine/modules/hospitality/menu/service"
 	restaurantrepo "sharpnr-engine/modules/hospitality/restaurant/repo"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	"sharpnr-engine/sero"
@@ -12,6 +13,7 @@ import (
 
 type restaurantService struct {
 	restaurantRepo restaurantrepo.RestaurantRepositoryInterface
+	menuService    menuservice.MenuService
 	seroEngine     *sero.SEROEngine
 	txManager      dbtx.TxManager
 	customerEngine org_customer_service.OrgCustomerServiceInterface
@@ -31,6 +33,7 @@ func (r *restaurantService) AddRestaurantGeneralDetails(ctx context.Context) {
 
 func NewRestaurantService(
 	restaurantRepo restaurantrepo.RestaurantRepositoryInterface,
+	menuService menuservice.MenuService,
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
 	customerEngine org_customer_service.OrgCustomerServiceInterface,
@@ -39,6 +42,7 @@ func NewRestaurantService(
 ) *restaurantService {
 	return &restaurantService{
 		restaurantRepo: restaurantRepo,
+		menuService:    menuService,
 		seroEngine:     seroEngine,
 		txManager:      txManager,
 		customerEngine: customerEngine,

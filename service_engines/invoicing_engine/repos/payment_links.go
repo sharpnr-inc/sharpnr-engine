@@ -57,6 +57,7 @@ func (r *invoiceEngineRepo) UpdateInvoicePaymentLinkStatus(
 	ctx context.Context,
 	invoicePaymentLinkID uuid.UUID,
 	status string,
+	reversedAt *time.Time, // Added this missing argument
 ) error {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {

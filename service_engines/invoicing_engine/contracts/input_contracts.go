@@ -1,6 +1,7 @@
 package invoice_engine_contracts
 
 import (
+	invoice_engine_models "sharpnr-engine/service_engines/invoicing_engine/models"
 	"time"
 
 	"github.com/google/uuid"
@@ -22,7 +23,6 @@ type CreateInvoiceRequest struct {
 }
 
 type InvoiceItemRequest struct {
-	InvoiceID     uuid.UUID
 	Description   string
 	Quantity      float64
 	Rate          float64
@@ -41,4 +41,13 @@ type RecordPaymentRequest struct {
 type ReversePaymentRequest struct {
 	InvoiceID  uuid.UUID
 	PaymentRef string
+}
+
+// service_engines/invoicing_engine/contracts/output_contracts.go
+
+type InvoiceWithDetails struct {
+	Invoice      invoice_engine_models.Invoice
+	Items        []invoice_engine_models.InvoiceItem
+	TaxBreakups  []invoice_engine_models.InvoiceTaxBreakup
+	PaymentLinks []invoice_engine_models.InvoicePaymentLink
 }

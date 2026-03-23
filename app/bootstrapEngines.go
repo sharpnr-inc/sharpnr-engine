@@ -48,6 +48,7 @@ func bootStrapInvoicingEngine(
 	db *gorm.DB,
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
+	taxEngine tax_engine_service.TaxEngineServiceInterface,
 	legalEntityService legal_entity_service.OrgLegalEntityServiceInterface,
 ) invoice_engine_services.InvoiceEngineServiceInterface {
 	repo := invoice_engine_repos.NewInvoiceEngineRepo(db)
@@ -55,6 +56,7 @@ func bootStrapInvoicingEngine(
 		repo,
 		txManager,
 		seroEngine,
+		taxEngine,
 		legalEntityService,
 	)
 }

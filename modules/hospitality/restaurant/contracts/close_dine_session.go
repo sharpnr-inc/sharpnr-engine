@@ -11,8 +11,9 @@ import (
 type CloseSessionRequest struct {
 
 	// CASH, CARD, UPI
-	PaymentMethod string
-	Amount        float64
+	PaymentMethod    string
+	PaymentAccountID uuid.UUID
+	Amount           float64
 
 	// Walk-in customer override
 	// If session has a RestaurantDiningSessionCustomer row already — ignored

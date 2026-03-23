@@ -44,11 +44,10 @@ func BootstrapModules(
 
 	identityService := bootstrapIdentity(db, employeeService)
 
-	invoiceEngine := bootStrapInvoicingEngine(db, txManager, seroEngine, orgLegalEntityService)
-
 	paymentsEngine := bootstrapPaymentEngine(db, mailerEngine, txManager, seroEngine)
 
 	taxEngineService := bootstrapTaxEngine(orgLegalEntityService, txManager, seroEngine)
+	invoiceEngine := bootStrapInvoicingEngine(db, txManager, seroEngine, taxEngineService, orgLegalEntityService)
 
 	hospitality := bootstrapHospitality(
 		db,
