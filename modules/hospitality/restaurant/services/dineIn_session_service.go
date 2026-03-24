@@ -448,6 +448,8 @@ func (s *restaurantService) settleInvoice(
 			return fmt.Errorf("record payment on invoice: %w", err)
 		}
 
+		// here we have to 
+
 		return nil
 	})
 }

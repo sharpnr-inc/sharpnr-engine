@@ -60,7 +60,7 @@ func BootstrapModules(
 		paymentsEngine,
 	)
 
-	accountingService := bootstrapAccounting(db, txManager, taxEngineService)
+	accountingService := bootstrapAccounting(db, txManager, taxEngineService, invoiceEngine)
 
 	orchestratorService := bootstrapSharpnrOrchestrator(
 		organizationService,

@@ -6,4 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PaymentGatewaysRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) {}
+func PaymentGatewaysRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) {
+	
+}
