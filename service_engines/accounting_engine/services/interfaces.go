@@ -10,7 +10,7 @@ import (
 
 type AccountingServiceInterface interface {
 	AccountingBooksServiceInterface
-	// AccountingJournalServiceInterface
+	AccountingJournalServiceInterface
 
 	CreateDraftAccountingSetup(ctx context.Context, input *accounting_engine_contracts.DraftAccountingSetupInput) error
 	GetLegalEntityLedgerEntry(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.LedgerPaginationResponse, error)

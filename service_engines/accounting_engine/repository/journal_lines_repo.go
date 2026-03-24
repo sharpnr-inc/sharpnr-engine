@@ -69,3 +69,22 @@ func (r *accountingRepository) GetJournalLinesByAccountAndPeriod(
 
 	return lines, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *accountingRepository) CreateJournalLine(
+	ctx context.Context,
+	line *accounting_models.JournalLine,
+) error {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	return db.WithContext(ctx).
+		Create(line).
+		Error
+}
+
+/* ---------------------------------- <***> --------------------------------- */

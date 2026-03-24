@@ -2,12 +2,15 @@ package accounting_service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math"
 	"time"
 
 	dbtx "sharpnr-engine/core/dbTx"
 	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"
+	accounting_engine_helpers "sharpnr-engine/service_engines/accounting_engine/helpers"
+	accounting_models "sharpnr-engine/service_engines/accounting_engine/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -77,6 +80,8 @@ func (s *accountingServices) GetLegalEntityLedgerEntry(
 	return res, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *accountingServices) GetJournalEntryDetails(
 	ctx context.Context,
 	entryID uuid.UUID,
@@ -118,4 +123,71 @@ func (s *accountingServices) GetJournalEntryDetails(
 	}
 
 	return res, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *accountingServices) AddJournalEntry(
+	ctx context.Context,
+	orgID, emplID uuid.UUID,
+	entryRequest accountingdtos.JournalEntryRequestDto,
+) error {
+
+	if err := entryRequest.ValidateRequest(); err != nil {
+		return err
+	}
+
+	if len(entryRequest.JournalLines) == 0 {
+		return errors.New("journal entry must contain at least one journal line")
+	}
+
+	// Validate each journal line
+	for _, line := range entryRequest.JournalLines {
+		if err := line.ValidateDto(); err != nil {
+			return err
+		}
+	}
+
+	// Validate debit-credit balance
+	if err := accounting_engine_helpers.ValidateJournalBalance(entryRequest.JournalLines); err != nil {
+		return err
+	}
+
+	journalEntry := &accounting_models.JournalEntry{
+		ID:               uuid.New(),
+		AccountingBookID: entryRequest.AccountingBookID,
+		FiscalYearID:     entryRequest.FiscalYearID,
+		EntryDate:        entryRequest.EntryDate,
+		Reference:        entryRequest.Reference,
+		Narration:        entryRequest.Narration,
+		EntryType:        entryRequest.EntryType,
+		CreatedAt:        entryRequest.CreatedAt,
+		UpdatedAt:        time.Now(),
+	}
+
+	if err := s.accRepo.CreateJournalEntry(ctx, journalEntry); err != nil {
+		return err
+	}
+
+	// Prepare journal lines
+
+	for _, l := range entryRequest.JournalLines {
+
+		lines := &accounting_models.JournalLine{
+			ID:             uuid.New(),
+			JournalEntryID: journalEntry.ID,
+			AccountID:      l.AccountID,
+			Debit:          l.Debit,
+			Credit:         l.Credit,
+			PartyID:        l.PartyID,
+			CreatedAt:      time.Now(),
+		}
+
+		if err := s.accRepo.CreateJournalLine(ctx, lines); err != nil {
+			return err
+		}
+	}
+
+	return nil
+
 }

@@ -26,5 +26,4 @@ func NewAccountingService(
 		taxEngine:     taxEngine,
 		invoiceEngine: invoiceEngine,
 	}
-
 }

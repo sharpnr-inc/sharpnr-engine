@@ -60,7 +60,7 @@ type AccountingRepositoryInterface interface {
 	// Journal Lines (Ledger Backbone)
 	// ------------------------
 
-	// CreateJournalLine(ctx context.Context, line *accounting_models.JournalLine) error
+	CreateJournalLine(ctx context.Context, line *accounting_models.JournalLine) error
 
 	GetJournalLinesByEntryID(ctx context.Context, entryID uuid.UUID) ([]accounting_models.JournalLine, error)
 	GetLedgerEntries(
