@@ -19,3 +19,4 @@ func bootstrapAccounting(
 	repo := accounting_repo.NewAccountingRepository(db)
 	return accounting_service.NewAccountingService(repo, txManager, taxEngine, invoiceEngine)
 }
+

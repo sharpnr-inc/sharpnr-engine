@@ -3,6 +3,7 @@ package app
 import (
 	dbtx "sharpnr-engine/core/dbTx"
 	"sharpnr-engine/sero"
+	accounting_sero_event_handler "sharpnr-engine/service_engines/accounting_engine/sero_event_handler"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 	sse_engine "sharpnr-engine/sse"
 
@@ -61,6 +62,7 @@ func BootstrapModules(
 	)
 
 	accountingService := bootstrapAccounting(db, txManager, taxEngineService, invoiceEngine)
+	accounting_sero_event_handler.Register(seroEngine, accountingService)
 
 	orchestratorService := bootstrapSharpnrOrchestrator(
 		organizationService,

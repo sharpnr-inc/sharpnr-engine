@@ -9,7 +9,7 @@ import (
 const (
 	OrderCreatedInRestaurant sero.SeroEngineEventType = "ORDER_CREATED_IN_RESTAURANT"
 	OrderStatusUpdated       sero.SeroEngineEventType = "ORDER_STATUS_UPDATED"
-	DiningSessionClosed      sero.SeroEngineEventType = "RESTAURANT_DINING_SESSION_CLOSED"
+	RestaurantPaymentSettled sero.SeroEngineEventType = "RESTAURANT_PAYMENT_SETTLED"
 )
 
 type OrderStatusUpdatePayload struct {
@@ -50,5 +50,6 @@ type AddonEventDTO struct {
 
 /* ---------------------------------- <***> --------------------------------- */
 
-type DiningSessionClosedEventDto struct {
+type RestaurantPaymentSettledDto struct {
+	InvoiceID uuid.UUID
 }
