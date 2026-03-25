@@ -1,4 +1,8 @@
 package accounting_resolvers
 
-type accountingResolver struct {
+type accountingEngineServiceResolver struct {
+}
+
+func NewAccountingEngineResolver() {
+
 }

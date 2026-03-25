@@ -1,7 +1,9 @@
 package restaurant_events
 
 import (
+	"errors"
 	"sharpnr-engine/sero"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -51,5 +53,41 @@ type AddonEventDTO struct {
 /* ---------------------------------- <***> --------------------------------- */
 
 type RestaurantPaymentSettledDto struct {
-	InvoiceID uuid.UUID
+	InvoiceID      uuid.UUID
+	PaymentID      uuid.UUID
+	OrganizationID uuid.UUID
+	LegalEntityID  uuid.UUID
+	AmountPaise    float64
+	PaidAt         time.Time
 }
+
+func (rps *RestaurantPaymentSettledDto) ValidateDto() error {
+
+	if rps.InvoiceID == uuid.Nil {
+		return errors.New("invoice_id is required")
+	}
+
+	if rps.PaymentID == uuid.Nil {
+		return errors.New("payment_id is required")
+	}
+
+	if rps.OrganizationID == uuid.Nil {
+		return errors.New("organization_id is required")
+	}
+
+	if rps.LegalEntityID == uuid.Nil {
+		return errors.New("legal_entity_id is required")
+	}
+
+	if rps.AmountPaise <= 0 {
+		return errors.New("amount_paise must be greater than zero")
+	}
+
+	if rps.PaidAt.IsZero() {
+		return errors.New("paid_at is required")
+	}
+
+	return nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */

@@ -123,3 +123,24 @@ func (r *paymentRepo) GetExpiredPendingOrders(ctx context.Context, before time.T
 
 	return orders, nil
 }
+
+func (r *paymentRepo) ListOrderByLegalEntityID(ctx context.Context, legalEntityID uuid.UUID) ([]*payment_engine_models.PaymentOrder, error) {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	var orders []*payment_engine_models.PaymentOrder
+
+	// Using .WithContext(ctx) ensures that timeouts or cancellations are respected
+	err := db.WithContext(ctx).
+		Where("legal_entity_id = ?", legalEntityID).
+		Find(&orders).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return orders, nil
+}

@@ -21,6 +21,13 @@ func handleRestaurantPaymentSettlment(
 			}
 		}
 
+		if err := data.ValidateDto(); err != nil {
+			return err
+		}
+
+		// Step 1 
+		
+
 		return nil
 	}
 }

@@ -11,6 +11,8 @@ import (
 type AccountingServiceInterface interface {
 	AccountingBooksServiceInterface
 	AccountingJournalServiceInterface
+	AccountingEngineResolverInterface
+	AccountingEnginePaymentsServiceInteface
 
 	CreateDraftAccountingSetup(ctx context.Context, input *accounting_engine_contracts.DraftAccountingSetupInput) error
 	GetLegalEntityLedgerEntry(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.LedgerPaginationResponse, error)
@@ -24,4 +26,14 @@ type AccountingBooksServiceInterface interface {
 type AccountingJournalServiceInterface interface {
 	AddJournalEntry(ctx context.Context, orgID, emplID uuid.UUID, entryRequest accountingdtos.JournalEntryRequestDto) error
 	AddJournalLines(ctx context.Context, orgID, emplID uuid.UUID, line accountingdtos.JournalLineRequestDto) error
+}
+
+type AccountingEngineResolverInterface interface {
+	// This is resovolver method reolve the AccountID
+	// Given to Fetch the
+	ResolveAccountIDTaxComponent()
+}
+
+type AccountingEnginePaymentsServiceInteface interface {
+	ListAllPaymentOrder(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accountingdtos.PaymentOrderResponseDTO, error)
 }

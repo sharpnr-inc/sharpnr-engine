@@ -24,6 +24,7 @@ type PaymentServiceInterface interface {
 
 	// ─── Order ────────────────────────────────────────────────────────────────
 	CreateOrder(ctx context.Context, req payment_engine_contracts.CreateOrderRequest) (*payment_engine_models.PaymentOrder, error)
+	GetOrderByLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]*payment_engine_models.PaymentOrder, error)
 	GetOrder(ctx context.Context, orderID uuid.UUID) (*payment_engine_models.PaymentOrder, error)
 	CancelOrder(ctx context.Context, orderID uuid.UUID, reason string, by string) error
 	ExpireStaleOrders(ctx context.Context) error

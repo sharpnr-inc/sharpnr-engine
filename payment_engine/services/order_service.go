@@ -9,6 +9,7 @@ import (
 	payment_payment_constants "sharpnr-engine/payment_engine/constant"
 	contracts "sharpnr-engine/payment_engine/contracts"
 	models "sharpnr-engine/payment_engine/models"
+	payment_engine_models "sharpnr-engine/payment_engine/models"
 
 	"github.com/google/uuid"
 )
@@ -127,4 +128,23 @@ func (s *paymentEngine) syncOrderStatus(
 	}
 
 	return s.paymentRepo.UpdateOrderPaidAmount(ctx, orderID, newPaid, newStatus)
+}
+
+func (c *paymentEngine) GetOrderByLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntityID uuid.UUID,
+) ([]*payment_engine_models.PaymentOrder, error) {
+
+	// 1. Optional: Add authorization or validation logic here
+	// e.g., Verify if emplID has access to orgID or legalEntityID
+
+	// 2. Call the repository method we just implemented
+	orders, err := c.paymentRepo.ListOrderByLegalEntityID(ctx, legalEntityID)
+	if err != nil {
+		// Log the error with context if you have a logger
+		return nil, fmt.Errorf("failed to fetch payment orders for legal entity %s: %w", legalEntityID, err)
+	}
+
+	// 3. Return the results
+	return orders, nil
 }

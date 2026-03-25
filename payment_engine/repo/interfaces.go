@@ -40,6 +40,7 @@ type PaymentEngineRepoInterface interface {
 	GetOrderByID(ctx context.Context, id uuid.UUID) (*payment_engine_models.PaymentOrder, error)
 	GetOrderByNumber(ctx context.Context, tenantID uuid.UUID, orderNumber string) (*payment_engine_models.PaymentOrder, error)
 	ListOrdersBySource(ctx context.Context, tenantID uuid.UUID, sourceType string, sourceRefID string) ([]*payment_engine_models.PaymentOrder, error)
+	ListOrderByLegalEntityID(ctx context.Context, legalEntityID uuid.UUID) ([]*payment_engine_models.PaymentOrder, error)
 	UpdateOrderStatus(ctx context.Context, id uuid.UUID, status string) error
 	UpdateOrderPaidAmount(ctx context.Context, id uuid.UUID, paidPaise int64, newStatus string) error
 	GetExpiredPendingOrders(ctx context.Context, before time.Time) ([]*payment_engine_models.PaymentOrder, error)
