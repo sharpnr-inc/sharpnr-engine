@@ -18,7 +18,9 @@
 
 package payment_gateway
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type ProviderRegistry struct {
 	providers map[string]GatewayProvider

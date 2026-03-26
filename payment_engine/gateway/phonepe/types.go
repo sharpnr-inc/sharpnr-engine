@@ -20,7 +20,7 @@ package phonepe
 // ─── OUTBOUND (your server → PhonePe) ────────────────────────────────────────
 
 type phonePePayRequest struct {
-	MerchantID            string            `json:"merchantId"`
+	MerchantID            string            `json:"client_id"`
 	MerchantTransactionID string            `json:"merchantTransactionId"` // = your Payment.ID
 	Amount                int64             `json:"amount"`                // paise
 	CallbackURL           string            `json:"callbackUrl"`           // from config["webhook_url"]

@@ -3,6 +3,7 @@ package payment_engine_service
 import (
 	"context"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
+	models "sharpnr-engine/payment_engine/models"
 	payment_engine_models "sharpnr-engine/payment_engine/models"
 
 	"github.com/google/uuid"
@@ -34,6 +35,7 @@ type PaymentServiceInterface interface {
 	ConfirmPayment(ctx context.Context, req payment_engine_contracts.ConfirmPaymentRequest) (*payment_engine_models.Payment, error)
 	GetPayment(ctx context.Context, paymentID uuid.UUID) (*payment_engine_models.Payment, error)
 	GetPaymentsByOrder(ctx context.Context, orderID uuid.UUID) ([]*payment_engine_models.Payment, error)
+	PublishPaymentConfirmed(ctx context.Context, payment *models.Payment)
 
 	// ─── Allocation ───────────────────────────────────────────────────────────
 	AllocatePayment(ctx context.Context, req payment_engine_contracts.AllocateRequest) (*payment_engine_models.PaymentAllocation, error)

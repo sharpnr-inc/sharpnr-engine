@@ -10,6 +10,8 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"net/url"
+	"strings"
 	"time"
 
 	payment_gateway "sharpnr-engine/payment_engine/gateway"
@@ -47,6 +49,8 @@ func NewPhonePeProvider(logger *slog.Logger) payment_gateway.GatewayProvider {
 
 func (p *PhonePeProvider) Code() string { return "PHONEPE" }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (p *PhonePeProvider) CreateOrder(
 	ctx context.Context,
 	req payment_gateway.GatewayOrderRequest,
@@ -54,9 +58,10 @@ func (p *PhonePeProvider) CreateOrder(
 	p.logger.Info("Initiating CreateOrder",
 		slog.String("internal_id", req.InternalOrderID))
 
-	merchantID := req.Config["merchant_id"]
-	saltKey := req.Config["salt_key"]
-	saltIndex := req.Config["salt_index"]
+	merchantID := req.Config["client_id"]
+	saltKey := req.Config["client_secret"]
+	saltIndex := req.Config["client_version"]
+
 	webhookURL := req.Config["webhook_url"]
 	baseURL := p.baseURL(req.Config)
 
@@ -99,6 +104,8 @@ func (p *PhonePeProvider) CreateOrder(
 
 	return result, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (p *PhonePeProvider) VerifyPayment(
 	ctx context.Context,
@@ -143,8 +150,8 @@ func (p *PhonePeProvider) InitiateRefund(
 ) (*payment_gateway.GatewayRefundResponse, error) {
 	p.logger.Info("Initiating refund", slog.String("orig_txn", req.GatewayTxnID))
 
-	merchantID := req.Config["merchant_id"]
-	saltKey := req.Config["salt_key"]
+	merchantID := req.Config["client_id"]
+	saltKey := req.Config["client_secret"]
 	saltIndex := req.Config["salt_index"]
 	baseURL := p.baseURL(req.Config)
 
@@ -215,6 +222,36 @@ func (p *PhonePeProvider) FetchStatus(
 // INTERNAL HELPERS (Now with full implementation and specific logs)
 // ─────────────────────────────────────────────────────────────────────────────
 
+func (p *PhonePeProvider) getToken(ctx context.Context) ([]byte, error) {
+
+	tokenURL := "https://api-preprod.phonepe.com/apis/pg-sandbox/v1/oauth/token"
+
+	// 1. Prepare form data (x-www-form-urlencoded)
+	data := url.Values{}
+	data.Set("client_id", "M23PWFUKZO053_2511101913")
+	data.Set("client_version", "1")
+	data.Set("client_secret", "MDFmMjQ2NGUtYzVmNy00YTc4LTkzOTQtYzdmMDAxZDY1YTIw")
+	data.Set("grant_type", "client_credentials")
+
+	// 2. Create request with the encoded string body
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, tokenURL, strings.NewReader(data.Encode()))
+	if err != nil {
+		return nil, err
+	}
+
+	// 3. Set the specific header required for OAuth
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	// 4. Execute
+	resp, err := p.httpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return io.ReadAll(resp.Body)
+}
+
 func (p *PhonePeProvider) signAndPost(
 	ctx context.Context,
 	url string,
@@ -272,4 +309,18 @@ func (p *PhonePeProvider) mapState(state string) string {
 	// Important: Log if PhonePe sends a state we haven't mapped yet
 	p.logger.Warn("Unknown PhonePe state encountered", slog.String("state", state))
 	return "PROCESSING"
+}
+
+/* -------------------------------------------------------------------------- */
+/*                     PhonePe V2 API Integrations Helpers                    */
+/* -------------------------------------------------------------------------- */
+
+// This is the step one here we get the tenants gateway config
+// put them in the Header and the After Getting response we extract the token
+func (p *PhonePeProvider) getAuthToken() {}
+
+// Step 2 this will take the token out inside the header and then
+// 
+func (p *PhonePeProvider) getThePaymentURLEnpoint() {
+
 }

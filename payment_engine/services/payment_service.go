@@ -111,8 +111,8 @@ func (s *paymentEngine) ConfirmPayment(
 	}
 
 	verifyResp, err := gateway.Provider.VerifyPayment(ctx, payment_gateway.GatewayVerifyRequest{
-		GatewayTxnID:   req.GatewayTxnID,
-		GatewayOrderID: req.GatewayOrderRef,
+		GatewayTxnID:    req.GatewayTxnID,
+		GatewayOrderID:  req.GatewayOrderRef,
 		AmountPaise:     payment.AmountPaise,
 		RawCallbackBody: req.RawCallbackBody,
 		Headers:         req.Headers,
@@ -152,6 +152,52 @@ func (s *paymentEngine) ConfirmPayment(
 	}
 
 	return payment, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *paymentEngine) PublishPaymentConfirmed(
+	ctx context.Context,
+	payment *models.Payment,
+) {
+	// Fetch order to get SourceMeta — contains session_id and invoice_id
+	order, err := s.paymentRepo.GetOrderByID(ctx, payment.PaymentOrderID)
+	if err != nil {
+		fmt.Printf("WARNING: PublishPaymentConfirmed — fetch order failed: %v\n", err)
+		return
+	}
+
+	if order.SourceMeta == nil {
+		fmt.Printf("WARNING: PublishPaymentConfirmed — order has no source meta\n")
+		return
+	}
+
+	// Publish — restaurant service handler picks this up
+	// err = s.seroEngine.Publish(ctx, payment_constants.PaymentConfirmedEvent,
+	// 	payment_events.PaymentConfirmedPayload{
+	// 		PaymentID:      payment.ID.String(),
+	// 		PaymentOrderID: payment.PaymentOrderID.String(),
+	// 		TenantID:       payment.TenantID.String(),
+	// 		LegalEntityID:  payment.LegalEntityID.String(),
+	// 		Method:         payment.Method,
+	// 		AmountPaise:    payment.AmountPaise,
+	// 		PaidAt:         payment.PaidAt.Format(time.RFC3339),
+	// 		SourceMeta:     *order.SourceMeta, // echoed back — restaurant reads session_id from here
+	// 	},
+	// )
+	// if err != nil {
+	// 	fmt.Printf("WARNING: PublishPaymentConfirmed — publish failed: %v\n", err)
+	// }
+
+	// TODO: uncomment when ready to wire sero event
+	fmt.Printf(
+		"[PaymentEngine] Payment confirmed — payment_id: %s | order_id: %s | method: %s | amount: %d paise | source_meta: %s\n",
+		payment.ID.String(),
+		payment.PaymentOrderID.String(),
+		payment.Method,
+		payment.AmountPaise,
+		*order.SourceMeta,
+	)
 }
 
 /* ---------------------------------- <***> --------------------------------- */
