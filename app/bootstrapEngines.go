@@ -1,8 +1,6 @@
 package app
 
 import (
-	"log/slog"
-	"os"
 	org_customer_repo "sharpnr-engine/core/customer/repo"
 	org_customer_service "sharpnr-engine/core/customer/service"
 	dbtx "sharpnr-engine/core/dbTx"
@@ -71,12 +69,10 @@ func bootstrapPaymentEngine(
 ) payment_engine_service.PaymentServiceInterface {
 	repo := payment_engine_repo.NewPaymentRepository(db)
 	// 1. Initialize the logger (Structured, Plain Text, No Color)
-	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-		Level: slog.LevelInfo,
-	}))
+
 	registry := payment_gateway.NewProviderRegistry(
 		cash.NewCashProvider(),
-		phonepe.NewPhonePeProvider(logger),
+		phonepe.NewPhonePeProvider(),
 	)
 	return payment_engine_service.NewPaymentService(
 		repo,

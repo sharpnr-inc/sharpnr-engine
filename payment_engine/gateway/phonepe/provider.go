@@ -4,323 +4,333 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha256"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
-	"log/slog"
+	"log"
 	"net/http"
-	"net/url"
-	"strings"
 	"time"
 
 	payment_gateway "sharpnr-engine/payment_engine/gateway"
 )
 
-// API endpoints
+// --- Logging Colors ---
 const (
-	sandboxBaseURL = "https://api-preprod.phonepe.com/apis/pg-sandbox"
-	prodBaseURL    = "https://api.phonepe.com/apis/hermes"
-
-	payEndpoint    = "/pg/v1/pay"
-	statusEndpoint = "/pg/v1/status/%s/%s"
-	refundEndpoint = "/pg/v1/refund"
+	reset  = "\033[0m"
+	red    = "\033[31m"
+	green  = "\033[32m"
+	yellow = "\033[33m"
+	blue   = "\033[34m"
+	purple = "\033[35m"
+	cyan   = "\033[36m"
+	gray   = "\033[37m"
 )
 
-// PhonePe state → internal PaymentStatus
-var stateMap = map[string]string{
-	"COMPLETED": "SUCCESS",
-	"FAILED":    "FAILED",
-	"ERROR":     "FAILED",
-	"PENDING":   "PROCESSING",
-}
+const (
+	uatBaseURL  = "https://api-preprod.phonepe.com/apis/pg-sandbox"
+	prodBaseURL = "https://api.phonepe.com/apis/pg"
+
+	uatAuthURL  = "https://api-preprod.phonepe.com/apis/pg-sandbox/v1/oauth/token"
+	prodAuthURL = "https://api.phonepe.com/apis/identity-manager/v1/oauth/token"
+
+	checkoutEndpoint    = "/checkout/v2/pay"
+	orderStatusEndpoint = "/checkout/v2/order/%s/status"
+	refundEndpoint      = "/checkout/v2/refund"
+)
+
+// --- Provider Implementation ---
 
 type PhonePeProvider struct {
 	httpClient *http.Client
-	logger     *slog.Logger
 }
 
-func NewPhonePeProvider(logger *slog.Logger) payment_gateway.GatewayProvider {
+func NewPhonePeProvider() payment_gateway.GatewayProvider {
 	return &PhonePeProvider{
 		httpClient: &http.Client{Timeout: 30 * time.Second},
-		logger:     logger.With("provider", "PHONEPE"),
 	}
 }
 
 func (p *PhonePeProvider) Code() string { return "PHONEPE" }
 
-/* ---------------------------------- <***> --------------------------------- */
-
+// CreateOrder handles the initiation of a payment
 func (p *PhonePeProvider) CreateOrder(
 	ctx context.Context,
 	req payment_gateway.GatewayOrderRequest,
 ) (*payment_gateway.GatewayOrderResponse, error) {
-	p.logger.Info("Initiating CreateOrder",
-		slog.String("internal_id", req.InternalOrderID))
+	log.Printf("%s[PHONEPE-INIT]%s Starting order creation for InternalID: %s%s%s", blue, reset, yellow, req.InternalOrderID, reset)
 
-	merchantID := req.Config["client_id"]
-	saltKey := req.Config["client_secret"]
-	saltIndex := req.Config["client_version"]
+	isTest := req.Config["is_test_mode"] == "true"
 
-	webhookURL := req.Config["webhook_url"]
-	baseURL := p.baseURL(req.Config)
-
-	payload := phonePePayRequest{
-		MerchantID:            merchantID,
-		MerchantTransactionID: req.InternalOrderID,
-		Amount:                req.AmountPaise,
-		CallbackURL:           webhookURL,
-		PaymentInstrument:     phonePeInstrument{Type: "UPI_QR"},
-	}
-
-	respBytes, err := p.signAndPost(ctx, baseURL+payEndpoint, payEndpoint, payload, saltKey, saltIndex)
+	// 1. Get OAuth token
+	log.Printf("%s[STEP 1]%s Authenticating with PhonePe...", cyan, reset)
+	token, err := p.getAuthToken(ctx, req.Config, isTest)
 	if err != nil {
-		return nil, err
+		log.Printf("%s[FATAL]%s Auth failed: %v", red, reset, err)
+		return nil, fmt.Errorf("phonepe: get auth token: %w", err)
+	}
+	log.Printf("%s[SUCCESS]%s Token acquired", green, reset)
+
+	// 2. Build payload
+	payload := createPaymentRequest{
+		MerchantOrderID: req.InternalOrderID,
+		Amount:          req.AmountPaise,
+		ExpireAfter:     1200,
+		MetaInfo:        req.Meta,
+		PaymentFlow: paymentFlow{
+			Type:    "PG_CHECKOUT",
+			Message: "Payment",
+		},
+	}
+	log.Printf("%s[STEP 2]%s Prepared payload: %s%+v%s", cyan, reset, gray, payload, reset)
+
+	// 3. Execution
+	baseURL := p.resolveBaseURL(isTest)
+	log.Printf("%s[STEP 3]%s Dispatching request to PhonePe API...", cyan, reset)
+	respBytes, err := p.doRequest(ctx, http.MethodPost, baseURL+checkoutEndpoint, payload, token, req.Config["merchant_id"])
+	if err != nil {
+		log.Printf("%s[ERROR]%s API Request Failed: %v", red, reset, err)
+		return nil, fmt.Errorf("phonepe: create order: %w", err)
 	}
 
-	var apiResp phonePeAPIResponse
-	if err := json.Unmarshal(respBytes, &apiResp); err != nil {
-		return nil, fmt.Errorf("unmarshal error: %w", err)
+	var phonePeResp createPaymentResponse
+	if err := json.Unmarshal(respBytes, &phonePeResp); err != nil {
+		log.Printf("%s[ERROR]%s Response unmarshal failed: %v", red, reset, err)
+		return nil, fmt.Errorf("phonepe: unmarshal create order response: %w", err)
 	}
 
-	if !apiResp.Success {
-		p.logger.Warn("PhonePe order creation failed", slog.String("msg", apiResp.Message))
-		return nil, fmt.Errorf("phonepe failed: %s", apiResp.Message)
-	}
-
-	p.logger.Info("Order created successfully", slog.String("gateway_id", apiResp.Data.TransactionID))
+	log.Printf("%s[COMPLETED]%s Order created. PhonePe OrderID: %s%s%s", green, reset, yellow, phonePeResp.OrderID, reset)
 
 	result := &payment_gateway.GatewayOrderResponse{
-		ProviderOrderID: apiResp.Data.TransactionID,
+		ProviderOrderID: phonePeResp.OrderID,
 		RawResponse:     string(respBytes),
 	}
 
-	if apiResp.Data.InstrumentResponse != nil && apiResp.Data.InstrumentResponse.QRData != nil {
-		result.QRData = apiResp.Data.InstrumentResponse.QRData
+	if phonePeResp.RedirectURL != "" {
+		log.Printf("%s[INFO]%s QR/Redirect URL extracted: %s", gray, reset, phonePeResp.RedirectURL)
+		result.QRData = &phonePeResp.RedirectURL
 	}
 
-	expiry := time.Now().Add(10 * time.Minute)
-	result.ExpiresAt = &expiry
+	if phonePeResp.ExpireAt > 0 {
+		t := time.Unix(phonePeResp.ExpireAt, 0)
+		result.ExpiresAt = &t
+	}
 
 	return result, nil
 }
 
-/* ---------------------------------- <***> --------------------------------- */
-
+// VerifyPayment handles incoming webhooks
 func (p *PhonePeProvider) VerifyPayment(
 	ctx context.Context,
 	req payment_gateway.GatewayVerifyRequest,
 ) (*payment_gateway.GatewayVerifyResponse, error) {
-	p.logger.Info("Verifying webhook")
+	log.Printf("%s[WEBHOOK-RECEIVED]%s Processing verification...", purple, reset)
 
-	saltKey := req.Config["salt_key"]
-	saltIndex := req.Config["salt_index"]
+	webhookUsername := req.Config["webhook_username"]
+	webhookPassword := req.Config["webhook_password"]
 
-	incomingChecksum := req.Headers["x-verify"]
-	expectedChecksum := p.checksum(req.RawCallbackBody, saltKey, saltIndex, "")
+	// 1. Verify Authorization header
+	incomingAuth := req.Headers["authorization"]
+	expectedAuth := p.generateWebhookSignature(webhookUsername, webhookPassword)
 
-	if incomingChecksum != expectedChecksum {
-		p.logger.Error("Checksum mismatch", slog.String("received", incomingChecksum))
-		return nil, fmt.Errorf("invalid signature")
+	log.Printf("%s[AUTH-CHECK]%s Comparing signatures...", cyan, reset)
+	if incomingAuth != expectedAuth {
+		log.Printf("%s[SECURITY ALERT]%s Invalid webhook signature!", red, reset)
+		return nil, fmt.Errorf("phonepe: invalid webhook signature")
+	}
+	log.Printf("%s[AUTH-OK]%s Signature verified", green, reset)
+
+	// 2. Parse payload
+	var webhookData webhookPayload
+	if err := json.Unmarshal([]byte(req.RawCallbackBody), &webhookData); err != nil {
+		log.Printf("%s[ERROR]%s Webhook data corrupted: %v", red, reset, err)
+		return nil, fmt.Errorf("phonepe: unmarshal webhook payload: %w", err)
 	}
 
-	var wrapper phonePeWebhookPayload
-	json.Unmarshal([]byte(req.RawCallbackBody), &wrapper)
+	status := p.mapState(webhookData.State)
+	log.Printf("%s[STATUS]%s Order %s set to %s%s%s", cyan, reset, webhookData.MerchantOrderID, yellow, status, reset)
 
-	decoded, _ := base64.StdEncoding.DecodeString(wrapper.Response)
-	var data phonePeData
-	json.Unmarshal(decoded, &data)
-
-	status := p.mapState(data.State)
-	p.logger.Info("Webhook verified", slog.String("status", status), slog.String("txn_id", data.TransactionID))
+	gatewayTxnID := webhookData.OrderID
+	if len(webhookData.PaymentDetails) > 0 {
+		gatewayTxnID = webhookData.PaymentDetails[0].TransactionID
+	}
 
 	return &payment_gateway.GatewayVerifyResponse{
-		Status:          status,
-		GatewayTxnID:    data.TransactionID,
-		GatewayOrderID:  data.MerchantTransactionID,
-		PaidAmountPaise: data.Amount,
-		PaidAt:          time.Now(),
-		RawResponse:     string(decoded),
+		Status:         status,
+		GatewayTxnID:   gatewayTxnID,
+		GatewayOrderID: webhookData.MerchantOrderID,
+		PaidAt:         time.Now(),
+		RawResponse:    req.RawCallbackBody,
 	}, nil
 }
 
+// InitiateRefund processes a refund request
 func (p *PhonePeProvider) InitiateRefund(
 	ctx context.Context,
 	req payment_gateway.GatewayRefundRequest,
 ) (*payment_gateway.GatewayRefundResponse, error) {
-	p.logger.Info("Initiating refund", slog.String("orig_txn", req.GatewayTxnID))
+	log.Printf("%s[REFUND-START]%s InternalID: %s", blue, reset, req.InternalRefundID)
 
-	merchantID := req.Config["client_id"]
-	saltKey := req.Config["client_secret"]
-	saltIndex := req.Config["salt_index"]
-	baseURL := p.baseURL(req.Config)
-
-	payload := phonePeRefundRequest{
-		MerchantID:            merchantID,
-		MerchantTransactionID: req.InternalRefundID,
-		OriginalTransactionID: req.GatewayTxnID,
-		Amount:                req.RefundAmountPaise,
-		CallbackURL:           req.Config["webhook_url"],
-	}
-
-	respBytes, err := p.signAndPost(ctx, baseURL+refundEndpoint, refundEndpoint, payload, saltKey, saltIndex)
+	isTest := req.Config["is_test_mode"] == "true"
+	token, err := p.getAuthToken(ctx, req.Config, isTest)
 	if err != nil {
 		return nil, err
 	}
 
-	var apiResp phonePeAPIResponse
-	json.Unmarshal(respBytes, &apiResp)
+	payload := refundRequest{
+		MerchantRefundID: req.InternalRefundID,
+		OriginalOrderID:  req.GatewayTxnID,
+		Amount:           req.RefundAmountPaise,
+	}
 
-	status := p.mapState(apiResp.Data.State)
+	baseURL := p.resolveBaseURL(isTest)
+	respBytes, err := p.doRequest(ctx, http.MethodPost, baseURL+refundEndpoint, payload, token, req.Config["merchant_id"])
+	if err != nil {
+		log.Printf("%s[REFUND-FAILED]%s %v", red, reset, err)
+		return nil, err
+	}
+
+	var refundResp refundResponse
+	json.Unmarshal(respBytes, &refundResp)
+
+	log.Printf("%s[REFUND-SUCCESS]%s PhonePe RefundID: %s", green, reset, refundResp.RefundID)
+
 	return &payment_gateway.GatewayRefundResponse{
-		GatewayRefundID: apiResp.Data.TransactionID,
-		Status:          status,
+		GatewayRefundID: refundResp.RefundID,
+		Status:          p.mapState(refundResp.State),
 		RawResponse:     string(respBytes),
 	}, nil
 }
 
+// FetchStatus reconciles status via polling
 func (p *PhonePeProvider) FetchStatus(
 	ctx context.Context,
 	gatewayTxnID string,
 	config map[string]string,
 ) (*payment_gateway.GatewayStatusResponse, error) {
-	p.logger.Info("Polling status", slog.String("txn_id", gatewayTxnID))
+	log.Printf("%s[FETCH-STATUS]%s Polling for Txn: %s", cyan, reset, gatewayTxnID)
 
-	merchantID := config["merchant_id"]
-	saltKey := config["salt_key"]
-	saltIndex := config["salt_index"]
-	baseURL := p.baseURL(config)
-
-	endpoint := fmt.Sprintf(statusEndpoint, merchantID, gatewayTxnID)
-	url := baseURL + endpoint
-	checksum := p.checksum("", saltKey, saltIndex, endpoint)
-
-	httpReq, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	httpReq.Header.Set("X-VERIFY", checksum)
-	httpReq.Header.Set("X-MERCHANT-ID", merchantID)
-
-	resp, err := p.httpClient.Do(httpReq)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	respBytes, _ := io.ReadAll(resp.Body)
-	var statusResp phonePeStatusResponse
-	json.Unmarshal(respBytes, &statusResp)
-
-	return &payment_gateway.GatewayStatusResponse{
-		Status:          p.mapState(statusResp.Data.State),
-		GatewayTxnID:    statusResp.Data.TransactionID,
-		GatewayOrderID:  statusResp.Data.MerchantTransactionID,
-		PaidAmountPaise: statusResp.Data.Amount,
-		RawResponse:     string(respBytes),
-	}, nil
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// INTERNAL HELPERS (Now with full implementation and specific logs)
-// ─────────────────────────────────────────────────────────────────────────────
-
-func (p *PhonePeProvider) getToken(ctx context.Context) ([]byte, error) {
-
-	tokenURL := "https://api-preprod.phonepe.com/apis/pg-sandbox/v1/oauth/token"
-
-	// 1. Prepare form data (x-www-form-urlencoded)
-	data := url.Values{}
-	data.Set("client_id", "M23PWFUKZO053_2511101913")
-	data.Set("client_version", "1")
-	data.Set("client_secret", "MDFmMjQ2NGUtYzVmNy00YTc4LTkzOTQtYzdmMDAxZDY1YTIw")
-	data.Set("grant_type", "client_credentials")
-
-	// 2. Create request with the encoded string body
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, tokenURL, strings.NewReader(data.Encode()))
+	isTest := config["is_test_mode"] == "true"
+	token, err := p.getAuthToken(ctx, config, isTest)
 	if err != nil {
 		return nil, err
 	}
 
-	// 3. Set the specific header required for OAuth
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	baseURL := p.resolveBaseURL(isTest)
+	url := baseURL + fmt.Sprintf(orderStatusEndpoint, gatewayTxnID)
 
-	// 4. Execute
+	log.Printf("%s[GET]%s %s", purple, reset, url)
+	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	req.Header.Set("Authorization", "O-Bearer "+token)
+	req.Header.Set("X-MERCHANT-ID", config["merchant_id"])
+
 	resp, err := p.httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	return io.ReadAll(resp.Body)
-}
+	respBytes, _ := io.ReadAll(resp.Body)
+	var statusResp orderStatusResponse
+	json.Unmarshal(respBytes, &statusResp)
 
-func (p *PhonePeProvider) signAndPost(
-	ctx context.Context,
-	url string,
-	endpoint string,
-	payload interface{},
-	saltKey string,
-	saltIndex string,
-) ([]byte, error) {
-	payloadBytes, _ := json.Marshal(payload)
-	encoded := base64.StdEncoding.EncodeToString(payloadBytes)
-	checksum := p.checksum(encoded, saltKey, saltIndex, endpoint)
+	log.Printf("%s[RESULT]%s PhonePe State: %s%s%s", cyan, reset, yellow, statusResp.State, reset)
 
-	body, _ := json.Marshal(map[string]string{"request": encoded})
-	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(body))
-	if err != nil {
-		return nil, err
+	gatewayTxnRef := statusResp.OrderID
+	if len(statusResp.PaymentDetails) > 0 {
+		gatewayTxnRef = statusResp.PaymentDetails[0].TransactionID
 	}
 
-	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("X-VERIFY", checksum)
+	return &payment_gateway.GatewayStatusResponse{
+		Status:          p.mapState(statusResp.State),
+		GatewayTxnID:    gatewayTxnRef,
+		GatewayOrderID:  statusResp.MerchantOrderID,
+		PaidAmountPaise: statusResp.Amount,
+		RawResponse:     string(respBytes),
+	}, nil
+}
 
-	resp, err := p.httpClient.Do(httpReq)
+// --- Helpers with Logging ---
+
+func (p *PhonePeProvider) getAuthToken(ctx context.Context, config map[string]string, isTest bool) (string, error) {
+	authURL := prodAuthURL
+	if isTest {
+		authURL = uatAuthURL
+	}
+
+	url := fmt.Sprintf(
+		"%s?client_id=%s&client_version=%s&client_secret=%s&grant_type=client_credentials",
+		authURL, config["client_id"], config["client_version"], config["client_secret"],
+	)
+
+	req, _ := http.NewRequestWithContext(ctx, http.MethodPost, url, nil)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	resp, err := p.httpClient.Do(req)
 	if err != nil {
-		p.logger.Error("HTTP request failed", slog.String("url", url), slog.Any("err", err))
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	respBytes, _ := io.ReadAll(resp.Body)
+	var tokenResp authTokenResponse
+	if err := json.Unmarshal(respBytes, &tokenResp); err != nil {
+		return "", err
+	}
+
+	if tokenResp.AccessToken == "" {
+		log.Printf("%s[AUTH-FAIL]%s No token in response", red, reset)
+		return "", fmt.Errorf("empty access token")
+	}
+
+	return tokenResp.AccessToken, nil
+}
+
+func (p *PhonePeProvider) doRequest(ctx context.Context, method, url string, payload interface{}, token, mID string) ([]byte, error) {
+	log.Printf("%s[HTTP-REQ]%s %s %s", purple, reset, method, url)
+
+	body, _ := json.Marshal(payload)
+	req, _ := http.NewRequestWithContext(ctx, method, url, bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "O-Bearer "+token)
+	req.Header.Set("X-MERCHANT-ID", mID)
+
+	resp, err := p.httpClient.Do(req)
+	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	respBytes, _ := io.ReadAll(resp.Body)
 	if resp.StatusCode >= 400 {
-		p.logger.Error("PhonePe API error", slog.Int("code", resp.StatusCode))
+		log.Printf("%s[API-WARN]%s Status: %d | Body: %s", yellow, reset, resp.StatusCode, string(respBytes))
+		return respBytes, fmt.Errorf("phonepe error: %d", resp.StatusCode)
 	}
 
 	return respBytes, nil
 }
 
-func (p *PhonePeProvider) checksum(data, saltKey, saltIndex, endpoint string) string {
-	// Formula: SHA256(data + endpoint + saltKey) + "###" + saltIndex
-	input := data + endpoint + saltKey
-	hash := sha256.Sum256([]byte(input))
-	return fmt.Sprintf("%x###%s", hash, saltIndex)
-}
-
-func (p *PhonePeProvider) baseURL(config map[string]string) string {
-	if config["is_test_mode"] == "true" {
-		return sandboxBaseURL
+func (p *PhonePeProvider) resolveBaseURL(isTest bool) string {
+	if isTest {
+		return uatBaseURL
 	}
 	return prodBaseURL
 }
 
-func (p *PhonePeProvider) mapState(state string) string {
-	if status, ok := stateMap[state]; ok {
-		return status
-	}
-	// Important: Log if PhonePe sends a state we haven't mapped yet
-	p.logger.Warn("Unknown PhonePe state encountered", slog.String("state", state))
-	return "PROCESSING"
+func (p *PhonePeProvider) generateWebhookSignature(username, password string) string {
+	input := fmt.Sprintf("%s:%s", username, password)
+	hash := sha256.Sum256([]byte(input))
+	return fmt.Sprintf("%x", hash)
 }
 
-/* -------------------------------------------------------------------------- */
-/*                     PhonePe V2 API Integrations Helpers                    */
-/* -------------------------------------------------------------------------- */
-
-// This is the step one here we get the tenants gateway config
-// put them in the Header and the After Getting response we extract the token
-func (p *PhonePeProvider) getAuthToken() {}
-
-// Step 2 this will take the token out inside the header and then
-// 
-func (p *PhonePeProvider) getThePaymentURLEnpoint() {
-
+func (p *PhonePeProvider) mapState(state string) string {
+	switch state {
+	case "COMPLETED":
+		return "SUCCESS"
+	case "FAILED", "ERROR":
+		return "FAILED"
+	case "PENDING":
+		return "PROCESSING"
+	default:
+		return "PROCESSING"
+	}
 }
