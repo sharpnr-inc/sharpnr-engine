@@ -31,7 +31,7 @@ type AccountingJournalServiceInterface interface {
 type AccountingEngineResolverInterface interface {
 	// This is resovolver method reolve the AccountID
 	// Given to Fetch the
-	ResolveAccountIDTaxComponent()
+	ResolveAccountIDByTaxComponent(ctx context.Context)
 }
 
 type AccountingEnginePaymentsServiceInteface interface {

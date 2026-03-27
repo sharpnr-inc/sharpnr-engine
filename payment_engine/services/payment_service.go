@@ -24,6 +24,7 @@ func (s *paymentEngine) Pay(
 	if err != nil {
 		return nil, fmt.Errorf("order not found: %w", err)
 	}
+	// helper functions
 	if err := validateOrderPayable(order); err != nil {
 		return nil, err
 	}

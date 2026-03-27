@@ -25,7 +25,7 @@ func handleRestaurantPaymentSettlment(
 			return err
 		}
 
-		// Step 1 
+		// Step 1 we First we need to check the
 		
 
 		return nil
