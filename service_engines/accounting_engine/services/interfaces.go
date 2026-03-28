@@ -10,13 +10,12 @@ import (
 
 type AccountingServiceInterface interface {
 	AccountingBooksServiceInterface
-	AccountingJournalServiceInterface
+	AccountingEngineJournalEntryServiceInterface
+	AccountingEngineJounalLineServiceInterface
 	AccountingEngineResolverInterface
 	AccountingEnginePaymentsServiceInteface
 
 	CreateDraftAccountingSetup(ctx context.Context, input *accounting_engine_contracts.DraftAccountingSetupInput) error
-	GetLegalEntityLedgerEntry(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.LedgerPaginationResponse, error)
-	GetJournalEntryDetails(ctx context.Context, entryID uuid.UUID) (accountingdtos.JournalEntryDetailsDTO, error)
 }
 
 type AccountingBooksServiceInterface interface {
@@ -28,13 +27,18 @@ type AccountingEngineAccountGroupServiceInterface interface {
 	GetAccountGroupDetails(ctx context.Context, orgID, emplID, accountGroupID uuid.UUID) (accountingdtos.AccountingGroup_Response_dto, error)
 }
 
-type AccountingJournalServiceInterface interface {
-	AddJournalEntry(ctx context.Context, orgID, emplID uuid.UUID, entryRequest accountingdtos.JournalEntryRequestDto) error
-	AddJournalLines(ctx context.Context, orgID, emplID uuid.UUID, line accountingdtos.JournalLineRequestDto) error
-}
-
 type AccountingEnginePaymentsServiceInteface interface {
 	ListAllPaymentOrder(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accountingdtos.PaymentOrderResponseDTO, error)
+}
+
+type AccountingEngineJournalEntryServiceInterface interface {
+	GetJournalEntryDetails(ctx context.Context, entryID uuid.UUID) (accountingdtos.JournalEntryDetailsDTO, error)
+	CreateJournalEntry(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, journalEntryRequest accountingdtos.JournalEntryExternalRequestDto) (journalEntryID uuid.UUID, err error)
+	GetLegalEntityLedgerEntry(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.LedgerPaginationResponse, error)
+}
+
+type AccountingEngineJounalLineServiceInterface interface {
+	CreateJournalLine(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, journalLineRequest accountingdtos.JournalLineExternalRequestDto) (journalLineID uuid.UUID, err error)
 }
 
 /* -------------------------------------------------------------------------- */

@@ -90,3 +90,18 @@ func (jl *JournalLineRequestDto) ValidateDto() error {
 
 	return nil
 }
+
+type JournalEntryExternalRequestDto struct {
+	AccountingBookID uuid.UUID                            `json:"accounting_book_id,omitempty"`
+	Reference        string                               `json:"reference"`
+	Narration        string                               `json:"narration"`
+	EntryType        accountingconstants.JournalEntryType `json:"entry_type"`
+	Lines            []JournalLineExternalRequestDto      `json:"lines"`
+}
+
+type JournalLineExternalRequestDto struct {
+	AccountID uuid.UUID  `json:"account_id"`
+	Debit     float64    `json:"debit"`
+	Credit    float64    `json:"credit"`
+	PartyID   *uuid.UUID `json:"party_id,omitempty"`
+}

@@ -21,7 +21,7 @@ type AccountingRepositoryInterface interface {
 	// ------------------------
 
 	CreateAccountingBook(ctx context.Context, accounting_book *accounting_models.AccountingBook) error
-	GetAccountingBookByID(ctx context.Context, accounting_bookID uuid.UUID) ([]*accounting_models.AccountingBook, error)
+	GetAccountingBookByID(ctx context.Context, accounting_bookID uuid.UUID) (*accounting_models.AccountingBook, error)
 	GetAccountingBookByLegalEntityID(ctx context.Context, legal_entityId uuid.UUID) (*accounting_models.AccountingBook, error)
 
 	// ------------------------
