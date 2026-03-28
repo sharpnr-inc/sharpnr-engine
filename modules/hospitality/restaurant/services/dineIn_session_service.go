@@ -303,6 +303,7 @@ func (s *restaurantService) CloseDineInSession(
 			if err != nil {
 				return nil, err
 			}
+			fmt.Println("the taxCategory of :-->", menuItemTaxCategoryID)
 			items = append(items, invoice_engine_contracts.InvoiceItemRequest{
 				Description:   item.MenuItemName,
 				Quantity:      float64(item.Quantity),
@@ -448,7 +449,7 @@ func (s *restaurantService) settleInvoice(
 			return fmt.Errorf("record payment on invoice: %w", err)
 		}
 
-		// here we have to 
+		// here we have to
 
 		return nil
 	})

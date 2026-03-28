@@ -11,5 +11,6 @@ func registerAccAccountsRoutes(ar *gin.RouterGroup, ac *accounting_controllers.A
 	accr := ar.Group("/accounts")
 	{
 		accr.GET("/")
+		accr.POST("/create", ac.CreateAccount)
 	}
 }

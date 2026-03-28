@@ -21,6 +21,11 @@ type AccountingServiceInterface interface {
 
 type AccountingBooksServiceInterface interface {
 	GetAccountingBook(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.AccountingBook_Response_dto, error)
+	CreateAccount(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, accountRequest accountingdtos.CreateAccountRequest) (accountID uuid.UUID, err error)
+}
+
+type AccountingEngineAccountGroupServiceInterface interface {
+	GetAccountGroupDetails(ctx context.Context, orgID, emplID, accountGroupID uuid.UUID) (accountingdtos.AccountingGroup_Response_dto, error)
 }
 
 type AccountingJournalServiceInterface interface {
