@@ -1,5 +1,7 @@
 package accounting_service
 
-func (s *accountingServices) ResolveAccountIDTaxComponent() {
+import "context"
+
+func (s *accountingServices) ResolveAccountIDByTaxComponent(ctx context.Context) {
 	panic("")
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	restaurant_events "sharpnr-engine/modules/hospitality/restaurant/events"
 	"sharpnr-engine/sero"
+	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
 )
 
@@ -25,8 +26,16 @@ func handleRestaurantPaymentSettlment(
 			return err
 		}
 
-		// Step 1 we First we need to check the
-		
+		// Step 1 we First we need to create the Journal Entry
+
+		journalEntry := &accountingdtos.JournalEntryRequestDto{
+			EntryDate: data.PaidAt,
+		}
+
+		if err := accountingService.AddJournalEntry(ctx, data.OrganizationID, data.OrganizationID, *journalEntry); err != nil {
+			return err
+		}
+
 
 		return nil
 	}

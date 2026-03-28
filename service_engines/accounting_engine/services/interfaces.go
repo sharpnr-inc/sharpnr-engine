@@ -28,12 +28,16 @@ type AccountingJournalServiceInterface interface {
 	AddJournalLines(ctx context.Context, orgID, emplID uuid.UUID, line accountingdtos.JournalLineRequestDto) error
 }
 
+type AccountingEnginePaymentsServiceInteface interface {
+	ListAllPaymentOrder(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accountingdtos.PaymentOrderResponseDTO, error)
+}
+
+/* -------------------------------------------------------------------------- */
+/*                          Resolvers for Accounting                          */
+/* -------------------------------------------------------------------------- */
+
 type AccountingEngineResolverInterface interface {
 	// This is resovolver method reolve the AccountID
 	// Given to Fetch the
 	ResolveAccountIDByTaxComponent(ctx context.Context)
-}
-
-type AccountingEnginePaymentsServiceInteface interface {
-	ListAllPaymentOrder(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accountingdtos.PaymentOrderResponseDTO, error)
 }
