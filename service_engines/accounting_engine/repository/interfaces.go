@@ -64,19 +64,6 @@ type AccountingRepositoryInterface interface {
 	CreateJournalLine(ctx context.Context, line *accounting_models.JournalLine) error
 
 	GetJournalLinesByEntryID(ctx context.Context, entryID uuid.UUID) ([]accounting_models.JournalLine, error)
-	GetLedgerEntries(
-		ctx context.Context,
-		bookID uuid.UUID,
-		fiscalYearID uuid.UUID,
-		accountID *uuid.UUID,
-		page int,
-		limit int,
-	) ([]accountingdtos.LedgerEntryDTO, int64, error)
-
-	GetJournalLinesWithAccount(
-		ctx context.Context,
-		entryID uuid.UUID,
-	) ([]accountingdtos.JournalLineDetail, error)
 	GetJournalLinesByAccountID(ctx context.Context, accountID uuid.UUID) ([]accounting_models.JournalLine, error)
 	GetLedger(
 		accountID uuid.UUID,
