@@ -39,3 +39,27 @@ func (c *AccountingController) CreateAccount(ctx *gin.Context) {
 
 	utils.Success(ctx, http.StatusOK, "Success")
 }
+
+func (c *AccountingController) GetAccountLedger(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContext(ctx)
+	if !ok {
+		return
+	}
+
+	legalEntityID, ok := c.resolveLegalEntityID(ctx)
+	if !ok {
+		return
+	}
+	accountID, ok := c.resolveAccountID(ctx)
+	if !ok {
+		return
+	}
+
+	ledger, err := c.accSvc.GetAccountLeger(ctx.Request.Context(), orgID, emplID, legalEntityID, accountID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something Went Wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Success", ledger)
+}

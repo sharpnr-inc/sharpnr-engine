@@ -14,6 +14,7 @@ type AccountingServiceInterface interface {
 	AccountingEngineJounalLineServiceInterface
 	AccountingEngineResolverInterface
 	AccountingEnginePaymentsServiceInteface
+	AccountingEngineLedgerServiceInterface
 
 	CreateDraftAccountingSetup(ctx context.Context, input *accounting_engine_contracts.DraftAccountingSetupInput) error
 }
@@ -39,6 +40,10 @@ type AccountingEngineJournalEntryServiceInterface interface {
 
 type AccountingEngineJounalLineServiceInterface interface {
 	CreateJournalLine(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, journalLineRequest accountingdtos.JournalLineExternalRequestDto) (journalLineID uuid.UUID, err error)
+}
+
+type AccountingEngineLedgerServiceInterface interface {
+	GetAccountLeger(ctx context.Context, orgID, emplID, legalEntityID, accountID uuid.UUID) (accountingdtos.AccountLedgerDto, error)
 }
 
 /* -------------------------------------------------------------------------- */

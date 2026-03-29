@@ -77,4 +77,9 @@ type AccountingRepositoryInterface interface {
 		ctx context.Context,
 		entryID uuid.UUID,
 	) ([]accountingdtos.JournalLineDetail, error)
+	GetJournalLinesByAccountID(ctx context.Context, accountID uuid.UUID) ([]accounting_models.JournalLine, error)
+	GetLedger(
+		accountID uuid.UUID,
+		from, to time.Time,
+	) ([]accountingdtos.LedgerLineDto, error)
 }

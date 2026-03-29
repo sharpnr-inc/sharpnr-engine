@@ -88,3 +88,25 @@ func (r *accountingRepository) CreateJournalLine(
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (r *accountingRepository) GetJournalLinesByAccountID(ctx context.Context, accountID uuid.UUID) ([]accounting_models.JournalLine, error) {
+
+	var lines []accounting_models.JournalLine
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	err := db.WithContext(ctx).
+		Where("account_id = ?", accountID).
+		Order("created_at ASC").
+		Find(&lines).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return lines, nil
+}
