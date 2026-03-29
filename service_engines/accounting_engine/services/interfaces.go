@@ -34,6 +34,7 @@ type AccountingEngineAccountServiceInterface interface {
 
 type AccountingEngineJournalEntryServiceInterface interface {
 	CreateJournalEntry(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, journalEntryRequest accountingdtos.JournalEntryExternalRequestDto) (journalEntryID uuid.UUID, err error)
+	GetJournalEntries(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accountingdtos.JournalResponseDto, error)
 }
 
 type AccountingEngineJounalLineServiceInterface interface {

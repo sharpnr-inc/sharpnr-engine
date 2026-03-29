@@ -35,3 +35,23 @@ func (c *AccountingController) CreateJournalEntry(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusOK, "Journal Entry Created Successfully", journalEntryID)
 
 }
+
+func (c *AccountingController) GetJournalEntries(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContext(ctx)
+	if !ok {
+		return
+	}
+
+	legalEntityID, ok := c.resolveLegalEntityID(ctx)
+	if !ok {
+		return
+	}
+
+	res, err := c.accSvc.GetJournalEntries(ctx.Request.Context(), orgID, emplID, legalEntityID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Failed to Fetch Journal Entries", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Journal Entries Fetched Successfully", res)
+}

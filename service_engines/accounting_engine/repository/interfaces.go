@@ -47,6 +47,7 @@ type AccountingRepositoryInterface interface {
 	CreateAccount(ctx context.Context, account *accounting_models.Account) error
 	GetAccountsByGroupID(ctx context.Context, groupID uuid.UUID) ([]accounting_models.Account, error)
 	GetAccountByID(ctx context.Context, accountID uuid.UUID) (*accounting_models.Account, error)
+	GetLedger(accountID uuid.UUID, from, to time.Time) ([]accountingdtos.LedgerLineDto, error)
 
 	// ------------------------
 	// Journal (CORE)
@@ -54,6 +55,7 @@ type AccountingRepositoryInterface interface {
 
 	CreateJournalEntry(ctx context.Context, entry *accounting_models.JournalEntry) error
 	GetJournalEntryByID(ctx context.Context, entryID uuid.UUID) (*accounting_models.JournalEntry, error)
+	GetJournalEntriesByAccountingBookID(ctx context.Context, bookID uuid.UUID) ([]accounting_models.JournalEntry, error)
 	GetJournalEntriesByBookAndPeriod(ctx context.Context, bookID uuid.UUID, from, to time.Time) ([]accounting_models.JournalEntry, error)
 	GetJournalEntryTotals(ctx context.Context, entryID uuid.UUID) (totalDebit float64, totalCredit float64, err error)
 
@@ -62,11 +64,6 @@ type AccountingRepositoryInterface interface {
 	// ------------------------
 
 	CreateJournalLine(ctx context.Context, line *accounting_models.JournalLine) error
-
-	GetJournalLinesByEntryID(ctx context.Context, entryID uuid.UUID) ([]accounting_models.JournalLine, error)
+	GetJournalLinesByJournalEntryID(ctx context.Context, entryID uuid.UUID) ([]accounting_models.JournalLine, error)
 	GetJournalLinesByAccountID(ctx context.Context, accountID uuid.UUID) ([]accounting_models.JournalLine, error)
-	GetLedger(
-		accountID uuid.UUID,
-		from, to time.Time,
-	) ([]accountingdtos.LedgerLineDto, error)
 }

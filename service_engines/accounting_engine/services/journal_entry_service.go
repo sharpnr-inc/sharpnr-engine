@@ -131,3 +131,59 @@ func (s *accountingServices) CreateJournalEntry(
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (s *accountingServices) GetJournalEntries(
+	ctx context.Context,
+	orgID, emplID, legalEntityID uuid.UUID,
+) ([]accountingdtos.JournalResponseDto, error) {
+	// 1. Get the accounting book
+	accBook, err := s.accRepo.GetAccountingBookByLegalEntityID(ctx, legalEntityID)
+	if err != nil {
+		return nil, err
+	}
+	if accBook == nil {
+		return nil, fmt.Errorf("accounting book not found for legal entity")
+	}
+
+	// 2. Get all journal entries for that book
+	journalEntries, err := s.accRepo.GetJournalEntriesByAccountingBookID(ctx, accBook.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	// 3. Prepare response slice
+	response := make([]accountingdtos.JournalResponseDto, len(journalEntries))
+
+	for i, je := range journalEntries {
+		// 4. Fetch lines for the specific entry
+		lines, err := s.accRepo.GetJournalLinesByJournalEntryID(ctx, je.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		// 5. Map model lines to DTO lines
+		lineDtos := make([]accountingdtos.JournalLineResponseDto, len(lines))
+		for j, line := range lines {
+			lineDtos[j] = accountingdtos.JournalLineResponseDto{
+				ID:        line.ID,
+				AccountID: line.AccountID,
+				Debit:     line.Debit,
+				Credit:    line.Credit,
+				PartyID:   line.PartyID,
+				CreatedAt: line.CreatedAt,
+			}
+		}
+
+		// 6. Assemble the entry DTO
+		response[i] = accountingdtos.JournalResponseDto{
+			ID:           je.ID,
+			EntryDate:    je.EntryDate,
+			Reference:    je.Reference,
+			Narration:    je.Narration,
+			EntryType:    je.EntryType,
+			JournalLines: lineDtos,
+		}
+	}
+
+	return response, nil
+}

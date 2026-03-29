@@ -11,7 +11,7 @@ import (
 )
 
 // GetJournalLinesByEntryID implements AccountingRepositoryInterface.
-func (r *accountingRepository) GetJournalLinesByEntryID(
+func (r *accountingRepository) GetJournalLinesByJournalEntryID(
 	ctx context.Context,
 	entryID uuid.UUID,
 ) ([]accounting_models.JournalLine, error) {

@@ -112,3 +112,28 @@ func (r *accountingRepository) GetJournalEntryTotals(
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (r *accountingRepository) GetJournalEntriesByAccountingBookID(
+	ctx context.Context,
+	bookID uuid.UUID,
+) ([]accounting_models.JournalEntry, error) {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	var entries []accounting_models.JournalEntry
+
+	err := db.
+		Where("accounting_book_id = ?", bookID).
+		Order("entry_date DESC").
+		Find(&entries).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return entries, nil
+}
