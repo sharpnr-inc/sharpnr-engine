@@ -2,6 +2,7 @@ package app
 
 import (
 	dbtx "sharpnr-engine/core/dbTx"
+	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	accounting_repo "sharpnr-engine/service_engines/accounting_engine/repository"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
@@ -19,7 +20,16 @@ func bootstrapAccounting(
 	invoiceEngine invoice_engine_services.InvoiceEngineServiceInterface,
 	paymentEngine payment_engine_service.PaymentServiceInterface,
 	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
+	supplierService suppliers_service.SupplierServiceInterface,
 ) accounting_service.AccountingServiceInterface {
 	repo := accounting_repo.NewAccountingRepository(db)
-	return accounting_service.NewAccountingService(repo, txManager, taxEngine, invoiceEngine, paymentEngine, inventoryEngine)
+	return accounting_service.NewAccountingService(
+		repo,
+		txManager,
+		taxEngine,
+		invoiceEngine,
+		paymentEngine,
+		inventoryEngine,
+		supplierService,
+	)
 }
