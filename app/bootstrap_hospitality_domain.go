@@ -22,6 +22,7 @@ import (
 	restaurantservices "sharpnr-engine/modules/hospitality/restaurant/services"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	"sharpnr-engine/sero"
+	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
 	invoice_engine_services "sharpnr-engine/service_engines/invoicing_engine/services"
 	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"
 	sse_engine "sharpnr-engine/sse"
@@ -38,6 +39,7 @@ func bootstrapHospitality(
 	customerEngineService org_customer_service.OrgCustomerServiceInterface,
 	invoiceEngine invoice_engine_services.InvoiceEngineServiceInterface,
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
+	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
 ) *hospitalitydomain.HospitalityDomain {
 
 	// Kitchen
