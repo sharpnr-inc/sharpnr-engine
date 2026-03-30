@@ -15,6 +15,7 @@ type AccountingServiceInterface interface {
 	AccountingEngineResolverInterface
 	AccountingEnginePaymentsServiceInteface
 	AccountingEngineAccountServiceInterface
+	AccountingEngineReportServiceInterface
 
 	CreateDraftAccountingSetup(ctx context.Context, input *accounting_engine_contracts.DraftAccountingSetupInput) error
 }
@@ -53,4 +54,8 @@ type AccountingEngineResolverInterface interface {
 	// This is resovolver method reolve the AccountID
 	// Given to Fetch the
 	ResolveAccountIDByTaxComponent(ctx context.Context)
+}
+
+type AccountingEngineReportServiceInterface interface {
+	GenerateProfitAndLossReport(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, periodFrom, periodTo string) (accountingdtos.ProfitAndLossReportResponseDto, error)
 }

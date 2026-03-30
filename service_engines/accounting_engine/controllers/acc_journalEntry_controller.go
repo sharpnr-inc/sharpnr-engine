@@ -36,6 +36,8 @@ func (c *AccountingController) CreateJournalEntry(ctx *gin.Context) {
 
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (c *AccountingController) GetJournalEntries(ctx *gin.Context) {
 	orgID, emplID, ok := c.resolveRequestContext(ctx)
 	if !ok {

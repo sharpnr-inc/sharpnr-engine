@@ -66,4 +66,13 @@ type AccountingRepositoryInterface interface {
 	CreateJournalLine(ctx context.Context, line *accounting_models.JournalLine) error
 	GetJournalLinesByJournalEntryID(ctx context.Context, entryID uuid.UUID) ([]accounting_models.JournalLine, error)
 	GetJournalLinesByAccountID(ctx context.Context, accountID uuid.UUID) ([]accounting_models.JournalLine, error)
+	ReportingRepositoryInterface
+}
+
+type ReportingRepositoryInterface interface {
+	GetAccountMovementsForPeriod(
+		ctx context.Context,
+		bookID uuid.UUID,
+		from, to time.Time,
+	) ([]accountingdtos.AccountMovementRow, error)
 }
