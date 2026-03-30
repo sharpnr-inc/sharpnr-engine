@@ -11,12 +11,12 @@ func createSchemas(db *gorm.DB) error {
 		"organization_property",
 		"setup_wizard",
 		"legal_entity",
-		"invoicing_engine",
 		"sero_engine",
 		"policy_engine",
 		"invoice_engine",
 		"payments",
 		"customers",
+		"inventory",
 	}
 
 	for _, s := range schemas {

@@ -12,6 +12,7 @@ import (
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
+	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
 )
 
 func bootstrapSharpnrOrchestrator(
@@ -25,6 +26,7 @@ func bootstrapSharpnrOrchestrator(
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
+	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
 ) orchestrator_service.OrchestratorServiceInterface {
 	return orchestrator_service.NewSharpnrOrchestratorService(
 		organizationService,
@@ -37,5 +39,6 @@ func bootstrapSharpnrOrchestrator(
 		seroEngine,
 		orgCustomerService,
 		paymentsEngine,
+		inventoryEngine,
 	)
 }

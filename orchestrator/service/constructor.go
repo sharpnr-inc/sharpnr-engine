@@ -11,6 +11,7 @@ import (
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
+	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
 )
 
 type orchestratorService struct {
@@ -24,6 +25,7 @@ type orchestratorService struct {
 	seroEngine              *sero.SEROEngine
 	customerEngine          org_customer_service.OrgCustomerServiceInterface
 	paymentsEngine          payment_engine_service.PaymentServiceInterface
+	inventoryEngine         inventory_engine_services.InventoryEngineServicesInterface
 }
 
 func NewSharpnrOrchestratorService(
@@ -37,6 +39,7 @@ func NewSharpnrOrchestratorService(
 	seroEngine *sero.SEROEngine,
 	customerEngine org_customer_service.OrgCustomerServiceInterface,
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
+	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
 ) *orchestratorService {
 	return &orchestratorService{
 		organizationService:     organizationService,
@@ -49,5 +52,6 @@ func NewSharpnrOrchestratorService(
 		seroEngine:              seroEngine,
 		customerEngine:          customerEngine,
 		paymentsEngine:          paymentsEngine,
+		inventoryEngine:         inventoryEngine,
 	}
 }

@@ -11,6 +11,8 @@ import (
 	payment_engine_repo "sharpnr-engine/payment_engine/repo"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	"sharpnr-engine/sero"
+	inventory_engine_repo "sharpnr-engine/service_engines/inventory_engine/repo"
+	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
 	invoice_engine_repos "sharpnr-engine/service_engines/invoicing_engine/repos"
 	invoice_engine_services "sharpnr-engine/service_engines/invoicing_engine/services"
 	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"
@@ -78,6 +80,19 @@ func bootstrapPaymentEngine(
 		repo,
 		registry,
 		mailerEngine,
+		txManager,
+		seroEngine,
+	)
+}
+
+func bootstrapInventoryEngine(
+	db *gorm.DB,
+	txManager dbtx.TxManager,
+	seroEngine *sero.SEROEngine,
+) inventory_engine_services.InventoryEngineServicesInterface {
+	repo := inventory_engine_repo.NewInventoryEngineRepo(db)
+	return inventory_engine_services.NewInventoryEngineService(
+		repo,
 		txManager,
 		seroEngine,
 	)

@@ -24,6 +24,7 @@ func BootstrapModules(
 	organizationService := bootstrapOrganization(db, redis, mailerEngine, iAM)
 	orgPropertyService := bootstrapOrgProperty(db, txManager)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
+	inventoryEngine := bootstrapInventoryEngine(db, txManager, seroEngine)
 
 	employeeService := bootstrapEmployee(db)
 	orgSetupWizardService := bootstrapOrgSetupWizard(
@@ -61,7 +62,7 @@ func BootstrapModules(
 		paymentsEngine,
 	)
 
-	accountingService := bootstrapAccounting(db, txManager, taxEngineService, invoiceEngine, paymentsEngine)
+	accountingService := bootstrapAccounting(db, txManager, taxEngineService, invoiceEngine, paymentsEngine, inventoryEngine)
 	accounting_sero_event_handler.Register(seroEngine, accountingService)
 
 	orchestratorService := bootstrapSharpnrOrchestrator(
@@ -75,6 +76,7 @@ func BootstrapModules(
 		txManager,
 		seroEngine,
 		paymentsEngine,
+		inventoryEngine,
 	)
 
 	return &AppModules{
