@@ -2,12 +2,12 @@ package inventory_engine_repo
 
 import "gorm.io/gorm"
 
-type inventortyEngineRepo struct {
+type inventoryEngineRepo struct {
 	db *gorm.DB
 }
 
-func NewInventoryEngineRepo(db *gorm.DB) *inventortyEngineRepo {
-	return &inventortyEngineRepo{
+func NewInventoryEngineRepo(db *gorm.DB) *inventoryEngineRepo {
+	return &inventoryEngineRepo{
 		db: db,
 	}
 }
