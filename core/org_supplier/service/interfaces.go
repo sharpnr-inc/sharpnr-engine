@@ -1,5 +1,14 @@
 package suppliers_service
 
+import (
+	"context"
+	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
+	org_suppliers_models "sharpnr-engine/core/org_supplier/models"
+
+	"github.com/google/uuid"
+)
+
 type SupplierServiceInterface interface {
-	// Define the methods that the supplier service should implement
+	CreateNewSupplier(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, request *suppliers_dtos.CreateSuppliersAPIRequestdto) error
+	GetAllSupplierByOrgID(ctx context.Context, orgID, emplID uuid.UUID) ([]org_suppliers_models.Supplier, error)
 }
