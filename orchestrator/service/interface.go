@@ -5,6 +5,8 @@ import (
 	org_customer_contracts "sharpnr-engine/core/customer/contracts"
 	org_customer_models "sharpnr-engine/core/customer/models"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
+	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
+	org_suppliers_models "sharpnr-engine/core/org_supplier/models"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 
@@ -17,6 +19,7 @@ type OrchestratorServiceInterface interface {
 	LegalEntityOrchestrationServiceInterface
 	CustomerOrchestratorServiceInterface
 	PaymentOrchestratorServiceInterface
+	SuppliersAndVendorsOrchestratorServiceInterface
 	/* -------------------------------------------------------------------------- */
 	/*                       Setupwizard related operations                       */
 	/* -------------------------------------------------------------------------- */
@@ -103,4 +106,9 @@ type PaymentOrchestratorServiceInterface interface {
 	) error
 
 	GetPaymentAccountDetails(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, paymentAccountID uuid.UUID) ([]payment_engine_contracts.GatewayConfigResponse, error)
+}
+
+type SuppliersAndVendorsOrchestratorServiceInterface interface {
+	AddNewSupplier(ctx context.Context, orgID, emplID uuid.UUID, request *suppliers_dtos.CreateSuppliersAPIRequestdto) error
+	ListAllOrganizationSuppliers(ctx context.Context, orgID, emplID uuid.UUID) ([]org_suppliers_models.Supplier, error)
 }

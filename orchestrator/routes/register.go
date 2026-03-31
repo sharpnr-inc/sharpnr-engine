@@ -30,5 +30,6 @@ func RegisterOrchestratorRoutes(
 	registersharnprLauncherRoutes(org, orchestController)
 	registerCustomerRoutes(org, orchestController)
 	paymentOrchestratorRoutes(org, orchestController)
+	registerOrgSupplierRoutes(org, orchestController)
 
 }

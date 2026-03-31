@@ -34,6 +34,7 @@ func MigrateDB(db *gorm.DB) error {
 		migrateInvoicingEngine,
 		migratePaymentsEngine,
 		migrateInventoryEngine,
+		migrateOrgSuppliers,
 	}
 
 	for _, migrate := range migrations {
