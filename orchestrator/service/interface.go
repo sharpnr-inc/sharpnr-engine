@@ -9,6 +9,8 @@ import (
 	org_suppliers_models "sharpnr-engine/core/org_supplier/models"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
+	inventory_dtos "sharpnr-engine/service_engines/inventory_engine/dtos"
+	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
 
 	"github.com/google/uuid"
 )
@@ -20,6 +22,7 @@ type OrchestratorServiceInterface interface {
 	CustomerOrchestratorServiceInterface
 	PaymentOrchestratorServiceInterface
 	SuppliersAndVendorsOrchestratorServiceInterface
+	InventoryOrchestratorServiceInterface
 	/* -------------------------------------------------------------------------- */
 	/*                       Setupwizard related operations                       */
 	/* -------------------------------------------------------------------------- */
@@ -111,4 +114,9 @@ type PaymentOrchestratorServiceInterface interface {
 type SuppliersAndVendorsOrchestratorServiceInterface interface {
 	AddNewSupplier(ctx context.Context, orgID, emplID uuid.UUID, request *suppliers_dtos.CreateSuppliersAPIRequestdto) error
 	ListAllOrganizationSuppliers(ctx context.Context, orgID, emplID uuid.UUID) ([]org_suppliers_models.Supplier, error)
+}
+
+type InventoryOrchestratorServiceInterface interface {
+	AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *inventory_dtos.NewInventoryAccountRequestDto) error
+	ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error)
 }

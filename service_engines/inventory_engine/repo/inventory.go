@@ -91,3 +91,26 @@ func (r *inventoryEngineRepo) GetInventoryByID(ctx context.Context, inventoryID 
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (r *inventoryEngineRepo) GetInventoryByInventoryAccountID(ctx context.Context, inventoryAccountID uuid.UUID) ([]inventory_engine_models.Inventory, error) {
+	var inventoryList []inventory_engine_models.Inventory
+
+	// 1. Extract transaction from context if it exists; otherwise, use the default DB
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	// 2. Query for all inventory records linked to the specific Inventory Account
+	// This allows you to fetch all stock associated with a specific Bar or Kitchen account
+	err := db.WithContext(ctx).
+		Where("inventory_account_id = ?", inventoryAccountID).
+		Find(&inventoryList).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return inventoryList, nil
+}
