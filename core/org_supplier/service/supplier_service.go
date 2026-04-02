@@ -58,10 +58,29 @@ func (s *supplierService) GetAllSupplierByOrgID(ctx context.Context, orgID, empl
 	return suppliers, nil
 }
 
-func (s *supplierService) ListAllSuppliersOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]org_suppliers_models.Supplier, error) {
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *supplierService) ListAllSuppliersOfLegalEntity(
+	ctx context.Context,
+	orgID,
+	emplID,
+	legalEntityID uuid.UUID,
+) ([]org_suppliers_models.Supplier, error) {
 
 	var results []org_suppliers_models.Supplier
+
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		suppliers, err := s.supplierRepo.GetSuppliersByLegalEntity(
+			ctx,
+			orgID,
+			legalEntityID,
+		)
+		if err != nil {
+			return err
+		}
+
+		results = suppliers
 		return nil
 	})
 
@@ -71,6 +90,8 @@ func (s *supplierService) ListAllSuppliersOfLegalEntity(ctx context.Context, org
 
 	return results, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *supplierService) ListAllLegalEntityLinksOfSuppliers(ctx context.Context, orgID, emplID, suppliersID uuid.UUID) ([]org_suppliers_models.SupplierLegalEntityLink, error) {
 	var links []org_suppliers_models.SupplierLegalEntityLink
