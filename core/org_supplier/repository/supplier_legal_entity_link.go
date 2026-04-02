@@ -20,7 +20,9 @@ func (r *supplierRepository) CreateSupplierLegalEntityLink(ctx context.Context, 
 	return db.WithContext(ctx).Create(link).Error
 }
 
-func (r *supplierRepository) GetSuppliersLinkOfSuppliers(ctx context.Context, legalEntityID uuid.UUID) ([]org_suppliers_models.SupplierLegalEntityLink, error) {
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *supplierRepository) GetSuppliersLinkOfSuppliers(ctx context.Context, suppliersID uuid.UUID) ([]org_suppliers_models.SupplierLegalEntityLink, error) {
 	var links []org_suppliers_models.SupplierLegalEntityLink
 
 	// 1. Extract transaction from context if it exists
@@ -32,7 +34,7 @@ func (r *supplierRepository) GetSuppliersLinkOfSuppliers(ctx context.Context, le
 	// 2. Query for all links associated with the specific Legal Entity
 	// We use .Find() to populate the slice of links
 	err := db.WithContext(ctx).
-		Where("legal_entity_id = ?", legalEntityID).
+		Where("supplier_id = ?", suppliersID).
 		Find(&links).
 		Error
 

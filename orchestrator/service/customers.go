@@ -21,6 +21,8 @@ func (s *orchestratorService) AddCustomer(ctx context.Context, orgID, emplID uui
 	})
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *orchestratorService) SearchCustomer(ctx context.Context, orgID, emplID uuid.UUID, searchQuery string) ([]org_customer_models.Customer, error) {
 	var results []org_customer_models.Customer
 

@@ -2,6 +2,7 @@ package orchestrator_service
 
 import (
 	"context"
+	"errors"
 	dbtx "sharpnr-engine/core/dbTx"
 	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
@@ -88,11 +89,28 @@ func (s *orchestratorService) AddLegalEntityLinksInSuppliers(ctx context.Context
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
+		// 1. Use the 'suppliersID' from the URL/Params, not the request body
+		existingLinks, err := s.supplierService.ListAllLegalEntityLinksOfSuppliers(txCtx, orgID, emplID, suppliersID)
+		if err != nil {
+			return err // Return the actual error so the transaction rolls back
+		}
+
+		// 2. Check for duplicates
+		for _, link := range existingLinks {
+			if link.LegalEntityID == request.LegalEntityID {
+				// Return a specific error if the link already exists
+				return errors.New("this legal entity is already linked to this supplier")
+			}
+		}
+
+		// 3. Ensure the request object has the correct SupplierID before passing it down
+		// This is why your DB was getting 0000-0000
+		request.SuppliersID = suppliersID
+
 		if err := s.supplierService.AddLegalEntityLinksToSupplier(txCtx, orgID, emplID, *request); err != nil {
 			return err
 		}
 
 		return nil
-
 	})
 }
