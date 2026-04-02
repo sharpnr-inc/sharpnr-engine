@@ -10,4 +10,5 @@ func registerOrgSupplierRoutes(r *gin.RouterGroup, c *orchestrator_controllers.O
 	sr := r.Group("/suppliers")
 	sr.GET("/list", c.ListAllSupplierHandler)
 	sr.POST("/add-new", c.CreateNewSupplierHandler)
+	sr.POST("/:suppliersID/add-lel", c.AddLegalEntityLinkToSupplierHandler)
 }

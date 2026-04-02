@@ -3,8 +3,10 @@ package suppliers_service
 import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
+	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
 	org_suppliers_models "sharpnr-engine/core/org_supplier/models"
+	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -95,4 +97,24 @@ func (s *supplierService) ListAllLegalEntityLinksOfSuppliers(ctx context.Context
 	}
 
 	return links, nil
+}
+
+func (s *supplierService) AddLegalEntityLinksToSupplier(ctx context.Context, orgID, emplID uuid.UUID, req supplier_contracts.AddLegalEntityLinkInSuppliersRequestDto) error {
+
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+		link := &org_suppliers_models.SupplierLegalEntityLink{
+			ID:            uuid.New(),
+			SupplierID:    req.SuppliersID,
+			LegalEntityID: req.LegalEntityID,
+			CreatedAt:     time.Now(),
+			UpdatedAt:     time.Now(),
+		}
+
+		if err := s.supplierRepo.CreateSupplierLegalEntityLink(txCtx, link); err != nil {
+			return err
+		}
+
+		return nil
+	})
 }

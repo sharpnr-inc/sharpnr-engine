@@ -3,6 +3,7 @@ package orchestrator_service
 import (
 	"context"
 	dbtx "sharpnr-engine/core/dbTx"
+	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
 
 	"github.com/google/uuid"
@@ -78,4 +79,20 @@ func (s *orchestratorService) ListAllOrganizationSuppliers(ctx context.Context, 
 	}
 
 	return results, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) AddLegalEntityLinksInSuppliers(ctx context.Context, orgID, emplID, suppliersID uuid.UUID, request *supplier_contracts.AddLegalEntityLinkInSuppliersRequestDto) error {
+
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		if err := s.supplierService.AddLegalEntityLinksToSupplier(txCtx, orgID, emplID, *request); err != nil {
+			return err
+		}
+
+		return nil
+
+	})
 }

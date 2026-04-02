@@ -2,6 +2,7 @@ package orchestrator_controllers
 
 import (
 	"net/http"
+	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
 	"sharpnr-engine/shared/utils"
 
@@ -44,3 +45,32 @@ func (c *OrchestratorController) ListAllSupplierHandler(ctx *gin.Context) {
 	// Returning the slice with a clear confirmation message
 	utils.Success(ctx, http.StatusOK, "Suppliers retrieved successfully", suppliers)
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) AddLegalEntityLinkToSupplierHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	request, ok := utils.BindJSON[*supplier_contracts.AddLegalEntityLinkInSuppliersRequestDto](ctx)
+	if !ok {
+		return
+	}
+
+	suppliersID, err := c.getSuppliersID_fromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	if err := c.orchestService.AddLegalEntityLinksInSuppliers(ctx.Request.Context(), orgID, emplID, suppliersID, *request); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Failed to link legal entity to supplier", err)
+		return
+	}
+
+	// Using StatusCreated (201) and a clear success message
+	utils.Success(ctx, http.StatusCreated, "Legal entity linked to supplier successfully", nil)
+}
+
+/* ---------------------------------- <***> --------------------------------- */

@@ -82,3 +82,17 @@ func (c *OrchestratorController) getPaymentAccountIDFromParams(ctx *gin.Context)
 
 	return pId, err
 }
+
+func (c *OrchestratorController) getSuppliersID_fromParams(ctx *gin.Context) (uuid.UUID, error) {
+
+	// 3. Param Parsing
+	suppliersID := ctx.Param("suppliersID")
+	sId, err := uuid.Parse(suppliersID)
+	if err != nil {
+		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid suppliers id format"))
+		return uuid.Nil, err
+	}
+
+	return sId, err
+}
