@@ -14,6 +14,7 @@ func registerRestaurantInventoryRoutes(
 	resInv := resRoutes.Group("/inventory")
 	{
 		resInv.GET("", restaurantController.GetAllInventoryAccounts)
+		resInv.POST("/add-inventory")
 	}
 
 }

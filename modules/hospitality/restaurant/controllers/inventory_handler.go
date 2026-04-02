@@ -2,6 +2,7 @@ package restaurantcontrollers
 
 import (
 	"net/http"
+	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
@@ -30,5 +31,30 @@ func (c *RestaurantController) GetAllInventoryAccounts(ctx *gin.Context) {
 	}
 
 	utils.Success(ctx, http.StatusOK, "Inventory Account/Warehouse List Fetched Successfully", acc)
+
+}
+
+func (c *RestaurantController) AddInventoryInInventoryAccount(ctx *gin.Context) {
+	orgID, empID, ok := c.resolveContext(ctx)
+	if !ok {
+		return
+	}
+
+	// 2. Resolve Restaurant ID from params
+	restaurantID, ok := c.resolveRestaurantID(ctx)
+	if !ok {
+		return
+	}
+
+	req, ok := utils.BindJSON[restaurant_contracts.AddInventoryRequestDto](ctx)
+	if !ok {
+		return
+	}
+
+	if err := c.resSvc.AddNewInventoryInRestaurant(ctx.Request.Context(), orgID, empID, restaurantID, req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+	}
+
+	utils.Success(ctx, http.StatusOK, "Inventory Added SuccessFully")
 
 }

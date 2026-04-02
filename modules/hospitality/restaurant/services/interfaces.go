@@ -106,4 +106,5 @@ type RestaurantPickUpOrderServiceInterface interface {
 
 type RestaurantInventoryServiceInterface interface {
 	GetAllInventoryAccounts(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error)
+	AddNewInventoryInRestaurant(ctx context.Context, orgID, emplID, restaurantID uuid.UUID, request *restaurant_contracts.AddInventoryRequestDto) error
 }
