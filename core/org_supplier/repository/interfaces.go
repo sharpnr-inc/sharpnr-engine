@@ -14,4 +14,5 @@ type SupplierRepositoryInterface interface {
 	GetSuppliersByOrgID(ctx context.Context, orgID uuid.UUID) ([]org_suppliers_models.Supplier, error)
 
 	CreateSupplierLegalEntityLink(ctx context.Context, supplierLegalEntityLink *org_suppliers_models.SupplierLegalEntityLink) error
+	GetSuppliersLinkOfSuppliers(ctx context.Context, suppliersID uuid.UUID) ([]org_suppliers_models.SupplierLegalEntityLink, error)
 }

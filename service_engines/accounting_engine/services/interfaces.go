@@ -16,6 +16,7 @@ type AccountingServiceInterface interface {
 	AccountingEnginePaymentsServiceInteface
 	AccountingEngineAccountServiceInterface
 	AccountingEngineReportServiceInterface
+	AccountingSuppliersServiceInterface
 
 	CreateDraftAccountingSetup(ctx context.Context, input *accounting_engine_contracts.DraftAccountingSetupInput) error
 }
@@ -58,4 +59,9 @@ type AccountingEngineResolverInterface interface {
 
 type AccountingEngineReportServiceInterface interface {
 	GenerateProfitAndLossReport(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, periodFrom, periodTo string) (accountingdtos.ProfitAndLossReportResponseDto, error)
+}
+
+type AccountingSuppliersServiceInterface interface {
+	GetLegalEntitySuppliers(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accounting_engine_contracts.LegalEntitySuppliersResponseDto, error)
+	AddNewSuppliers(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, request *accounting_engine_contracts.AddNewSuppliersForLegalEntityRequestDto) error
 }

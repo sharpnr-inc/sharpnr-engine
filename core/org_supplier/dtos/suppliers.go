@@ -1,5 +1,7 @@
 package suppliers_dtos
 
+import "github.com/google/uuid"
+
 type CreateSuppliersAPIRequestdto struct {
 	SuppliersName string `json:"suppliers_name"`
 	Email         string `json:"email"`
@@ -10,4 +12,23 @@ type CreateSuppliersAPIRequestdto struct {
 	State       string `json:"state"`
 	Pincode     string `json:"pincode"`
 	Country     string `json:"country"`
+}
+
+type SuppliersResponseDetails struct {
+	ID            uuid.UUID
+	SuppliersName string `json:"suppliers_name"`
+	Email         string `json:"email"`
+	Phone         string `json:"phone"`
+
+	AddressLine      string `json:"address_line"`
+	City             string `json:"city"`
+	State            string `json:"state"`
+	Pincode          string `json:"pincode"`
+	Country          string `json:"country"`
+	LegalEntityLinks []SuppliersLegalEntity
+}
+
+type SuppliersLegalEntity struct {
+	LegalEntityID   uuid.UUID
+	LegalEntityName string
 }

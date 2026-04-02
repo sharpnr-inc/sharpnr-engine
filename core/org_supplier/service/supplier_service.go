@@ -55,3 +55,44 @@ func (s *supplierService) GetAllSupplierByOrgID(ctx context.Context, orgID, empl
 	// 3. Return the results
 	return suppliers, nil
 }
+
+func (s *supplierService) ListAllSuppliersOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]org_suppliers_models.Supplier, error) {
+
+	var results []org_suppliers_models.Supplier
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		return nil
+	})
+
+	if err != nil {
+		return results, err
+	}
+
+	return results, nil
+}
+
+func (s *supplierService) ListAllLegalEntityLinksOfSuppliers(ctx context.Context, orgID, emplID, suppliersID uuid.UUID) ([]org_suppliers_models.SupplierLegalEntityLink, error) {
+	var links []org_suppliers_models.SupplierLegalEntityLink
+
+	// Wrap in a transaction to ensure a consistent view of the mapping
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		// Inject the transaction into the context for the repository
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		// Fetch the links associated with this specific supplier
+		// Note: Ensure your repository method supports filtering by SupplierID
+		result, err := s.supplierRepo.GetSuppliersLinkOfSuppliers(txCtx, suppliersID)
+		if err != nil {
+			return err
+		}
+
+		links = result
+		return nil
+	})
+
+	if err != nil {
+		// Return nil on failure to signal that data is untrusted
+		return nil, err
+	}
+
+	return links, nil
+}
