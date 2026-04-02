@@ -43,3 +43,25 @@ func (c *OrchestratorController) ListAllInventoryAccountHandler(ctx *gin.Context
 	// Return the list with a success message and the data payload
 	utils.Success(ctx, http.StatusOK, "Inventory accounts retrieved successfully", accounts)
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) ListAllInventoriesOfInvetoryAccountHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	inventoryAccountID, err := c.getInventoryAccountID_fromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	res, err := c.orchestService.GetInventoryAccountDetails(ctx.Request.Context(), orgID, emplID, inventoryAccountID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Failed to retrieve inventories", err)
+		return
+	}
+	utils.Success(ctx, http.StatusOK, "Inventory retrieved successfully", res)
+
+}

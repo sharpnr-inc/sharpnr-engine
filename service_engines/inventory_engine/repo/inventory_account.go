@@ -43,3 +43,27 @@ func (r *inventoryEngineRepo) GetInventoryAccountsByOrgID(ctx context.Context, o
 
 	return accounts, nil
 }
+func (r *inventoryEngineRepo) GetSharedInventoryAccountsByOrgID(
+	ctx context.Context,
+	orgID uuid.UUID,
+) ([]inventory_engine_models.InventoryAccount, error) {
+
+	var accounts []inventory_engine_models.InventoryAccount
+
+	// Extract transaction from context if it exists; otherwise use default DB
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	err := db.WithContext(ctx).
+		Where("organization_id = ? AND is_shared = ?", orgID, true).
+		Find(&accounts).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return accounts, nil
+}

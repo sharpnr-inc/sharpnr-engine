@@ -12,10 +12,10 @@ func registerInventoryRoutes(r *gin.RouterGroup, c *orchestrator_controllers.Orc
 		invAcc_routes.GET("", c.ListAllInventoryAccountHandler)
 		invAcc_routes.POST("/add", c.NewInventoryAccountHandler)
 
-		inv_routes := invAcc_routes.Group("/:inventoryAccountID/Inventory")
+		inv_routes := invAcc_routes.Group("/:inventoryAccountID/inventory/")
 		{
-			inv_routes.GET("")
-			inv_routes.POST("/add")
+			inv_routes.GET("details", c.ListAllInventoriesOfInvetoryAccountHandler)
+			inv_routes.POST("add")
 		}
 
 	}

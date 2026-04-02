@@ -10,6 +10,7 @@ import (
 type InventoryEngineRepositoryInterface interface {
 	CreateInventoryAccount(ctx context.Context, inventoryAccont *inventory_engine_models.InventoryAccount) error
 	GetInventoryAccountsByOrgID(ctx context.Context, orgID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error)
+	GetSharedInventoryAccountsByOrgID(ctx context.Context, orgID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error)
 
 	CreateInventory(ctx context.Context, inventory *inventory_engine_models.Inventory) error
 	GetInventoryByBusinessUnitID(ctx context.Context, businessUnitID uuid.UUID) ([]inventory_engine_models.Inventory, error)

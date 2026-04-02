@@ -76,6 +76,7 @@ func bootstrapHospitality(
 		customerEngineService,
 		invoiceEngine,
 		paymentsEngine,
+		inventoryEngine,
 	)
 	restaurant_event_handlers.Register(seroEngine, restaurantService)
 

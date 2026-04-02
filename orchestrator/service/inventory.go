@@ -48,3 +48,24 @@ func (s *orchestratorService) ListAllInventoryAccount(ctx context.Context, orgID
 
 	return results, nil
 }
+
+func (s *orchestratorService) GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]inventory_engine_models.Inventory, error) {
+	var inventoryList []inventory_engine_models.Inventory
+
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+		invt, err := s.inventoryEngine.ListAllInventoryOfInventoryAccount(txCtx, orgID, emplID, InventoryAccountID)
+		if err != nil {
+			return err
+		}
+
+		inventoryList = invt
+		return nil
+	})
+
+	if err != nil {
+		return inventoryList, err
+	}
+
+	return inventoryList, nil
+}

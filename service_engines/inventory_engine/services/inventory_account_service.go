@@ -56,3 +56,25 @@ func (s *inventoryEngine) ListInventoryAccountOfOrg(ctx context.Context, orgID, 
 
 	return accounts, err
 }
+
+func (s *inventoryEngine) GetAllSharedInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error) {
+	var accounts []inventory_engine_models.InventoryAccount
+
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+		inventoryAccounts, err := s.repo.GetSharedInventoryAccountsByOrgID(txCtx, orgID)
+		if err != nil {
+			return err
+		}
+
+		accounts = inventoryAccounts
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return accounts, err
+}
