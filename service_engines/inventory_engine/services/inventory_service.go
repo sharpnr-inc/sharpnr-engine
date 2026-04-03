@@ -89,3 +89,7 @@ func (s *inventoryEngine) GetInventoriesOfBusinessUnit(ctx context.Context, orgI
 
 	return result, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *inventoryEngine) GetInventoryItems(ctx context.Context)

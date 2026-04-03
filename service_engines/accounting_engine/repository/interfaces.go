@@ -6,6 +6,7 @@ package accounting_repo
 import (
 	"context"
 
+	accountingconstants "sharpnr-engine/service_engines/accounting_engine/constants"
 	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"
 	accounting_models "sharpnr-engine/service_engines/accounting_engine/models"
 
@@ -67,6 +68,7 @@ type AccountingRepositoryInterface interface {
 	GetJournalLinesByJournalEntryID(ctx context.Context, entryID uuid.UUID) ([]accounting_models.JournalLine, error)
 	GetJournalLinesByAccountID(ctx context.Context, accountID uuid.UUID) ([]accounting_models.JournalLine, error)
 	ReportingRepositoryInterface
+	PurchaseInvoiceRepositoryInterface
 }
 
 type ReportingRepositoryInterface interface {
@@ -75,4 +77,107 @@ type ReportingRepositoryInterface interface {
 		bookID uuid.UUID,
 		from, to time.Time,
 	) ([]accountingdtos.AccountMovementRow, error)
+}
+
+type PurchaseInvoiceRepositoryInterface interface {
+
+	// ── Purchase Invoice ──────────────────────────────────────────────────────
+
+	CreatePurchaseInvoice(ctx context.Context, invoice *accounting_models.PurchaseInvoice) error
+
+	GetPurchaseInvoiceByID(ctx context.Context, id uuid.UUID) (*accounting_models.PurchaseInvoice, error)
+
+	// for duplicate check — InvoiceNumber must be unique per Supplier
+	GetPurchaseInvoiceBySupplierAndInvoiceNumber(ctx context.Context, supplierID uuid.UUID, invoiceNumber string) (*accounting_models.PurchaseInvoice, error)
+
+	ListPurchaseInvoices(ctx context.Context, filter PurchaseInvoiceFilter) ([]*accounting_models.PurchaseInvoice, int64, error)
+	// int64 = total count for pagination
+
+	// UpdatePurchaseInvoice(ctx context.Context, invoice *accounting_models.PurchaseInvoice) error
+
+	UpdatePurchaseInvoiceStatus(ctx context.Context, id uuid.UUID, status accountingconstants.AccountingPurchaseInvoiceStatus) error
+
+	UpdatePurchaseInvoicePaymentStatus(ctx context.Context, id uuid.UUID, paymentStatus string, amountPaid float64, amountDue float64) error
+
+	// set when journal entry is auto-created on POST
+	// SetPurchaseInvoiceJournalEntry(ctx context.Context, id uuid.UUID, journalEntryID uuid.UUID) error
+
+	// DeletePurchaseInvoice(ctx context.Context, id uuid.UUID) error
+	// soft-delete or status → CANCELLED
+
+	// ── Purchase Invoice Lines ────────────────────────────────────────────────
+
+	CreatePurchaseInvoiceLine(ctx context.Context, line *accounting_models.PurchaseInvoiceLine) error
+
+	CreatePurchaseInvoiceLines(ctx context.Context, lines []*accounting_models.PurchaseInvoiceLine) error
+	// batch insert — always prefer this over looping CreatePurchaseInvoiceLine
+
+	GetPurchaseInvoiceLineByID(ctx context.Context, id uuid.UUID) (*accounting_models.PurchaseInvoiceLine, error)
+
+	ListPurchaseInvoiceLines(ctx context.Context, purchaseInvoiceID uuid.UUID) ([]*accounting_models.PurchaseInvoiceLine, error)
+
+	// UpdatePurchaseInvoiceLine(ctx context.Context, line *accounting_models.PurchaseInvoiceLine) error
+
+	// DeletePurchaseInvoiceLine(ctx context.Context, id uuid.UUID) error
+
+	// DeletePurchaseInvoiceLinesByInvoiceID(ctx context.Context, purchaseInvoiceID uuid.UUID) error
+	// used when replacing all lines on an edit
+
+	// ── Purchase Payments ─────────────────────────────────────────────────────
+
+	CreatePurchasePayment(ctx context.Context, payment *accounting_models.PurchasePayment) error
+
+	GetPurchasePaymentByID(ctx context.Context, id uuid.UUID) (*accounting_models.PurchasePayment, error)
+
+	ListPurchasePaymentsByInvoice(ctx context.Context, purchaseInvoiceID uuid.UUID) ([]*accounting_models.PurchasePayment, error)
+
+	ListPurchasePaymentsBySupplier(ctx context.Context, supplierID uuid.UUID) ([]*accounting_models.PurchasePayment, error)
+
+	// set after journal entry auto-created for the payment
+	// SetPurchasePaymentJournalEntry(ctx context.Context, id uuid.UUID, journalEntryID uuid.UUID) error
+
+	// DeletePurchasePayment(ctx context.Context, id uuid.UUID) error
+
+	// ── Aggregates / Reporting ────────────────────────────────────────────────
+
+	GetSupplierOutstandingBalance(ctx context.Context, supplierID uuid.UUID, accountingBookID uuid.UUID) (float64, error)
+	// SUM(amount_due) WHERE supplier_id = ? AND payment_status != 'PAID'
+
+	GetPurchaseInvoiceSummary(ctx context.Context, accountingBookID uuid.UUID, fiscalYearID uuid.UUID) (*PurchaseInvoiceSummary, error)
+	// total invoiced, total paid, total outstanding — for dashboard
+
+	ListOverduePurchaseInvoices(ctx context.Context, accountingBookID uuid.UUID, asOf time.Time) ([]*accounting_models.PurchaseInvoice, error)
+	// WHERE due_date < asOf AND payment_status != 'PAID'
+}
+
+// ── Filter struct ─────────────────────────────────────────────────────────────
+
+type PurchaseInvoiceFilter struct {
+	AccountingBookID *uuid.UUID
+	FiscalYearID     *uuid.UUID
+	SupplierID       *uuid.UUID
+
+	Status        *accountingconstants.AccountingPurchaseInvoiceStatus
+	PaymentStatus *string // UNPAID | PARTIAL | PAID
+
+	// date range on InvoiceDate
+	FromDate *time.Time
+	ToDate   *time.Time
+
+	// search across InvoiceNumber + OurReference
+	Search *string
+
+	// pagination
+	Page  int // 1-based
+	Limit int // default 20
+}
+
+// ── Summary DTO ───────────────────────────────────────────────────────────────
+
+type PurchaseInvoiceSummary struct {
+	TotalInvoiced    float64
+	TotalPaid        float64
+	TotalOutstanding float64
+	TotalOverdue     float64
+	InvoiceCount     int64
 }

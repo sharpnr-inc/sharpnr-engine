@@ -103,3 +103,8 @@ func (c *RestaurantController) GetBusinessUnitInventories(ctx *gin.Context) {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (c *RestaurantController) GetInventoryItems(ctx *gin.Context) {
+}
+
+/* ---------------------------------- <***> --------------------------------- */
