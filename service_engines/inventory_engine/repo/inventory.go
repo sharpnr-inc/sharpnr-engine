@@ -22,21 +22,24 @@ func (r *inventoryEngineRepo) CreateInventory(ctx context.Context, inventory *in
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *inventoryEngineRepo) GetInventoryByBusinessUnitID(ctx context.Context, businessUnitID uuid.UUID) ([]inventory_engine_models.Inventory, error) {
+func (r *inventoryEngineRepo) GetInventoryByBusinessUnitID(ctx context.Context, businessUnitID uuid.UUID, inventoryAccountID *uuid.UUID) ([]inventory_engine_models.Inventory, error) {
 	var inventoryList []inventory_engine_models.Inventory
 
-	// 1. Extract transaction from context if it exists; otherwise, use the default DB
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db
 	}
 
-	// 2. Query for all inventory records belonging to the specific Business Unit ID
-	// We use .Find() to populate the slice
-	err := db.WithContext(ctx).
-		Where("business_unit_id = ?", businessUnitID).
-		Find(&inventoryList).
-		Error
+	// Initialize the query with the mandatory business_unit_id filter
+	query := db.WithContext(ctx).Where("business_unit_id = ?", businessUnitID)
+
+	// 2. Check if inventoryAccountID is provided and apply filter
+	if inventoryAccountID != nil {
+		query = query.Where("inventory_account_id = ?", *inventoryAccountID)
+	}
+
+	// Execute the query
+	err := query.Find(&inventoryList).Error
 
 	if err != nil {
 		return nil, err

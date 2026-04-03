@@ -6,6 +6,7 @@ import (
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func (c *RestaurantController) GetAllInventoryAccounts(ctx *gin.Context) {
@@ -33,6 +34,8 @@ func (c *RestaurantController) GetAllInventoryAccounts(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusOK, "Inventory Account/Warehouse List Fetched Successfully", acc)
 
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (c *RestaurantController) AddInventoryInInventoryAccount(ctx *gin.Context) {
 	orgID, empID, ok := c.resolveContext(ctx)
@@ -74,7 +77,23 @@ func (c *RestaurantController) GetBusinessUnitInventories(ctx *gin.Context) {
 		return
 	}
 
-	res, err := c.resSvc.GetRestaurantAllInventories(ctx.Request.Context(), orgID, empID, restaurantID)
+	// Optional filter
+	var inventoryAccountID *uuid.UUID
+
+	if val := ctx.Query("inventoryAccountID"); val != "" {
+		parsedID, err := uuid.Parse(val)
+		if err != nil {
+			utils.Failure(ctx, http.StatusBadRequest, "invalid inventoryAccountID", err)
+			return
+		}
+		inventoryAccountID = &parsedID
+	}
+
+	res, err := c.resSvc.GetRestaurantAllInventories(
+		ctx.Request.Context(),
+		orgID, empID, restaurantID,
+		inventoryAccountID, // optional filter passed
+	)
 	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, "", err)
 		return
@@ -82,3 +101,5 @@ func (c *RestaurantController) GetBusinessUnitInventories(ctx *gin.Context) {
 
 	utils.Success(ctx, http.StatusOK, "Inventory Added SuccessFully", res)
 }
+
+/* ---------------------------------- <***> --------------------------------- */

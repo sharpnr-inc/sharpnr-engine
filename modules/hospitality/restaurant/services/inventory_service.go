@@ -63,14 +63,14 @@ func (s *restaurantService) AddNewInventoryInRestaurant(ctx context.Context, org
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *restaurantService) GetRestaurantAllInventories(ctx context.Context, orgID, emplID, restaurantID uuid.UUID) ([]restaurant_contracts.RestuarantInventoriesResponseDto, error) {
+func (s *restaurantService) GetRestaurantAllInventories(ctx context.Context, orgID, emplID, restaurantID uuid.UUID, inventoryAccountID *uuid.UUID) ([]restaurant_contracts.RestuarantInventoriesResponseDto, error) {
 	var inventories []restaurant_contracts.RestuarantInventoriesResponseDto
 
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
 		// 1. Fetch data from the inventory engine
-		invent, err := s.inventoryEngine.GetInventoriesOfBusinessUnit(txCtx, orgID, emplID, restaurantID)
+		invent, err := s.inventoryEngine.GetInventoriesOfBusinessUnit(txCtx, orgID, emplID, restaurantID, inventoryAccountID)
 		if err != nil {
 			return err
 		}

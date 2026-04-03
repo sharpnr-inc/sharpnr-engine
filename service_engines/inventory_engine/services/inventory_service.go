@@ -68,12 +68,13 @@ func (s *inventoryEngine) ListAllInventoryOfInventoryAccount(ctx context.Context
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *inventoryEngine) GetInventoriesOfBusinessUnit(ctx context.Context, orgID, emplID, businessUnitID uuid.UUID) ([]inventory_engine_models.Inventory, error) {
+func (s *inventoryEngine) GetInventoriesOfBusinessUnit(ctx context.Context, orgID, emplID, businessUnitID uuid.UUID, inventoryAccountID *uuid.UUID) ([]inventory_engine_models.Inventory, error) {
+
 	var result []inventory_engine_models.Inventory
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
-		inventories, err := s.repo.GetInventoryByBusinessUnitID(txCtx, businessUnitID)
+		inventories, err := s.repo.GetInventoryByBusinessUnitID(txCtx, businessUnitID, inventoryAccountID)
 		if err != nil {
 			return nil
 		}

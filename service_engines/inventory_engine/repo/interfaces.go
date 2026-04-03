@@ -13,7 +13,7 @@ type InventoryEngineRepositoryInterface interface {
 	GetSharedInventoryAccountsByOrgID(ctx context.Context, orgID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error)
 
 	CreateInventory(ctx context.Context, inventory *inventory_engine_models.Inventory) error
-	GetInventoryByBusinessUnitID(ctx context.Context, businessUnitID uuid.UUID) ([]inventory_engine_models.Inventory, error)
+	GetInventoryByBusinessUnitID(ctx context.Context, businessUnitID uuid.UUID, inventoryAccountID *uuid.UUID) ([]inventory_engine_models.Inventory, error)
 	GetInventoryByLegalEntityID(ctx context.Context, legalEntityID uuid.UUID) ([]inventory_engine_models.Inventory, error)
 	GetInventoryByID(ctx context.Context, inventoryID uuid.UUID) ([]inventory_engine_models.Inventory, error)
 	GetInventoryByInventoryAccountID(ctx context.Context, inventoryAccountID uuid.UUID) ([]inventory_engine_models.Inventory, error)
