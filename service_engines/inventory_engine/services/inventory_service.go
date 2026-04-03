@@ -92,4 +92,6 @@ func (s *inventoryEngine) GetInventoriesOfBusinessUnit(ctx context.Context, orgI
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *inventoryEngine) GetInventoryItems(ctx context.Context)
+func (s *inventoryEngine) GetInventoryItems(ctx context.Context) error {
+	panic("")
+}

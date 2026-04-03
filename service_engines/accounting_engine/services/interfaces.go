@@ -53,7 +53,6 @@ type AccountingEnginePaymentsServiceInteface interface {
 
 type AccountingEngineResolverInterface interface {
 	// This is resovolver method reolve the AccountID
-	// Given to Fetch the
 	ResolveAccountIDByTaxComponent(ctx context.Context)
 }
 
@@ -61,7 +60,20 @@ type AccountingEngineReportServiceInterface interface {
 	GenerateProfitAndLossReport(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, periodFrom, periodTo string) (accountingdtos.ProfitAndLossReportResponseDto, error)
 }
 
+/* -------------------------------------------------------------------------- */
+/*                          Supplier Service Methods                          */
+/* -------------------------------------------------------------------------- */
+
 type AccountingSuppliersServiceInterface interface {
 	GetLegalEntitySuppliers(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accounting_engine_contracts.LegalEntitySuppliersResponseDto, error)
 	AddNewSuppliers(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, request *accounting_engine_contracts.AddNewSuppliersForLegalEntityRequestDto) error
+}
+
+type PurchasesServiceInterfaces interface {
+	AddNewPurchaseInvoice()
+	GetPurchaseInvoice()
+	AddBatchPurchaseInvoiceLine()
+	AddPurchaseInvoiceLine()
+	GetPurchaseLineByPurchaseInvoiceID()
+	
 }
