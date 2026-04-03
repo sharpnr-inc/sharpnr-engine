@@ -53,8 +53,32 @@ func (c *RestaurantController) AddInventoryInInventoryAccount(ctx *gin.Context) 
 
 	if err := c.resSvc.AddNewInventoryInRestaurant(ctx.Request.Context(), orgID, empID, restaurantID, req); err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		return
 	}
 
 	utils.Success(ctx, http.StatusOK, "Inventory Added SuccessFully")
 
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *RestaurantController) GetBusinessUnitInventories(ctx *gin.Context) {
+	orgID, empID, ok := c.resolveContext(ctx)
+	if !ok {
+		return
+	}
+
+	// 2. Resolve Restaurant ID from params
+	restaurantID, ok := c.resolveRestaurantID(ctx)
+	if !ok {
+		return
+	}
+
+	res, err := c.resSvc.GetRestaurantAllInventories(ctx.Request.Context(), orgID, empID, restaurantID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Inventory Added SuccessFully", res)
 }

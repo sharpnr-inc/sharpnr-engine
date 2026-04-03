@@ -33,6 +33,8 @@ func (s *restaurantService) GetAllInventoryAccounts(ctx context.Context, orgID, 
 	return inventoryAcconts, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *restaurantService) AddNewInventoryInRestaurant(ctx context.Context, orgID, emplID, restaurantID uuid.UUID, request *restaurant_contracts.AddInventoryRequestDto) error {
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
@@ -57,4 +59,44 @@ func (s *restaurantService) AddNewInventoryInRestaurant(ctx context.Context, org
 
 		return nil
 	})
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *restaurantService) GetRestaurantAllInventories(ctx context.Context, orgID, emplID, restaurantID uuid.UUID) ([]restaurant_contracts.RestuarantInventoriesResponseDto, error) {
+	var inventories []restaurant_contracts.RestuarantInventoriesResponseDto
+
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		// 1. Fetch data from the inventory engine
+		invent, err := s.inventoryEngine.GetInventoriesOfBusinessUnit(txCtx, orgID, emplID, restaurantID)
+		if err != nil {
+			return err
+		}
+
+		// 2. Map the domain models to Response DTOs
+		for _, item := range invent {
+			inventories = append(inventories, restaurant_contracts.RestuarantInventoriesResponseDto{
+				ID:                 item.ID,
+				InventoryAccountID: item.InventoryAccountID,
+				BusinessUnitID:     item.BusinessUnitID,
+				LegalEntityID:      item.LegalEntityID,
+				Name:               item.Name,
+				Description:        item.Description,
+				Location:           item.Location,
+				Status:             item.Status,
+				CreatedAt:          item.CreatedAt,
+				UpdatedAt:          item.UpdatedAt,
+			})
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err // Return nil slice on error for cleaner API handling
+	}
+
+	return inventories, nil
 }
