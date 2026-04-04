@@ -1,6 +1,7 @@
 package inventory_engine_models
 
 import (
+	inventory_constants "sharpnr-engine/service_engines/inventory_engine/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -68,14 +69,14 @@ func (InventoryItem) TableName() string {
 
 // ── Item Price (per supplier, with history) ──
 type InventoryItemPrice struct {
-	ID              uuid.UUID  `gorm:"type:uuid;primaryKey"`
-	InventoryItemID uuid.UUID  `gorm:"type:uuid;not null;index"`
-	SupplierID      *uuid.UUID `gorm:"type:uuid;index"`
-	PriceType       string     `gorm:"size:20"` // PURCHASE_PRICE | SELLING_PRICE
-	Price           float64    `gorm:"not null"`
-	Currency        string     `gorm:"size:5;default:'INR'"`
-	EffectiveFrom   time.Time  `gorm:"not null"`
-	EffectiveTo     *time.Time // null = currently active
+	ID              uuid.UUID                                  `gorm:"type:uuid;primaryKey"`
+	InventoryItemID uuid.UUID                                  `gorm:"type:uuid;not null;index"`
+	SupplierID      *uuid.UUID                                 `gorm:"type:uuid;index"`
+	PriceType       inventory_constants.InventoryItemPriceType `gorm:"size:20"` // PURCHASE_PRICE | SELLING_PRICE
+	Price           float64                                    `gorm:"not null"`
+	Currency        string                                     `gorm:"size:5;default:'INR'"`
+	EffectiveFrom   time.Time                                  `gorm:"not null"`
+	EffectiveTo     *time.Time                                 // null = currently active
 	CreatedAt       time.Time
 }
 

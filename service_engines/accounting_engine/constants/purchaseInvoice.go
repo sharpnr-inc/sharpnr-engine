@@ -2,6 +2,17 @@ package accountingconstants
 
 import "fmt"
 
+/* ---------------------------------- <***> --------------------------------- */
+
+type PurchaseInvoicePaymentStatusType string
+
+const (
+	PurchaseInvoicePaymentStatusUnpaid PurchaseInvoicePaymentStatusType = "UNPAID"
+	PurchaseInvoicePaymentStatusPaid   PurchaseInvoicePaymentStatusType = "PAID"
+)
+
+/* ---------------------------------- <***> --------------------------------- */
+
 type AccountingPurchaseInvoiceStatus string
 
 const (
@@ -25,3 +36,32 @@ func (s AccountingPurchaseInvoiceStatus) VerifyPurchaseTrxType() (string, error)
 		return "", fmt.Errorf("invalid purchase invoice status: %s", s)
 	}
 }
+
+func (s AccountingPurchaseInvoiceStatus) DisplayName() string {
+	switch s {
+	case PurchaseInvoiceStatusReturn:
+		return "Item Returned / Debit Note"
+	case PurchaseInvoiceStatusPartiallyPaid:
+		return "Partially Paid"
+	default:
+		// Converts "PAID" to "Paid"
+		return string(s[0]) + string(s[1:])
+	}
+}
+
+func (s AccountingPurchaseInvoiceStatus) CanTransitionTo(next AccountingPurchaseInvoiceStatus) bool {
+	switch s {
+	case PurchaseInvoiceStatusDraft:
+		// Draft can go anywhere
+		return true
+	case PurchaseInvoiceStatusCancelled, PurchaseInvoiceStatusPAID:
+		// Final states usually cannot be changed
+		return false
+	case PurchaseInvoiceStatusPartiallyPaid:
+		return next == PurchaseInvoiceStatusPAID || next == PurchaseInvoiceStatusReturn
+	default:
+		return false
+	}
+}
+
+/* ---------------------------------- <***> --------------------------------- */

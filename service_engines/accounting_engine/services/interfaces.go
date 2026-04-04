@@ -17,6 +17,7 @@ type AccountingServiceInterface interface {
 	AccountingEngineAccountServiceInterface
 	AccountingEngineReportServiceInterface
 	AccountingSuppliersServiceInterface
+	PurchasesServiceInterfaces
 
 	CreateDraftAccountingSetup(ctx context.Context, input *accounting_engine_contracts.DraftAccountingSetupInput) error
 }
@@ -70,10 +71,9 @@ type AccountingSuppliersServiceInterface interface {
 }
 
 type PurchasesServiceInterfaces interface {
-	AddNewPurchaseInvoice()
-	GetPurchaseInvoice()
-	AddBatchPurchaseInvoiceLine()
-	AddPurchaseInvoiceLine()
-	GetPurchaseLineByPurchaseInvoiceID()
-	
+	AddNewPurchaseInvoice(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, request *accountingdtos.PurchaseInvoiceRequestDto) error
+	// GetPurchaseInvoice()
+	// AddBatchPurchaseInvoiceLine()
+	// AddPurchaseInvoiceLine()
+	// GetPurchaseLineByPurchaseInvoiceID()
 }

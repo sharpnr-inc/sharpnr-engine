@@ -14,7 +14,7 @@ type PurchaseInvoice struct {
 	SupplierID       uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	// link to your existing invoicing engine if needed
-	// PurchaseOrderID  *uuid.UUID `gorm:"type:uuid;index"` // optional, if PO raised first
+	PurchaseOrderID *uuid.UUID `gorm:"type:uuid;index"` // optional, if PO raised first
 
 	// Invoice Should Not duplicate With Context of the SuppliersID
 	InvoiceNumber string    // supplier's bill number e.g. "RAJ-2026-041"
@@ -25,7 +25,7 @@ type PurchaseInvoice struct {
 	Status accountingconstants.AccountingPurchaseInvoiceStatus `gorm:"size:20;default:'DRAFT'"`
 	// DRAFT | POSTED | PARTIALLY_PAID | PAID | CANCELLED
 
-	PaymentStatus string `gorm:"size:20;default:'UNPAID'"`
+	PaymentStatus accountingconstants.PurchaseInvoicePaymentStatusType `gorm:"size:20;default:'UNPAID'"`
 	// UNPAID | PARTIAL | PAID
 
 	// accounts
@@ -74,8 +74,9 @@ type PurchaseInvoiceLine struct {
 	TotalAmount float64 `gorm:"default:0"` // LineAmount + TaxAmount
 
 	// inventory linkage (optional — set if goods go to inventory)
-	InventoryItemID *uuid.UUID `gorm:"type:uuid"`
-	InventoryID     *uuid.UUID `gorm:"type:uuid"`
+	InventoryItemID    *uuid.UUID `gorm:"type:uuid"`
+	InventoryID        *uuid.UUID `gorm:"type:uuid"`
+	InventoryAccountID *uuid.UUID
 	// when set, inventory quantity updates automatically on POST
 
 	CreatedAt time.Time

@@ -3,7 +3,8 @@ package app
 import (
 	dbtx "sharpnr-engine/core/dbTx"
 	"sharpnr-engine/sero"
-	accounting_sero_event_handler "sharpnr-engine/service_engines/accounting_engine/sero_event_handler"
+	accounting_sero_event_handler "sharpnr-engine/service_engines/accounting_engine/sero_handler"
+	inventory_engine_sero_handlers "sharpnr-engine/service_engines/inventory_engine/sero_handlers"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 	sse_engine "sharpnr-engine/sse"
 
@@ -24,7 +25,11 @@ func BootstrapModules(
 	organizationService := bootstrapOrganization(db, redis, mailerEngine, iAM)
 	orgPropertyService := bootstrapOrgProperty(db, txManager)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
+
+	/* ---------------------------- inventory engine ---------------------------- */
 	inventoryEngine := bootstrapInventoryEngine(db, txManager, seroEngine)
+	inventory_engine_sero_handlers.RegisterSeroHandler(seroEngine, inventoryEngine)
+	/* ---------------------------- inventory engine ---------------------------- */
 
 	employeeService := bootstrapEmployee(db)
 	orgSetupWizardService := bootstrapOrgSetupWizard(

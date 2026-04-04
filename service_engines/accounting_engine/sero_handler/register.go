@@ -10,5 +10,10 @@ func Register(
 	seroEngine *sero.SEROEngine,
 	accountingEngine accounting_service.AccountingServiceInterface,
 ) {
-	seroEngine.Subscribe(restaurant_events.RestaurantPaymentSettled, handleRestaurantPaymentSettlment(accountingEngine), false)
+
+	seroEngine.Subscribe(
+		restaurant_events.RestaurantPaymentSettled,
+		handleRestaurantPaymentSettlment(accountingEngine),
+		false,
+	)
 }
