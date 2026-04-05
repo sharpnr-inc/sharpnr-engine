@@ -100,7 +100,7 @@ type PurchaseInvoiceRepositoryInterface interface {
 	UpdatePurchaseInvoicePaymentStatus(ctx context.Context, id uuid.UUID, paymentStatus string, amountPaid float64, amountDue float64) error
 
 	// set when journal entry is auto-created on POST
-	// SetPurchaseInvoiceJournalEntry(ctx context.Context, id uuid.UUID, journalEntryID uuid.UUID) error
+	SetPurchaseInvoiceJournalEntry(ctx context.Context, id uuid.UUID, journalEntryID uuid.UUID) error
 
 	// DeletePurchaseInvoice(ctx context.Context, id uuid.UUID) error
 	// soft-delete or status → CANCELLED

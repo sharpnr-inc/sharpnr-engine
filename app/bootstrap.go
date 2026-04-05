@@ -68,9 +68,19 @@ func BootstrapModules(
 		paymentsEngine,
 		inventoryEngine,
 	)
-
-	accountingService := bootstrapAccounting(db, txManager, taxEngineService, invoiceEngine, paymentsEngine, inventoryEngine, orgSupplierService)
+	/* ---------------------------- Accounting Engine --------------------------- */
+	accountingService := bootstrapAccounting(
+		db,
+		txManager,
+		taxEngineService,
+		invoiceEngine,
+		paymentsEngine,
+		inventoryEngine,
+		orgSupplierService,
+		seroEngine,
+	)
 	accounting_sero_event_handler.Register(seroEngine, accountingService)
+	/* ---------------------------- Accounting Engine --------------------------- */
 
 	orchestratorService := bootstrapSharpnrOrchestrator(
 		organizationService,

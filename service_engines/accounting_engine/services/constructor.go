@@ -4,6 +4,7 @@ import (
 	dbtx "sharpnr-engine/core/dbTx"
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
+	"sharpnr-engine/sero"
 	accounting_repo "sharpnr-engine/service_engines/accounting_engine/repository"
 	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
 	invoice_engine_services "sharpnr-engine/service_engines/invoicing_engine/services"
@@ -11,6 +12,7 @@ import (
 )
 
 type accountingServices struct {
+	seroEngine      *sero.SEROEngine
 	accRepo         accounting_repo.AccountingRepositoryInterface
 	txManager       dbtx.TxManager
 	taxEngine       tax_engine_service.TaxEngineServiceInterface
@@ -21,6 +23,7 @@ type accountingServices struct {
 }
 
 func NewAccountingService(
+	seroEngine *sero.SEROEngine,
 	accRepo accounting_repo.AccountingRepositoryInterface,
 	txManager dbtx.TxManager,
 	taxEngine tax_engine_service.TaxEngineServiceInterface,
@@ -30,6 +33,7 @@ func NewAccountingService(
 	supplierService suppliers_service.SupplierServiceInterface,
 ) *accountingServices {
 	return &accountingServices{
+		seroEngine:      seroEngine,
 		accRepo:         accRepo,
 		txManager:       txManager,
 		taxEngine:       taxEngine,

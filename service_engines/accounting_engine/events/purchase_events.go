@@ -2,6 +2,7 @@ package accounting_engine_events
 
 import (
 	"sharpnr-engine/sero"
+	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"
 
 	"github.com/google/uuid"
 )
@@ -11,9 +12,8 @@ const (
 )
 
 type PurchaceInvoiceItemTransterToInventoryEventPayload struct {
-	InventoryAccountID uuid.UUID
-	InventoryItemID    uuid.UUID
-	InventoryID        uuid.UUID
-
-	// other to decided
+	OrganizationID uuid.UUID
+	EmployeeID     uuid.UUID
+	SupplierID     uuid.UUID
+	Items          []accountingdtos.PurchaseInvoiceLineRequestDto
 }

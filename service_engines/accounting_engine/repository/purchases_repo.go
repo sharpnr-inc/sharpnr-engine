@@ -211,6 +211,23 @@ func (r *accountingRepository) UpdatePurchaseInvoicePaymentStatus(
 
 /* ---------------------------------- <***> --------------------------------- */
 
+func (r *accountingRepository) SetPurchaseInvoiceJournalEntry(ctx context.Context, id uuid.UUID, journalEntryID uuid.UUID) error {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	// Using Model with a pointer to the struct to specify the table and primary key context
+	// Using Update to modify the specific JournalEntryID field
+	err := db.WithContext(ctx).
+		Model(&accounting_models.PurchaseInvoice{}).
+		Where("id = ?", id).
+		Update("journal_entry_id", journalEntryID).
+		Error
+
+	return err
+}
+
 /* -------------------------------------------------------------------------- */
 /*                         Purchase Line Repo Methods                         */
 /* -------------------------------------------------------------------------- */

@@ -35,8 +35,10 @@ type PurchaseInvoice struct {
 	SubTotal    float64 `gorm:"default:0"`
 	TaxAmount   float64 `gorm:"default:0"`
 	TotalAmount float64 `gorm:"default:0"`
-	AmountPaid  float64 `gorm:"default:0"`
-	AmountDue   float64 `gorm:"default:0"` // TotalAmount - AmountPaid
+
+	// Payments
+	AmountPaid float64 `gorm:"default:0"`
+	AmountDue  float64 `gorm:"default:0"` // TotalAmount - AmountPaid
 
 	// accounting linkage (set when POSTED)
 	JournalEntryID *uuid.UUID `gorm:"type:uuid"`

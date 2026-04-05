@@ -22,3 +22,4 @@ type InventoryEngineRepositoryInterface interface {
 	GetInventoryItemsByID(ctx context.Context, itemID *inventory_engine_models.InventoryItem) (*inventory_engine_models.InventoryItem, error)
 	GetInventoryItemsByInventoryID(ctx context.Context, inventoryID uuid.UUID) ([]inventory_engine_models.InventoryItem, error)
 }
+

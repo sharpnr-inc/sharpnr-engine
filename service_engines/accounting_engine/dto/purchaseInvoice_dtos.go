@@ -22,36 +22,45 @@ type PurchaseInvoiceRequestDto struct {
 }
 
 type PurchaseInvoiceLineRequestDto struct {
-	Description string
-	Qty         float64
-	UnitPrice   float64
-	Tax         float64
+	Description   string
+	Qty           float64
+	Unit          string
+	UnitPrice     float64
+	Tax           float64    // percentage e.g. 18.0 for 18%
+	TaxCategoryID *uuid.UUID // ✅ added — links to tax system, stored on the line model
 
-	// ↑ COGS account OR Inventory Asset account OR Expense account
-	// whoever calls the API decides which account to debit
+	// COGS account OR Inventory Asset account OR Expense account
 	DebitAccountID uuid.UUID
 
-	// IF this available then Added in the inventory
+	// If all three are set the line is inventory-tracked
 	InventoryItemID             *uuid.UUID
 	InventoryID                 *uuid.UUID
 	WareHouseInventoryAccountID *uuid.UUID
 }
 
-// Subtotal calculates the amount before tax
+// Subtotal returns qty * unitPrice before tax
 func (pi *PurchaseInvoiceLineRequestDto) Subtotal() float64 {
 	return pi.Qty * pi.UnitPrice
 }
 
-// Total calculates the final amount including tax
-func (pi *PurchaseInvoiceLineRequestDto) Total() float64 {
-	return pi.Subtotal() + pi.Tax
+// TaxAmount returns the tax amount (not the rate)
+func (pi *PurchaseInvoiceLineRequestDto) TaxAmount() float64 {
+	return pi.Subtotal() * pi.Tax / 100
 }
 
-// IsInventoryTracked checks if the line item involves inventory management
+// TotalAmount returns subtotal + tax amount
+func (pi *PurchaseInvoiceLineRequestDto) TotalAmount() float64 {
+	return pi.Subtotal() + pi.TaxAmount()
+}
+
+// IsInventoryTracked returns true if this line should update inventory on POST
 func (pi *PurchaseInvoiceLineRequestDto) IsInventoryTracked() bool {
-	return pi.InventoryItemID != nil && pi.InventoryID != nil
+	return pi.InventoryItemID != nil &&
+		pi.InventoryID != nil &&
+		pi.WareHouseInventoryAccountID != nil
 }
 
+// Validate checks the line has the minimum required fields
 func (pi *PurchaseInvoiceLineRequestDto) Validate() error {
 	if pi.Qty <= 0 {
 		return errors.New("quantity must be greater than zero")
@@ -65,18 +74,18 @@ func (pi *PurchaseInvoiceLineRequestDto) Validate() error {
 	return nil
 }
 
-func (pi *PurchaseInvoiceLineRequestDto) GetLineTotals() (subtotal float64, tax float64, total float64) {
+// GetLineTotals returns subtotal, taxAmount, total — all correctly computed
+func (pi *PurchaseInvoiceLineRequestDto) GetLineTotals() (subtotal float64, taxAmount float64, total float64) {
 	subtotal = pi.Qty * pi.UnitPrice
-	tax = pi.Tax
-	total = subtotal + tax
+	taxAmount = subtotal * pi.Tax / 100 // ✅ amount not rate
+	total = subtotal + taxAmount        // ✅ correct
 	return
 }
 
-// HasPurchaseOrder returns true if a valid, non-nil PurchaseOrderID is present
+// HasPurchaseOrder returns true if a valid non-nil PurchaseOrderID is present
 func (p *PurchaseInvoiceRequestDto) HasPurchaseOrder() bool {
 	if p.PurchaseOrderID == nil {
 		return false
 	}
-	// Check if the underlying UUID is the "Nil" UUID
 	return *p.PurchaseOrderID != uuid.Nil
 }

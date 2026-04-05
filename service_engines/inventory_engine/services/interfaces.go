@@ -11,9 +11,18 @@ import (
 type InventoryEngineServicesInterface interface {
 	AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *inventory_dtos.NewInventoryAccountRequestDto) error
 	ListInventoryAccountOfOrg(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error)
+	GetInventoryAccountID(ctx context.Context, orgID, emplID, inventoryAccountID uuid.UUID) (*inventory_engine_models.InventoryAccount, error)
 
 	AddNewInventory(ctx context.Context, orgID, emplID, inventoryAccountID uuid.UUID, request *inventory_dtos.NewInventoryRequestDto) error
 	ListAllInventoryOfInventoryAccount(ctx context.Context, orgID, emplID, inventoryAccountID uuid.UUID) ([]inventory_engine_models.Inventory, error)
 	GetAllSharedInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error)
 	GetInventoriesOfBusinessUnit(ctx context.Context, orgID, emplID, businessUnitID uuid.UUID, inventoryAccountID *uuid.UUID) ([]inventory_engine_models.Inventory, error)
+	GetInventoriesOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]inventory_engine_models.Inventory, error)
+	GetInventoryByID(ctx context.Context, orgID, emplID, inventoryID uuid.UUID) (*inventory_engine_models.Inventory, error)
+
+	InventoryItemServiceInterface
+}
+
+type InventoryItemServiceInterface interface {
+	AddItemsInInventory(ctx context.Context, orgID, emplID uuid.UUID) error
 }
