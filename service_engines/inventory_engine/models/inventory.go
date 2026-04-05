@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // Models for inventory account
@@ -16,6 +17,7 @@ type InventoryAccount struct {
 	IsShared       bool      `gorm:"default:false"` // shared across business units?
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
+	DeletedAt      gorm.DeletedAt `gorm:"index"`
 }
 
 func (InventoryAccount) TableName() string {
@@ -34,6 +36,7 @@ type Inventory struct {
 	Status             string `gorm:"size:20;default:'ACTIVE'"`
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
+	DeletedAt          gorm.DeletedAt `gorm:"index"`
 }
 
 func (Inventory) TableName() string {
@@ -61,6 +64,7 @@ type InventoryItem struct {
 	Status    string `gorm:"size:20;default:'ACTIVE'"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 func (InventoryItem) TableName() string {
