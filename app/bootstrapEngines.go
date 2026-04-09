@@ -7,7 +7,6 @@ import (
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	payment_gateway "sharpnr-engine/payment_engine/gateway"
 	"sharpnr-engine/payment_engine/gateway/cash"
-	"sharpnr-engine/payment_engine/gateway/phonepe"
 	payment_engine_repo "sharpnr-engine/payment_engine/repo"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	"sharpnr-engine/sero"
@@ -74,7 +73,6 @@ func bootstrapPaymentEngine(
 
 	registry := payment_gateway.NewProviderRegistry(
 		cash.NewCashProvider(),
-		phonepe.NewPhonePeProvider(),
 	)
 	return payment_engine_service.NewPaymentService(
 		repo,
