@@ -4,6 +4,7 @@ import (
 	"context"
 	accounting_engine_contracts "sharpnr-engine/service_engines/accounting_engine/contracts"
 	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"
+	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
 
 	"github.com/google/uuid"
 )
@@ -18,6 +19,7 @@ type AccountingServiceInterface interface {
 	AccountingEngineReportServiceInterface
 	AccountingSuppliersServiceInterface
 	PurchasesServiceInterfaces
+	AccountingInventoryServiceInterface
 
 	CreateDraftAccountingSetup(ctx context.Context, input *accounting_engine_contracts.DraftAccountingSetupInput) error
 }
@@ -76,4 +78,8 @@ type PurchasesServiceInterfaces interface {
 	// AddBatchPurchaseInvoiceLine()
 	// AddPurchaseInvoiceLine()
 	// GetPurchaseLineByPurchaseInvoiceID()
+}
+
+type AccountingInventoryServiceInterface interface {
+	GetAllInventoriesAccounts(ctx context.Context, orgID, emplID, legalEntity uuid.UUID) ([]inventory_engine_models.Inventory, error)
 }

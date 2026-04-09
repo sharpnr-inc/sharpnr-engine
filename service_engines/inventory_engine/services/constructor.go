@@ -16,11 +16,6 @@ type inventoryEngine struct {
 	seroEngine *sero.SEROEngine
 }
 
-// GetInventoriesOfLegalEntity implements [InventoryEngineServicesInterface].
-func (s *inventoryEngine) GetInventoriesOfLegalEntity(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, legalEntityID uuid.UUID) ([]inventory_engine_models.Inventory, error) {
-	panic("unimplemented")
-}
-
 // GetInventoryAccountID implements [InventoryEngineServicesInterface].
 func (s *inventoryEngine) GetInventoryAccountID(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, inventoryAccountID uuid.UUID) (*inventory_engine_models.InventoryAccount, error) {
 	panic("unimplemented")

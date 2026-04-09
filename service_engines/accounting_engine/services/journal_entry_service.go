@@ -136,45 +136,68 @@ func (s *accountingServices) GetJournalEntries(
 	ctx context.Context,
 	orgID, emplID, legalEntityID uuid.UUID,
 ) ([]accountingdtos.JournalResponseDto, error) {
+
 	// 1. Get the accounting book
 	accBook, err := s.accRepo.GetAccountingBookByLegalEntityID(ctx, legalEntityID)
 	if err != nil {
 		return nil, err
 	}
+
 	if accBook == nil {
 		return nil, fmt.Errorf("accounting book not found for legal entity")
 	}
 
-	// 2. Get all journal entries for that book
+	// 2. Get all journal entries
 	journalEntries, err := s.accRepo.GetJournalEntriesByAccountingBookID(ctx, accBook.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	// 3. Prepare response slice
 	response := make([]accountingdtos.JournalResponseDto, len(journalEntries))
 
 	for i, je := range journalEntries {
-		// 4. Fetch lines for the specific entry
+
+		// 3. Fetch lines for entry
 		lines, err := s.accRepo.GetJournalLinesByJournalEntryID(ctx, je.ID)
 		if err != nil {
 			return nil, err
 		}
 
-		// 5. Map model lines to DTO lines
+		// 4. Collect account IDs (batch lookup)
+		accountIDs := make(map[uuid.UUID]struct{})
+		for _, l := range lines {
+			accountIDs[l.AccountID] = struct{}{}
+		}
+
+		// 5. Resolve accounts once per entry
+		accountMap := make(map[uuid.UUID]string)
+
+		for accID := range accountIDs {
+			account, err := s.accRepo.GetAccountByID(ctx, accID)
+			if err != nil {
+				return nil, err
+			}
+
+			accountMap[accID] = account.Name
+		}
+
+		// 6. Map DTO lines
 		lineDtos := make([]accountingdtos.JournalLineResponseDto, len(lines))
+
 		for j, line := range lines {
+
 			lineDtos[j] = accountingdtos.JournalLineResponseDto{
-				ID:        line.ID,
-				AccountID: line.AccountID,
-				Debit:     line.Debit,
-				Credit:    line.Credit,
-				PartyID:   line.PartyID,
-				CreatedAt: line.CreatedAt,
+				ID:          line.ID,
+				AccountName: accountMap[line.AccountID],
+				AccountID:   line.AccountID,
+				Debit:       line.Debit,
+				Credit:      line.Credit,
+				PartyID:     line.PartyID,
+				CreatedAt:   line.CreatedAt,
 			}
 		}
 
-		// 6. Assemble the entry DTO
+		// 7. Assemble entry DTO
 		response[i] = accountingdtos.JournalResponseDto{
 			ID:           je.ID,
 			EntryDate:    je.EntryDate,

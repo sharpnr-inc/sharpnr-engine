@@ -100,14 +100,15 @@ type JournalEntryExternalRequestDto struct {
 }
 
 type JournalLineExternalRequestDto struct {
-	AccountID uuid.UUID  `json:"account_id"`
-	Debit     float64    `json:"debit"`
-	Credit    float64    `json:"credit"`
-	PartyID   *uuid.UUID `json:"party_id,omitempty"`
+	AccountID uuid.UUID `json:"account_id"`
+
+	Debit   float64    `json:"debit"`
+	Credit  float64    `json:"credit"`
+	PartyID *uuid.UUID `json:"party_id,omitempty"`
 }
 
 type JournalResponseDto struct {
-	ID           uuid.UUID                            `json:"id"`
+	ID uuid.UUID `json:"id"`
 	EntryDate    time.Time                            `json:"entry_date"`
 	Reference    string                               `json:"reference"`
 	Narration    string                               `json:"narration"`
@@ -116,10 +117,11 @@ type JournalResponseDto struct {
 }
 
 type JournalLineResponseDto struct {
-	ID        uuid.UUID  `json:"id"`
-	AccountID uuid.UUID  `json:"account_id"`
-	Debit     float64    `json:"debit"`
-	Credit    float64    `json:"credit"`
-	PartyID   *uuid.UUID `json:"party_id,omitempty"`
-	CreatedAt time.Time  `json:"created_at"`
+	ID          uuid.UUID  `json:"id"`
+	AccountName string     `json:"account_name"`
+	AccountID   uuid.UUID  `json:"account_id"`
+	Debit       float64    `json:"debit"`
+	Credit      float64    `json:"credit"`
+	PartyID     *uuid.UUID `json:"party_id,omitempty"`
+	CreatedAt   time.Time  `json:"created_at"`
 }

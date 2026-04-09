@@ -8,34 +8,30 @@ import (
 )
 
 type PurchaseInvoiceRequestDto struct {
-	PayableAccountID uuid.UUID
-	SupplierID       uuid.UUID
-	PaymentStatus    string
-	Narration        string
-	Lines            []PurchaseInvoiceLineRequestDto
-	AmountPaid       *float64
-	PurchaseOrderID  *uuid.UUID
-	InvoiceNumber    string
-	Reference        string
-	InvoiceDate      time.Time
-	DueDate          *time.Time
+	PayableAccountID uuid.UUID                       `json:"payable_account_id"`
+	SupplierID       uuid.UUID                       `json:"supplier_id"`
+	PaymentStatus    string                          `json:"payment_status"`
+	Narration        string                          `json:"narration"`
+	Lines            []PurchaseInvoiceLineRequestDto `json:"lines"`
+	AmountPaid       *float64                        `json:"amount_paid,omitempty"`
+	PurchaseOrderID  *uuid.UUID                      `json:"purchase_order_id,omitempty"`
+	InvoiceNumber    string                          `json:"invoice_number"`
+	Reference        string                          `json:"reference"`
+	InvoiceDate      time.Time                       `json:"invoice_date"`
+	DueDate          *time.Time                      `json:"due_date,omitempty"`
 }
 
 type PurchaseInvoiceLineRequestDto struct {
-	Description   string
-	Qty           float64
-	Unit          string
-	UnitPrice     float64
-	Tax           float64    // percentage e.g. 18.0 for 18%
-	TaxCategoryID *uuid.UUID // ✅ added — links to tax system, stored on the line model
-
-	// COGS account OR Inventory Asset account OR Expense account
-	DebitAccountID uuid.UUID
-
-	// If all three are set the line is inventory-tracked
-	InventoryItemID             *uuid.UUID
-	InventoryID                 *uuid.UUID
-	WareHouseInventoryAccountID *uuid.UUID
+	Description                 string     `json:"description"`
+	Qty                         float64    `json:"qty"`
+	Unit                        string     `json:"unit"`
+	UnitPrice                   float64    `json:"unit_price"`
+	Tax                         float64    `json:"tax"`
+	TaxCategoryID               *uuid.UUID `json:"tax_category_id,omitempty"`
+	DebitAccountID              uuid.UUID  `json:"debit_account_id"`
+	InventoryItemID             *uuid.UUID `json:"inventory_item_id,omitempty"`
+	InventoryID                 *uuid.UUID `json:"inventory_id,omitempty"`
+	WareHouseInventoryAccountID *uuid.UUID `json:"warehouse_inventory_account_id,omitempty"`
 }
 
 // Subtotal returns qty * unitPrice before tax
