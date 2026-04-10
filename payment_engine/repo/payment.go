@@ -115,8 +115,6 @@ func (r *paymentRepo) UpdatePaymentGatewayRefs(
 		Updates(map[string]any{
 			"gateway_order_ref": payment.GatewayOrderRef,
 			"gateway_response":  payment.GatewayResponse,
-			"qr_code":           payment.QRCode,
-			"expires_at":        payment.ExpiresAt,
 			"status":            payment.Status,
 		}).Error
 }

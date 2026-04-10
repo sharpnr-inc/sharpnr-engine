@@ -388,7 +388,6 @@ func (s *restaurantService) CloseDineInSession(
 			InvoiceNumber: invoice.InvoiceNumber,
 			Total:         invoice.Total,
 			PaymentStatus: "PENDING",
-			QRData:        payment.QRCode,
 		}, nil
 	}
 

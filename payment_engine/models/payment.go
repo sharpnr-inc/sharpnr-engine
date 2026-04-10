@@ -31,10 +31,6 @@ type Payment struct {
 	GatewayTxnRef   *string    `gorm:"type:varchar(200);index"` // gateway's txn ID
 	GatewayResponse *string    `gorm:"type:text"`               // raw JSON snapshot — never update after set
 
-	// ← These three were missing
-	QRCode    *string    `gorm:"type:text"`      // "upi://pay?pa=..." — passed to frontend QR renderer
-	ExpiresAt *time.Time `gorm:"type:timestamp"` // when this gateway session expires — drives countdown timer
-
 	// Offline/manual methods
 	ReferenceNumber *string    `gorm:"type:varchar(100)"` // UTR, UPI VPA, cheque no
 	PaidAt          *time.Time `gorm:"type:timestamp"`    // actual settlement timestamp
