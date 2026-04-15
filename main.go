@@ -108,6 +108,7 @@ func main() {
 		sharpnrModules,
 		cfg.Cors,
 	)
+	r.SetTrustedProxies([]string{"127.0.0.1"})
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

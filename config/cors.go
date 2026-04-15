@@ -15,8 +15,8 @@ func loadCORS(app AppConfig) CORSConfig {
 
 	return CORSConfig{
 		WebOrgin: []string{
-			"http://localhost:5173",
-			"http://localhost:5174",
+			"https://app.sharpnr.test",
+			"https://orchestrator.sharpnr.test",
 		},
 	}
 }
