@@ -10,6 +10,7 @@ import (
 type OrgLegalEntityServiceInterface interface {
 	CreateNewLegalEntity(ctx context.Context, input legal_entity_contracts.NewLegalEntityInput) (legalEntityID uuid.UUID, err error)
 	GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) ([]*legal_entity_contracts.LegalEntityReader, error)
+	GetLegalEntityDetails(ctx context.Context, orgID, emplId, legalEntityID uuid.UUID) (*legal_entity_contracts.LegalEntityReader, error)
 
 	LegalEntityTaxCongfigsServiceInterface
 	LegalEntityTaxEngineAdapterInterface
@@ -37,8 +38,12 @@ type LegalEntityTaxCongfigsServiceInterface interface {
 		ctx context.Context,
 		orgID, emplID, legalEntityID uuid.UUID,
 	) ([]legal_entity_contracts.LegalEntityTaxCategoryResponseDto, error)
+
+	GetTaxCategoryByID(ctx context.Context, taxCategoryID uuid.UUID) (legal_entity_contracts.TaxCategoryReader, error)
 }
 
 type LegalEntityTaxEngineAdapterInterface interface {
-	GetTaxCategoryDetails(ctx context.Context, taxCategoryID uuid.UUID, LegalEntityID uuid.UUID) (legal_entity_contracts.LegalEntityTaxCategoryResponseDto, error)
+	GetTaxCategoryDetails(
+		ctx context.Context, taxCategoryID uuid.UUID,
+	) (legal_entity_contracts.TaxCategoryReader, error)
 }

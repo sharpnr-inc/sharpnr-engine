@@ -13,6 +13,7 @@ type RestaurantOrders struct {
 	LegalEntityID             uuid.UUID  `gorm:"type:uuid;not null;index"`
 	RestaurantDiningSessionID *uuid.UUID `gorm:"type:uuid;index"`
 	RestaurantPickUpOrdersID  *uuid.UUID `gorm:"type:uuid;index"`
+	OrderType                 string     `gorm:"default;null"`
 	OrderNumber               string     `gorm:"type:varchar(50);not null;index"`
 	Status                    string     `gorm:"type:varchar(30);not null;index"` // PENDING, CONFIRMED, PREPARING, READY, SERVED, CANCELLED
 	CreatedAt                 time.Time

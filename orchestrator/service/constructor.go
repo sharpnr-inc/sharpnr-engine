@@ -2,13 +2,17 @@ package orchestrator_service
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
+	org_customer_service "sharpnr-engine/core/customer/service"
 	dbtx "sharpnr-engine/core/dbTx"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
+	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	organization_services "sharpnr-engine/core/organization/services"
+	payment_engine_service "sharpnr-engine/payment_engine/services"
 	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
+	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
 )
 
 type orchestratorService struct {
@@ -20,6 +24,10 @@ type orchestratorService struct {
 	legalEntityService      legal_entity_service.OrgLegalEntityServiceInterface
 	txManager               dbtx.TxManager
 	seroEngine              *sero.SEROEngine
+	customerEngine          org_customer_service.OrgCustomerServiceInterface
+	paymentsEngine          payment_engine_service.PaymentServiceInterface
+	inventoryEngine         inventory_engine_services.InventoryEngineServicesInterface
+	supplierService         suppliers_service.SupplierServiceInterface
 }
 
 func NewSharpnrOrchestratorService(
@@ -31,6 +39,10 @@ func NewSharpnrOrchestratorService(
 	legalEntityService legal_entity_service.OrgLegalEntityServiceInterface,
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
+	customerEngine org_customer_service.OrgCustomerServiceInterface,
+	paymentsEngine payment_engine_service.PaymentServiceInterface,
+	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
+	supplierService suppliers_service.SupplierServiceInterface,
 ) *orchestratorService {
 	return &orchestratorService{
 		organizationService:     organizationService,
@@ -41,5 +53,9 @@ func NewSharpnrOrchestratorService(
 		legalEntityService:      legalEntityService,
 		txManager:               txManager,
 		seroEngine:              seroEngine,
+		customerEngine:          customerEngine,
+		paymentsEngine:          paymentsEngine,
+		inventoryEngine:         inventoryEngine,
+		supplierService:         supplierService,
 	}
 }

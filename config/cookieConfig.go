@@ -14,14 +14,14 @@ type CookieConfig struct {
 func loadCookie(app AppConfig, ttl TTLConfig) CookieConfig {
 	if app.Env == "production" {
 		return CookieConfig{
-			Domain: "",
+			Domain: ".sharpnr.com",
 			Secure: true,
 		}
 	}
 
 	// development / test
 	return CookieConfig{
-		Domain: "",
+		Domain: ".localhost",
 		Secure: false,
 	}
 }
@@ -70,25 +70,31 @@ func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieM
 			Name:     "_dev_auth",
 			Scope:    cookieManager.Protected,
 			TTL:      int(ttl.Cookie.Seconds()),
-			SameSite: http.SameSiteLaxMode,
-			Secure:   false,
+			SameSite: http.SameSiteNoneMode,
+			Secure:   true,
 			Path:     "/",
+			Domain:   ".sharpnr.test",
+			HttpOnly: true,
 		},
 		cookieManager.Signup: {
-			Name:     "_signup",
+			Name:     "_dev_signup",
 			Scope:    cookieManager.Protected,
 			TTL:      int(ttl.Cookie.Seconds()),
-			SameSite: http.SameSiteLaxMode,
-			Secure:   false,
+			SameSite: http.SameSiteNoneMode,
+			Secure:   true,
 			Path:     "/",
+			Domain:   ".sharpnr.test",
+			HttpOnly: true,
 		},
 		cookieManager.CSRF: {
 			Name:     "_dev_csrf",
 			Scope:    cookieManager.Public,
 			TTL:      int((300 * time.Minute).Seconds()),
-			SameSite: http.SameSiteLaxMode,
-			Secure:   false,
+			SameSite: http.SameSiteNoneMode,
+			Secure:   true,
 			Path:     "/",
+			Domain:   ".sharpnr.test",
+			HttpOnly: false,
 		},
 	}
 }

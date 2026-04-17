@@ -14,6 +14,10 @@ import (
 func (s *kitchenService) CreateKOT(ctx context.Context, input kitchen_contracts.CreateKOT_req_dto) error {
 	now := time.Now()
 
+	ticketSequence, err := s.kitchenRepo.GetKOTSequence(ctx, input.KitchenID, input.OrganizationID, time.Now())
+	if err != nil {
+		return err
+	}
 	// 1. Create the Ticket Header (KOT)
 	ticket := &kitchen_models.KitchenTicket{
 		ID:             uuid.New(),
@@ -21,7 +25,7 @@ func (s *kitchenService) CreateKOT(ctx context.Context, input kitchen_contracts.
 		PropertyID:     input.PropertyID,
 		KitchenID:      input.KitchenID,
 		Status:         "PENDING",
-		TicketNo:       "KOT-AUTO-1", // Replace with your sequence logic
+		TicketNo:       ticketSequence,
 		OrderID:        input.OrderID,
 		CreatedAt:      now,
 		UpdatedAt:      now,

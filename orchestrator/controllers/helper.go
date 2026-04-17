@@ -69,3 +69,44 @@ func (c *OrchestratorController) getLegalEntityIDFromParams(ctx *gin.Context) (u
 	return pId, err
 }
 
+func (c *OrchestratorController) getPaymentAccountIDFromParams(ctx *gin.Context) (uuid.UUID, error) {
+
+	// 3. Param Parsing
+	paymentAccountID := ctx.Param("paymentAccountID")
+	pId, err := uuid.Parse(paymentAccountID)
+	if err != nil {
+		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid payent account id format"))
+		return uuid.Nil, err
+	}
+
+	return pId, err
+}
+
+func (c *OrchestratorController) getSuppliersID_fromParams(ctx *gin.Context) (uuid.UUID, error) {
+
+	// 3. Param Parsing
+	suppliersID := ctx.Param("suppliersID")
+	sId, err := uuid.Parse(suppliersID)
+	if err != nil {
+		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid suppliers id format"))
+		return uuid.Nil, err
+	}
+
+	return sId, err
+}
+
+func (c *OrchestratorController) getInventoryAccountID_fromParams(ctx *gin.Context) (uuid.UUID, error) {
+
+	// 3. Param Parsing
+	inventoryAccountID := ctx.Param("inventoryAccountID")
+	invtaccId, err := uuid.Parse(inventoryAccountID)
+	if err != nil {
+		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid inventory Account id format"))
+		return uuid.Nil, err
+	}
+
+	return invtaccId, err
+}

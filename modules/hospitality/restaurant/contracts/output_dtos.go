@@ -68,3 +68,16 @@ type RestaurantPreferredKitchen_resp_dto struct {
 	RestaurantID *uuid.UUID `json:"restaurant_id"`
 	KitchenID    *uuid.UUID `json:"kitchen_id"`
 }
+
+type RestuarantInventoriesResponseDto struct {
+	ID                 uuid.UUID `json:"id"`
+	InventoryAccountID uuid.UUID `json:"inventory_account_id"`
+	BusinessUnitID     uuid.UUID `json:"business_unit_id"`
+	LegalEntityID      uuid.UUID `json:"legal_entity_id"`
+	Name               string    `json:"name"`
+	Description        string    `json:"description"`
+	Location           string    `json:"location"`
+	Status             string    `json:"status"`
+	CreatedAt          time.Time `json:"created_at"`
+	UpdatedAt          time.Time `json:"updated_at"`
+}

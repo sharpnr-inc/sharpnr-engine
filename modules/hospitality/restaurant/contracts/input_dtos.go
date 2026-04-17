@@ -73,3 +73,10 @@ type AddLayoutRequestDto struct {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+type AddInventoryRequestDto struct {
+	InventoryAccountID uuid.UUID `json:"inventory_account_id"`
+	Name               string    `json:"name"`
+	Description        string    `json:"description"`
+	Location           string    `json:"location"`
+}

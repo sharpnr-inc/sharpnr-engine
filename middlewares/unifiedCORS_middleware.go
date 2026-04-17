@@ -30,11 +30,11 @@ func UnifiedCORSMiddleware(cfg config.CORSConfig) gin.HandlerFunc {
 			webCORS(c)
 		}
 
-		// Explicitly end preflight
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
+		// // Explicitly end preflight
+		// if c.Request.Method == "OPTIONS" {
+		// 	c.AbortWithStatus(204)
+		// 	return
+		// }
 
 		c.Next()
 	}

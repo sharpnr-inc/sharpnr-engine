@@ -73,7 +73,6 @@ func (c *RestaurantController) AddOrderInDiningSession(ctx *gin.Context) {
 	}
 
 	utils.Success(ctx, http.StatusOK, "", "Add successfully")
-
 }
 
 /* ----------------------------------- <*> ---------------------------------- */
@@ -103,3 +102,46 @@ func (c *RestaurantController) GetDineInSessionOrders(ctx *gin.Context) {
 
 	utils.Success(ctx, http.StatusOK, "Orders fetched successfully", res)
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *RestaurantController) CloseDineInSession(ctx *gin.Context) {
+
+	orgID, empID, ok := c.resolveContext(ctx)
+	if !ok {
+		return
+	}
+
+	// 2. Resolve Restaurant ID from params
+	restaurantID, ok := c.resolveRestaurantID(ctx)
+	if !ok {
+		return // Response already handled by helper
+	}
+
+	dineInSessionID, ok := c.resolveDineInSessionID(ctx)
+	if !ok {
+		return
+	}
+
+	req, ok := utils.BindJSON[restaurant_contracts.CloseSessionRequest](ctx)
+	if !ok {
+		return
+	}
+
+	// this is the 1 step we get the request for the Closing the session
+
+	response, err := c.resSvc.CloseDineInSession(
+		ctx.Request.Context(),
+		orgID, empID, restaurantID, dineInSessionID,
+		*req,
+	)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something Went Wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Session closed", response)
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */

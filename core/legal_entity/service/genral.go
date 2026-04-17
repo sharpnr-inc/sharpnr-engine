@@ -61,6 +61,50 @@ func (r *orgLegalEntity) CreateNewLegalEntity(
 	return legalEntityID, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orgLegalEntity) GetLegalEntityDetails(ctx context.Context, orgID, emplId, legalEntityID uuid.UUID) (*legal_entity_contracts.LegalEntityReader, error) {
+	var result *legal_entity_contracts.LegalEntityReader
+
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		// 1. Fetch the core Legal Entity details
+		le, err := s.legalEntityRepo.GetLegalEntityByID(txCtx, legalEntityID)
+		if err != nil {
+			return err
+		}
+
+		// 2. Fetch the associated Address
+		leAddr, err := s.legalEntityRepo.GetAddressOfLegalEntity(txCtx, le.ID)
+		if err != nil {
+			return err
+		}
+
+		// 3. Map the data to the contract
+		result = &legal_entity_contracts.LegalEntityReader{
+			LegalEntityID: le.ID,
+			Name:          le.LegalName,
+			EntityType:    le.EntityType,
+			GST:           le.GSTIN,
+			CIN:           le.CIN,
+			PAN:           le.PAN,
+			Country:       leAddr.Country,
+			AddedAt:       le.CreatedAt,
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *orgLegalEntity) GetLegalEntityByOrgID(
 	ctx context.Context,
 	orgID uuid.UUID,

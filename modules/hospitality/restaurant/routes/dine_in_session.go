@@ -15,4 +15,5 @@ func restsutantDineInSessionRoutes(
 	/* ---------------------------- <Dining Session> ---------------------------- */
 	resRoutes.GET("/dining-session/:dineSessionID/orders", restaurantController.GetDineInSessionOrders)
 	resRoutes.POST("/dining-session/:dineSessionID/add-order", restaurantController.AddOrderInDiningSession)
+	resRoutes.POST("/dining-session/:dineSessionID/close-session", restaurantController.CloseDineInSession)
 }

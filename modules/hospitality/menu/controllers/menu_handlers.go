@@ -10,7 +10,7 @@ import (
 )
 
 func (c *menuController) GetMenu(ctx *gin.Context) {
-	_, ok := c.validateContext(ctx)
+	orgID, emplID, ok := c.resolveContext(ctx)
 	if !ok {
 		return
 	}
@@ -22,7 +22,7 @@ func (c *menuController) GetMenu(ctx *gin.Context) {
 		return
 	}
 
-	res, err := c.menuService.GetMenusOfOwners(ctx, parsedOwnersID)
+	res, err := c.menuService.GetMenusOfOwners(ctx, orgID, emplID, parsedOwnersID)
 	if err != nil {
 		utils.Failure(ctx, http.StatusNotFound, utils.CodeInternalError, err)
 		return

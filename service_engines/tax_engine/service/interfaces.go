@@ -8,6 +8,6 @@ import (
 )
 
 type TaxEngineServiceInterface interface {
-	CalculateTax(str string) string
-	GetTaxDetails(ctx context.Context, taxCategoryID uuid.UUID, legalEntityID uuid.UUID) (*tax_engine_contracts.TaxComponentBreakdown, error)
+	GetTaxCategoryTaxBreakdown(ctx context.Context, taxCategoryID uuid.UUID, itemBasePrice float64) ([]tax_engine_contracts.TaxComponentBreakdown, error)
+	CalculateTax(ctx context.Context, request tax_engine_contracts.TaxCalculationRequest) (*tax_engine_contracts.TaxCalculationResponse, error)
 }

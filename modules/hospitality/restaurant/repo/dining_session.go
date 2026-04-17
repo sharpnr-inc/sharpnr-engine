@@ -2,12 +2,14 @@ package restaurantrepo
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
 	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func (r *restaurantRepo) CreateRestaurantDiningSession(ctx context.Context, diningSession *restaurant_models.RestaurantDiningSession) error {
@@ -22,6 +24,33 @@ func (r *restaurantRepo) CreateRestaurantDiningSession(ctx context.Context, dini
 
 	// Inserts the session record (e.g., table assigned, start time)
 	return db.WithContext(ctx).Create(diningSession).Error
+}
+
+/* ----------------------------------- <*> ---------------------------------- */
+
+func (r *restaurantRepo) GetDiningSessionByID(ctx context.Context, sessionID uuid.UUID) (*restaurant_models.RestaurantDiningSession, error) {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	var session restaurant_models.RestaurantDiningSession
+
+	// Use WithContext to ensure trace propagation and timeouts are honored
+	err := db.WithContext(ctx).
+		Where("id = ?", sessionID).
+		First(&session).
+		Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// Return nil to indicate the record does not exist
+			return nil, nil
+		}
+		return nil, fmt.Errorf("failed to fetch dining session by id: %w", err)
+	}
+
+	return &session, nil
 }
 
 /* ----------------------------------- <*> ---------------------------------- */
