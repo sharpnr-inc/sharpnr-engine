@@ -9,4 +9,5 @@ import (
 
 type TaxEngineServiceInterface interface {
 	GetTaxCategoryTaxBreakdown(ctx context.Context, taxCategoryID uuid.UUID, itemBasePrice float64) ([]tax_engine_contracts.TaxComponentBreakdown, error)
+	CalculateTax(ctx context.Context, request tax_engine_contracts.TaxCalculationRequest) (*tax_engine_contracts.TaxCalculationResponse, error)
 }

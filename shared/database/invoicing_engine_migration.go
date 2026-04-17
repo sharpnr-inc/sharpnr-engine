@@ -11,6 +11,6 @@ func migrateInvoicingEngine(db *gorm.DB) error {
 		&invoice_engine_models.Invoice{},
 		&invoice_engine_models.InvoiceItem{},
 		&invoice_engine_models.InvoicePaymentLink{},
-		invoice_engine_models.InvoiceTaxBreakup{},
+		&invoice_engine_models.InvoiceTaxBreakup{},
 	)
 }

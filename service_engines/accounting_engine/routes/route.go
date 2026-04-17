@@ -17,5 +17,10 @@ func RegisterAccountingRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) 
 	RegisterAccBooksRoutes(accRoutes, accController)
 	RegisterAccGroupsRoutes(accRoutes, accController)
 	registerJournalEntryRoutes(accRoutes, accController)
+	registerAccountingPaymentsRoutes(accRoutes, accController)
+	registerAccAccountsRoutes(accRoutes, accController)
+	registerReportsRoutes(accRoutes, accController)
+	registerAccountingSuppliersRoutes(accRoutes, accController)
+	registerInventoryRoutes(accRoutes, accController)
 
 }

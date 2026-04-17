@@ -2,8 +2,10 @@ package restaurantrepo
 
 import (
 	"context"
+	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -187,3 +189,44 @@ func (r *restaurantRepo) CreateOrderItemAddon(ctx context.Context, orderAddon *r
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (r *restaurantRepo) GetOrderSequenceNumber(ctx context.Context, restaurantID uuid.UUID, orgID uuid.UUID, nowTime time.Time) (string, error) {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	// 1. Define the start and end of the current day
+	startOfDay := time.Date(nowTime.Year(), nowTime.Month(), nowTime.Day(), 0, 0, 0, 0, nowTime.Location())
+	endOfDay := startOfDay.Add(24 * time.Hour)
+
+	var lastOrder restaurant_models.RestaurantOrders
+
+	// 2. Find the latest order for today, scoped to this Org and Restaurant
+	// We order by CreatedAt DESC to get the absolute latest one
+	err := db.WithContext(ctx).
+		Where("organization_id = ?", orgID).
+		Where("restaurant_id = ?", restaurantID).
+		Where("created_at >= ? AND created_at < ?", startOfDay, endOfDay).
+		Order("created_at DESC").
+		First(&lastOrder).Error
+
+	// 3. Handle the result
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			// No orders today yet, start at 1
+			return "1", nil
+		}
+		return "", err
+	}
+
+	// 4. Increment the existing number
+	currentNum, err := strconv.Atoi(lastOrder.OrderNumber)
+	if err != nil {
+		// Fallback if the OrderNumber was somehow not a number
+		return "1", fmt.Errorf("invalid order number format in database: %v", err)
+	}
+
+	nextNum := currentNum + 1
+	return strconv.Itoa(nextNum), nil
+}
