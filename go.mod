@@ -22,7 +22,9 @@ require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/Depado/ginprom v1.8.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/cashfree/cashfree-pg/v5 v5.1.9 // indirect
 	github.com/cedar-policy/cedar-go v1.4.1 // indirect
+	github.com/getsentry/sentry-go v0.29.1 // indirect
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/goccy/go-yaml v1.18.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect

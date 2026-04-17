@@ -19,5 +19,6 @@ func RestaurantRoutes(
 	restaurantConfigsRoutes(resRoutes, *newRestaurantController)
 	restsutantDineInSessionRoutes(resRoutes, *newRestaurantController)
 	restaurantOrdersRoutes(resRoutes, *newRestaurantController)
+	registerRestaurantInventoryRoutes(resRoutes, *newRestaurantController)
 
 }

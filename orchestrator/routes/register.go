@@ -28,5 +28,9 @@ func RegisterOrchestratorRoutes(
 	registerSetupWizardRoutes(org, orchestController)
 	registerHospitalityRoutes(org, orchestController)
 	registersharnprLauncherRoutes(org, orchestController)
+	registerCustomerRoutes(org, orchestController)
+	paymentOrchestratorRoutes(org, orchestController)
+	registerOrgSupplierRoutes(org, orchestController)
+	registerInventoryRoutes(org, orchestController)
 
 }

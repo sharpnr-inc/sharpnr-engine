@@ -40,10 +40,16 @@ type MenuItemOutput struct {
 	Description       string                             `json:"description"`
 	Unit              string                             `json:"unit"`
 	BasePrice         float64                            `json:"base_price"`
+	TaxDetails        []ItemTaxDetails                   `json:"tax_details"`
 	DietaryType       menu_constants.MenuItemDietaryType `json:"dietary_type"`
 	VariantGroups     []VariantGroupOutput               `json:"variant_groups"`
 	AddOns            []AddOnOutput                      `json:"add_ons"`
 	ServedBy          *uuid.UUID                         `json:"served_by"` // KitchenID from MenuItemKitchenRegister
+}
+
+type ItemTaxDetails struct {
+	TaxComponentName string  `json:"tax_component"`
+	TaxRate          float64 `json:"tax_rate"`
 }
 
 type VariantGroupOutput struct {

@@ -11,6 +11,7 @@ func registerJournalEntryRoutes(ar *gin.RouterGroup, ac *accounting_controllers.
 	jer := ar.Group("/je")
 	{
 		jer.GET("/entries", ac.GetJournalEntries)
-		jer.GET("/entry/:entryID", ac.GetJornalDetails)
+		jer.POST("/entry/create", ac.CreateJournalEntry) // used to create journal entry from external source (like payment service)
+
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
+	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
 
 	"github.com/google/uuid"
 )
@@ -60,6 +61,7 @@ type RestaurantServiceInterface interface {
 	RestaurantConfigsServiceInterface
 	RestaurantTableAndFloorConfigsServices
 	RestaurantDiningSessionService
+	RestaurantInventoryServiceInterface
 }
 
 type RestaurantConfigsServiceInterface interface {
@@ -91,4 +93,20 @@ type RestaurantDiningSessionService interface {
 		orgID uuid.UUID,
 		restaurantID uuid.UUID,
 	) error
+
+	CloseDineInSession(
+		ctx context.Context,
+		orgID, emplID, restaurantID, dineInSessionID uuid.UUID,
+		request restaurant_contracts.CloseSessionRequest,
+	) (*restaurant_contracts.CloseSessionResponse, error)
+}
+
+type RestaurantPickUpOrderServiceInterface interface {
+}
+
+type RestaurantInventoryServiceInterface interface {
+	GetAllInventoryAccounts(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error)
+	AddNewInventoryInRestaurant(ctx context.Context, orgID, emplID, restaurantID uuid.UUID, request *restaurant_contracts.AddInventoryRequestDto) error
+	GetRestaurantAllInventories(ctx context.Context, orgID, emplID, restaurantID uuid.UUID, inventoryAccountID *uuid.UUID) ([]restaurant_contracts.RestuarantInventoriesResponseDto, error)
+	// GetRestaurantInventoriesByInventoryAccount(ctx context.Context, orgID, emplID, restaurantID, inventoryAccountID uuid.UUID) ([]restaurant_contracts.RestuarantInventoriesResponseDto, error)
 }

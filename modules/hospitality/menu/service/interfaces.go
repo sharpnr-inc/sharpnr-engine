@@ -17,8 +17,8 @@ type MenuService interface {
 	AddAddOnInMenu(ctx context.Context, req *hospitality_menu_contracts.AddAddOnInput) (AddonID uuid.UUID, err error)
 
 	// Queries
-	GetMenu(ctx context.Context, menuID uuid.UUID) (*hospitality_menu_contracts.MenuOutput, error)
-	GetMenusOfOwners(ctx context.Context, ownersID uuid.UUID) ([]hospitality_menu_contracts.MenuOutput, error)
+	GetMenu(ctx context.Context, orgID, emplID, menuID uuid.UUID) (*hospitality_menu_contracts.MenuOutput, error)
+	GetMenusOfOwners(ctx context.Context, orgID, emplID, ownersID uuid.UUID) ([]hospitality_menu_contracts.MenuOutput, error)
 	GetMenuItemParents(ctx context.Context, menuItemID uuid.UUID) (parents hospitality_menu_contracts.MenuItemParentsDetails, err error)
 
 	MenuKitchenRegisterServiceInterface
@@ -44,8 +44,9 @@ type MenuTaxationRegisterServiceInterface interface {
 		req hospitality_menu_contracts.MenuGroupTaxCategoryRequestDto,
 	) error
 
+	// This returns the TaxCategoryID and LegalEntityID
 	GetTaxCategoryOfMenuItem(
 		ctx context.Context,
 		orgID, emplID, menuItemID uuid.UUID,
-	) (*uuid.UUID, error)
+	) (uuid.UUID, uuid.UUID, error)
 }

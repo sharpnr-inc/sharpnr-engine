@@ -2,6 +2,8 @@ package kitchenrepo
 
 import (
 	"context"
+	"fmt"
+	dbtx "sharpnr-engine/core/dbTx"
 	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
 	"time"
 
@@ -97,4 +99,35 @@ func (r *kitchenRepository) UpdateKotStatus(ctx context.Context, kotID uuid.UUID
 		Model(&kitchen_models.KitchenTicket{}).
 		Where("id = ?", kotID).
 		Updates(updates).Error
+}
+
+func (r *kitchenRepository) GetKOTSequence(ctx context.Context, kitchenID uuid.UUID, orgID uuid.UUID, nowTime time.Time) (string, error) {
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	// 1. Define the daily boundaries for the reset logic
+	startOfDay := time.Date(nowTime.Year(), nowTime.Month(), nowTime.Day(), 0, 0, 0, 0, nowTime.Location())
+	endOfDay := startOfDay.Add(24 * time.Hour)
+
+	var maxSequence int
+
+	// 2. Query the MAX number by stripping "KOT-" (first 4 chars)
+	// We use substring(ticket_no from 5) to get everything after "KOT-"
+	err := db.WithContext(ctx).
+		Model(&kitchen_models.KitchenTicket{}).
+		Select("COALESCE(MAX(CAST(substring(ticket_no from 5) AS INTEGER)), 0)").
+		Where("organization_id = ?", orgID).
+		Where("kitchen_id = ?", kitchenID).
+		Where("created_at >= ? AND created_at < ?", startOfDay, endOfDay).
+		Scan(&maxSequence).Error
+
+	if err != nil {
+		return "", err
+	}
+
+	// 3. Increment and format back to "KOT-X"
+	nextSequence := maxSequence + 1
+	return fmt.Sprintf("KOT-%d", nextSequence), nil
 }

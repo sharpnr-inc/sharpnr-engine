@@ -55,6 +55,8 @@ func main() {
 		log.Fatalf("Data migration failed: %v", err)
 	}
 
+	/* ---------------------------------- <***> --------------------------------- */
+
 	// --- Initialize SERO Engine ---
 	seroRepo := sero.NewGormOutboxRepo(db)
 	seroEngine := sero.NewSEROEngine(seroRepo)
@@ -64,6 +66,8 @@ func main() {
 	defer cancel()
 	go seroEngine.StartRelay(ctx)
 	log.Println("🚀 SERO Event Relay started.")
+
+	/* ---------------------------------- <***> --------------------------------- */
 
 	mailerEng := sharp_mailer_engine.New(cfg)
 	if err := mailerEng.LoadTemplates("./sharp_mailer_engine/templates"); err != nil {
@@ -104,6 +108,7 @@ func main() {
 		sharpnrModules,
 		cfg.Cors,
 	)
+	r.SetTrustedProxies([]string{"127.0.0.1"})
 
 	// Swagger route
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

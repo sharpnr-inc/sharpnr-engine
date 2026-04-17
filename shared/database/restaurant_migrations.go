@@ -36,7 +36,8 @@ func migrateRestaurant(db *gorm.DB) error {
 		// Dining Flow
 		// =====================================================
 		&restaurant_models.RestaurantDiningSession{},
-		&restaurant_models.RestaurantDiningSessionCustomer{},
+		&restaurant_models.RestaurantDiningSessionCustomer{}, // ← add
+		&restaurant_models.RestaurantDiningSessionPayment{},  // ← add
 
 		// =====================================================
 		// Orders
@@ -47,15 +48,10 @@ func migrateRestaurant(db *gorm.DB) error {
 		&restaurant_models.RestaurantOrderItemsAddOns{},
 
 		// =====================================================
-		// Charges
+		// Pickup / Delivery
 		// =====================================================
-		&restaurant_models.RestaurantCharge{},
-
-		// =====================================================
-		// Payments
-		// =====================================================
-		&restaurant_models.RestaurantSessionPayment{},
 		&restaurant_models.RestaurantPickUpOrders{},
+		&restaurant_models.RestaurantPickUpOrderCustomer{}, // ← add
 		&restaurant_models.RestaurantPickUpOrderPayment{},
 	)
 }

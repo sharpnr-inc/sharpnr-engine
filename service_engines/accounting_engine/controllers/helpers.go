@@ -57,6 +57,16 @@ func (c *AccountingController) resolveLegalEntityID(ctx *gin.Context) (uuid.UUID
 	return parsedID, true
 }
 
+func (c *AccountingController) resolveAccountID(ctx *gin.Context) (uuid.UUID, bool) {
+	accountIDStr := ctx.Param("accountID")
+	parsedID, err := uuid.Parse(accountIDStr)
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid accountID format"))
+		return uuid.Nil, false
+	}
+	return parsedID, true
+}
+
 func (c *AccountingController) resolveJournalEntryID(ctx *gin.Context) (uuid.UUID, bool) {
 	entryIDStr := ctx.Param("entryID")
 	parsedID, err := uuid.Parse(entryIDStr)

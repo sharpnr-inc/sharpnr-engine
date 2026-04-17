@@ -2,13 +2,15 @@ package accounting_controllers
 
 import (
 	"net/http"
+	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
-func (c *AccountingController) GetJournalEntries(ctx *gin.Context) {
+/* ---------------------------------- <***> --------------------------------- */
 
+func (c *AccountingController) CreateJournalEntry(ctx *gin.Context) {
 	orgID, emplID, ok := c.resolveRequestContext(ctx)
 	if !ok {
 		return
@@ -19,38 +21,39 @@ func (c *AccountingController) GetJournalEntries(ctx *gin.Context) {
 		return
 	}
 
-	res, err := c.accSvc.GetLegalEntityLedgerEntry(ctx.Request.Context(), orgID, emplID, legalEntityID)
-	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something went wrong", err)
+	req, ok := utils.BindJSON[accountingdtos.JournalEntryExternalRequestDto](ctx)
+	if !ok {
 		return
 	}
 
-	utils.Success(ctx, http.StatusOK, "Data Fetched Successfully", res)
+	journalEntryID, err := c.accSvc.CreateJournalEntry(ctx.Request.Context(), orgID, emplID, legalEntityID, *req)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Failed to Create Journal Entry", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Journal Entry Created Successfully", journalEntryID)
 
 }
 
-func (c *AccountingController) GetJornalDetails(ctx *gin.Context) {
-	_, _, ok := c.resolveRequestContext(ctx)
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *AccountingController) GetJournalEntries(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContext(ctx)
 	if !ok {
 		return
 	}
 
-	_, ok = c.resolveLegalEntityID(ctx)
+	legalEntityID, ok := c.resolveLegalEntityID(ctx)
 	if !ok {
 		return
 	}
 
-	entryID, ok := c.resolveJournalEntryID(ctx)
-	if !ok {
-		return
-	}
-
-	res, err := c.accSvc.GetJournalEntryDetails(ctx.Request.Context(), entryID)
+	res, err := c.accSvc.GetJournalEntries(ctx.Request.Context(), orgID, emplID, legalEntityID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Some thing Went Wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, "Failed to Fetch Journal Entries", err)
 		return
 	}
 
-	utils.Success(ctx, http.StatusOK, "Details Fetched Successfully", res)
-
+	utils.Success(ctx, http.StatusOK, "Journal Entries Fetched Successfully", res)
 }

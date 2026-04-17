@@ -18,14 +18,14 @@ func (r *accountingRepository) CreateAccountingBook(ctx context.Context, book *a
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *accountingRepository) GetAccountingBookByID(ctx context.Context, accounting_bookID uuid.UUID) ([]*accounting_models.AccountingBook, error) {
+func (r *accountingRepository) GetAccountingBookByID(ctx context.Context, accounting_bookID uuid.UUID) (*accounting_models.AccountingBook, error) {
 
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
 		db = r.db
 	}
 
-	var books []*accounting_models.AccountingBook
+	var books *accounting_models.AccountingBook
 
 	// .WithContext(ctx) ensures the query respects timeouts/cancellations
 	// .Where() filters by the ID

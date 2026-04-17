@@ -4,6 +4,7 @@ import (
 	"context"
 	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -37,14 +38,8 @@ type RestaurantRepositoryInterface interface {
 	GetAllTablesOfFloor(ctx context.Context, floorID uuid.UUID) ([]*restaurant_models.RestaurantTable, error)
 
 	// Restaurant -- Floors --> Tables --> Dining Session
-	CreateRestaurantDiningSession(ctx context.Context, diningSession *restaurant_models.RestaurantDiningSession) error
-	UpdateDiningSessionStatus(ctx context.Context, diningSessionID uuid.UUID, status string) error
-	GetDiningSessionByStatus(ctx context.Context, restaurantID uuid.UUID, status restaurant_constants.RestaurantDiningSessionStatusType) ([]*restaurant_models.RestaurantDiningSession, error)
-	GetDiningSessionByTableID(ctx context.Context, tableID uuid.UUID) (*restaurant_models.RestaurantDiningSession, error)
 
 	// Dining Session payments
-	CreateSessionPayment(ctx context.Context, sessionPayment *restaurant_models.RestaurantSessionPayment) error
-	GetAllPaymentsOfDiningSession(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantSessionPayment, error)
 
 	// Orders
 	CreateOrder(ctx context.Context, order *restaurant_models.RestaurantOrders) error
@@ -60,11 +55,11 @@ type RestaurantRepositoryInterface interface {
 
 	UpdateOrderStatus(ctx context.Context, orderID uuid.UUID, status string) error
 
-	// Charges
-	CreateCharges(ctx context.Context, charges *restaurant_models.RestaurantCharge) error
-	GetAllChargesOfSession(ctx context.Context, sessionID uuid.UUID) ([]*restaurant_models.RestaurantCharge, error)
+	GetOrderSequenceNumber(ctx context.Context, restaurantID uuid.UUID, orgID uuid.UUID, nowTime time.Time) (string, error)
 
 	RestaurantConfigurationRepoInterface
+	RestaurantDiningFlowRepoInterface
+	// RestaurantPickUpOrderFlowRepoInterface
 }
 
 type RestaurantConfigurationRepoInterface interface {
@@ -76,4 +71,21 @@ type RestaurantConfigurationRepoInterface interface {
 
 	UpdateConfiguration(ctx context.Context, restaurantID uuid.UUID, config bool) error
 	UpdateActivation(ctx context.Context, restaurantID uuid.UUID, isActive bool) error
+}
+
+type RestaurantDiningFlowRepoInterface interface {
+	CreateRestaurantDiningSession(ctx context.Context, diningSession *restaurant_models.RestaurantDiningSession) error
+	GetDiningSessionByID(ctx context.Context, sessionID uuid.UUID) (*restaurant_models.RestaurantDiningSession, error)
+	UpdateDiningSessionStatus(ctx context.Context, diningSessionID uuid.UUID, status string) error
+	GetDiningSessionByStatus(ctx context.Context, restaurantID uuid.UUID, status restaurant_constants.RestaurantDiningSessionStatusType) ([]*restaurant_models.RestaurantDiningSession, error)
+	GetDiningSessionByTableID(ctx context.Context, tableID uuid.UUID) (*restaurant_models.RestaurantDiningSession, error)
+}
+
+type RestaurantPickUpOrderFlowRepoInterface interface {
+	CreatePickUpOrder(ctx context.Context, pickUpOrder *restaurant_models.RestaurantPickUpOrders) error
+	GetPickUpOrderByRestaurantID(ctx context.Context, restaurantID uuid.UUID) ([]restaurant_models.RestaurantPickUpOrders, error)
+	GetPickUpOrderByID(ctx context.Context, pickUpOrderID uuid.UUID) (*restaurant_models.RestaurantPickUpOrders, error)
+
+	CreatePickUpOrderCustomer(ctx context.Context, pickUpOrderCustomer *restaurant_models.RestaurantPickUpOrderCustomer) error
+	GetPickUpOrderCustomerByPickUpOrderID(ctx context.Context, pickUpOrderID uuid.UUID) (*restaurant_models.RestaurantPickUpOrderCustomer, error)
 }

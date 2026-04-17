@@ -18,11 +18,9 @@ func migrateAccounting(db *gorm.DB) error {
 		&accounting_models.JournalEntry{},
 		&accounting_models.JournalLine{},
 
-		// Payable & Expenses
-		&accounting_models.Supplier{},
-		&accounting_models.PurchaseBill{},
-		&accounting_models.PurchaseBillItem{},
-		&accounting_models.SupplierPayment{},
 		&accounting_models.Expense{},
+		&accounting_models.PurchaseInvoice{},
+		&accounting_models.PurchaseInvoiceLine{},
+		&accounting_models.PurchasePayment{},
 	)
 }
