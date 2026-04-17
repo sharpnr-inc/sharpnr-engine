@@ -8,7 +8,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *sharpnrIdentityAuthControllers) GetMe(ctx *gin.Context) {
+func (c *sharpnrIdentityAuthControllers) VerifyAuthentication(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "", gin.H{
+		"authenticated": true,
+		"user_id":       emplID,
+		"org_id":        orgID,
+	})
 
 }
 
