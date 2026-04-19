@@ -11,7 +11,7 @@ import (
 // GetOrganizationStatus godoc
 // @Summary      Short, punchy summary of the action
 // @Description  Detailed explanation of what happens. Note: This requires an 'org_id' inside the session cookie.
-// @Tags         Orchestrator --> Console
+// @Tags         Orchestrator
 // @Accept       json
 // @Produce      json
 // @Param        Cookie  header  string  true  "Session cookie containing org_id"

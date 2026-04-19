@@ -89,6 +89,128 @@ const docTemplate = `{
                 }
             }
         },
+        "/orchestrator/org/customers/add": {
+            "post": {
+                "description": "this Api Create Customer in the Organization as of Now this API Can be used Business Logic Modules To Create Customer, in Future We will Inject this service in business logic module",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orchestrator.Customers"
+                ],
+                "summary": "Create Customer in the Organization",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session cookie containing org_id",
+                        "name": "Cookie",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/org/customers/search": {
+            "get": {
+                "description": "Searches customers within the current organization using a partial name or identifier. Minimum 3 characters required.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orchestrator.Customers"
+                ],
+                "summary": "Search customers inside organization",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session cookie containing org_id and empl_id",
+                        "name": "Cookie",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search query (minimum 3 characters)",
+                        "name": "searchQuery",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Customers fetched successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/org_customer_models.Customer"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid search query",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/orchestrator/setup-status": {
             "get": {
                 "description": "Detailed explanation of what happens. Note: This requires an 'org_id' inside the session cookie.",
@@ -99,7 +221,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Orchestrator --\u003e Console"
+                    "Orchestrator"
                 ],
                 "summary": "Short, punchy summary of the action",
                 "parameters": [
@@ -426,6 +548,9 @@ const docTemplate = `{
         },
         "orchestrator_dtos.SetupOrgPropertyReqDTO": {
             "type": "object",
+            "required": [
+                "step_id"
+            ],
             "properties": {
                 "accuracy_m": {
                     "type": "integer"
@@ -452,6 +577,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "state": {
+                    "type": "string"
+                },
+                "step_id": {
                     "type": "string"
                 }
             }
@@ -492,6 +620,29 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "step_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "org_customer_models.Customer": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "gstin": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "organizationID": {
+                    "type": "string"
+                },
+                "phone": {
                     "type": "string"
                 }
             }
@@ -559,9 +710,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "192.168.1.35:8080",
+	Host:             "api.sharpnr.test",
 	BasePath:         "/api/v1",
-	Schemes:          []string{},
+	Schemes:          []string{"http", "https"},
 	Title:            "Sharpnr Engine APIs",
 	Description:      "Sharpnr Engine API Documentation",
 	InfoInstanceName: "swagger",
