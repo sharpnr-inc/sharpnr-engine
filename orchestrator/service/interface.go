@@ -35,7 +35,6 @@ type OrchestratorServiceInterface interface {
 	/*                                 UI related                                 */
 	/* -------------------------------------------------------------------------- */
 
-	GetSharpnrLauncherData(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) (orchestrator_dtos.OrgLauncherResponse, error)
 }
 
 type OrganizationPropertyOrchestrationInterface interface {
