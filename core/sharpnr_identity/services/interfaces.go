@@ -25,4 +25,6 @@ type SharpnrIdentityAuthServiceInterface interface {
 		orgID uuid.UUID,
 		employeeID uuid.UUID,
 	) error
+
+	GetAuthenticatedUserDetails(ctx context.Context, orgID, emplID uuid.UUID) (sharpnr_identity_auth_dtos.UserDataResponseDto, error)
 }

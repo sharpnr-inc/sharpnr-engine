@@ -23,8 +23,9 @@ type Employee struct {
 
 	// Role comes from your constants package
 	// Status: ACTIVE, INACTIVE, ON_LEAVE, TERMINATED
-	Role   string `gorm:"type:varchar(50);not null"`
-	Status string `gorm:"type:varchar(20);default:'ACTIVE'"`
+	Role     string `gorm:"type:varchar(50);not null"`
+	Status   string `gorm:"type:varchar(20);default:'ACTIVE'"`
+	OrgEmpID string `gorm:"type:varchar(20);"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
