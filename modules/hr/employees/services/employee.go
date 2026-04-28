@@ -2,6 +2,7 @@ package employee_services
 
 import (
 	"context"
+	sharphr_dtos "sharpnr-engine/modules/hr/employees/dtos"
 	employee_models "sharpnr-engine/modules/hr/employees/models"
 	"time"
 
@@ -64,3 +65,44 @@ func (h *employeeService) IsUserExists(
 ) (bool, error) {
 	return h.empIdentityRepo.ExistsByEmail(ctx, employeeEmail)
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *employeeService) ListOrgAllEmployees(
+	ctx context.Context,
+	orgID, emplID uuid.UUID,
+) ([]*sharphr_dtos.OrgEmployeeList, error) {
+
+	empls, err := s.empIdentityRepo.ListByOrg(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*sharphr_dtos.OrgEmployeeList
+
+	for _, e := range empls {
+		result = append(result, &sharphr_dtos.OrgEmployeeList{
+			ID:           e.ID,
+			EmployeeName: buildEmployeeName(e.FirstName, e.LastName, e.NickName),
+			EmployeeRole: e.Role,
+			EmployeeID:   e.OrgEmpID,
+			Status:       e.Status,
+		})
+	}
+
+	return result, nil
+}
+
+func buildEmployeeName(firstName, lastName, nickName string) string {
+	if nickName != "" {
+		return nickName
+	}
+
+	if lastName != "" {
+		return firstName + " " + lastName
+	}
+
+	return firstName
+}
+
+/* ---------------------------------- <***> --------------------------------- */

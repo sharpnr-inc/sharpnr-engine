@@ -41,3 +41,30 @@ func (s *employeeService) GetEmployeeProfile(ctx context.Context, orgID uuid.UUI
 	return output, nil
 
 }
+
+func (s *employeeService) GetEmployeeDetails(
+	ctx context.Context,
+	orgID, emplID uuid.UUID,
+) (*employee_contracts.EmployeeDetailsOutput, error) {
+
+	emp, err := s.empIdentityRepo.GetByID(ctx, emplID)
+	if err != nil {
+		return nil, err
+	}
+
+	if emp == nil {
+		return nil, ErrInvalidCredentials
+	}
+
+	if emp.OrganizationID != orgID {
+		return nil, ErrInvalidCredentials
+	}
+
+	return &employee_contracts.EmployeeDetailsOutput{
+		Email:     emp.Email,
+		FirstName: emp.FirstName,
+		LastName:  emp.LastName,
+		Role:      emp.Role,
+		ID:        emp.ID,
+	}, nil
+}

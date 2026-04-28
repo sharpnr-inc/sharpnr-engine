@@ -23,3 +23,26 @@ func (s *sharpnrIdentityAuthService) GetProfile(ctx context.Context, orgID uuid.
 		Gender:    empProfile.Gender,
 	}, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *sharpnrIdentityAuthService) GetAuthenticatedUserDetails(
+	ctx context.Context,
+	orgID, emplID uuid.UUID,
+) (sharpnr_identity_auth_dtos.UserDataResponseDto, error) {
+
+	empl, err := s.employeeService.GetEmployeeDetails(ctx, orgID, emplID)
+	if err != nil {
+		return sharpnr_identity_auth_dtos.UserDataResponseDto{}, err
+	}
+
+	out := sharpnr_identity_auth_dtos.UserDataResponseDto{
+		Email:     empl.Email,
+		FirstName: empl.FirstName,
+		LastName:  empl.LastName,
+		ID:        empl.ID,
+		Role:      empl.Role,
+	}
+
+	return out, nil
+}
