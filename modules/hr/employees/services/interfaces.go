@@ -31,7 +31,11 @@ type EmployeeServiceInterface interface {
 	GetEmployeeDetails(ctx context.Context, orgID, emplID uuid.UUID) (*employee_contracts.EmployeeDetailsOutput, error)
 
 	ListOrgAllEmployees(
-	ctx context.Context,
-	orgID, emplID uuid.UUID,
-) ([]*sharphr_dtos.OrgEmployeeList, error)
+		ctx context.Context,
+		orgID, emplID uuid.UUID,
+	) ([]*sharphr_dtos.OrgEmployeeList, error)
+}
+
+// This is the interface for the service that will used by HR module to interact with the employee service. This is used to decouple the HR module from the employee service implementation. This is also used to avoid circular dependencies between the HR module and the employee service.
+type EmployeeSharpHRServiceInterface interface {
 }

@@ -8,6 +8,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// GetEmployeeProfile retrieves the employee's profile information, including identity and profile details.
+
 func (s *employeeService) GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*employee_contracts.EmployeeProfileOutput, error) {
 
 	emp, err := s.empIdentityRepo.GetByID(ctx, empID)
@@ -41,6 +43,8 @@ func (s *employeeService) GetEmployeeProfile(ctx context.Context, orgID uuid.UUI
 	return output, nil
 
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *employeeService) GetEmployeeDetails(
 	ctx context.Context,
