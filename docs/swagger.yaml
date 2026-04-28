@@ -41,6 +41,10 @@ definitions:
         type: string
       state:
         type: string
+      step_id:
+        type: string
+    required:
+    - step_id
     type: object
   orchestrator_dtos.SetupOrganizationHQAddressReqDTO:
     properties:
@@ -69,6 +73,21 @@ definitions:
     - pincode
     - state
     - step_id
+    type: object
+  org_customer_models.Customer:
+    properties:
+      email:
+        type: string
+      gstin:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      organizationID:
+        type: string
+      phone:
+        type: string
     type: object
   org_signup_dtos.OrganizationRegistrationDTO:
     description: Organization Registration Data
@@ -109,7 +128,7 @@ definitions:
       token:
         type: string
     type: object
-host: 192.168.1.35:8080
+host: api.sharpnr.test
 info:
   contact:
     email: support@sharpnr.com
@@ -166,6 +185,84 @@ paths:
       summary: Get bar details for the current organization
       tags:
       - Hospitality - Bar
+  /orchestrator/org/customers/add:
+    post:
+      consumes:
+      - application/json
+      description: this Api Create Customer in the Organization as of Now this API
+        Can be used Business Logic Modules To Create Customer, in Future We will Inject
+        this service in business logic module
+      parameters:
+      - description: Session cookie containing org_id
+        in: header
+        name: Cookie
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  type: boolean
+              type: object
+        "400":
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Create Customer in the Organization
+      tags:
+      - Orchestrator.Customers
+  /orchestrator/org/customers/search:
+    get:
+      consumes:
+      - application/json
+      description: Searches customers within the current organization using a partial
+        name or identifier. Minimum 3 characters required.
+      parameters:
+      - description: Session cookie containing org_id and empl_id
+        in: header
+        name: Cookie
+        required: true
+        type: string
+      - description: Search query (minimum 3 characters)
+        in: query
+        name: searchQuery
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Customers fetched successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/org_customer_models.Customer'
+                  type: array
+              type: object
+        "400":
+          description: Invalid search query
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Search customers inside organization
+      tags:
+      - Orchestrator.Customers
   /orchestrator/setup-status:
     get:
       consumes:
@@ -196,7 +293,7 @@ paths:
             $ref: '#/definitions/utils.Response'
       summary: Short, punchy summary of the action
       tags:
-      - Orchestrator --> Console
+      - Orchestrator
   /orchestrator/setup-wiz/step3:
     post:
       consumes:
@@ -363,4 +460,7 @@ paths:
       summary: Initiate Organization Registration
       tags:
       - signup
+schemes:
+- http
+- https
 swagger: "2.0"

@@ -8,6 +8,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetOrganizationStatus godoc
+// @Summary      Create Customer in the Organization
+// @Description  this Api Create Customer in the Organization as of Now this API Can be used Business Logic Modules To Create Customer, in Future We will Inject this service in business logic module
+// @Tags         Orchestrator.Customers
+// @Accept       json
+// @Produce      json
+// @Param        Cookie  header  string  true  "Session cookie containing org_id"
+// @Success      200     {object}  utils.Response{data=boolean} "Success"
+// @Failure      400     {object}  utils.Response "Validation Error"
+// @Router       /orchestrator/org/customers/add [post]
 func (c *OrchestratorController) CreateCustomerHandler(ctx *gin.Context) {
 
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
@@ -30,7 +40,19 @@ func (c *OrchestratorController) CreateCustomerHandler(ctx *gin.Context) {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
-
+// SearchCustomerHandler godoc
+// @Summary      Search customers inside organization
+// @Description  Searches customers within the current organization using a partial name or identifier. Minimum 3 characters required.
+// @Tags         Orchestrator.Customers
+// @Accept       json
+// @Produce      json
+// @Param        Cookie       header  string  true  "Session cookie containing org_id and empl_id"
+// @Param        searchQuery  query   string  true  "Search query (minimum 3 characters)"
+// @Success      200          {object} utils.Response{data=[]org_customer_models.Customer} "Customers fetched successfully"
+// @Failure      400          {object} utils.Response "Invalid search query"
+// @Failure      401          {object} utils.Response "Unauthorized"
+// @Failure      500          {object} utils.Response "Internal server error"
+// @Router       /orchestrator/org/customers/search [get]
 func (c *OrchestratorController) SearchCustomerHandler(ctx *gin.Context) {
 	// 1. Resolve multi-tenant context
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
