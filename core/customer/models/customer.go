@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type Customer struct {
@@ -17,7 +16,6 @@ type Customer struct {
 	Email          string
 	Phone          string
 	GSTIN          *string
-	gorm.Model
 }
 
 func (Customer) TableName() string {
@@ -47,5 +45,3 @@ type CustomerOrgMeta struct {
 func (CustomerOrgMeta) TableName() string {
 	return "customers.customer_org_meta"
 }
-
-

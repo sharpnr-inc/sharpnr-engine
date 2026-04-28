@@ -27,6 +27,20 @@ func (c *sharpnrIdentityAuthControllers) UpdateMyProfile(ctx *gin.Context) {
 
 }
 
+func (c *sharpnrIdentityAuthControllers) GetUser(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	res, err := c.IdSvc.GetAuthenticatedUserDetails(ctx.Request.Context(), orgID, emplID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusUnauthorized, "unauthorised", err)
+	}
+
+	utils.Success(ctx, http.StatusOK, "Success", res)
+}
+
 func (c *sharpnrIdentityAuthControllers) LogoutUser(ctx *gin.Context) {
 
 	// Clear auth cookies

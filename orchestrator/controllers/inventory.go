@@ -27,6 +27,8 @@ func (c *OrchestratorController) NewInventoryAccountHandler(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusOK, "")
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (c *OrchestratorController) ListAllInventoryAccountHandler(ctx *gin.Context) {
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
@@ -65,3 +67,5 @@ func (c *OrchestratorController) ListAllInventoriesOfInvetoryAccountHandler(ctx 
 	utils.Success(ctx, http.StatusOK, "Inventory retrieved successfully", res)
 
 }
+
+/* ---------------------------------- <***> --------------------------------- */

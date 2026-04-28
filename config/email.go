@@ -1,6 +1,6 @@
 package config
 
-import "sharpnr-engine/shared/mailer"
+import mailer "sharpnr-engine/sharp_mailer"
 
 type EmailConfig struct {
 	Identities map[mailer.Type]mailer.Identity

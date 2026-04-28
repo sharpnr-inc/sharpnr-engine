@@ -35,7 +35,8 @@ import (
 // @license.name MIT
 // @license.url https://opensource.org/licenses/MIT
 
-// @host 192.168.1.35:8080
+// @host api.sharpnr.test
+// @schemes http https
 // @BasePath /api/v1
 func main() {
 	cfg := config.Load()
