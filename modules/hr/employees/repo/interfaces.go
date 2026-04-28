@@ -33,8 +33,6 @@ type EmployeeIdentityRepositoryInterface interface {
 		ctx context.Context,
 		orgID uuid.UUID,
 	) ([]*employee_models.Employee, error)
-
-	
 }
 
 type EmployeeAuthRepositoryInterface interface {
@@ -60,6 +58,10 @@ type EmployeeProfileRepositoryInterface interface {
 	Create(ctx context.Context, profile *employee_models.EmployeeProfile) error
 	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*employee_models.EmployeeProfile, error)
 	Update(ctx context.Context, profile *employee_models.EmployeeProfile) error
+
+	CreateEmployeeSystemAccess(ctx context.Context, access *employee_models.EmployeeSystemAccess) (*employee_models.EmployeeSystemAccess, error)
+	GetEmployeeSystemAccessByEmployeeID(ctx context.Context, empID uuid.UUID) ([]*employee_models.EmployeeSystemAccess, error)
+	IsEmployeeHaveOnlineAccess(ctx context.Context, empID uuid.UUID) (bool, error)
 }
 
 type EmployeeEmploymentRepositoryInterface interface {
