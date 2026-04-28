@@ -9,6 +9,8 @@ import (
 )
 
 type EmployeeServiceInterface interface {
+
+	// Creates a default super admin for the organization. This is used when an organization is created. The super admin has all permissions and can manage the organization.
 	CreateDefaultSuperAdmin(
 		ctx context.Context,
 		orgId uuid.UUID,
@@ -30,12 +32,9 @@ type EmployeeServiceInterface interface {
 
 	GetEmployeeDetails(ctx context.Context, orgID, emplID uuid.UUID) (*employee_contracts.EmployeeDetailsOutput, error)
 
-	ListOrgAllEmployees(
-		ctx context.Context,
-		orgID, emplID uuid.UUID,
-	) ([]*sharphr_dtos.OrgEmployeeList, error)
-}
+	/* -------------------------------------------------------------------------- */
+	/*                         All Methods are For HR App                         */
+	/* -------------------------------------------------------------------------- */
 
-// This is the interface for the service that will used by HR module to interact with the employee service. This is used to decouple the HR module from the employee service implementation. This is also used to avoid circular dependencies between the HR module and the employee service.
-type EmployeeSharpHRServiceInterface interface {
+	ListOrgAllEmployees(ctx context.Context, orgID, emplID uuid.UUID) ([]*sharphr_dtos.OrgEmployeeList, error)
 }

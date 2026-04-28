@@ -36,6 +36,24 @@ func (Employee) TableName() string {
 	return "employee.employee"
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
+type EmployeeSystemAccess struct {
+	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
+	EmployeeID uuid.UUID `gorm:"type:uuid;index"`
+	App        string    `gorm:"type:varchar(50)"`
+	Online     bool      `gorm:"default:false"`
+	
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+}
+
+func (EmployeeSystemAccess) TableName() string {
+	return "employee.employee_system_access"
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
 // -------------------------------
 // 2️⃣ VERIFICATION & AUTH
 // -------------------------------
@@ -56,6 +74,8 @@ func (EmployeeVerification) TableName() string {
 	return "employee.employee_verification"
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 type EmployeeSession struct {
 	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
 	EmployeeID uuid.UUID `gorm:"type:uuid;index"`
@@ -71,6 +91,8 @@ type EmployeeSession struct {
 func (EmployeeSession) TableName() string {
 	return "employee.employee_session"
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 // -------------------------------
 // 3️⃣ REPORTING HIERARCHY
@@ -88,3 +110,5 @@ type EmployeeReporting struct {
 func (EmployeeReporting) TableName() string {
 	return "employee.employee_reporting"
 }
+
+/* ---------------------------------- <***> --------------------------------- */
