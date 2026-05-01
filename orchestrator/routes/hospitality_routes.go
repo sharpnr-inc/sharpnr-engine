@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+
 func registerHospitalityRoutes(r *gin.RouterGroup, c *orchestrator_controllers.OrchestratorController) {
 
 	pr := r.Group("/hospitality")

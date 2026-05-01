@@ -21,8 +21,7 @@ func BootstrapModules(
 	sseEngine *sse_engine.StreamManager,
 ) *AppModules {
 
-	iAM := bootstrapSharIAM(db)
-	organizationService := bootstrapOrganization(db, redis, mailerEngine, iAM)
+	organizationService := bootstrapOrganization(db, redis, mailerEngine)
 	orgPropertyService := bootstrapOrgProperty(db, txManager)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
 
