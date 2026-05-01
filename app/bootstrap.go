@@ -21,6 +21,9 @@ func BootstrapModules(
 	sseEngine *sse_engine.StreamManager,
 ) *AppModules {
 
+	// Sentinel Engine uses the DB and used to Evaluate the authorization
+	// sentinel_engine := bootStrapSentinelEngine(db)
+
 	organizationService := bootstrapOrganization(db, redis, mailerEngine)
 	orgPropertyService := bootstrapOrgProperty(db, txManager)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
