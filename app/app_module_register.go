@@ -33,7 +33,9 @@ type AppModules struct {
 
 	hospitality *hospitalitydomain.HospitalityDomain
 
-	employeeService      employee_services.EmployeeServiceInterface
+	employeesIdentityService employee_services.EmployeesIdentityServiceInterface
+	employeesHRService       employee_services.EmployeesHRServiceInterface
+
 	accountingService    accounting_service.AccountingServiceInterface
 	orgCustomerService   org_customer_service.OrgCustomerServiceInterface
 	sseEngine            *sse_engine.StreamManager
@@ -59,8 +61,12 @@ func (m *AppModules) SharpAuthService() sharpnr_identity_auth_services.SharpnrId
 	return m.sharpAuthService
 }
 
-func (m *AppModules) EmployeeService() employee_services.EmployeeServiceInterface {
-	return m.employeeService
+func (m *AppModules) EmployeesIdentityService() employee_services.EmployeesIdentityServiceInterface {
+	return m.employeesIdentityService
+}
+
+func (m *AppModules) EmployeesHRService() employee_services.EmployeesHRServiceInterface {
+	return m.employeesHRService
 }
 
 func (m *AppModules) OrgSignUpService() org_signup_services.OrganizationSignUpServiceInterfaces {

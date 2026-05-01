@@ -8,7 +8,7 @@ import (
 )
 
 type sharpnrIdentityAuthService struct {
-	employeeService employee_services.EmployeeServiceInterface
+	employeeService employee_services.EmployeesIdentityServiceInterface
 }
 
 // VerifyLoggedInEmployee implements SharpnrIdentityAuthServiceInterface.
@@ -17,7 +17,7 @@ func (s *sharpnrIdentityAuthService) VerifyLoggedInEmployee(ctx context.Context,
 }
 
 func NewSharpnrIdentityAuthService(
-	employeeService employee_services.EmployeeServiceInterface,
+	employeeService employee_services.EmployeesIdentityServiceInterface,
 ) *sharpnrIdentityAuthService {
 	return &sharpnrIdentityAuthService{
 		employeeService: employeeService,

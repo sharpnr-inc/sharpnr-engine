@@ -11,7 +11,7 @@ import (
 type orgSignUpService struct {
 	txManager           dbtx.TxManager
 	mailerEngine        *sharp_mailer_engine.SharpMailerEngine
-	employeeSvc         employee_services.EmployeeServiceInterface
+	employeeSvc         employee_services.EmployeesIdentityServiceInterface
 	organizationService organization_services.OrganizationServiceInterface
 	setUpWizService     org_setup_wizard_services.OrgSetupWizardServiceInterface
 }
@@ -19,7 +19,7 @@ type orgSignUpService struct {
 func NewOrgSignUpService(
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-	employeeSvc employee_services.EmployeeServiceInterface,
+	employeeSvc employee_services.EmployeesIdentityServiceInterface,
 	organizationService organization_services.OrganizationServiceInterface,
 	setUpWizService org_setup_wizard_services.OrgSetupWizardServiceInterface,
 ) *orgSignUpService {

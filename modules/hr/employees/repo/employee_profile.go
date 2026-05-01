@@ -22,6 +22,21 @@ type employeeProfileRepo struct {
 	db *gorm.DB
 }
 
+// CreateEmployeeSystemAccess implements [EmployeeProfileRepositoryInterface].
+func (r *employeeProfileRepo) CreateEmployeeSystemAccess(ctx context.Context, access *employee_models.EmployeeSystemAccess) (*employee_models.EmployeeSystemAccess, error) {
+	panic("unimplemented")
+}
+
+// GetEmployeeSystemAccessByEmployeeID implements [EmployeeProfileRepositoryInterface].
+func (r *employeeProfileRepo) GetEmployeeSystemAccessByEmployeeID(ctx context.Context, empID uuid.UUID) ([]*employee_models.EmployeeSystemAccess, error) {
+	panic("unimplemented")
+}
+
+// IsEmployeeHaveOnlineAccess implements [EmployeeProfileRepositoryInterface].
+func (r *employeeProfileRepo) IsEmployeeHaveOnlineAccess(ctx context.Context, empID uuid.UUID) (bool, error) {
+	panic("unimplemented")
+}
+
 func NewEmployeeProfileRepo(db *gorm.DB) *employeeProfileRepo {
 	return &employeeProfileRepo{
 		db: db,

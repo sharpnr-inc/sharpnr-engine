@@ -49,6 +49,3 @@ func NewEmployeeService(
 		empEmploymentRepo: empEmploymentRepo,
 	}
 }
-
-
-func 

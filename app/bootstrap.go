@@ -31,7 +31,9 @@ func BootstrapModules(
 	inventory_engine_sero_handlers.RegisterSeroHandler(seroEngine, inventoryEngine)
 	/* ---------------------------- inventory engine ---------------------------- */
 
-	employeeService := bootstrapEmployee(db)
+	employeesIdentityService := bootstrapEmployeeIdentity(db)
+	employeesHRService := bootstrapEmployeeHR(db)
+
 	orgSetupWizardService := bootstrapOrgSetupWizard(
 		db,
 		orgLegalEntityService,
@@ -42,7 +44,7 @@ func BootstrapModules(
 	orgSignupService := bootstrapOrgSignup(
 		txManager,
 		mailerEngine,
-		employeeService,
+		employeesIdentityService,
 		organizationService,
 		orgSetupWizardService,
 	)
@@ -50,7 +52,7 @@ func BootstrapModules(
 	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
 	orgSupplierService := bootstrapSupplier(db, txManager, mailerEngine, seroEngine)
 
-	identityService := bootstrapIdentity(db, employeeService)
+	identityService := bootstrapIdentity(employeesIdentityService)
 
 	paymentsEngine := bootstrapPaymentEngine(db, mailerEngine, txManager, seroEngine)
 
@@ -102,15 +104,18 @@ func BootstrapModules(
 		orgSignupService:      orgSignupService,
 		orgPropertyService:    orgPropertyService,
 		orgLegalEntityService: orgLegalEntityService,
-		employeeService:       employeeService,
-		accountingService:     accountingService,
-		sharpAuthService:      identityService,
-		hospitality:           hospitality,
-		orchestratorService:   orchestratorService,
-		orgSetupWizard:        orgSetupWizardService,
-		sseEngine:             sseEngine,
-		taxEngineService:      taxEngineService,
-		orgCustomerService:    orgCustomerService,
+
+		employeesIdentityService: employeesIdentityService,
+		employeesHRService:       employeesHRService,
+
+		accountingService:   accountingService,
+		sharpAuthService:    identityService,
+		hospitality:         hospitality,
+		orchestratorService: orchestratorService,
+		orgSetupWizard:      orgSetupWizardService,
+		sseEngine:           sseEngine,
+		taxEngineService:    taxEngineService,
+		orgCustomerService:  orgCustomerService,
 	}
 
 }

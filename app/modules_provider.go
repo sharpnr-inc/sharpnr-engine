@@ -27,7 +27,8 @@ type ModulesProvider interface {
 	OrgSignUpService() org_signup_services.OrganizationSignUpServiceInterfaces
 	SharpAuthService() sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
 
-	EmployeeService() employee_services.EmployeeServiceInterface
+	EmployeesIdentityService() employee_services.EmployeesIdentityServiceInterface
+	EmployeesHRService() employee_services.EmployeesHRServiceInterface
 	AccountingService() accounting_service.AccountingServiceInterface
 	SseEngine() *sse_engine.StreamManager
 	LegalEntityService() legal_entity_service.OrgLegalEntityServiceInterface

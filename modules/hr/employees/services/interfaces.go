@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type EmployeeServiceInterface interface {
+type EmployeesIdentityServiceInterface interface {
 
 	// Creates a default super admin for the organization. This is used when an organization is created. The super admin has all permissions and can manage the organization.
 	CreateDefaultSuperAdmin(
@@ -31,10 +31,9 @@ type EmployeeServiceInterface interface {
 	GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*employee_contracts.EmployeeProfileOutput, error)
 
 	GetEmployeeDetails(ctx context.Context, orgID, emplID uuid.UUID) (*employee_contracts.EmployeeDetailsOutput, error)
+}
 
-	/* -------------------------------------------------------------------------- */
-	/*                         All Methods are For HR App                         */
-	/* -------------------------------------------------------------------------- */
-
+// this is interface which will used by the HR module to interact with the employee module, this interface the have employee Ops used by the Org Hr
+type EmployeesHRServiceInterface interface {
 	ListOrgAllEmployees(ctx context.Context, orgID, emplID uuid.UUID) ([]*sharphr_dtos.OrgEmployeeList, error)
 }
