@@ -3,6 +3,7 @@ package middlewares
 import (
 	"sharpnr-engine/config"
 	"strings"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,7 @@ func UnifiedCORSMiddleware(cfg config.CORSConfig) gin.HandlerFunc {
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "X-CSRF-Token"},
 		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
 	})
 
 	mobileCORS := cors.New(cors.Config{

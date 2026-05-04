@@ -72,6 +72,12 @@ func BootstrapModules(
 		paymentsEngine,
 		inventoryEngine,
 	)
+
+	hospitalityOrchestration := bootstrapHospitalityDomainOrchestration(
+		orgPropertyService,
+		hospitality,
+	)
+
 	/* ---------------------------- Accounting Engine --------------------------- */
 	accountingService := bootstrapAccounting(
 		db,
@@ -110,14 +116,15 @@ func BootstrapModules(
 		employeesIdentityService: employeesIdentityService,
 		employeesHRService:       employeesHRService,
 
-		accountingService:   accountingService,
-		sharpAuthService:    identityService,
-		hospitality:         hospitality,
-		orchestratorService: orchestratorService,
-		orgSetupWizard:      orgSetupWizardService,
-		sseEngine:           sseEngine,
-		taxEngineService:    taxEngineService,
-		orgCustomerService:  orgCustomerService,
+		accountingService:        accountingService,
+		sharpAuthService:         identityService,
+		hospitality:              hospitality,
+		hospitalityOrchestration: hospitalityOrchestration,
+		orchestratorService:      orchestratorService,
+		orgSetupWizard:           orgSetupWizardService,
+		sseEngine:                sseEngine,
+		taxEngineService:         taxEngineService,
+		orgCustomerService:       orgCustomerService,
 	}
 
 }

@@ -9,6 +9,7 @@ import (
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
+	hospitality_orchestration_service "sharpnr-engine/modules/hospitality/orchestration/service"
 	employee_services "sharpnr-engine/modules/hr/employees/services"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
@@ -31,7 +32,8 @@ type AppModules struct {
 	orchestratorService orchestrator_service.OrchestratorServiceInterface
 	orgSetupWizard      org_setup_wizard_services.OrgSetupWizardServiceInterface
 
-	hospitality *hospitalitydomain.HospitalityDomain
+	hospitality              *hospitalitydomain.HospitalityDomain
+	hospitalityOrchestration hospitality_orchestration_service.OrchestrationServiceInterface
 
 	employeesIdentityService employee_services.EmployeesIdentityServiceInterface
 	employeesHRService       employee_services.EmployeesHRServiceInterface
@@ -49,6 +51,10 @@ func (m *AppModules) SharpnrOrchestrator() orchestrator_service.OrchestratorServ
 
 func (m *AppModules) Hospitality() *hospitalitydomain.HospitalityDomain {
 	return m.hospitality
+}
+
+func (m *AppModules) HospitalityOrchestration() hospitality_orchestration_service.OrchestrationServiceInterface {
+	return m.hospitalityOrchestration
 }
 
 // AccountingService implements ModulesProvider.

@@ -9,6 +9,7 @@ import (
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
+	hospitality_orchestration_service "sharpnr-engine/modules/hospitality/orchestration/service"
 	employee_services "sharpnr-engine/modules/hr/employees/services"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
@@ -21,7 +22,10 @@ type ModulesProvider interface {
 	OrganizationService() organization_services.OrganizationServiceInterface
 	SharpnrOrchestrator() orchestrator_service.OrchestratorServiceInterface
 	OrgSetupWiz() org_setup_wizard_services.OrgSetupWizardServiceInterface
+
 	Hospitality() *hospitalitydomain.HospitalityDomain
+	HospitalityOrchestration() hospitality_orchestration_service.OrchestrationServiceInterface
+
 	OrgPropertyService() org_property_services.OrganizationPropertyServicesInterfaces
 
 	OrgSignUpService() org_signup_services.OrganizationSignUpServiceInterfaces
