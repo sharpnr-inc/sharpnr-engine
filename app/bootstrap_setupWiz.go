@@ -6,6 +6,7 @@ import (
 	org_setup_wizard_repos "sharpnr-engine/core/org_setup_wizard/repos"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	organization_services "sharpnr-engine/core/organization/services"
+	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
 
 	"gorm.io/gorm"
 )
@@ -15,6 +16,7 @@ func bootstrapOrgSetupWizard(
 	orgLegalEntitySvc legal_entity_service.OrgLegalEntityServiceInterface,
 	orgPropertySvc org_property_services.OrganizationPropertyServicesInterfaces,
 	orgService organization_services.OrganizationServiceInterface,
+	sharpIdentity sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface,
 ) org_setup_wizard_services.OrgSetupWizardServiceInterface {
 	repo := org_setup_wizard_repos.NewOrgSetupWizardRepository(db)
 	return org_setup_wizard_services.NewOrgSetupWizardService(
@@ -22,5 +24,6 @@ func bootstrapOrgSetupWizard(
 		orgLegalEntitySvc,
 		orgPropertySvc,
 		orgService,
+		sharpIdentity,
 	)
 }

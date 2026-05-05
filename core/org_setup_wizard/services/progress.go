@@ -25,8 +25,6 @@ func (s *orgSetupWizardService) AddStepProgress(ctx context.Context, orgID uuid.
 	setupStep := &org_setup_wizard_models.OrganizationSetup{
 		ID:             uuid.New(),
 		OrganizationID: orgID,
-		Status:         stepStatus,
-		CurrentStep:    step,
 		Version:        1,
 		StartedAt:      time.Now(),
 		CreatedAt:      time.Now(),

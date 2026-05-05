@@ -1,71 +1,30 @@
 package org_setup_wizard_models
 
 import (
+	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/datatypes"
 )
 
+// A organization can have multiple setup steps, each step will be recorded in the database with its status and timestamp. This //
+// allows us to track the progress of the setup wizard for each organization and provide insights into which steps are completed,
+// in progress, or pending.
+
+// Relation :--> OrganizationSetup Table 1:N Organization Table
+
 type OrganizationSetup struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	OrganizationID uuid.UUID `gorm:"type:uuid;index;not null"`
-
-	// High-level state
-	Status string
-	// NOT_STARTED, IN_PROGRESS, COMPLETED, BLOCKED
-
-	// Current step pointer
-	CurrentStep string
-	// ORG_PROFILE, DOMAIN_SELECT, PROPERTY_SETUP,
-	// LEGAL_ENTITY, ACCOUNTING, HR_INIT, DONE
-
-	Version int `gorm:"default:1"`
-
-	StartedAt   time.Time
-	CompletedAt *time.Time
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID             uuid.UUID                                 `gorm:"type:uuid;primaryKey"`
+	OrganizationID uuid.UUID                                 `gorm:"type:uuid;index;not null"`
+	Status         org_setup_wizards_constants.SetupStatus   `gorm:"type:varchar(20);not null"`
+	CurrentStep    org_setup_wizards_constants.SetupStepType `gorm:"type:varchar(50);not null"`
+	Version        int                                       `gorm:"default:1"`
+	StartedAt      time.Time
+	CompletedAt    *time.Time
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
 }
 
 func (OrganizationSetup) TableName() string {
 	return "setup_wizard.organization_setup"
-}
-
-// !! This is not migrated yet
-type OrganizationSetupStep struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	OrganizationID uuid.UUID `gorm:"type:uuid;index;not null"`
-
-	StepCode string
-	// ORG_PROFILE, DOMAIN_SELECT, PROPERTY_SETUP, etc.
-
-	Status string
-	// PENDING, IN_PROGRESS, COMPLETED, SKIPPED
-
-	// Optional metadata
-	StartedAt   *time.Time
-	CompletedAt *time.Time
-
-	// Optional: who completed it
-	CompletedBy *uuid.UUID
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-}
-
-// !! This is not migrated yet
-type OrganizationSetupDraft struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	OrganizationID uuid.UUID `gorm:"type:uuid;index;not null"`
-
-	StepCode string
-	// PROPERTY_SETUP, LEGAL_ENTITY, ACCOUNTING
-
-	Data      datatypes.JSON `gorm:"type:jsonb;not null"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
 }
