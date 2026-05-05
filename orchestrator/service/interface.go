@@ -52,7 +52,6 @@ type HospitalityPropertyOrchestrationInterface interface {
 }
 
 type OrganizationOrchestartionInterface interface {
-	GetOrganizationStatus(ctx context.Context, orgID uuid.UUID) (*string, error)
 	GetAllPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
 }
 
