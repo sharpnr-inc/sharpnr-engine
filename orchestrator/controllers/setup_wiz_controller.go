@@ -83,6 +83,29 @@ func (c *OrchestratorController) GetSetupProgress(ctx *gin.Context) {
 	)
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *OrchestratorController) HandleSuperAdminSetupCompletion(ctx *gin.Context) {
+	orgID, emplID, ok := s.resolveRequestContexts(ctx)
+	if !ok {
+		return // Error response already sent in resolveRequestContexts
+	}
+
+	req, ok := utils.BindJSON[orchestrator_dtos.SetupSuperAdminDetailsReqDTO](ctx)
+	if !ok {
+		return
+	}
+
+	if err := s.orchestService.SetUpSuperAdminDetails(ctx.Request.Context(), orgID, emplID, req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Super admin details saved successfully")
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
 // Step_two_AddProperty godoc
 // @Summary      Setup Organization Property
 // @Description  Second step of the onboarding wizard: Configures the core property attributes for the organization.

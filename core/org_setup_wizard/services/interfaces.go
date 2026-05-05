@@ -2,6 +2,7 @@ package org_setup_wizard_services
 
 import (
 	"context"
+	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
 
 	"github.com/google/uuid"
@@ -16,6 +17,12 @@ type OrgSetupWizardServiceInterface interface {
 		step_three_input org_setup_wizard_contracts.SetupLegalEntityInput,
 	) error
 
-	AddStepProgress(ctx context.Context, orgID uuid.UUID, step string, stepStatus string) error
+	AddStepProgress(
+		ctx context.Context,
+		orgID uuid.UUID,
+		step org_setup_wizards_constants.SetupStepType,
+		stepStatus org_setup_wizards_constants.SetupStatus,
+	) error
+
 	Progress(ctx context.Context, orgID uuid.UUID) (org_setup_wizard_contracts.SetupProgress, error)
 }

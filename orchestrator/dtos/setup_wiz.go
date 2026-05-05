@@ -8,8 +8,8 @@ import (
 
 /* ---------------------------------- <***> --------------------------------- */
 
-// This DTO is Request DTO for the API that handles the organization property details step of the setup wizard. It captures all the necessary information about the organization's properties, such as its name, address, and geolocation. This information is crucial for setting up the organization's profile and ensuring accurate location-based services.
-
+// This DTO is Request DTO for the API that handles the organization property details step of the setup wizard. It captures all the necessary information about the organization's properties, such
+// as its name, address, and geolocation. This information is crucial for setting up the organization's profile and ensuring accurate location-based services.
 type SetupOrgPropertyReqDTO struct {
 	StepID      string `json:"step_id" binding:"required"`
 	Name        string `json:"name"`
@@ -32,7 +32,6 @@ type SetupOrgPropertyReqDTO struct {
 // This is the Request DTO for the API that handles the legal entity details step of the setup wizard.
 // It captures all the necessary information about a legal entity, such as its name, address, and type. This
 // information is crucial for setting up the organization's legal structure and ensuring compliance with regulatory requirements.
-
 type SetupLegalEntityReqDTO struct {
 	StepID      uuid.UUID `json:"step_id" binding:"required"`
 	Type        string    `json:"type"`
@@ -51,7 +50,6 @@ type SetupLegalEntityReqDTO struct {
 // This is Response DTO for the API that returns the overall progress of the setup wizard, including the status of each individual step.
 // It provides a comprehensive view of where the organization stands in the setup
 // process and what steps have been completed, are in progress, or are pending.
-
 type SetupProgressResponseDTO struct {
 	OverallStatus string                         `json:"overall_status"`
 	CurrentStep   *string                        `json:"current_step,omitempty"`
@@ -67,6 +65,19 @@ type SetupStepProgressResponseDTO struct {
 	Version     int        `json:"version"`
 	StartedAt   time.Time  `json:"started_at"`
 	CompletedAt *time.Time `json:"completed_at,omitempty"`
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// This Dto for the Completion of the Super Admin of the Organization Super Admin is already Created during the Signup process but this step is for capturing additional details of the Super Admin
+// which are not captured during the signup process. This includes fields like profile photo, secondary email, and employee ID which are important for the organization's internal records and //
+// communication.
+type SetupSuperAdminDetailsReqDTO struct {
+	StepID         uuid.UUID `json:"step_id" binding:"required"`
+	FirstName      string    `json:"first_name" binding:"required"`
+	LastName       string    `json:"last_name" binding:"required"`
+	SecondaryEmail string    `json:"secondary_email" binding:"required,email"`
+	EmployeeID     *string   `json:"employee_id,omitempty"`
 }
 
 /* ---------------------------------- <***> --------------------------------- */

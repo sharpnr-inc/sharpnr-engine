@@ -34,6 +34,8 @@ func (r *organizationService) IsOrgExists(ctx context.Context, rootEmail string)
 	return true, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (r *organizationService) CreateDraftOrgForSignup(
 	ctx context.Context,
 	input organization_contracts.DraftOrganizationInput,

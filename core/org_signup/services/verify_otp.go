@@ -2,6 +2,7 @@ package org_signup_services
 
 import (
 	"context"
+	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 
 	"github.com/google/uuid"
 )
@@ -11,9 +12,6 @@ func (r *orgSignUpService) VerifyOtp(
 	otp string,
 	slug uuid.UUID,
 ) (orgID uuid.UUID, emp uuid.UUID, err error) {
-
-	// Step one is give the Slug and otp for the Verification
-	// and if the verification is complete then we
 
 	dataForEmp, err := r.organizationService.VerifySlugCreateDefaultOrg(ctx, otp, slug)
 	if err != nil {
@@ -25,15 +23,18 @@ func (r *orgSignUpService) VerifyOtp(
 		return uuid.Nil, uuid.Nil, err
 	}
 
-	// *This is Add Progress in Setup Wizard
-	// *it Set the Org and put in the In progress so when the user reach the orchestrator
-	// * and fetch the setup progress it will put in the org_set
-	if err := r.setUpWizService.AddStepProgress(ctx, output.OrgID, "ORG_HQ_SETUP", "IN_PROGRESS"); err != nil {
+	empId, err := r.employeeSvc.CreateDefaultSuperAdmin(ctx, output.OrgID, output.Email, output.HashedPass)
+	if err != nil {
 		return uuid.Nil, uuid.Nil, err
 	}
 
-	empId, err := r.employeeSvc.CreateDefaultSuperAdmin(ctx, output.OrgID, output.Email, output.HashedPass)
-	if err != nil {
+	// * This is Add Progress in Setup Wizard
+	// * and fetch the setup progress it will put in the org_setup_wizard table and then it will be show in the UI that the user is in the Super Admin Profile step
+	if err := r.setUpWizService.AddStepProgress(
+		ctx,
+		output.OrgID,
+		org_setup_wizards_constants.SetupStepSuperAdminProfile,
+		org_setup_wizards_constants.SetupStatusInProgress); err != nil {
 		return uuid.Nil, uuid.Nil, err
 	}
 

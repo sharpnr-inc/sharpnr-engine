@@ -10,6 +10,8 @@ import (
 	"gorm.io/gorm"
 )
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *orchestratorService) AddCustomer(ctx context.Context, orgID, emplID uuid.UUID, req org_customer_contracts.AddCustomerRequestDto) error {
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
@@ -42,3 +44,5 @@ func (s *orchestratorService) SearchCustomer(ctx context.Context, orgID, emplID 
 
 	return results, err
 }
+
+/* ---------------------------------- <***> --------------------------------- */

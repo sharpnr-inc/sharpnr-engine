@@ -86,7 +86,6 @@ func (s *orchestratorService) StepThreeLegalEntity(
 // This method retrieves the current progress of the setup wizard for a given organization.
 // It returns a structured response containing the overall status, current step, progress percentage, completion
 // status, and details of each step in the wizard.
-
 func (s *orchestratorService) SetUpWizProgress(
 	ctx context.Context,
 	orgID uuid.UUID,
@@ -117,6 +116,24 @@ func (s *orchestratorService) SetUpWizProgress(
 		IsCompleted:   progress.IsCompleted,
 		Steps:         steps,
 	}, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) SetUpSuperAdminDetails(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req *orchestrator_dtos.SetupSuperAdminDetailsReqDTO) error {
+	// 1. Verify Org exists and is verified
+	verified, err := s.organizationService.VerifyOrgByID(ctx, orgID)
+	if err != nil {
+		return err
+	}
+
+	if !verified {
+		return errors.New("organization must be verified before setting up super admin details")
+	}
+
+	// 2. Now we will call the employee service to update the super admin details
+
+	return nil
 }
 
 /* ---------------------------------- <***> --------------------------------- */
