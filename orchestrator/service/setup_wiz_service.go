@@ -10,44 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// These all service uses the Service from the SetupWizard
-// These are service we have to implement the contracts
-
-func (s *orchestratorService) AddOrganizationHQAddress(
-	ctx context.Context,
-	orgID uuid.UUID,
-	req *orchestrator_dtos.SetupOrganizationHQAddressReqDTO,
-) error {
-
-	// Step 1 --> This is the mapping process, orchestrator implements the contracts of
-	// setup wizard
-
-	valiStepID, err := uuid.Parse(req.StepID)
-	if err != nil {
-		return err
-	}
-
-	input := org_setup_wizard_contracts.StepOneOrganizationHQ{
-		OrgID:        orgID,
-		StepID:       valiStepID,
-		Address_line: req.AddressLine,
-		Country:      req.Country,
-		City:         req.City,
-		State:        req.State,
-		Pincode:      req.Pincode,
-		Location: org_setup_wizard_contracts.StepOneOrganizationHQGeoLocation{
-			Longitude: req.Longitude,
-			Latitude:  req.Latitude,
-			Accuracy:  req.AccuracyM,
-		},
-	}
-
-	if err := s.orgSetupWizService.Step_one_AddOrgHqAddrAndGeoLocation(ctx, input); err != nil {
-		return err
-	}
-
-	return nil
-}
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) StepTwoProperty(
 	ctx context.Context,
@@ -76,6 +39,8 @@ func (s *orchestratorService) StepTwoProperty(
 	}
 	return nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) StepThreeLegalEntity(
 	ctx context.Context,
@@ -116,6 +81,12 @@ func (s *orchestratorService) StepThreeLegalEntity(
 	return nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
+// This method retrieves the current progress of the setup wizard for a given organization.
+// It returns a structured response containing the overall status, current step, progress percentage, completion
+// status, and details of each step in the wizard.
+
 func (s *orchestratorService) SetUpWizProgress(
 	ctx context.Context,
 	orgID uuid.UUID,
@@ -147,3 +118,5 @@ func (s *orchestratorService) SetUpWizProgress(
 		Steps:         steps,
 	}, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */

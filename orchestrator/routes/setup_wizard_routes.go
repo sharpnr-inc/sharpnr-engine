@@ -11,7 +11,6 @@ func registerSetupWizardRoutes(webV1 *gin.RouterGroup, controller *orchestrator_
 	setupWiz := webV1.Group("/setup-wiz")
 
 	setupWiz.GET("/progress", controller.GetSetupProgress)
-	setupWiz.POST("/step1", controller.Step_one_AddOrgHQ)
 	setupWiz.POST("/step2", controller.Step_two_AddProperty)
 	setupWiz.POST("/step3", controller.Step_three_LegalEntity)
 
