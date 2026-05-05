@@ -7,6 +7,8 @@ import (
 	"github.com/google/uuid"
 )
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *orchestratorService) GetAllRestaurant(
 	ctx context.Context,
 	orgID uuid.UUID,
@@ -110,3 +112,5 @@ func (s *orchestratorService) GetAllKitchen(ctx context.Context, orgID uuid.UUID
 	return results, nil
 
 }
+
+/* ---------------------------------- <***> --------------------------------- */

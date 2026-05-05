@@ -8,20 +8,6 @@ type DomainConfig struct {
 	Infras  []string `json:"Infras"`
 }
 
-/*
-Domains structure:
-
-[
-
-	{
-	  "Hospitality": {
-	    "Modules": [...],
-	    "Infras": [...]
-	  }
-	}
-
-]
-*/
 type OrgLauncherResponse struct {
 	Domains []map[string]DomainConfig `json:"Domains"`
 }

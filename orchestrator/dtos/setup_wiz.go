@@ -6,30 +6,32 @@ import (
 	"github.com/google/uuid"
 )
 
-type SetupOrganizationHQAddressReqDTO struct {
-	StepID      string   `json:"step_id" binding:"required"`
-	AddressLine string   `json:"address_line" binding:"required"`
-	City        string   `json:"city" binding:"required"`
-	State       string   `json:"state" binding:"required"`
-	Country     string   `json:"country" binding:"required"`
-	Pincode     string   `json:"pincode" binding:"required"`
-	Latitude    *float64 `json:"latitude,omitempty"`
-	Longitude   *float64 `json:"longitude,omitempty"`
-	AccuracyM   *int     `json:"accuracy_m,omitempty"`
-}
+/* ---------------------------------- <***> --------------------------------- */
+
+// This DTO is Request DTO for the API that handles the organization property details step of the setup wizard. It captures all the necessary information about the organization's properties, such as its name, address, and geolocation. This information is crucial for setting up the organization's profile and ensuring accurate location-based services.
 
 type SetupOrgPropertyReqDTO struct {
-	StepID      string   `json:"step_id" binding:"required"`
-	Name        string   `json:"name"`
-	AddressLine string   `json:"address_line"`
-	City        string   `json:"city"`
-	State       string   `json:"state"`
-	Country     string   `json:"country"`
-	Pincode     string   `json:"pincode"`
-	Longitude   *float64 `json:"longitude,omitempty"`
-	Latitude    *float64 `json:"latitude,omitempty"`
-	AccuracyM   *int     `json:"accuracy_m,omitempty"`
+	StepID      string `json:"step_id" binding:"required"`
+	Name        string `json:"name"`
+	AddressLine string `json:"address_line"`
+	City        string `json:"city"`
+	State       string `json:"state"`
+	Country     string `json:"country"`
+	Pincode     string `json:"pincode"`
+
+	// Optional geolocation fields to capture the organization's location for location-based services and analytics.
+	Longitude *float64 `json:"longitude,omitempty"`
+	Latitude  *float64 `json:"latitude,omitempty"`
+	AccuracyM *int     `json:"accuracy_m,omitempty"`
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// This is the Request DTO for the API that handles the legal entity details step of the setup wizard.
+// It captures all the necessary information about a legal entity, such as its name, address, and type. This
+// information is crucial for setting up the organization's legal structure and ensuring compliance with regulatory requirements.
 
 type SetupLegalEntityReqDTO struct {
 	StepID      uuid.UUID `json:"step_id" binding:"required"`
@@ -41,6 +43,14 @@ type SetupLegalEntityReqDTO struct {
 	Country     string    `json:"country"`
 	Pincode     string    `json:"pincode"`
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// This is Response DTO for the API that returns the overall progress of the setup wizard, including the status of each individual step.
+// It provides a comprehensive view of where the organization stands in the setup
+// process and what steps have been completed, are in progress, or are pending.
 
 type SetupProgressResponseDTO struct {
 	OverallStatus string                         `json:"overall_status"`
@@ -58,3 +68,5 @@ type SetupStepProgressResponseDTO struct {
 	StartedAt   time.Time  `json:"started_at"`
 	CompletedAt *time.Time `json:"completed_at,omitempty"`
 }
+
+/* ---------------------------------- <***> --------------------------------- */

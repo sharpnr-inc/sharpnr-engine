@@ -11,6 +11,8 @@ import (
 	"gorm.io/gorm"
 )
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *orchestratorService) AddNewSupplier(ctx context.Context, orgID, emplID uuid.UUID, request *suppliers_dtos.CreateSuppliersAPIRequestdto) error {
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
@@ -84,6 +86,8 @@ func (s *orchestratorService) ListAllOrganizationSuppliers(ctx context.Context, 
 
 /* ---------------------------------- <***> --------------------------------- */
 
+// This Service method Connects a supplier to a legal entity by creating a link between them. It first checks for existing links to prevent duplicates,
+
 func (s *orchestratorService) AddLegalEntityLinksInSuppliers(ctx context.Context, orgID, emplID, suppliersID uuid.UUID, request *supplier_contracts.AddLegalEntityLinkInSuppliersRequestDto) error {
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
@@ -114,3 +118,5 @@ func (s *orchestratorService) AddLegalEntityLinksInSuppliers(ctx context.Context
 		return nil
 	})
 }
+
+/* ---------------------------------- <***> --------------------------------- */

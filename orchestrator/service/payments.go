@@ -9,6 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (c *orchestratorService) AddPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req payment_engine_contracts.CreatePaymentAccountRequest) error {
 
 	return c.txManager.WithTx(ctx, func(tx *gorm.DB) error {
@@ -22,6 +24,8 @@ func (c *orchestratorService) AddPaymentAccount(ctx context.Context, orgID uuid.
 		return nil
 	})
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (c *orchestratorService) GetAllPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]payment_engine_contracts.PaymentAccountResponseDto, error) {
 	var results []payment_engine_contracts.PaymentAccountResponseDto
@@ -57,6 +61,8 @@ func (c *orchestratorService) GetAllPaymentAccount(ctx context.Context, orgID uu
 	return results, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *orchestratorService) AddGatewayConfigInPaymentAccount(
 	ctx context.Context,
 	orgID, emplID uuid.UUID,
@@ -73,6 +79,8 @@ func (s *orchestratorService) AddGatewayConfigInPaymentAccount(
 		return nil
 	})
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) GetPaymentAccountDetails(
 	ctx context.Context,
@@ -115,3 +123,5 @@ func (s *orchestratorService) GetPaymentAccountDetails(
 
 	return result, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
