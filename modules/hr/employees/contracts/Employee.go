@@ -15,3 +15,11 @@ type DefaultSuperAdminEmployeeInput struct {
 	OrgID          uuid.UUID
 	HashedPassword string
 }
+
+type UpdateSuperAdminEmployeeInput struct {
+	OrganizationID uuid.UUID
+	EmployeeID     *string
+	FirstName      *string
+	LastName       *string
+	SecondaryEmail *string
+}

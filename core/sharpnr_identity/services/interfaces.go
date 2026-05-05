@@ -27,4 +27,5 @@ type SharpnrIdentityAuthServiceInterface interface {
 	) error
 
 	GetAuthenticatedUserDetails(ctx context.Context, orgID, emplID uuid.UUID) (sharpnr_identity_auth_dtos.UserDataResponseDto, error)
+	UpdateSuperAdminDetails(ctx context.Context, orgID, empID uuid.UUID, input sharpnr_identity_auth_dtos.UpdateSuperAdminDetailsInput) error
 }

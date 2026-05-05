@@ -18,6 +18,8 @@ type EmployeesIdentityServiceInterface interface {
 		hasPass string,
 	) (uuid.UUID, error)
 
+	UpdateSuperAdminEmployee(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, updates *employee_contracts.UpdateSuperAdminEmployeeInput) error
+
 	// This simply Tells if user exist or not
 	IsUserExists(
 		ctx context.Context,

@@ -24,5 +24,11 @@ type OrgSetupWizardServiceInterface interface {
 		stepStatus org_setup_wizards_constants.SetupStatus,
 	) error
 
+	UpdateSuperAdminDetailsStep(
+		ctx context.Context,
+		orgID uuid.UUID, emplID uuid.UUID,
+		input org_setup_wizard_contracts.SuperAdminDetailsInput,
+	) error
+
 	Progress(ctx context.Context, orgID uuid.UUID) (org_setup_wizard_contracts.SetupProgress, error)
 }

@@ -131,7 +131,7 @@ func (s *orchestratorService) SetUpSuperAdminDetails(ctx context.Context, orgID 
 		return errors.New("organization must be verified before setting up super admin details")
 	}
 
-	// 2. Now we will call the employee service to update the super admin details
+	// 2. Now we will call the identity service to update the super admin details
 
 	return nil
 }
