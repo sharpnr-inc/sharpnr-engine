@@ -24,6 +24,8 @@ type OrgSetupWizardServiceInterface interface {
 		stepStatus org_setup_wizards_constants.SetupStatus,
 	) error
 
+	StepVerication(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, stepID uuid.UUID) (*org_setup_wizards_constants.SetupStatus, error)
+
 	UpdateSuperAdminDetailsStep(
 		ctx context.Context,
 		orgID uuid.UUID, emplID uuid.UUID,

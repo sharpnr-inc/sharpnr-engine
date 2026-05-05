@@ -11,17 +11,24 @@ import (
 
 func (s *orgSetupWizardService) UpdateSuperAdminDetailsStep(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, input org_setup_wizard_contracts.SuperAdminDetailsInput) error {
 
+	stepstatus, err := s.StepVerication(ctx, orgID, emplID, input.StepID)
+	if err != nil {
+		return err
+	}
+
+	if *stepstatus != org_setup_wizards_constants.SetupStatusInProgress {
+		return ErrorInvalidStepStatus
+	}
+
 	// before updating the super admin details, we need to check if the organization setup wizard is in the correct step and status. If not, we should return an error.
-	err := s.sharpIdentity.UpdateSuperAdminDetails(ctx, orgID, emplID, sharpnr_identity_auth_dtos.UpdateSuperAdminDetailsInput{
+	if err := s.sharpIdentity.UpdateSuperAdminDetails(ctx, orgID, emplID, sharpnr_identity_auth_dtos.UpdateSuperAdminDetailsInput{
 		OrgID:          input.OrgID,
 		FirstName:      input.FirstName,
 		LastName:       input.LastName,
 		EmployeeID:     input.EmployeeID,
 		SecondaryEmail: input.SecondaryEmail,
 		PhoneNumber:    input.SecondaryPhone,
-	})
-
-	if err != nil {
+	}); err != nil {
 		return err
 	}
 

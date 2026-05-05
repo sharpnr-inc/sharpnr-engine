@@ -84,3 +84,23 @@ func (d *orgSetupWizardRepo) UpdateCurrentStepStatus(
 }
 
 //--------------------------------------------------------------------//
+
+func (d *orgSetupWizardRepo) GetStepByID(
+	ctx context.Context,
+	orgID uuid.UUID,
+	stepID uuid.UUID,
+) (*org_setup_wizard_models.OrganizationSetup, error) {
+
+	var step org_setup_wizard_models.OrganizationSetup
+
+	err := d.db.
+		WithContext(ctx).
+		Where("id = ? AND organization_id = ?", stepID, orgID).
+		First(&step).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &step, nil
+}
