@@ -33,8 +33,8 @@ func BootstrapModules(
 	inventory_engine_sero_handlers.RegisterSeroHandler(seroEngine, inventoryEngine)
 	/* ---------------------------- inventory engine ---------------------------- */
 
-	employeesIdentityService := bootstrapEmployeeIdentity(db)
-	employeesHRService := bootstrapEmployeeHR(db)
+	employeesIdentityService := bootstrapEmployeeIdentity(db, seroEngine, txManager, mailerEngine)
+	employeesHRService := bootstrapEmployeeHR(db, seroEngine, txManager, mailerEngine)
 
 	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
 	orgSupplierService := bootstrapSupplier(db, txManager, mailerEngine, seroEngine)

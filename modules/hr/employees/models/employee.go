@@ -14,8 +14,7 @@ type Employee struct {
 	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	FirstName string `gorm:"type:varchar(50);not null"`
-
+	FirstName  string `gorm:"type:varchar(50);not null"`
 	MiddleName string `gorm:"type:varchar(50)"`
 	LastName   string `gorm:"type:varchar(50)"`
 	NickName   string `gorm:"type:varchar(50)"`
@@ -23,11 +22,9 @@ type Employee struct {
 	Email       string `gorm:"type:varchar(150);not null;index"`
 	PhoneNumber string `gorm:"type:varchar(20)"`
 
-	// Role comes from your constants package
-	// Status: ACTIVE, INACTIVE, ON_LEAVE, TERMINATED
-	Role     string `gorm:"type:varchar(50);not null"`
-	Status   string `gorm:"type:varchar(20);default:'ACTIVE'"`
-	OrgEmpID string `gorm:"type:varchar(20);"`
+	Role         string `gorm:"type:varchar(50);not null"`
+	Status       string `gorm:"type:varchar(20);default:'ACTIVE'"`
+	EmployeeCode string `gorm:"type:varchar(50);uniqueIndex"    json:"employee_code"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

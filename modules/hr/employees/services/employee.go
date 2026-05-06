@@ -85,7 +85,7 @@ func (s *employeeService) ListOrgAllEmployees(
 			ID:           e.ID,
 			EmployeeName: buildEmployeeName(e.FirstName, e.LastName, e.NickName),
 			EmployeeRole: e.Role,
-			EmployeeID:   e.OrgEmpID,
+			EmployeeID:   e.EmployeeCode,
 			Status:       e.Status,
 		})
 	}

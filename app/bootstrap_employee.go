@@ -1,20 +1,41 @@
 package app
 
 import (
+	dbtx "sharpnr-engine/core/dbTx"
 	employee_repo "sharpnr-engine/modules/hr/employees/repo"
 	employee_services "sharpnr-engine/modules/hr/employees/services"
+	"sharpnr-engine/sero"
+	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
 	"gorm.io/gorm"
 )
 
-func bootstrapEmployeeIdentity(db *gorm.DB) employee_services.EmployeesIdentityServiceInterface {
+func bootstrapEmployeeIdentity(
+	db *gorm.DB,
+	seroEngine *sero.SEROEngine,
+	txManager dbtx.TxManager,
+	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
+) employee_services.EmployeesIdentityServiceInterface {
 	employeeRepo := employee_repo.NewEmployeeRepository(db)
 	return employee_services.NewEmployeeService(
 		employeeRepo,
+		seroEngine,
+		txManager,
+		mailerEngine,
 	)
 }
 
-func bootstrapEmployeeHR(db *gorm.DB) employee_services.EmployeesHRServiceInterface {
+func bootstrapEmployeeHR(
+	db *gorm.DB,
+	seroEngine *sero.SEROEngine,
+	txManager dbtx.TxManager,
+	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
+) employee_services.EmployeesHRServiceInterface {
 	employeeRepo := employee_repo.NewEmployeeRepository(db)
-	return employee_services.NewEmployeeService(employeeRepo)
+	return employee_services.NewEmployeeService(
+		employeeRepo,
+		seroEngine,
+		txManager,
+		mailerEngine,
+	)
 }
