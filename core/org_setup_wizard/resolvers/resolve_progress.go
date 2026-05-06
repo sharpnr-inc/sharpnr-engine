@@ -36,6 +36,7 @@ func ResolveSetupProgress(steps []*org_setup_wizard_models.OrganizationSetup) or
 
 		step := org_setup_wizard_contracts.SetupStepProgress{
 			ID:          s.ID,
+			Status:      s.Status,
 			Version:     s.Version,
 			StartedAt:   s.StartedAt,
 			CompletedAt: s.CompletedAt,
@@ -49,8 +50,6 @@ func ResolveSetupProgress(steps []*org_setup_wizard_models.OrganizationSetup) or
 		case "IN_PROGRESS":
 			if currentStep == nil {
 			}
-		case "BLOCKED":
-			hasBlocked = true
 		}
 	}
 
