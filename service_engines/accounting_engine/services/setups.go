@@ -34,13 +34,13 @@ func (r *accountingServices) CreateDraftAccountingSetup(ctx context.Context, inp
 
 		// Step One: Create The Accounting book
 		accBookInput := &accounting_models.AccountingBook{
-			ID:                        uuid.New(),
-			OrganizationID:            input.OrgID,
-			LegalEntityID: input.LegalEntityID,
-			Name:                      accbookname(input.Name_of_legalEntity),
-			Status:                    accountingconstants.Active,
-			CreatedAt:                 now,
-			UpdatedAt:                 now,
+			ID:             uuid.New(),
+			OrganizationID: input.OrgID,
+			LegalEntityID:  input.LegalEntityID,
+			Name:           accbookname(input.Name_of_legalEntity),
+			Status:         accountingconstants.Active,
+			CreatedAt:      now,
+			UpdatedAt:      now,
 		}
 
 		// Pass txCtx so repo can ExtractTx

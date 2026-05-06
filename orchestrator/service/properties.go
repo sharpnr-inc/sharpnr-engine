@@ -83,7 +83,6 @@ func (c *orchestratorService) GetPropertyDetail(ctx context.Context, orgID, prop
 	return response, nil
 }
 
-
 func (c *orchestratorService) enrichHospitalityData(
 	ctx context.Context,
 	orgID, propertyID uuid.UUID,

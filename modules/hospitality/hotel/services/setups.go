@@ -49,8 +49,6 @@ func (c *hotelService) SetupRoom(ctx context.Context, req *hotel_contracts.RoomI
 	return roomInput.ID, nil
 }
 
-
-
 func (c *hotelService) SetUpLayout(ctx context.Context, layout []hotel_contracts.FloorInput) error {
 	for _, floorReq := range layout {
 		// 1. Create the Floor

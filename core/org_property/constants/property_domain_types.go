@@ -58,6 +58,7 @@ const (
 )
 
 type PropertyInfraTypes string
+
 const (
 	InfraKitchen PropertyInfraTypes = "KITCHEN/FOOD_PREP_AREA"
 )

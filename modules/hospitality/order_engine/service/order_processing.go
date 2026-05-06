@@ -71,8 +71,7 @@ func (s *hospitalityOrderEngineService) ProcessOrder(ctx context.Context, data r
 			Items:          kotItems,
 		}
 
-
-		// This is the intercept point 
+		// This is the intercept point
 
 		// Hand off to Kitchen Service to create the tickets
 		if err := s.kitchenService.CreateKOT(ctx, req); err != nil {

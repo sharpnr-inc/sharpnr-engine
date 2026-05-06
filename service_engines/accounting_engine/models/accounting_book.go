@@ -13,9 +13,9 @@ import (
 // Accounting group is the Collection of Accounts
 
 type AccountingBook struct {
-	ID                        uuid.UUID `gorm:"type:uuid;primaryKey"`
-	OrganizationID            uuid.UUID `gorm:"type:uuid;not null;index"`
-	LegalEntityID uuid.UUID `gorm:"type:uuid;not null;index"`
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
+	LegalEntityID  uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	Name string `gorm:"not null"`
 

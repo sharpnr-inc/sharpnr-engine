@@ -46,4 +46,3 @@ func (s *sharpnrIdentityAuthService) GetAuthenticatedUserDetails(
 
 	return out, nil
 }
-
