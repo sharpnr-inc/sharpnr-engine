@@ -5,29 +5,9 @@ import (
 	employee_models "sharpnr-engine/modules/hr/employees/models"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
-// This file implements all method from EmployeeEmploymentRepositoryInterface
-
-/*
-type EmployeeEmploymentRepositoryInterface interface {
-	Create(ctx context.Context, emp *employee_models.EmployeeEmployment) error
-	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*employee_models.EmployeeEmployment, error)
-}
-*/
-//
-type employeeEmploymentRepo struct {
-	db *gorm.DB
-}
-
-func NewEmployeeEmploymentRepo(db *gorm.DB) *employeeEmploymentRepo {
-	return &employeeEmploymentRepo{
-		db: db,
-	}
-}
-
-func (r *employeeEmploymentRepo) Create(
+func (r *employeeRepo) CreateEmployement(
 	ctx context.Context,
 	emp *employee_models.EmployeeEmployment,
 ) error {
@@ -39,7 +19,7 @@ func (r *employeeEmploymentRepo) Create(
 	return r.db.WithContext(ctx).Create(emp).Error
 }
 
-func (r *employeeEmploymentRepo) GetByEmployeeID(
+func (r *employeeRepo) GetByEmployeeID(
 	ctx context.Context,
 	empID uuid.UUID,
 ) (*employee_models.EmployeeEmployment, error) {

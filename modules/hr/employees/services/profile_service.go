@@ -12,12 +12,12 @@ import (
 
 func (s *employeeService) GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*employee_contracts.EmployeeProfileOutput, error) {
 
-	emp, err := s.empIdentityRepo.GetByID(ctx, empID)
+	emp, err := s.employeeRepo.GetByID(ctx, empID)
 	if err != nil {
 		return nil, err
 	}
 
-	empProfile, err := s.empProfileRepo.GetByEmployeeID(ctx, empID)
+	empProfile, err := s.employeeRepo.GetProfileByEmployeeID(ctx, empID)
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (s *employeeService) GetEmployeeDetails(
 	orgID, emplID uuid.UUID,
 ) (*employee_contracts.EmployeeDetailsOutput, error) {
 
-	emp, err := s.empIdentityRepo.GetByID(ctx, emplID)
+	emp, err := s.employeeRepo.GetByID(ctx, emplID)
 	if err != nil {
 		return nil, err
 	}

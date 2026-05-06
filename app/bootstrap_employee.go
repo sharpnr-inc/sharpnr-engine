@@ -8,39 +8,13 @@ import (
 )
 
 func bootstrapEmployeeIdentity(db *gorm.DB) employee_services.EmployeesIdentityServiceInterface {
-	empIdentityRepo := employee_repo.NewEmployeeIdentityRepository(db)
-	empAuthRepo := employee_repo.NewEmployeeAuthRepository(db)
-	empOnboardingRepo := employee_repo.NewEmployeeOnboardingRepository(db)
-	empVerificationRepo := employee_repo.NewEmployeeVerificationRepo(db)
-	empProfileRepo := employee_repo.NewEmployeeProfileRepo(db)
-	empEmploymentRepo := employee_repo.NewEmployeeEmploymentRepo(db)
-
+	employeeRepo := employee_repo.NewEmployeeRepository(db)
 	return employee_services.NewEmployeeService(
-		empIdentityRepo,
-		empAuthRepo,
-		empOnboardingRepo,
-		empVerificationRepo,
-		empProfileRepo,
-		empEmploymentRepo,
+		employeeRepo,
 	)
-
 }
 
 func bootstrapEmployeeHR(db *gorm.DB) employee_services.EmployeesHRServiceInterface {
-	empIdentityRepo := employee_repo.NewEmployeeIdentityRepository(db)
-	empAuthRepo := employee_repo.NewEmployeeAuthRepository(db)
-	empOnboardingRepo := employee_repo.NewEmployeeOnboardingRepository(db)
-	empVerificationRepo := employee_repo.NewEmployeeVerificationRepo(db)
-	empProfileRepo := employee_repo.NewEmployeeProfileRepo(db)
-	empEmploymentRepo := employee_repo.NewEmployeeEmploymentRepo(db)
-
-	return employee_services.NewEmployeeService(
-		empIdentityRepo,
-		empAuthRepo,
-		empOnboardingRepo,
-		empVerificationRepo,
-		empProfileRepo,
-		empEmploymentRepo,
-	)
-
+	employeeRepo := employee_repo.NewEmployeeRepository(db)
+	return employee_services.NewEmployeeService(employeeRepo)
 }

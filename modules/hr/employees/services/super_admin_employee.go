@@ -36,5 +36,5 @@ func (s *employeeService) UpdateSuperAdminEmployee(
 	}
 
 	// 3. Call the repo method
-	return s.empIdentityRepo.Update(ctx, orgID, emplID, updateMap)
+	return s.employeeRepo.UpdateIdentity(ctx, orgID, emplID, updateMap)
 }
