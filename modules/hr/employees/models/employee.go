@@ -14,8 +14,8 @@ type Employee struct {
 	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	FirstName  string `gorm:"type:varchar(50);not null"`
-	
+	FirstName string `gorm:"type:varchar(50);not null"`
+
 	MiddleName string `gorm:"type:varchar(50)"`
 	LastName   string `gorm:"type:varchar(50)"`
 	NickName   string `gorm:"type:varchar(50)"`

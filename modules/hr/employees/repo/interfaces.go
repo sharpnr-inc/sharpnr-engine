@@ -33,6 +33,8 @@ type EmployeeIdentityRepositoryInterface interface {
 		ctx context.Context,
 		orgID uuid.UUID,
 	) ([]*employee_models.Employee, error)
+
+	Update(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, updates map[string]interface{}) error
 }
 
 type EmployeeAuthRepositoryInterface interface {
