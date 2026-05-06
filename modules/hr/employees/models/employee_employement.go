@@ -1,3 +1,4 @@
+// models/employee_employement.go
 package employee_models
 
 import (
@@ -6,14 +7,18 @@ import (
 	"github.com/google/uuid"
 )
 
-// -------------------------------
-// 1️⃣ EMPLOYMENT DETAILS (The Contract)
-// -------------------------------
+/*
+EmployeeEmployment "employee.employee_employment" or "EmployeeEmployment"
+This model is responsible for storing the employment details of the employee, such as employment type, designation, joining date, confirmation date, etc. It is linked to the core Employee identity through the EmployeeID foreign key.
+
+Relationships:
+- EmployeeEmployment has a one-to-one relationship with EmployeeIdentity (EmployeeID is a foreign key to EmployeeIdentity.ID)
+- EmployeeEmployment is used to store the employment details of the employee, it contains fields like EmploymentType, Designation, JoinedAt, ConfirmationDate, etc. This model helps in tracking the employment history and status of the employee within the organization.
+*/
 type EmployeeEmployment struct {
 	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
 	EmployeeID uuid.UUID `gorm:"type:uuid;uniqueIndex;not null"`
 
-	// EmploymentType: FULL_TIME, PART_TIME, CONTRACT, INTERN
 	EmploymentType string `gorm:"type:varchar(30);not null"`
 	Designation    string `gorm:"type:varchar(100);not null"`
 

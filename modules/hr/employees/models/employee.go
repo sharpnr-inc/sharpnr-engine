@@ -1,3 +1,4 @@
+// models/employee.go
 package employee_models
 
 import (

@@ -1,9 +1,10 @@
+// models/employee_org_profile.go
 package employee_models
 
 type EmployeeOrganizationProfile struct {
 	ID         string `gorm:"type:uuid;primaryKey"`
 	EmployeeID string `gorm:"type:uuid;not null;uniqueIndex"`
-	
+
 	OrganizationID string `gorm:"type:uuid;not null;index"`
 
 	Department string `gorm:"type:varchar(100)"`
