@@ -18,7 +18,7 @@ func (r *employeeService) AuthenticateEmployee(
 ) (*employee_contracts.EmployeeReader, error) {
 
 	// 1. Fetch employee by email
-	empl, err := r.employeeRepo.GetByEmail(ctx, email)
+	empl, err := r.employeeRepo.GetEmployeeByEmail(ctx, email)
 	if err != nil {
 		// Do NOT expose whether email exists
 		return nil, ErrInvalidCredentials

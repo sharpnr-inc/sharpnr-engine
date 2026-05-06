@@ -25,7 +25,7 @@ func (h *employeeService) CreateDefaultSuperAdmin(
 		Status:         "ACTIVE",
 	}
 
-	if err := h.employeeRepo.CreateIdentity(ctx, employee); err != nil {
+	if err := h.employeeRepo.CreateEmployee(ctx, employee); err != nil {
 		return uuid.Nil, err
 	}
 
@@ -63,7 +63,7 @@ func (h *employeeService) IsUserExists(
 	ctx context.Context,
 	employeeEmail string,
 ) (bool, error) {
-	return h.employeeRepo.ExistsByEmail(ctx, employeeEmail)
+	return h.employeeRepo.EmployeeExistsByEmail(ctx, employeeEmail)
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -73,7 +73,7 @@ func (s *employeeService) ListOrgAllEmployees(
 	orgID, emplID uuid.UUID,
 ) ([]*sharphr_dtos.OrgEmployeeList, error) {
 
-	empls, err := s.employeeRepo.ListByOrg(ctx, orgID)
+	empls, err := s.employeeRepo.ListEmployeesByOrg(ctx, orgID)
 	if err != nil {
 		return nil, err
 	}

@@ -9,10 +9,9 @@ import (
 )
 
 // GetEmployeeProfile retrieves the employee's profile information, including identity and profile details.
-
 func (s *employeeService) GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*employee_contracts.EmployeeProfileOutput, error) {
 
-	emp, err := s.employeeRepo.GetByID(ctx, empID)
+	emp, err := s.employeeRepo.GetEmployeeByID(ctx, orgID, empID)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +50,7 @@ func (s *employeeService) GetEmployeeDetails(
 	orgID, emplID uuid.UUID,
 ) (*employee_contracts.EmployeeDetailsOutput, error) {
 
-	emp, err := s.employeeRepo.GetByID(ctx, emplID)
+	emp, err := s.employeeRepo.GetEmployeeByID(ctx, orgID, emplID)
 	if err != nil {
 		return nil, err
 	}

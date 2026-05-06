@@ -19,32 +19,17 @@ type EmployeeRepositoryInterface interface {
 }
 
 type EmployeeMainRepositoryInterface interface {
-	CreateIdentity(
-		ctx context.Context,
-		emp *employee_models.Employee,
-	) error
 
-	GetByID(
-		ctx context.Context,
-		empID uuid.UUID,
-	) (*employee_models.Employee, error)
+	// this methods creates the core employee record with basic identity details (name, email, phone) and role.
+	CreateEmployee(ctx context.Context, emp *employee_models.Employee) error
 
-	GetByEmail(
-		ctx context.Context,
-		email string,
-	) (*employee_models.Employee, error)
-
-	ExistsByEmail(
-		ctx context.Context,
-		email string,
-	) (bool, error)
-
-	ListByOrg(
-		ctx context.Context,
-		orgID uuid.UUID,
-	) ([]*employee_models.Employee, error)
-
-	UpdateIdentity(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, updates map[string]interface{}) error
+	// this retuens the employee record of employee with given email. This is used for authentication and identity resolution.
+	GetEmployeeByID(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*employee_models.Employee, error)
+	// Search employee by email across the org. Used for authentication and identity resolution.
+	GetEmployeeByEmail(ctx context.Context, email string) (*employee_models.Employee, error)
+	EmployeeExistsByEmail(ctx context.Context, email string) (bool, error)
+	ListEmployeesByOrg(ctx context.Context, orgID uuid.UUID) ([]*employee_models.Employee, error)
+	UpdateEmployee(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, updates map[string]interface{}) error
 }
 
 type EmployeeAuthenticationRepositoryInterface interface {
