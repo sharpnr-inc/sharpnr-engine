@@ -29,7 +29,6 @@ func MigrateDB(db *gorm.DB) error {
 		migrateInvoicingEngine,
 		migrateHospitalityOrderEngine,
 		migrateSeroEngine,
-		migrateSharpIam,
 		mingrateCustomerEngine,
 		migrateInvoicingEngine,
 		migratePaymentsEngine,

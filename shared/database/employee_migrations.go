@@ -14,6 +14,7 @@ func migrateEmployee(db *gorm.DB) error {
 		&employee_models.EmployeeAuth{},
 		&employee_models.EmployeeSession{},
 		&employee_models.EmployeeProfile{},
+		&employee_models.EmployeeSystemAccess{},
 		&employee_models.EmployeeBankAccount{},
 		&employee_models.EmployeeDocument{},
 		&employee_models.EmployeeReporting{},

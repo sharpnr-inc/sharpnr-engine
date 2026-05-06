@@ -9,6 +9,7 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	organization_services "sharpnr-engine/core/organization/services"
+	hospitality_orchestration_service "sharpnr-engine/modules/hospitality/orchestration/service"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	"sharpnr-engine/sero"
@@ -43,5 +44,16 @@ func bootstrapSharpnrOrchestrator(
 		paymentsEngine,
 		inventoryEngine,
 		supplierService,
+	)
+}
+
+func bootstrapHospitalityDomainOrchestration(
+	orgPropertyService org_property_services.OrganizationPropertyServicesInterfaces,
+	hospitalityDomainSvc *hospitalitydomain.HospitalityDomain,
+) hospitality_orchestration_service.OrchestrationServiceInterface {
+	return hospitality_orchestration_service.NewHospitalityOrchestrationService(
+		orgPropertyService,
+		hospitalityDomainSvc.HotelService(),
+		hospitalityDomainSvc.RestaurantService(),
 	)
 }

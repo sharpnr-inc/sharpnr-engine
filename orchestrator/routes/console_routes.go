@@ -7,9 +7,7 @@ import (
 )
 
 func registerConsoleRoutes(r *gin.RouterGroup, c *orchestrator_controllers.OrchestratorController) {
-
 	cr := r.Group("/console")
-	cr.GET("/org-status", c.GetOrgStatus)
 	registerPropertyRoutes(cr, c)
 	registerLegalEntityRoutes(cr, c)
 }

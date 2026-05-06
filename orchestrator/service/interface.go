@@ -23,18 +23,8 @@ type OrchestratorServiceInterface interface {
 	PaymentOrchestratorServiceInterface
 	SuppliersAndVendorsOrchestratorServiceInterface
 	InventoryOrchestratorServiceInterface
-	/* -------------------------------------------------------------------------- */
-	/*                       Setupwizard related operations                       */
-	/* -------------------------------------------------------------------------- */
-	AddOrganizationHQAddress(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupOrganizationHQAddressReqDTO) error
-	StepTwoProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupOrgPropertyReqDTO) error
-	StepThreeLegalEntity(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupLegalEntityReqDTO) error
-	SetUpWizProgress(ctx context.Context, orgID uuid.UUID) (orchestrator_dtos.SetupProgressResponseDTO, error)
 
-	/* -------------------------------------------------------------------------- */
-	/*                                 UI related                                 */
-	/* -------------------------------------------------------------------------- */
-
+	OrchestratorSetupWizardInterface
 }
 
 type OrganizationPropertyOrchestrationInterface interface {
@@ -53,7 +43,6 @@ type HospitalityPropertyOrchestrationInterface interface {
 }
 
 type OrganizationOrchestartionInterface interface {
-	GetOrganizationStatus(ctx context.Context, orgID uuid.UUID) (*string, error)
 	GetAllPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
 }
 
@@ -121,3 +110,20 @@ type InventoryOrchestratorServiceInterface interface {
 	ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error)
 	GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]inventory_engine_models.Inventory, error)
 }
+
+/* --------------------------------- <****> --------------------------------- */
+
+// All methods related to the setup wizard orchestration will be defined in this interface. This includes methods for each step of the setup wizard, as well as a method to retrieve the current
+// progress of the setup wizard for a given organization.
+type OrchestratorSetupWizardInterface interface {
+	StepTwoProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupOrgPropertyReqDTO) error
+	StepThreeLegalEntity(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupLegalEntityReqDTO) error
+
+	// This method retrieves the current progress of the setup wizard for a given organization. It returns a structured response containing the overall status, current step, progress percentage,
+	// completion status, and details of each step in the wizard.
+	SetUpWizProgress(ctx context.Context, orgID uuid.UUID) (orchestrator_dtos.SetupProgressResponseDTO, error)
+
+	SetUpSuperAdminDetails(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req *orchestrator_dtos.SetupSuperAdminDetailsReqDTO) error
+}
+
+/* --------------------------------- <****> --------------------------------- */

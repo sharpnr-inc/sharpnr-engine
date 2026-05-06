@@ -21,8 +21,10 @@ func BootstrapModules(
 	sseEngine *sse_engine.StreamManager,
 ) *AppModules {
 
-	iAM := bootstrapSharIAM(db)
-	organizationService := bootstrapOrganization(db, redis, mailerEngine, iAM)
+	// Sentinel Engine uses the DB and used to Evaluate the authorization
+	// sentinel_engine := bootStrapSentinelEngine(db)
+
+	organizationService := bootstrapOrganization(db, redis, mailerEngine)
 	orgPropertyService := bootstrapOrgProperty(db, txManager)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
 
@@ -31,26 +33,29 @@ func BootstrapModules(
 	inventory_engine_sero_handlers.RegisterSeroHandler(seroEngine, inventoryEngine)
 	/* ---------------------------- inventory engine ---------------------------- */
 
-	employeeService := bootstrapEmployee(db)
+	employeesIdentityService := bootstrapEmployeeIdentity(db)
+	employeesHRService := bootstrapEmployeeHR(db)
+
+	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
+	orgSupplierService := bootstrapSupplier(db, txManager, mailerEngine, seroEngine)
+
+	identityService := bootstrapIdentity(employeesIdentityService)
+
 	orgSetupWizardService := bootstrapOrgSetupWizard(
 		db,
 		orgLegalEntityService,
 		orgPropertyService,
 		organizationService,
+		identityService,
 	)
 
 	orgSignupService := bootstrapOrgSignup(
 		txManager,
 		mailerEngine,
-		employeeService,
+		employeesIdentityService,
 		organizationService,
 		orgSetupWizardService,
 	)
-
-	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
-	orgSupplierService := bootstrapSupplier(db, txManager, mailerEngine, seroEngine)
-
-	identityService := bootstrapIdentity(db, employeeService)
 
 	paymentsEngine := bootstrapPaymentEngine(db, mailerEngine, txManager, seroEngine)
 
@@ -68,6 +73,12 @@ func BootstrapModules(
 		paymentsEngine,
 		inventoryEngine,
 	)
+
+	hospitalityOrchestration := bootstrapHospitalityDomainOrchestration(
+		orgPropertyService,
+		hospitality,
+	)
+
 	/* ---------------------------- Accounting Engine --------------------------- */
 	accountingService := bootstrapAccounting(
 		db,
@@ -102,15 +113,19 @@ func BootstrapModules(
 		orgSignupService:      orgSignupService,
 		orgPropertyService:    orgPropertyService,
 		orgLegalEntityService: orgLegalEntityService,
-		employeeService:       employeeService,
-		accountingService:     accountingService,
-		sharpAuthService:      identityService,
-		hospitality:           hospitality,
-		orchestratorService:   orchestratorService,
-		orgSetupWizard:        orgSetupWizardService,
-		sseEngine:             sseEngine,
-		taxEngineService:      taxEngineService,
-		orgCustomerService:    orgCustomerService,
+
+		employeesIdentityService: employeesIdentityService,
+		employeesHRService:       employeesHRService,
+
+		accountingService:        accountingService,
+		sharpAuthService:         identityService,
+		hospitality:              hospitality,
+		hospitalityOrchestration: hospitalityOrchestration,
+		orchestratorService:      orchestratorService,
+		orgSetupWizard:           orgSetupWizardService,
+		sseEngine:                sseEngine,
+		taxEngineService:         taxEngineService,
+		orgCustomerService:       orgCustomerService,
 	}
 
 }

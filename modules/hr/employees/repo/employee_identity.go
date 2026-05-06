@@ -20,6 +20,8 @@ func NewEmployeeIdentityRepository(db *gorm.DB) *employeeRepo {
 	}
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (r *employeeRepo) Create(
 	ctx context.Context,
 	emp *employee_models.Employee,
@@ -31,6 +33,8 @@ func (r *employeeRepo) Create(
 
 	return r.db.WithContext(ctx).Create(emp).Error
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (r *employeeRepo) GetByID(
 	ctx context.Context,
@@ -52,6 +56,8 @@ func (r *employeeRepo) GetByID(
 	return &emp, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (r *employeeRepo) GetByEmail(
 	ctx context.Context,
 	email string,
@@ -72,6 +78,8 @@ func (r *employeeRepo) GetByEmail(
 	return &emp, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (r *employeeRepo) ExistsByEmail(
 	ctx context.Context,
 	email string,
@@ -87,6 +95,8 @@ func (r *employeeRepo) ExistsByEmail(
 
 	return count > 0, err
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (r *employeeRepo) ListByOrg(
 	ctx context.Context,
@@ -107,3 +117,5 @@ func (r *employeeRepo) ListByOrg(
 
 	return employees, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */

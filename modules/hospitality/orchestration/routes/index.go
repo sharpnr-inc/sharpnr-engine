@@ -1,0 +1,18 @@
+package hospitality_orchestration_routes
+
+import (
+	"sharpnr-engine/app"
+	hospitality_orchestration_controllers "sharpnr-engine/modules/hospitality/orchestration/controllers"
+
+	"github.com/gin-gonic/gin"
+)
+
+func RegisterOrchestrationRoutes(r *gin.RouterGroup, m app.ModulesProvider) {
+
+	hoc := hospitality_orchestration_controllers.NewOrchestrationController(m.HospitalityOrchestration())
+
+	orchestration := r.Group("/orchestration")
+	{
+		orchestration.GET("/", hoc.TestingFunc)
+	}
+}

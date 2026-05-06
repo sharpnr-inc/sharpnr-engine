@@ -31,7 +31,7 @@ func (c *orgSignUpController) InitiateNewOrgRegistration(ctx *gin.Context) {
 
 	slug, err := c.signUpSvc.InitiateRegistration(ctx.Request.Context(), req)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadGateway, "", err)
+		utils.Failure(ctx, http.StatusBadRequest, "Signup error", err)
 		return
 	}
 
