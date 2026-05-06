@@ -10,7 +10,7 @@ import (
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *employeeRepo) CreateIdentity(
+func (r *employeeRepo) CreateEmployee(
 	ctx context.Context,
 	emp *employee_models.Employee,
 ) error {
@@ -24,9 +24,9 @@ func (r *employeeRepo) CreateIdentity(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *employeeRepo) GetByID(
+func (r *employeeRepo) GetEmployeeByID(
 	ctx context.Context,
-	empID uuid.UUID,
+	orgID uuid.UUID, empID uuid.UUID,
 ) (*employee_models.Employee, error) {
 
 	var emp employee_models.Employee
@@ -46,7 +46,7 @@ func (r *employeeRepo) GetByID(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *employeeRepo) GetByEmail(
+func (r *employeeRepo) GetEmployeeByEmail(
 	ctx context.Context,
 	email string,
 ) (*employee_models.Employee, error) {
@@ -68,7 +68,7 @@ func (r *employeeRepo) GetByEmail(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *employeeRepo) ExistsByEmail(
+func (r *employeeRepo) EmployeeExistsByEmail(
 	ctx context.Context,
 	email string,
 ) (bool, error) {
@@ -86,7 +86,7 @@ func (r *employeeRepo) ExistsByEmail(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *employeeRepo) ListByOrg(
+func (r *employeeRepo) ListEmployeesByOrg(
 	ctx context.Context,
 	orgID uuid.UUID,
 ) ([]*employee_models.Employee, error) {
@@ -108,7 +108,7 @@ func (r *employeeRepo) ListByOrg(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *employeeRepo) Update(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, updates map[string]interface{}) error {
+func (r *employeeRepo) UpdateEmployee(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, updates map[string]interface{}) error {
 	// 1. Ensure we are scoped to the correct Organization and Employee
 	result := r.db.WithContext(ctx).
 		Model(&employee_models.Employee{}).

@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *employeeRepo) Create(
+func (r *employeeRepo) CreateEmplVerification(
 	ctx context.Context,
 	v *employee_models.EmployeeVerification,
 ) error {
