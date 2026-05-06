@@ -3,6 +3,7 @@ package org_setup_wizard_repos
 import (
 	"context"
 	"errors"
+	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_models "sharpnr-engine/core/org_setup_wizard/models"
 	"time"
 
@@ -54,7 +55,7 @@ func (d *orgSetupWizardRepo) GetAllSetupStepByOrgID(
 
 func (d *orgSetupWizardRepo) UpdateCurrentStepStatus(
 	ctx context.Context,
-	stepStatus string,
+	stepStatus org_setup_wizards_constants.SetupStatus,
 	orgID uuid.UUID,
 	ID uuid.UUID,
 ) error {

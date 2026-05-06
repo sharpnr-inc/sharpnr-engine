@@ -33,11 +33,9 @@ func (s *orgSetupWizardService) UpdateSuperAdminDetailsStep(ctx context.Context,
 	}
 
 	// if the super admin details are updated successfully, we can update the organization setup wizard status to completed for this step and move to the next step.
-	if err := s.AddStepProgress(
-		ctx, orgID,
-		org_setup_wizards_constants.SetupStepSuperAdminProfile,
+	if err := s.orgSetWizRepo.UpdateCurrentStepStatus(ctx,
 		org_setup_wizards_constants.SetupStatusCompleted,
-	); err != nil {
+		orgID, input.StepID); err != nil {
 		return err
 	}
 
