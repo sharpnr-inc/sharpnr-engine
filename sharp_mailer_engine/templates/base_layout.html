@@ -1,82 +1,198 @@
 {{define "base_layout.html"}}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Sharpnr</title>
+    <!--[if mso]>
+      <noscript
+        ><xml
+          ><o:OfficeDocumentSettings
+            ><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings
+          ></xml
+        ></noscript
+      >
+    <![endif]-->
   </head>
 
   <body
     style="
       margin: 0;
       padding: 0;
-      background-color: #f8fafc;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
+      background-color: #eaedf5;
+      font-family:
+        -apple-system, BlinkMacSystemFont, &quot;Helvetica Neue&quot;, Arial,
         sans-serif;
+      -webkit-font-smoothing: antialiased;
+      mso-line-height-rule: exactly;
     "
   >
-    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+    <!-- OUTER WRAPPER -->
+    <table
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      width="100%"
+      style="background-color: #eaedf5"
+    >
       <tr>
-        <td align="center" style="padding: 40px 20px">
+        <td align="center" style="padding: 44px 16px 52px">
+          <!-- EMAIL CARD -->
           <table
             cellpadding="0"
             cellspacing="0"
             border="0"
             style="
-              max-width: 480px;
+              max-width: 500px;
               width: 100%;
               background: #ffffff;
-              border-radius: 16px;
-              box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+              border-radius: 14px;
+              overflow: hidden;
+              box-shadow:
+                0 4px 28px rgba(10, 10, 46, 0.14),
+                0 1px 4px rgba(10, 10, 46, 0.06);
             "
           >
+            <!-- HEADER -->
             <tr>
               <td
                 style="
-                  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-                  padding: 40px 30px;
-                  text-align: center;
-                  border-radius: 16px 16px 0 0;
+                  background-color: #0a0a2e;
+                  padding: 26px 36px;
+                  border-radius: 14px 14px 0 0;
                 "
               >
-                <h1
-                  style="
-                    color: #ffffff;
-                    font-size: 24px;
-                    font-weight: 700;
-                    margin: 0;
-                    letter-spacing: -0.5px;
-                  "
-                >
-                  Sharpnr
-                </h1>
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="vertical-align: middle">
+                      <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td
+                            style="
+                              width: 38px;
+                              height: 38px;
+                              border: 1px solid rgba(255, 255, 255, 0.18);
+                              border-radius: 9px;
+                              text-align: center;
+                              vertical-align: middle;
+                              background-color: #0a0a2e;
+                            "
+                          >
+                            <img
+                              src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjEwMjQiIGhlaWdodD0iMTAyNCIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgPHRpdGxlPkFwcCBJY29uPC90aXRsZT4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmJhY2tncm91bmQgeyBmaWxsOiAjMEEwQTJFOyB9CiAgICAgIC5mb3JlZ3JvdW5kIHsgZmlsbDogI0ZGRkZGRjsgfQogICAgPC9zdHlsZT4KICA8L2RlZnM+CiAgPHJlY3QgY2xhc3M9ImJhY2tncm91bmQiIHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiLz4KICA8cGF0aCBjbGFzcz0iZm9yZWdyb3VuZCIgZD0iTSA1MTIgMTgwIEwgNzQwIDcyMCBMIDY0MCA3MjAgTCA2MDAgNjUzIEwgNDI0IDY1MyBMIDM4NCA3MjAgTCAyODQgNzIwIFoiLz4KPC9zdmc+"
+                              width="22"
+                              height="22"
+                              alt="Sharpnr"
+                              style="
+                                display: block;
+                                margin: 8px auto;
+                                border: 0;
+                              "
+                            />
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td style="padding-left: 11px; vertical-align: middle">
+                      <span
+                        style="
+                          color: #ffffff;
+                          font-size: 19px;
+                          font-weight: 700;
+                          letter-spacing: -0.5px;
+                          line-height: 1;
+                        "
+                        >Sharpnr</span
+                      >
+                    </td>
+                  </tr>
+                </table>
               </td>
             </tr>
+            <!-- /HEADER -->
 
+            <!-- CONTENT SLOT -->
             <tr>
-              <td style="padding: 50px 40px">{{block "content" .}}{{end}}</td>
+              <td style="padding: 44px 36px 36px">
+                {{block "content" .}}{{end}}
+              </td>
             </tr>
+            <!-- /CONTENT SLOT -->
 
+            <!-- FOOTER -->
             <tr>
               <td
                 style="
-                  background: #f9fafb;
-                  padding: 25px 40px;
-                  text-align: center;
-                  border-radius: 0 0 16px 16px;
-                  border-top: 1px solid #e5e7eb;
+                  background-color: #f7f8fc;
+                  border-top: 1px solid #eef0f8;
+                  padding: 20px 36px 22px;
+                  border-radius: 0 0 14px 14px;
                 "
               >
-                <p style="color: #9ca3af; font-size: 12px; margin: 0">
-                  © 2026 Sharpnr. All rights reserved.
-                </p>
+                <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                  <tr>
+                    <td align="center" style="padding-bottom: 9px">
+                      <a
+                        href="#"
+                        style="
+                          color: #9ca3c0;
+                          font-size: 11px;
+                          text-decoration: none;
+                          margin: 0 8px;
+                        "
+                        >Unsubscribe</a
+                      >
+                      <span style="color: #d1d5e8; font-size: 11px">·</span>
+                      <a
+                        href="#"
+                        style="
+                          color: #9ca3c0;
+                          font-size: 11px;
+                          text-decoration: none;
+                          margin: 0 8px;
+                        "
+                        >Privacy Policy</a
+                      >
+                      <span style="color: #d1d5e8; font-size: 11px">·</span>
+                      <a
+                        href="#"
+                        style="
+                          color: #9ca3c0;
+                          font-size: 11px;
+                          text-decoration: none;
+                          margin: 0 8px;
+                        "
+                        >Help Centre</a
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="center">
+                      <p
+                        style="
+                          color: #c4c9dc;
+                          font-size: 11px;
+                          line-height: 1.6;
+                          margin: 0;
+                        "
+                      >
+                        © 2026 Sharpnr · All rights reserved<br />
+                        You received this because you have an account with us.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
               </td>
             </tr>
+            <!-- /FOOTER -->
           </table>
+          <!-- /EMAIL CARD -->
         </td>
       </tr>
     </table>
+    <!-- /OUTER WRAPPER -->
   </body>
 </html>
 {{end}}

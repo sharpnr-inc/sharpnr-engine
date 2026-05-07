@@ -29,3 +29,5 @@ Sharpnr operates as a centralized orchestrator (API Gateway) that manages the li
     │ (PostgreSQL/SQLx)   │
     └─────────────────────┘
 ```
+
+#0A0A2E

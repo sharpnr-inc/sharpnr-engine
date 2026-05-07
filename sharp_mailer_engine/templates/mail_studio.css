@@ -16,10 +16,10 @@
   --text-tertiary: #94a3b8;
   --border-light: #e2e8f0;
   --border-medium: #cbd5e1;
-  --accent: #6366f1;
-  --accent-hover: #4f46e5;
-  --accent-light: #eef2ff;
-  --accent-text: #4338ca;
+  --accent: #0A0A2E;
+  --accent-hover: #1a1a4e;
+  --accent-light: #EAEDF5;
+  --accent-text: #0A0A2E;
   --success-light: #d1fae5;
   --success-text: #065f46;
   --danger: #dc2626;
@@ -27,8 +27,7 @@
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 12px;
-  --font-sans:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   --font-mono: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
 }
 
@@ -42,10 +41,10 @@
   --text-tertiary: #475569;
   --border-light: #1e293b;
   --border-medium: #334155;
-  --accent: #818cf8;
-  --accent-hover: #6366f1;
-  --accent-light: #1e1b4b;
-  --accent-text: #a5b4fc;
+  --accent: #6b72c9;
+  --accent-hover: #4f56b0;
+  --accent-light: #14143a;
+  --accent-text: #a5aaee;
   --success-light: #064e3b;
   --success-text: #6ee7b7;
   --danger-light: #450a0a;
@@ -103,17 +102,18 @@ body {
 .logo-mark {
   width: 26px;
   height: 26px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: #0A0A2E;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .logo-mark svg {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
 }
 
 .logo-text {
@@ -161,9 +161,7 @@ body {
   align-items: center;
   justify-content: center;
   color: var(--text-secondary);
-  transition:
-    background 0.15s,
-    color 0.15s;
+  transition: background 0.15s, color 0.15s;
 }
 .icon-btn:hover {
   background: var(--bg-hover);
@@ -229,9 +227,7 @@ body {
   font-family: var(--font-mono);
   color: var(--text-secondary);
   margin-bottom: 2px;
-  transition:
-    background 0.12s,
-    color 0.12s;
+  transition: background 0.12s, color 0.12s;
   user-select: none;
   border: 1px solid transparent;
 }
@@ -242,17 +238,19 @@ body {
 .tpl-item.active {
   background: var(--accent-light);
   color: var(--accent-text);
-  border-color: rgba(99, 102, 241, 0.2);
+  border-color: rgba(10, 10, 46, 0.15);
 }
 
 .tpl-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #6366f1;
+  background: #0A0A2E;
   flex-shrink: 0;
+  opacity: 0.35;
 }
 .tpl-item.active .tpl-dot {
+  opacity: 1;
   background: var(--accent);
 }
 
@@ -275,10 +273,7 @@ body {
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition:
-    opacity 0.15s,
-    background 0.15s,
-    color 0.15s;
+  transition: opacity 0.15s, background 0.15s, color 0.15s;
   flex-shrink: 0;
   font-size: 16px;
   line-height: 1;
@@ -363,7 +358,7 @@ body {
 .field-input:focus,
 .field-textarea:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+  box-shadow: 0 0 0 3px rgba(10, 10, 46, 0.07);
 }
 .field-textarea {
   resize: vertical;
@@ -551,13 +546,11 @@ body {
   background: var(--bg-secondary);
   color: var(--text-primary);
   outline: none;
-  transition:
-    border-color 0.15s,
-    box-shadow 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 .modal-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 0 3px rgba(10, 10, 46, 0.07);
 }
 .modal-input.error {
   border-color: var(--danger);
@@ -600,7 +593,7 @@ body {
 .chip.on {
   background: var(--accent-light);
   color: var(--accent-text);
-  border-color: rgba(99, 102, 241, 0.35);
+  border-color: rgba(10, 10, 46, 0.25);
 }
 
 .modal-footer {

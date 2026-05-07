@@ -47,6 +47,8 @@ func BootstrapModules(
 		orgPropertyService,
 		organizationService,
 		identityService,
+		txManager,
+		mailerEngine,
 	)
 
 	orgSignupService := bootstrapOrgSignup(

@@ -2,40 +2,86 @@
    SHARPNR MAIL STUDIO — mail_studio.js
 ═══════════════════════════════════════════════════ */
 
-/* ── BASE LAYOUT ── */
-const BASE_LAYOUT = `<!DOCTYPE html>
+/* ── LOGO (base64 inline SVG — matches base_layout.html exactly) ── */
+const LOGO_B64 =
+  "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjEwMjQiIGhlaWdodD0iMTAyNCIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgPHRpdGxlPkFwcCBJY29uPC90aXRsZT4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmJhY2tncm91bmQgeyBmaWxsOiAjMEEwQTJFOyB9CiAgICAgIC5mb3JlZ3JvdW5kIHsgZmlsbDogI0ZGRkZGRjsgfQogICAgPC9zdHlsZT4KICA8L2RlZnM+CiAgPHJlY3QgY2xhc3M9ImJhY2tncm91bmQiIHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiLz4KICA8cGF0aCBjbGFzcz0iZm9yZWdyb3VuZCIgZD0iTSA1MTIgMTgwIEwgNzQwIDcyMCBMIDY0MCA3MjAgTCA2MDAgNjUzIEwgNDI0IDY1MyBMIDM4NCA3MjAgTCAyODQgNzIwIFoiLz4KPC9zdmc+";
+
+/* ────────────────────────────────────────────────────────
+   BASE_LAYOUT
+   This is the single source of truth for the email wrapper.
+   It is kept 1:1 in sync with base_layout.html on disk.
+   __CONTENT__ is the slot replaced at preview/export time.
+──────────────────────────────────────────────────────── */
+function buildBaseLayout(contentSlot) {
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <title>Sharpnr</title>
 </head>
-<body style="margin:0;padding:0;background-color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;">
-  <table cellpadding="0" cellspacing="0" border="0" width="100%">
+<body style="margin:0;padding:0;background-color:#EAEDF5;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+  <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#EAEDF5;">
     <tr>
-      <td align="center" style="padding:40px 20px">
-        <table cellpadding="0" cellspacing="0" border="0" style="max-width:480px;width:100%;background:#ffffff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+      <td align="center" style="padding:44px 16px 52px;">
+        <table cellpadding="0" cellspacing="0" border="0" style="max-width:500px;width:100%;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 4px 28px rgba(10,10,46,0.14),0 1px 4px rgba(10,10,46,0.06);">
+
+          <!-- HEADER -->
           <tr>
-            <td style="background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);padding:40px 30px;text-align:center;border-radius:16px 16px 0 0;">
-              <h1 style="color:#ffffff;font-size:24px;font-weight:700;margin:0;letter-spacing:-0.5px;">Sharpnr</h1>
+            <td style="background-color:#0A0A2E;padding:26px 36px;border-radius:14px 14px 0 0;">
+              <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="width:38px;height:38px;border:1px solid rgba(255,255,255,0.18);border-radius:9px;text-align:center;vertical-align:middle;background-color:#0A0A2E;">
+                    <img src="${LOGO_B64}" width="22" height="22" alt="Sharpnr" style="display:block;margin:8px auto;border:0;"/>
+                  </td>
+                  <td style="padding-left:11px;vertical-align:middle;">
+                    <span style="color:#ffffff;font-size:19px;font-weight:700;letter-spacing:-0.5px;line-height:1;">Sharpnr</span>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
+
+          <!-- CONTENT -->
           <tr>
-            <td style="padding:50px 40px;">
-              __CONTENT__
+            <td style="padding:44px 36px 36px;">
+              ${contentSlot}
             </td>
           </tr>
+
+          <!-- FOOTER -->
           <tr>
-            <td style="background:#f9fafb;padding:25px 40px;text-align:center;border-radius:0 0 16px 16px;border-top:1px solid #e5e7eb;">
-              <p style="color:#9ca3af;font-size:12px;margin:0;">© 2026 Sharpnr. All rights reserved.</p>
+            <td style="background-color:#F7F8FC;border-top:1px solid #EEF0F8;padding:20px 36px 22px;border-radius:0 0 14px 14px;">
+              <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td align="center" style="padding-bottom:9px;">
+                    <a href="#" style="color:#9CA3C0;font-size:11px;text-decoration:none;margin:0 8px;">Unsubscribe</a>
+                    <span style="color:#D1D5E8;font-size:11px;">·</span>
+                    <a href="#" style="color:#9CA3C0;font-size:11px;text-decoration:none;margin:0 8px;">Privacy Policy</a>
+                    <span style="color:#D1D5E8;font-size:11px;">·</span>
+                    <a href="#" style="color:#9CA3C0;font-size:11px;text-decoration:none;margin:0 8px;">Help Centre</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <p style="color:#C4C9DC;font-size:11px;line-height:1.6;margin:0;">
+                      © 2026 Sharpnr · All rights reserved<br/>
+                      You received this because you have an account with us.
+                    </p>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
+
         </table>
       </td>
     </tr>
   </table>
 </body>
 </html>`;
+}
 
 /* ── BUILT-IN TEMPLATES ── */
 const BUILTIN_TEMPLATES = [
@@ -45,40 +91,57 @@ const BUILTIN_TEMPLATES = [
     builtin: true,
     fields: [
       {
+        key: "Name",
+        label: ".Name",
+        type: "text",
+        optional: false,
+        default: "Rahul",
+      },
+      {
         key: "Code",
         label: ".Code",
         type: "text",
         optional: false,
-        default: "483920",
+        default: "847 291",
       },
       {
-        key: "Expiry",
-        label: ".Expiry",
+        key: "ExpiryMinutes",
+        label: ".ExpiryMinutes",
         type: "text",
         optional: false,
-        default: "10 minutes",
+        default: "10",
       },
     ],
-    content: `<div style="text-align:center;margin-bottom:40px;">
-  <h2 style="color:#1f2937;font-size:22px;font-weight:600;margin:0 0 12px;line-height:1.3;">
-    Verify Your Organization
-  </h2>
-  <p style="color:#6b7280;font-size:16px;margin:0;line-height:1.5;">
-    Enter this verification code to complete your registration:
-  </p>
-</div>
+    content: `<!-- Badge -->
+<p style="display:inline-block;background:#EEF0FA;color:#0A0A2E;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:5px;margin:0 0 16px;">Security</p>
 
-<div style="background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:30px;text-align:center;margin:30px 0;">
-  <div style="background:#ffffff;border:2px solid #6366f1;border-radius:8px;padding:16px;display:inline-block;">
-    <span style="font-size:28px;font-weight:700;letter-spacing:6px;color:#6366f1;font-family:'Courier New',monospace;">
-      {{.Code}}
-    </span>
-  </div>
-  <p style="color:#94a3b8;font-size:12px;margin:15px 0 0;font-style:italic;">
-    Expires in {{.Expiry}}
-  </p>
-</div>`,
+<!-- Heading -->
+<h1 style="color:#0A0A2E;font-size:22px;font-weight:700;letter-spacing:-0.5px;line-height:1.3;margin:0 0 12px;">Your verification code</h1>
+
+<!-- Intro -->
+<p style="color:#5A607A;font-size:15px;line-height:1.7;margin:0 0 28px;">Hi <strong style="color:#0A0A2E;">{{.Name}}</strong>, use the code below to verify your identity. It is valid for <strong style="color:#0A0A2E;">{{.ExpiryMinutes}} minutes</strong> and can only be used once.</p>
+
+<!-- OTP Box -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:28px;">
+  <tr>
+    <td style="background-color:#F7F8FC;border:1.5px solid #E2E5F0;border-radius:10px;padding:24px 16px;text-align:center;">
+      <p style="color:#9CA3C0;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 14px;">One-Time Password</p>
+      <p style="color:#0A0A2E;font-size:38px;font-weight:800;letter-spacing:10px;font-family:'Courier New',Courier,monospace;margin:0;line-height:1;">{{.Code}}</p>
+      <p style="color:#9CA3C0;font-size:12px;margin:14px 0 0;">Expires in {{.ExpiryMinutes}} minutes</p>
+    </td>
+  </tr>
+</table>
+
+<!-- Body note -->
+<p style="color:#5A607A;font-size:14px;line-height:1.7;margin:0 0 22px;">Didn't request this? You can safely ignore this email — your account remains secure.</p>
+
+<!-- Divider -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:4px 0 20px;"><tr><td style="border-top:1px solid #F0F2F8;font-size:0;line-height:0;">&nbsp;</td></tr></table>
+
+<!-- Security note -->
+<p style="color:#9CA3C0;font-size:12px;line-height:1.65;margin:0;">🔒 Never share this code with anyone, including Sharpnr support.</p>`,
   },
+
   {
     id: "notification",
     name: "notification.html",
@@ -129,37 +192,41 @@ const BUILTIN_TEMPLATES = [
           "If you didn't request this, you can safely ignore this email.",
       },
     ],
-    content: `<div style="text-align:center;margin-bottom:36px;">
-  <h2 style="color:#1f2937;font-size:22px;font-weight:600;margin:0 0 10px;line-height:1.3;">
-    {{.Title}}
-  </h2>
-  {{if .Subtitle}}
-  <p style="color:#6b7280;font-size:16px;margin:0;line-height:1.5;">
-    {{.Subtitle}}
-  </p>
-  {{end}}
-</div>
+    content: `<!-- Badge -->
+<p style="display:inline-block;background:#EEF0FA;color:#0A0A2E;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:5px;margin:0 0 16px;">Notification</p>
 
-<div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:28px;margin:28px 0;">
-  <p style="color:#374151;font-size:15px;line-height:1.6;margin:0;">
-    {{.Message}}
-  </p>
-</div>
+<!-- Heading -->
+<h1 style="color:#0A0A2E;font-size:22px;font-weight:700;letter-spacing:-0.5px;line-height:1.3;margin:0 0 10px;">{{.Title}}</h1>
+
+{{if .Subtitle}}
+<p style="color:#5A607A;font-size:15px;line-height:1.7;margin:0 0 24px;">{{.Subtitle}}</p>
+{{end}}
+
+<!-- Message card -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:4px 0 24px;">
+  <tr>
+    <td style="background-color:#F7F8FC;border:1px solid #EEF0F8;border-radius:10px;padding:22px 20px;">
+      <p style="color:#3D4560;font-size:15px;line-height:1.7;margin:0;">{{.Message}}</p>
+    </td>
+  </tr>
+</table>
 
 {{if .ActionURL}}
-<div style="text-align:center;margin-top:30px;">
-  <a href="{{.ActionURL}}" style="display:inline-block;background:#6366f1;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 22px;border-radius:8px;">
-    {{.ActionText}}
-  </a>
-</div>
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:24px;">
+  <tr>
+    <td align="center">
+      <a href="{{.ActionURL}}" style="display:inline-block;background-color:#0A0A2E;color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;letter-spacing:-0.2px;padding:14px 36px;border-radius:8px;line-height:1;">{{.ActionText}}</a>
+    </td>
+  </tr>
+</table>
 {{end}}
 
 {{if .FooterNote}}
-<p style="margin-top:30px;color:#9ca3af;font-size:12px;text-align:center;line-height:1.4;">
-  {{.FooterNote}}
-</p>
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:8px;"><tr><td style="border-top:1px solid #F0F2F8;font-size:0;line-height:0;">&nbsp;</td></tr></table>
+<p style="color:#9CA3C0;font-size:12px;line-height:1.65;margin:16px 0 0;">{{.FooterNote}}</p>
 {{end}}`,
   },
+
   {
     id: "billing",
     name: "billing.html",
@@ -198,6 +265,13 @@ const BUILTIN_TEMPLATES = [
         default: "Pro Plan",
       },
       {
+        key: "BillingPeriod",
+        label: ".BillingPeriod",
+        type: "text",
+        optional: true,
+        default: "May 1 – May 31, 2026",
+      },
+      {
         key: "Link",
         label: ".Link",
         type: "text",
@@ -205,38 +279,67 @@ const BUILTIN_TEMPLATES = [
         default: "https://sharpnr.com/billing",
       },
     ],
-    content: `<div style="text-align:center;margin-bottom:32px;">
-  <h2 style="color:#1f2937;font-size:22px;font-weight:600;margin:0 0 8px;">
-    Payment Confirmed
-  </h2>
-  <p style="color:#6b7280;font-size:15px;margin:0;">
-    Hi {{.Name}}, your payment was successful.
-  </p>
-</div>
+    content: `<!-- Badge -->
+<p style="display:inline-block;background:#EEF0FA;color:#0A0A2E;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:5px;margin:0 0 16px;">Billing</p>
 
-<div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:24px;margin:24px 0;">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-    <tr>
-      <td style="color:#6b7280;font-size:13px;padding:8px 0;border-bottom:1px solid #e5e7eb;">Plan</td>
-      <td style="color:#1f2937;font-size:13px;font-weight:600;text-align:right;padding:8px 0;border-bottom:1px solid #e5e7eb;">{{.Plan}}</td>
-    </tr>
-    <tr>
-      <td style="color:#6b7280;font-size:13px;padding:8px 0;border-bottom:1px solid #e5e7eb;">Date</td>
-      <td style="color:#1f2937;font-size:13px;font-weight:600;text-align:right;padding:8px 0;border-bottom:1px solid #e5e7eb;">{{.Date}}</td>
-    </tr>
-    <tr>
-      <td style="color:#6b7280;font-size:14px;font-weight:600;padding:12px 0 0;">Total</td>
-      <td style="color:#6366f1;font-size:20px;font-weight:700;text-align:right;padding:12px 0 0;">{{.Amount}}</td>
-    </tr>
-  </table>
-</div>
+<!-- Heading -->
+<h1 style="color:#0A0A2E;font-size:22px;font-weight:700;letter-spacing:-0.5px;line-height:1.3;margin:0 0 12px;">Payment confirmed</h1>
+<p style="color:#5A607A;font-size:15px;line-height:1.7;margin:0 0 28px;">Hi <strong style="color:#0A0A2E;">{{.Name}}</strong>, your payment was processed successfully.</p>
+
+<!-- Billing table -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F7F8FC;border:1px solid #EEF0F8;border-radius:10px;margin-bottom:24px;">
+  <tr>
+    <td style="padding:13px 20px;border-bottom:1px solid #EEF0F8;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="color:#9CA3C0;font-size:13px;">Plan</td>
+          <td style="color:#0A0A2E;font-size:13px;font-weight:600;text-align:right;">{{.Plan}}</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  {{if .BillingPeriod}}
+  <tr>
+    <td style="padding:13px 20px;border-bottom:1px solid #EEF0F8;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="color:#9CA3C0;font-size:13px;">Billing Period</td>
+          <td style="color:#0A0A2E;font-size:13px;font-weight:600;text-align:right;">{{.BillingPeriod}}</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  {{end}}
+  <tr>
+    <td style="padding:13px 20px;border-bottom:1px solid #EEF0F8;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="color:#9CA3C0;font-size:13px;">Date</td>
+          <td style="color:#0A0A2E;font-size:13px;font-weight:600;text-align:right;">{{.Date}}</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:14px 20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="color:#0A0A2E;font-size:14px;font-weight:700;">Total</td>
+          <td style="color:#0A0A2E;font-size:18px;font-weight:800;text-align:right;letter-spacing:-0.5px;">{{.Amount}}</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
 
 {{if .Link}}
-<div style="text-align:center;margin-top:28px;">
-  <a href="{{.Link}}" style="display:inline-block;background:#6366f1;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 22px;border-radius:8px;">
-    View Receipt
-  </a>
-</div>
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:8px;">
+  <tr>
+    <td align="center">
+      <a href="{{.Link}}" style="display:inline-block;background-color:#0A0A2E;color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;letter-spacing:-0.2px;padding:14px 36px;border-radius:8px;line-height:1;">View Receipt</a>
+    </td>
+  </tr>
+</table>
 {{end}}`,
   },
 ];
@@ -247,7 +350,7 @@ const ALL_FIELDS = [
   "Subtitle",
   "Message",
   "Code",
-  "Expiry",
+  "ExpiryMinutes",
   "ActionURL",
   "ActionText",
   "FooterNote",
@@ -261,6 +364,7 @@ const ALL_FIELDS = [
   "Reason",
   "Status",
   "Plan",
+  "BillingPeriod",
 ];
 
 const OPTIONAL_FIELDS = new Set([
@@ -269,11 +373,12 @@ const OPTIONAL_FIELDS = new Set([
   "ActionURL",
   "ActionText",
   "LinkText",
+  "BillingPeriod",
 ]);
 
 const FIELD_DEFAULTS = {
-  Code: "483920",
-  Expiry: "10 minutes",
+  Code: "847 291",
+  ExpiryMinutes: "10",
   Name: "John Doe",
   Email: "john@example.com",
   Title: "Hello from Sharpnr",
@@ -292,6 +397,7 @@ const FIELD_DEFAULTS = {
     month: "long",
     day: "numeric",
   }),
+  BillingPeriod: "May 1 – May 31, 2026",
   Reason: "Suspicious activity detected",
   Status: "Active",
   Plan: "Pro Plan",
@@ -332,10 +438,15 @@ function applyTheme() {
 }
 
 /* ══════════════════════════════════
-   GO TEMPLATE RENDERER
+   GO TEMPLATE RENDERER (client-side preview only)
+   Handles: {{.Key}}  {{if .Key}}...{{end}}
 ══════════════════════════════════ */
 function renderGoTemplate(content, data) {
   let out = content;
+
+  // Strip Go-only block tags used in base_layout (not needed in preview)
+  out = out.replace(/\{\{define "[^"]+"\}\}/g, "");
+  out = out.replace(/\{\{end\}\}\s*$/g, "");
 
   // {{if .Key}}...{{end}}
   out = out.replace(
@@ -356,14 +467,18 @@ function renderGoTemplate(content, data) {
 
 function getRenderedHTML(tpl) {
   const data = getFieldData(tpl);
-  const rendered = renderGoTemplate(tpl.content, data);
-  return BASE_LAYOUT.replace("__CONTENT__", rendered);
+  const renderedContent = renderGoTemplate(tpl.content, data);
+  return buildBaseLayout(renderedContent);
 }
 
+/* ── Produces the final .html file saved to disk ──
+   This is what your Go mailer engine actually reads.
+   It uses {{template "base_layout.html" .}} so the
+   Go runtime provides the real header/footer — not
+   the JS-rendered preview version.
+── */
 function getGoTemplate(tpl) {
-  return `{{define "${tpl.name}"}}
-{{template "base_layout.html" .}}
-{{end}}
+  return `{{template "base_layout.html" .}}
 
 {{define "content"}}
 ${tpl.content}
@@ -382,6 +497,190 @@ function getFieldData(tpl) {
 }
 
 /* ══════════════════════════════════
+   SCAFFOLD (used when creating a new template)
+   All generated HTML uses the new #0A0A2E brand tokens.
+══════════════════════════════════ */
+function scaffoldContent(fields) {
+  const parts = [];
+
+  const order = [
+    "Title",
+    "Subtitle",
+    "Code",
+    "ExpiryMinutes",
+    "Name",
+    "Message",
+    "Amount",
+    "Date",
+    "Plan",
+    "BillingPeriod",
+    "Status",
+    "Reason",
+    "Email",
+    "OrganizationName",
+    "ActionURL",
+    "FooterNote",
+    "Link",
+    "LinkText",
+  ];
+
+  const sorted = [...fields].sort((a, b) => {
+    const ai = order.indexOf(a);
+    const bi = order.indexOf(b);
+    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+  });
+
+  // Auto-detect a badge category from the field set
+  let badge = "Notification";
+  if (fields.includes("Code")) badge = "Security";
+  if (fields.includes("Amount")) badge = "Billing";
+
+  parts.push(`<!-- Badge -->
+<p style="display:inline-block;background:#EEF0FA;color:#0A0A2E;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:5px;margin:0 0 16px;">${badge}</p>`);
+
+  for (const key of sorted) {
+    switch (key) {
+      case "Title":
+        parts.push(
+          `<h1 style="color:#0A0A2E;font-size:22px;font-weight:700;letter-spacing:-0.5px;line-height:1.3;margin:0 0 12px;">{{.Title}}</h1>`,
+        );
+        break;
+
+      case "Subtitle":
+        parts.push(`{{if .Subtitle}}
+<p style="color:#5A607A;font-size:15px;line-height:1.7;margin:0 0 24px;">{{.Subtitle}}</p>
+{{end}}`);
+        break;
+
+      case "Name":
+        parts.push(
+          `<p style="color:#5A607A;font-size:15px;line-height:1.7;margin:0 0 20px;">Hi <strong style="color:#0A0A2E;">{{.Name}}</strong>,</p>`,
+        );
+        break;
+
+      case "Code":
+        parts.push(`<!-- OTP Box -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:28px;">
+  <tr>
+    <td style="background-color:#F7F8FC;border:1.5px solid #E2E5F0;border-radius:10px;padding:24px 16px;text-align:center;">
+      <p style="color:#9CA3C0;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 14px;">One-Time Password</p>
+      <p style="color:#0A0A2E;font-size:38px;font-weight:800;letter-spacing:10px;font-family:'Courier New',Courier,monospace;margin:0;line-height:1;">{{.Code}}</p>
+    </td>
+  </tr>
+</table>`);
+        break;
+
+      case "ExpiryMinutes":
+        parts.push(
+          `<p style="color:#9CA3C0;font-size:12px;text-align:center;margin:-16px 0 24px;">Expires in {{.ExpiryMinutes}} minutes</p>`,
+        );
+        break;
+
+      case "Message":
+        parts.push(`<!-- Message card -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:24px;">
+  <tr>
+    <td style="background-color:#F7F8FC;border:1px solid #EEF0F8;border-radius:10px;padding:22px 20px;">
+      <p style="color:#3D4560;font-size:15px;line-height:1.7;margin:0;">{{.Message}}</p>
+    </td>
+  </tr>
+</table>`);
+        break;
+
+      case "Amount":
+        parts.push(
+          `<p style="color:#0A0A2E;font-size:32px;font-weight:800;letter-spacing:-1px;text-align:center;margin:0 0 4px;">{{.Amount}}</p>`,
+        );
+        break;
+
+      case "Date":
+        parts.push(
+          `<p style="color:#9CA3C0;font-size:12px;text-align:center;margin:0 0 20px;">{{.Date}}</p>`,
+        );
+        break;
+
+      case "Plan":
+        parts.push(`<table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F7F8FC;border:1px solid #EEF0F8;border-radius:10px;margin-bottom:24px;">
+  <tr><td style="padding:13px 20px;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td style="color:#9CA3C0;font-size:13px;">Plan</td>
+        <td style="color:#0A0A2E;font-size:13px;font-weight:600;text-align:right;">{{.Plan}}</td>
+      </tr>
+    </table>
+  </td></tr>
+</table>`);
+        break;
+
+      case "BillingPeriod":
+        parts.push(`{{if .BillingPeriod}}
+<p style="color:#9CA3C0;font-size:12px;text-align:center;margin:-12px 0 20px;">{{.BillingPeriod}}</p>
+{{end}}`);
+        break;
+
+      case "Status":
+        parts.push(
+          `<p style="color:#3D4560;font-size:14px;margin:6px 0;"><strong style="color:#0A0A2E;">Status:</strong> {{.Status}}</p>`,
+        );
+        break;
+
+      case "Reason":
+        parts.push(
+          `<p style="color:#3D4560;font-size:14px;margin:6px 0;"><strong style="color:#0A0A2E;">Reason:</strong> {{.Reason}}</p>`,
+        );
+        break;
+
+      case "Email":
+        parts.push(
+          `<p style="color:#3D4560;font-size:14px;margin:6px 0;"><strong style="color:#0A0A2E;">Email:</strong> {{.Email}}</p>`,
+        );
+        break;
+
+      case "OrganizationName":
+        parts.push(
+          `<p style="color:#3D4560;font-size:14px;margin:6px 0;"><strong style="color:#0A0A2E;">Organization:</strong> {{.OrganizationName}}</p>`,
+        );
+        break;
+
+      case "ActionURL":
+        parts.push(`{{if .ActionURL}}
+<!-- CTA Button -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:24px 0 8px;">
+  <tr>
+    <td align="center">
+      <a href="{{.ActionURL}}" style="display:inline-block;background-color:#0A0A2E;color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;letter-spacing:-0.2px;padding:14px 36px;border-radius:8px;line-height:1;">{{.ActionText}}</a>
+    </td>
+  </tr>
+</table>
+{{end}}`);
+        break;
+
+      case "FooterNote":
+        parts.push(`{{if .FooterNote}}
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 12px;"><tr><td style="border-top:1px solid #F0F2F8;font-size:0;line-height:0;">&nbsp;</td></tr></table>
+<p style="color:#9CA3C0;font-size:12px;line-height:1.65;margin:0;">{{.FooterNote}}</p>
+{{end}}`);
+        break;
+
+      case "Link":
+        parts.push(`{{if .Link}}
+<div style="text-align:center;margin-top:16px;">
+  <a href="{{.Link}}" style="color:#0A0A2E;font-size:13px;font-weight:600;text-decoration:underline;">{{.LinkText}}</a>
+</div>
+{{end}}`);
+        break;
+
+      default:
+        parts.push(
+          `<p style="color:#3D4560;font-size:15px;margin:8px 0;">{{.${key}}}</p>`,
+        );
+    }
+  }
+
+  return parts.join("\n\n");
+}
+
+/* ══════════════════════════════════
    SIDEBAR
 ══════════════════════════════════ */
 function renderSidebar() {
@@ -392,11 +691,7 @@ function renderSidebar() {
     <div class="tpl-item ${t.id === activeId ? "active" : ""}" data-id="${t.id}">
       <div class="tpl-dot"></div>
       <span class="tpl-name">${t.name}</span>
-      ${
-        !t.builtin
-          ? `<button class="tpl-del" data-del="${t.id}" title="Delete">×</button>`
-          : ""
-      }
+      ${!t.builtin ? `<button class="tpl-del" data-del="${t.id}" title="Delete">×</button>` : ""}
     </div>
   `,
     )
@@ -417,17 +712,17 @@ function renderVarsForm(tpl) {
 
       if (f.type === "textarea") {
         return `
-        <div class="field-group">
-          <label class="field-label">${f.label}${optBadge}</label>
-          <textarea class="field-textarea" data-key="${f.key}">${escapeAttr(val)}</textarea>
-        </div>`;
+      <div class="field-group">
+        <label class="field-label">${f.label}${optBadge}</label>
+        <textarea class="field-textarea" data-key="${f.key}">${escapeAttr(val)}</textarea>
+      </div>`;
       }
 
       return `
-      <div class="field-group">
-        <label class="field-label">${f.label}${optBadge}</label>
-        <input class="field-input" type="text" data-key="${f.key}" value="${escapeAttr(val)}" />
-      </div>`;
+    <div class="field-group">
+      <label class="field-label">${f.label}${optBadge}</label>
+      <input class="field-input" type="text" data-key="${f.key}" value="${escapeAttr(val)}" />
+    </div>`;
     })
     .join("");
 }
@@ -467,11 +762,9 @@ function refreshPreview() {
 
 function switchTab(tab) {
   activeTab = tab;
-
   document.querySelectorAll(".ptab").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.tab === tab);
   });
-
   document
     .getElementById("previewWrap")
     .classList.toggle("hidden", tab !== "preview");
@@ -481,7 +774,6 @@ function switchTab(tab) {
   document
     .getElementById("gotplWrap")
     .classList.toggle("hidden", tab !== "gotpl");
-
   refreshPreview();
 }
 
@@ -498,27 +790,23 @@ function selectTemplate(id) {
 }
 
 /* ══════════════════════════════════
-   SAVE TO TEMPLATES FOLDER
+   SAVE  — "go template" tab → saves {{template "base_layout.html" .}} source
+            other tabs       → saves the full rendered HTML preview
 ══════════════════════════════════ */
 async function saveToTemplates() {
   const tpl = templates.find((t) => t.id === activeId);
   if (!tpl) return;
 
-  // We offer both the Go template source (for Go projects) and the rendered HTML
   const isGoTab = activeTab === "gotpl";
   const content = isGoTab ? getGoTemplate(tpl) : getRenderedHTML(tpl);
   const suggestedName = tpl.name;
 
-  // Use File System Access API if available (Chrome / Edge with live server)
   if (window.showSaveFilePicker) {
     try {
       const handle = await window.showSaveFilePicker({
         suggestedName,
         types: [
-          {
-            description: "HTML Template",
-            accept: { "text/html": [".html"] },
-          },
+          { description: "HTML Template", accept: { "text/html": [".html"] } },
         ],
         startIn: "documents",
       });
@@ -527,13 +815,9 @@ async function saveToTemplates() {
       await writable.close();
       showSaved("saved!");
     } catch (err) {
-      if (err.name !== "AbortError") {
-        console.error("Save error:", err);
-        fallbackDownload(content, suggestedName);
-      }
+      if (err.name !== "AbortError") fallbackDownload(content, suggestedName);
     }
   } else {
-    // Fallback: trigger browser download
     fallbackDownload(content, suggestedName);
   }
 }
@@ -556,10 +840,8 @@ function fallbackDownload(content, filename) {
 function copyCurrentTab() {
   const tpl = templates.find((t) => t.id === activeId);
   if (!tpl) return;
-
   const text =
     activeTab === "gotpl" ? getGoTemplate(tpl) : getRenderedHTML(tpl);
-
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById("copyBtn");
     const orig = btn.textContent;
@@ -588,9 +870,7 @@ function showSaved(msg = "saved") {
 function deleteTemplate(id) {
   if (!confirm(`Delete "${id}.html"?`)) return;
   templates = templates.filter((t) => t.id !== id);
-  if (activeId === id) {
-    activeId = templates[0]?.id ?? null;
-  }
+  if (activeId === id) activeId = templates[0]?.id ?? null;
   renderSidebar();
   if (activeId) selectTemplate(activeId);
 }
@@ -627,136 +907,6 @@ function toggleChip(field) {
   renderChips();
 }
 
-function scaffoldContent(fields) {
-  const parts = [];
-
-  // Render in a sensible order
-  const order = [
-    "Title",
-    "Subtitle",
-    "Code",
-    "Expiry",
-    "Name",
-    "Message",
-    "Amount",
-    "Date",
-    "Plan",
-    "Status",
-    "Reason",
-    "Email",
-    "OrganizationName",
-    "ActionURL",
-    "FooterNote",
-    "Link",
-    "LinkText",
-  ];
-
-  const sorted = [...fields].sort((a, b) => {
-    const ai = order.indexOf(a);
-    const bi = order.indexOf(b);
-    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
-  });
-
-  for (const key of sorted) {
-    switch (key) {
-      case "Title":
-        parts.push(
-          `<h2 style="color:#1f2937;font-size:22px;font-weight:600;margin:0 0 12px;text-align:center;line-height:1.3;">{{.Title}}</h2>`,
-        );
-        break;
-      case "Subtitle":
-        parts.push(`{{if .Subtitle}}
-<p style="color:#6b7280;font-size:16px;margin:0 0 24px;text-align:center;line-height:1.5;">{{.Subtitle}}</p>
-{{end}}`);
-        break;
-      case "Code":
-        parts.push(`<div style="text-align:center;padding:24px 0;">
-  <div style="display:inline-block;border:2px solid #6366f1;border-radius:8px;padding:16px;">
-    <span style="font-size:28px;font-weight:700;letter-spacing:6px;color:#6366f1;font-family:'Courier New',monospace;">{{.Code}}</span>
-  </div>
-</div>`);
-        break;
-      case "Expiry":
-        parts.push(
-          `<p style="color:#94a3b8;font-size:12px;text-align:center;font-style:italic;margin:0;">Expires in {{.Expiry}}</p>`,
-        );
-        break;
-      case "Name":
-        parts.push(
-          `<p style="color:#374151;font-size:15px;margin:0 0 8px;">Hi <strong>{{.Name}}</strong>,</p>`,
-        );
-        break;
-      case "Message":
-        parts.push(`<div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:28px;margin:20px 0;">
-  <p style="color:#374151;font-size:15px;line-height:1.6;margin:0;">{{.Message}}</p>
-</div>`);
-        break;
-      case "Amount":
-        parts.push(`<div style="text-align:center;padding:12px 0;">
-  <span style="font-size:32px;font-weight:700;color:#6366f1;">{{.Amount}}</span>
-</div>`);
-        break;
-      case "Date":
-        parts.push(
-          `<p style="color:#6b7280;font-size:13px;text-align:center;margin:4px 0;">{{.Date}}</p>`,
-        );
-        break;
-      case "Plan":
-        parts.push(
-          `<p style="color:#374151;font-size:14px;margin:6px 0;"><strong>Plan:</strong> {{.Plan}}</p>`,
-        );
-        break;
-      case "Status":
-        parts.push(
-          `<p style="color:#374151;font-size:14px;margin:6px 0;"><strong>Status:</strong> {{.Status}}</p>`,
-        );
-        break;
-      case "Reason":
-        parts.push(
-          `<p style="color:#374151;font-size:14px;margin:6px 0;"><strong>Reason:</strong> {{.Reason}}</p>`,
-        );
-        break;
-      case "Email":
-        parts.push(
-          `<p style="color:#374151;font-size:14px;margin:6px 0;"><strong>Email:</strong> {{.Email}}</p>`,
-        );
-        break;
-      case "OrganizationName":
-        parts.push(
-          `<p style="color:#374151;font-size:14px;margin:6px 0;"><strong>Organization:</strong> {{.OrganizationName}}</p>`,
-        );
-        break;
-      case "ActionURL":
-        parts.push(`{{if .ActionURL}}
-<div style="text-align:center;margin-top:28px;">
-  <a href="{{.ActionURL}}" style="display:inline-block;background:#6366f1;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 24px;border-radius:8px;">
-    {{.ActionText}}
-  </a>
-</div>
-{{end}}`);
-        break;
-      case "FooterNote":
-        parts.push(`{{if .FooterNote}}
-<p style="margin-top:28px;color:#9ca3af;font-size:12px;text-align:center;line-height:1.4;">{{.FooterNote}}</p>
-{{end}}`);
-        break;
-      case "Link":
-        parts.push(`{{if .Link}}
-<div style="text-align:center;margin-top:20px;">
-  <a href="{{.Link}}" style="color:#6366f1;font-size:14px;text-decoration:underline;">{{.LinkText}}</a>
-</div>
-{{end}}`);
-        break;
-      default:
-        parts.push(
-          `<p style="color:#374151;font-size:15px;margin:8px 0;">{{.${key}}}</p>`,
-        );
-    }
-  }
-
-  return parts.join("\n\n");
-}
-
 function createTemplate() {
   const nameInput = document.getElementById("newTplName");
   const errorEl = document.getElementById("nameError");
@@ -790,7 +940,6 @@ function createTemplate() {
   errorEl.classList.remove("visible");
 
   const selectedFields = [...newChips];
-
   const fields = selectedFields.map((key) => ({
     key,
     label: `.${key}`,
@@ -802,19 +951,17 @@ function createTemplate() {
   const content =
     selectedFields.length > 0
       ? scaffoldContent(selectedFields)
-      : `<p style="color:#374151;font-size:15px;text-align:center;">Your email content goes here.</p>`;
+      : `<p style="color:#5A607A;font-size:15px;text-align:center;margin:0;">Your email content goes here.</p>`;
 
   templates.push({ id, name: rawName, builtin: false, fields, content });
-
   closeModal();
   selectTemplate(id);
 }
 
 /* ══════════════════════════════════
-   EVENT DELEGATION
+   EVENTS
 ══════════════════════════════════ */
 function bindEvents() {
-  // Sidebar: select / delete
   document.getElementById("tplList").addEventListener("click", (e) => {
     const delBtn = e.target.closest("[data-del]");
     if (delBtn) {
@@ -826,10 +973,8 @@ function bindEvents() {
     if (item) selectTemplate(item.dataset.id);
   });
 
-  // Add template button
   document.getElementById("addTplBtn").addEventListener("click", openModal);
 
-  // Vars form: live update
   document.getElementById("varsForm").addEventListener("input", (e) => {
     const el = e.target;
     if (!el.dataset.key) return;
@@ -840,29 +985,22 @@ function bindEvents() {
     showSaved();
   });
 
-  // Preview tabs
   document.querySelectorAll(".ptab").forEach((btn) => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
   });
 
-  // Copy button
   document.getElementById("copyBtn").addEventListener("click", copyCurrentTab);
-
-  // Save button
   document.getElementById("saveBtn").addEventListener("click", saveToTemplates);
 
-  // Theme toggle
   document.getElementById("themeToggle").addEventListener("click", () => {
     darkMode = !darkMode;
     applyTheme();
   });
 
-  // Modal: close on overlay click
   document.getElementById("modalOverlay").addEventListener("click", (e) => {
     if (e.target === document.getElementById("modalOverlay")) closeModal();
   });
 
-  // Modal: close on Escape
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeModal();
     if (
@@ -873,19 +1011,16 @@ function bindEvents() {
     }
   });
 
-  // Modal: cancel / create
   document.getElementById("modalCancel").addEventListener("click", closeModal);
   document
     .getElementById("modalCreate")
     .addEventListener("click", createTemplate);
 
-  // Modal: chip toggle (event delegation)
   document.getElementById("fieldChips").addEventListener("click", (e) => {
     const chip = e.target.closest(".chip");
     if (chip) toggleChip(chip.dataset.field);
   });
 
-  // Modal: clear name error on input
   document.getElementById("newTplName").addEventListener("input", () => {
     document.getElementById("newTplName").classList.remove("error");
     document.getElementById("nameError").classList.remove("visible");
