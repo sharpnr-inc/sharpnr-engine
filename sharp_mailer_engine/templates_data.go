@@ -5,6 +5,7 @@ package sharp_mailer_engine
 
 type OTPData struct {
 	Name          string
+	Email         string
 	Code          string
 	ExpiryMinutes int
 }

@@ -67,8 +67,9 @@ func (s *orgSignUpService) InitiateRegistration(
 	s.mailerEngine.Enqueue(sharp_mailer_engine.MailTypeNotification, sharp_mailer_engine.NewOTPJob(
 		req.Email, "Sharpnr Signup Verification",
 		sharp_mailer_engine.OTPData{
-			Name:          "",
+			Name:          req.Mobile,
 			Code:          otp,
+			Email:         req.Email,
 			ExpiryMinutes: 10,
 		},
 	))
