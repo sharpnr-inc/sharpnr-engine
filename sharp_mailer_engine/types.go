@@ -2,6 +2,42 @@ package sharp_mailer_engine
 
 import "context"
 
+type TemplateData interface {
+	OTPData | BillingData | NotificationData | WelcomeData
+}
+
+type OTPData struct {
+	Name          string
+	Code          string
+	ExpiryMinutes int
+}
+
+type BillingData struct {
+	Name          string
+	Amount        string
+	Date          string
+	Plan          string
+	BillingPeriod string // optional
+	Link          string // optional
+}
+
+type NotificationData struct {
+	Title      string
+	Subtitle   string // optional
+	Message    string
+	ActionURL  string // optional
+	ActionText string // optional
+	FooterNote string // optional
+}
+
+type WelcomeData struct {
+	Name             string
+	Email            string
+	OrganizationName string // optional
+	ActionURL        string
+	ActionText       string
+}
+
 type MailType string
 
 const (
