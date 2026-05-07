@@ -45,6 +45,17 @@ func (s *employeeService) GetEmployeeProfile(ctx context.Context, orgID uuid.UUI
 
 /* ---------------------------------- <***> --------------------------------- */
 
+// GetEmployeeDetails retrieves the employee's basic details, primarily for authentication and authorization purposes.
+// It ensures that the employee belongs to the specified organization and returns essential information such as email, name, role, and ID.
+//
+// Variables:
+// - ctx: The context for managing request-scoped values, cancellation signals, and deadlines.
+// - orgID: The unique identifier of the organization to which the employee belongs.
+// - emplID: The unique identifier of the employee whose details are being retrieved.
+//
+// Returns:
+// - EmployeeDetailsOutput: A struct containing the employee's email, first name, last name, role, and ID.
+// - error: An error object if any issues occur during the retrieval process, such as invalid credentials or database errors.
 func (s *employeeService) GetEmployeeDetails(
 	ctx context.Context,
 	orgID, emplID uuid.UUID,
@@ -71,3 +82,5 @@ func (s *employeeService) GetEmployeeDetails(
 		ID:        emp.ID,
 	}, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
