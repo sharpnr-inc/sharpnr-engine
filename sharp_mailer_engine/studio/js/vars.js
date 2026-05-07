@@ -1,8 +1,7 @@
 /* ══════════════════════════════════════════════════
-   vars.js — variables panel for live preview
+   vars.js — variables panel
 ══════════════════════════════════════════════════ */
 
-// Default sample values for known field keys
 const FIELD_DEFAULTS = {
   Name: "John Doe",
   Email: "john@example.com",
@@ -10,7 +9,7 @@ const FIELD_DEFAULTS = {
   Subtitle: "Here is a quick update",
   Message: "This is the body of your email.",
   Code: "847 291",
-  ExpiryMinutes: 10,
+  ExpiryMinutes: "10",
   ActionURL: "https://sharpnr.com",
   ActionText: "Take Action",
   FooterNote: "If you didn't request this, ignore this email.",
@@ -27,13 +26,55 @@ const FIELD_DEFAULTS = {
   Reason: "Suspicious activity detected",
   Status: "Active",
   Plan: "Pro Plan",
+  EmployeeName: "Jane Smith",
+  EmployeeEmail: "jane@example.com",
+  Role: "Engineer",
+  Initials: "JS",
 };
 
+// Fields that should render as <textarea> instead of <input>
+const TEXTAREA_FIELDS = new Set([
+  "Message",
+  "FooterNote",
+  "Subtitle",
+  "Body",
+  "Content",
+]);
+
+// Fields that are optional (shown with "(optional)" label)
+const OPTIONAL_FIELDS = new Set([
+  "Subtitle",
+  "FooterNote",
+  "ActionURL",
+  "ActionText",
+  "LinkText",
+  "BillingPeriod",
+  "OrganizationName",
+  "Link",
+]);
+
+/* ── FIX: detect fields from BOTH {{.Key}} and {{if .Key}} patterns ──
+   Previously only matched {{.Key}}, so optional fields wrapped in
+   {{if .Key}}…{{end}} never appeared in the vars panel.
+── */
 function getTemplateFields(tpl) {
-  // Scan content for {{.FieldName}} occurrences and return unique keys
-  const matches = [...tpl.content.matchAll(/\{\{\.(\w+)\}\}/g)];
-  const keys = [...new Set(matches.map((m) => m[1]))];
-  return keys;
+  const content = tpl.content;
+  const seen = new Set();
+  const ordered = [];
+
+  // Match {{.Key}} and {{if .Key}} in document order so the form
+  // mirrors the visual top-to-bottom order of the template.
+  const re = /\{\{(?:if\s+)?\.([A-Za-z][A-Za-z0-9_]*)\}\}/g;
+  let m;
+  while ((m = re.exec(content)) !== null) {
+    const key = m[1];
+    if (!seen.has(key)) {
+      seen.add(key);
+      ordered.push(key);
+    }
+  }
+
+  return ordered;
 }
 
 function renderVarsPanel(tpl) {
@@ -44,15 +85,13 @@ function renderVarsPanel(tpl) {
 
   if (keys.length === 0) {
     form.innerHTML = `
-      <div style="padding:20px 0;text-align:center;
-                  color:var(--text-tertiary);font-size:11px;
-                  font-family:var(--font-mono);">
-        No variables in this template.
+      <div class="empty-state">
+        No <code>{{.Variables}}</code> found in this template.
       </div>`;
     return;
   }
 
-  // Init defaults if not set
+  // Initialise defaults for this template if first visit
   if (!state.varData) state.varData = {};
   if (!state.varData[tpl.id]) {
     state.varData[tpl.id] = {};
@@ -65,32 +104,23 @@ function renderVarsPanel(tpl) {
 
   form.innerHTML = keys
     .map((key) => {
-      const val = data[key] ?? "";
-      const isLong =
-        key === "Message" || key === "FooterNote" || key === "Subtitle";
-      const optional = [
-        "Subtitle",
-        "FooterNote",
-        "ActionURL",
-        "ActionText",
-        "LinkText",
-        "BillingPeriod",
-        "OrganizationName",
-      ].includes(key);
+      const val = String(data[key] ?? "");
+      const optional = OPTIONAL_FIELDS.has(key);
+      const optLabel = optional ? ` <span class="opt">(optional)</span>` : "";
 
-      if (isLong) {
+      if (TEXTAREA_FIELDS.has(key)) {
         return `
-        <div class="field-group">
-          <label class="field-label">.${key}${optional ? ' <span class="opt">(optional)</span>' : ""}</label>
-          <textarea class="field-textarea" data-key="${key}">${escapeAttr(String(val))}</textarea>
-        </div>`;
+      <div class="field-group">
+        <label class="field-label">.${key}${optLabel}</label>
+        <textarea class="field-textarea" data-key="${key}">${escapeAttr(val)}</textarea>
+      </div>`;
       }
 
       return `
-      <div class="field-group">
-        <label class="field-label">.${key}${optional ? ' <span class="opt">(optional)</span>' : ""}</label>
-        <input class="field-input" type="text" data-key="${key}" value="${escapeAttr(String(val))}" />
-      </div>`;
+    <div class="field-group">
+      <label class="field-label">.${key}${optLabel}</label>
+      <input class="field-input" type="text" data-key="${key}" value="${escapeAttr(val)}" />
+    </div>`;
     })
     .join("");
 }
@@ -107,13 +137,10 @@ function bindVarsEvents() {
   document.getElementById("varsForm").addEventListener("input", (e) => {
     const el = e.target;
     if (!el.dataset.key) return;
-
     const tpl = state.templates.find((t) => t.id === state.activeId);
     if (!tpl) return;
-
     if (!state.varData[tpl.id]) state.varData[tpl.id] = {};
     state.varData[tpl.id][el.dataset.key] = el.value;
-
     refreshPreview();
   });
 }

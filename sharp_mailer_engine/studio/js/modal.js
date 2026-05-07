@@ -1,74 +1,82 @@
 /* ══════════════════════════════════════════════════
-   modal.js — new template creation
+   modal.js — new template creation wizard
 ══════════════════════════════════════════════════ */
 
-let selectedStruct = null; // e.g. "OTPData"
-let selectedFields = []; // [{ key, optional }]
+let selectedStruct = null;
+let selectedFields = [];
 
 function openModal() {
   selectedStruct = null;
   selectedFields = [];
 
-  document.getElementById("newTplName").value = "";
-  document.getElementById("newTplName").classList.remove("error");
+  const nameInput = document.getElementById("newTplName");
+  nameInput.value = "";
+  nameInput.classList.remove("error");
   document.getElementById("nameError").classList.remove("visible");
 
   renderStructPicker();
   renderFieldChips();
 
   document.getElementById("modalOverlay").classList.add("open");
-  setTimeout(() => document.getElementById("newTplName").focus(), 150);
+  setTimeout(() => nameInput.focus(), 150);
 }
 
 function closeModal() {
   document.getElementById("modalOverlay").classList.remove("open");
 }
 
-/* ── Step 1: pick a data struct ── */
+/* ── Step 1: struct picker chips ── */
 function renderStructPicker() {
   const wrap = document.getElementById("structPicker");
-  const structs = Object.keys(state.fields);
+  const structs = Object.keys(state.fields || {});
+
+  if (structs.length === 0) {
+    wrap.innerHTML = `<span class="empty-chips">No Go structs found — is file_server.py running?</span>`;
+    return;
+  }
 
   wrap.innerHTML = structs
     .map(
       (name) => `
-    <div class="chip ${selectedStruct === name ? "on" : ""}" data-struct="${name}">
-      ${name}
-    </div>
+    <div class="chip ${selectedStruct === name ? "on" : ""}" data-struct="${name}">${name}</div>
   `,
     )
     .join("");
 }
 
-/* ── Step 2: show fields for selected struct ── */
+/* ── Step 2: field chips for selected struct ── */
 function renderFieldChips() {
   const wrap = document.getElementById("fieldChips");
 
   if (!selectedStruct) {
-    wrap.innerHTML = `<span style="font-size:11px;font-family:var(--font-mono);
-      color:var(--text-tertiary);">← pick a data type first</span>`;
+    wrap.innerHTML = `<span class="empty-chips">← pick a data type first</span>`;
     return;
   }
 
-  selectedFields = state.fields[selectedStruct]; // auto-select all fields
+  selectedFields = state.fields[selectedStruct] || [];
+
+  if (selectedFields.length === 0) {
+    wrap.innerHTML = `<span class="empty-chips">No fields found in this struct.</span>`;
+    return;
+  }
 
   wrap.innerHTML = selectedFields
     .map(
       (f) => `
     <div class="chip on" data-field="${f.key}">
-      .${f.key}${f.optional ? " <span style='opacity:.5'>(opt)</span>" : ""}
+      .${f.key}${f.optional ? " <span style='opacity:.5;font-size:10px;'>(opt)</span>" : ""}
     </div>
   `,
     )
     .join("");
 }
 
-/* ── Create: scaffold + save ── */
+/* ── Create template → scaffold → save to disk ── */
 async function createTemplate() {
   const nameInput = document.getElementById("newTplName");
   const errorEl = document.getElementById("nameError");
 
-  // Validate name
+  // Normalise name
   let rawName = nameInput.value
     .trim()
     .toLowerCase()
@@ -76,10 +84,7 @@ async function createTemplate() {
     .replace(/[^a-z0-9_]/g, "");
 
   if (!rawName) {
-    nameInput.classList.add("error");
-    errorEl.textContent = "Template name is required.";
-    errorEl.classList.add("visible");
-    nameInput.focus();
+    showFieldError(nameInput, errorEl, "Template name is required.");
     return;
   }
 
@@ -87,41 +92,32 @@ async function createTemplate() {
   const id = rawName.replace(".html", "");
 
   if (state.templates.find((t) => t.id === id)) {
-    nameInput.classList.add("error");
-    errorEl.textContent = `"${rawName}" already exists.`;
-    errorEl.classList.add("visible");
-    nameInput.focus();
+    showFieldError(nameInput, errorEl, `"${rawName}" already exists.`);
     return;
   }
 
   if (!selectedStruct || selectedFields.length === 0) {
-    errorEl.textContent = "Pick a data type first.";
+    errorEl.textContent = "Pick a data type and fields first.";
     errorEl.classList.add("visible");
     return;
   }
 
-  // Scaffold content from selected struct fields
   const content = scaffoldContent(selectedStruct, selectedFields);
   const goSource = buildGoTemplate(content);
 
   const btn = document.getElementById("modalCreate");
   btn.textContent = "creating…";
   btn.disabled = true;
+  errorEl.classList.remove("visible");
 
   try {
     await apiSaveTemplate(rawName, goSource);
 
-    // Add to local state
-    state.templates.push({
-      id,
-      name: rawName,
-      content,
-      raw: goSource,
-    });
-
+    state.templates.push({ id, name: rawName, content, raw: goSource });
     closeModal();
     renderSidebar();
     selectTemplate(id);
+    setStatus("created!", "ok");
   } catch (err) {
     errorEl.textContent = `Save failed: ${err.message}`;
     errorEl.classList.add("visible");
@@ -131,12 +127,18 @@ async function createTemplate() {
   }
 }
 
+function showFieldError(input, errorEl, msg) {
+  input.classList.add("error");
+  errorEl.textContent = msg;
+  errorEl.classList.add("visible");
+  input.focus();
+}
+
 /* ── Scaffold HTML content from struct fields ── */
 function scaffoldContent(structName, fields) {
   const parts = [];
+  const badge = structName.replace(/Data$/i, "");
 
-  // Auto badge from struct name
-  const badge = structName.replace("Data", "");
   parts.push(`<!-- Badge -->
 <p style="display:inline-block;background:#EEF0FA;color:#0A0A2E;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:5px;margin:0 0 16px;">${badge}</p>`);
 
@@ -231,7 +233,6 @@ function scaffoldContent(structName, fields) {
         break; // rendered inside Link block above
 
       default:
-        // Generic field — just render it as a labeled row
         parts.push(`<p style="color:#3D4560;font-size:14px;margin:6px 0;">
   <strong style="color:#0A0A2E;">${f.key}:</strong> ${tag}
 </p>`);
@@ -241,7 +242,7 @@ function scaffoldContent(structName, fields) {
   return parts.join("\n\n");
 }
 
-/* ── Events ── */
+/* ── Event bindings ── */
 function bindModalEvents() {
   document.getElementById("addTplBtn").addEventListener("click", openModal);
   document.getElementById("modalCancel").addEventListener("click", closeModal);
@@ -249,7 +250,7 @@ function bindModalEvents() {
     .getElementById("modalCreate")
     .addEventListener("click", createTemplate);
 
-  // Struct picker click
+  // Struct picker
   document.getElementById("structPicker").addEventListener("click", (e) => {
     const chip = e.target.closest("[data-struct]");
     if (!chip) return;
@@ -258,20 +259,21 @@ function bindModalEvents() {
     renderFieldChips();
   });
 
+  // Close on overlay backdrop click
   document.getElementById("modalOverlay").addEventListener("click", (e) => {
     if (e.target === document.getElementById("modalOverlay")) closeModal();
   });
 
+  // Keyboard shortcuts
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeModal();
-    if (
-      e.key === "Enter" &&
-      document.getElementById("modalOverlay").classList.contains("open")
-    ) {
-      createTemplate();
-    }
+    const isOpen = document
+      .getElementById("modalOverlay")
+      .classList.contains("open");
+    if (e.key === "Escape" && isOpen) closeModal();
+    if (e.key === "Enter" && isOpen) createTemplate();
   });
 
+  // Clear name error on input
   document.getElementById("newTplName").addEventListener("input", () => {
     document.getElementById("newTplName").classList.remove("error");
     document.getElementById("nameError").classList.remove("visible");

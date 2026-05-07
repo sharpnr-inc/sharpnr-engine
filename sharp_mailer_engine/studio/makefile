@@ -8,6 +8,10 @@ PIP         := $(VENV)/bin/pip
 FLASK_PORT  := 5000
 LIVE_PORT   := 5500
 
+# Export so file_server.py can read them via os.environ
+export FLASK_PORT
+export LIVE_PORT
+
 .PHONY: help
 help:
 	@echo ""
@@ -33,7 +37,7 @@ install: venv
 .PHONY: flask
 flask:
 	@echo "→ Flask on :$(FLASK_PORT)"
-	$(PYTHON) file_server.py
+	$(PYTHON) file_server.py --port $(FLASK_PORT)
 
 .PHONY: live
 live:
@@ -45,6 +49,6 @@ studio:
 	@echo "→ Starting Mail Studio (Flask :$(FLASK_PORT) + Live :$(LIVE_PORT))..."
 	@test -f $(PYTHON) || (echo "✗ venv not found — run: make install" && exit 1)
 	@trap 'kill 0' INT; \
-		$(PYTHON) file_server.py & \
+		$(PYTHON) file_server.py --port $(FLASK_PORT) & \
 		npx live-server --port=$(LIVE_PORT) --open=mail_studio.html & \
 		wait
