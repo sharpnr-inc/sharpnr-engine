@@ -12,6 +12,16 @@ __debug_bin*
 
 .temp/
 
-Makefile
 deploy-be.sh
 
+# Python virtual environment
+**/venv/
+sharp_mailer_engine/studio/venv/
+
+# Python cache
+**/__pycache__/
+*.py[cod]
+
+# Ignore the entire studio folder if you don't want it in Git at all
+sharp_mailer_engine/templates/studio/venv/
+sharp_mailer_engine/templates/studio/__pycache__/

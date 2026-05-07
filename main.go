@@ -71,9 +71,10 @@ func main() {
 	/* ---------------------------------- <***> --------------------------------- */
 
 	mailerEng := sharp_mailer_engine.New(cfg)
-	if err := mailerEng.LoadTemplates("./sharp_mailer_engine/templates"); err != nil {
+	if err := mailerEng.LoadTemplates("./email_templates"); err != nil {
 		log.Fatal(err)
 	}
+
 	mailerEng.Start()
 	defer mailerEng.Shutdown()
 

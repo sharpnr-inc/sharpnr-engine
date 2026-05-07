@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sharpnr — Mail Studio</title>
+    <link rel="stylesheet" href="mail_studio.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- ── TOPBAR ── -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="logo">
+            <div class="logo-mark">
+              <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  fill="white"
+                  d="M 512 180 L 740 720 L 640 720 L 600 653 L 424 653 L 384 720 L 284 720 Z"
+                />
+              </svg>
+            </div>
+            <span class="logo-text">Sharpnr</span>
+          </div>
+          <div class="divider-v"></div>
+          <span class="studio-label">mail studio</span>
+        </div>
+        <div class="topbar-right">
+          <span class="saved-pill" id="savedPill">saved</span>
+          <button
+            class="icon-btn"
+            id="themeToggle"
+            title="Toggle theme"
+            aria-label="Toggle dark mode"
+          >
+            <svg
+              id="themeIcon"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- ── MAIN ── -->
+      <div class="main">
+        <!-- ── SIDEBAR ── -->
+        <aside class="sidebar">
+          <div class="panel-head">
+            <span class="panel-label">templates</span>
+          </div>
+          <div class="tpl-list" id="tplList">
+            <!-- populated by JS -->
+          </div>
+        </aside>
+
+        <!-- ── PREVIEW PANEL ── -->
+        <section class="preview-panel" style="grid-column: 2 / -1">
+          <div class="preview-toolbar">
+            <div class="preview-tabs">
+              <button class="ptab active" data-tab="preview">preview</button>
+              <button class="ptab" data-tab="source">html source</button>
+            </div>
+          </div>
+
+          <!-- Preview -->
+          <div class="preview-wrap" id="previewWrap">
+            <iframe
+              id="previewFrame"
+              sandbox="allow-same-origin allow-scripts"
+              title="Email preview"
+            ></iframe>
+          </div>
+
+          <!-- HTML source -->
+          <div class="preview-wrap hidden" id="sourceWrap">
+            <pre id="sourceView"></pre>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script src="mail_studio.js"></script>
+  </body>
+</html>

@@ -14,11 +14,10 @@ const (
 type TemplateKey string
 
 const (
-	TmplVerification        TemplateKey = "otp.html"
-	TmplInvoice             TemplateKey = "billing.html"
-	TmplWelcome             TemplateKey = "welcome.html"
-	TmplNotification        TemplateKey = "notifications.html"
-	TmplAddEmplNotification TemplateKey = "add_employee_notification.html"
+	TmplVerification TemplateKey = "otp.html"
+	TmplInvoice      TemplateKey = "billing.html"
+	TmplWelcome      TemplateKey = "welcome.html"
+	TmplNotification TemplateKey = "notifications.html"
 )
 
 type EmailJob struct {
