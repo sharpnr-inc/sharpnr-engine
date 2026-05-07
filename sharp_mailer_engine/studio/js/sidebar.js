@@ -29,5 +29,6 @@ function selectTemplate(id) {
   const tpl = state.templates.find((t) => t.id === id);
   if (!tpl) return;
   renderSidebar();
+  renderVarsPanel(tpl); // ← add this
   refreshPreview();
 }

@@ -9,6 +9,10 @@ async function apiFetch(path, options = {}) {
   return res.json();
 }
 
+async function loadFields() {
+  return apiFetch("/fields");
+}
+
 async function loadBaseLayout() {
   const data = await apiFetch("/base_layout");
   return data.content;

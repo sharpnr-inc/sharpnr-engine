@@ -1,46 +1,39 @@
-/* ══════════════════════════════════════════════════
-   SHARPNR MAIL STUDIO — main.js
-   Shared state + init + events
-══════════════════════════════════════════════════ */
-
 const state = {
   templates: [],
   activeId: null,
   activeTab: "preview",
   baseLayoutRaw: null,
+  fields: {},
+  varData: {}, // ← add this
 };
 
-/* ── INIT ── */
 async function init() {
-  const [baseLayoutRaw, templates] = await Promise.all([
+  const [baseLayoutRaw, templates, fields] = await Promise.all([
     loadBaseLayout(),
     loadTemplates(),
+    loadFields(),
   ]);
 
   state.baseLayoutRaw = baseLayoutRaw;
   state.templates = templates;
+  state.fields = fields;
 
   renderSidebar();
   if (state.templates.length > 0) selectTemplate(state.templates[0].id);
 }
 
-/* ── EVENTS ── */
 document.addEventListener("DOMContentLoaded", () => {
-  // Sidebar clicks
   document.getElementById("tplList").addEventListener("click", (e) => {
-    const delBtn = e.target.closest("[data-del]");
-    if (delBtn) {
-      deleteTemplate(delBtn.dataset.del);
-      return;
-    }
     const item = e.target.closest(".tpl-item");
     if (item) selectTemplate(item.dataset.id);
   });
 
-  // Tab switches
   document.querySelectorAll(".ptab").forEach((btn) => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
   });
+
+  bindModalEvents(); // ← must be after DOMContentLoaded, elements exist now
+  bindVarsEvents(); // ← add this
 
   init().catch((err) => {
     console.error("[studio] init failed:", err);

@@ -19,10 +19,12 @@ import json
 from pathlib import Path
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+import re
 
 # ── PATHS ──────────────────────────────────────────────────────────────────────
 STUDIO_DIR    = Path(__file__).parent.resolve()
 TEMPLATES_DIR = (STUDIO_DIR / "../../email_templates").resolve()
+TEMPLATE_DATA_GO = (STUDIO_DIR / "../templates_data.go").resolve()
 
 app = Flask(__name__, static_folder=str(STUDIO_DIR), static_url_path="")
 CORS(app)   # allow the browser to call the API from the same origin / live-reload
@@ -172,6 +174,50 @@ def get_base_layout():
         return jsonify({"error": "base_layout.html not found in email_templates/"}), 404
 
     return jsonify({"content": path.read_text(encoding="utf-8")})
+
+
+@app.route("/api/fields", methods=["GET"])
+def get_fields():
+    """
+    Parses template_data.go and returns all structs + their fields.
+
+    Response:
+    {
+      "OTPData": [
+        { "key": "Name",          "optional": false },
+        { "key": "Code",          "optional": false },
+        { "key": "ExpiryMinutes", "optional": false }
+      ],
+      "WelcomeData": [ ... ]
+    }
+    """
+    if not TEMPLATE_DATA_GO.exists():
+        return jsonify({"error": "template_data.go not found"}), 404
+
+    source = TEMPLATE_DATA_GO.read_text(encoding="utf-8")
+
+    # Match each struct block
+    structs = {}
+    for struct_match in re.finditer(r'type (\w+) struct \{([^}]+)\}', source):
+        struct_name = struct_match.group(1)
+        body        = struct_match.group(2)
+        fields      = []
+
+        for line in body.splitlines():
+            line = line.strip()
+            if not line or line.startswith("//"):
+                continue
+            # e.g. "Name   string" or "OrganizationName string // optional"
+            field_match = re.match(r'^(\w+)\s+\w+', line)
+            if field_match:
+                key      = field_match.group(1)
+                optional = "// optional" in line
+                fields.append({ "key": key, "optional": optional })
+
+        if fields:
+            structs[struct_name] = fields
+
+    return jsonify(structs)
 
 
 # ══════════════════════════════════════════════════════════════════════════════

@@ -4,7 +4,7 @@ function refreshPreview() {
 
   if (state.activeTab === "preview") {
     const frame = document.getElementById("previewFrame");
-    frame.srcdoc = buildPreviewHTML(tpl.content);
+    frame.srcdoc = buildPreviewHTML(tpl); // ← pass tpl not tpl.content
     frame.onload = () => {
       try {
         const h = frame.contentDocument.body.scrollHeight;
@@ -12,9 +12,7 @@ function refreshPreview() {
       } catch (e) {}
     };
   } else {
-    document.getElementById("sourceView").textContent = buildPreviewHTML(
-      tpl.content,
-    );
+    document.getElementById("sourceView").textContent = buildPreviewHTML(tpl);
   }
 }
 

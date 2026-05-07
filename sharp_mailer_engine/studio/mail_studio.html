@@ -44,6 +44,48 @@
         </div>
       </header>
 
+      <!-- ── NEW TEMPLATE MODAL ── -->
+      <div
+        class="modal-overlay"
+        id="modalOverlay"
+        role="dialog"
+        aria-modal="true"
+      >
+        <div class="modal">
+          <div class="modal-title" id="modalTitle">New template</div>
+
+          <div class="modal-field">
+            <label class="modal-label" for="newTplName">template name</label>
+            <input
+              class="modal-input"
+              id="newTplName"
+              type="text"
+              placeholder="e.g. welcome, reset_password"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <div class="error-msg" id="nameError"></div>
+          </div>
+
+          <!-- Step 1: pick data struct -->
+          <div class="modal-field">
+            <span class="modal-label">data type</span>
+            <div class="chips-wrap" id="structPicker"></div>
+          </div>
+
+          <!-- Step 2: fields auto-populate from struct -->
+          <div class="modal-field">
+            <span class="modal-label">fields</span>
+            <div class="chips-wrap" id="fieldChips"></div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn-cancel" id="modalCancel">cancel</button>
+            <button class="btn-create" id="modalCreate">create template</button>
+          </div>
+        </div>
+      </div>
+
       <!-- ── MAIN ── -->
       <div class="main">
         <!-- ── SIDEBAR ── -->
@@ -54,7 +96,16 @@
           <div class="tpl-list" id="tplList">
             <!-- populated by JS -->
           </div>
+          <button class="add-tpl-btn" id="addTplBtn">+ new template</button>
         </aside>
+
+        <!-- ── VARS PANEL ── -->
+        <section class="vars-panel">
+          <div class="panel-head">
+            <span class="panel-label">variables</span>
+          </div>
+          <div class="vars-scroll" id="varsForm"></div>
+        </section>
 
         <!-- ── PREVIEW PANEL ── -->
         <section class="preview-panel" style="grid-column: 2 / -1">
@@ -81,10 +132,46 @@
         </section>
       </div>
     </div>
+
+    <div class="modal">
+      <div class="modal-title" id="modalTitle">New template</div>
+
+      <div class="modal-field">
+        <label class="modal-label" for="newTplName">template name</label>
+        <input
+          class="modal-input"
+          id="newTplName"
+          type="text"
+          placeholder="e.g. welcome, reset_password"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <div class="error-msg" id="nameError"></div>
+      </div>
+
+      <!-- Step 1: pick data struct -->
+      <div class="modal-field">
+        <span class="modal-label">data type</span>
+        <div class="chips-wrap" id="structPicker"></div>
+      </div>
+
+      <!-- Step 2: fields auto-populate from struct -->
+      <div class="modal-field">
+        <span class="modal-label">fields</span>
+        <div class="chips-wrap" id="fieldChips"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" id="modalCancel">cancel</button>
+        <button class="btn-create" id="modalCreate">create template</button>
+      </div>
+    </div>
     <script src="js/api.js"></script>
     <script src="js/layout.js"></script>
+    <script src="js/vars.js"></script>
     <script src="js/sidebar.js"></script>
     <script src="js/preview.js"></script>
+    <script src="js/modal.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>
