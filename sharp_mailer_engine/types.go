@@ -1,52 +1,21 @@
 package sharp_mailer_engine
 
-import "context"
-
-type TemplateData interface {
-	OTPData | BillingData | NotificationData | WelcomeData
-}
-
-type OTPData struct {
-	Name          string
-	Code          string
-	ExpiryMinutes int
-}
-
-type BillingData struct {
-	Name          string
-	Amount        string
-	Date          string
-	Plan          string
-	BillingPeriod string // optional
-	Link          string // optional
-}
-
-type NotificationData struct {
-	Title      string
-	Subtitle   string // optional
-	Message    string
-	ActionURL  string // optional
-	ActionText string // optional
-	FooterNote string // optional
-}
-
-type WelcomeData struct {
-	Name             string
-	Email            string
-	OrganizationName string // optional
-	ActionURL        string
-	ActionText       string
-}
-
-type MailType string
-
-const (
-	OTP          MailType = "otp"
-	Billing      MailType = "billing"
-	Notification MailType = "notification"
-	Support      MailType = "support"
+import (
+	"context"
+	mailer "sharpnr-engine/sharp_mailer"
 )
 
+// Re-export mailer types so callers only import sharp_mailer_engine
+type MailType = mailer.Type // alias, not a new type — no conversion needed
+
+const (
+	MailTypeOTP          = mailer.OTP
+	MailTypeSupport      = mailer.Support
+	MailTypeBilling      = mailer.Billing
+	MailTypeNotification = mailer.Notification
+)
+
+// TemplateKey is the filename of the Go HTML template
 type TemplateKey string
 
 const (
@@ -56,11 +25,13 @@ const (
 	TmplNotification TemplateKey = "notifications.html"
 )
 
-type EmailJob struct {
+// internalEmailJob is what flows through the worker queue channels.
+// Kept unexported — callers use the typed constructors (NewOTPJob etc.)
+type internalEmailJob struct {
 	To       string
 	Subject  string
 	Template TemplateKey
-	Data     interface{}
+	Data     any
 	From     string
 	Ctx      context.Context
 }

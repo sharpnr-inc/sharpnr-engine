@@ -5,7 +5,6 @@ import (
 	"errors"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
 	"sharpnr-engine/core/organization/models"
-	"sharpnr-engine/sharp_mailer_engine"
 	"time"
 
 	"github.com/google/uuid"
@@ -52,17 +51,19 @@ func (r *organizationService) AddHQ(ctx context.Context, input organization_cont
 		return err
 	}
 
-	notificationMailJob := map[string]interface{}{
-		"Title":      "Kya Baat hai!! Naya Office",
-		"Subtitle":   "Andha Paisa",
-		"FooterNote": "Party kab de raha hai",
-	}
-	r.mailerEngine.Queues[sharp_mailer_engine.Notification] <- sharp_mailer_engine.EmailJob{
-		To:       verifiedOrg.RootEmail,
-		Subject:  "HQ Updates",
-		Template: sharp_mailer_engine.TmplNotification,
-		Data:     notificationMailJob,
-	}
+	// notificationMailJob := map[string]interface{}{
+	// 	"Title":      "Kya Baat hai!! Naya Office",
+	// 	"Subtitle":   "Andha Paisa",
+	// 	"FooterNote": "Party kab de raha hai",
+	// }
+	// r.mailerEngine.Queues[sharp_mailer_engine.MailTypeNotification] <- sharp_mailer_engine.EmailJob{
+	// 	To:       verifiedOrg.RootEmail,
+	// 	Subject:  "HQ Updates",
+	// 	Template: sharp_mailer_engine.TmplNotification,
+	// 	Data:     notificationMailJob,
+	// }
+
+
 
 	return nil
 }

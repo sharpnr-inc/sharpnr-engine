@@ -1,3 +1,5 @@
+// sender.go
+
 package sharp_mailer_engine
 
 import (
