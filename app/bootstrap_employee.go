@@ -1,46 +1,41 @@
 package app
 
 import (
+	dbtx "sharpnr-engine/core/dbTx"
 	employee_repo "sharpnr-engine/modules/hr/employees/repo"
 	employee_services "sharpnr-engine/modules/hr/employees/services"
+	"sharpnr-engine/sero"
+	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
 	"gorm.io/gorm"
 )
 
-func bootstrapEmployeeIdentity(db *gorm.DB) employee_services.EmployeesIdentityServiceInterface {
-	empIdentityRepo := employee_repo.NewEmployeeIdentityRepository(db)
-	empAuthRepo := employee_repo.NewEmployeeAuthRepository(db)
-	empOnboardingRepo := employee_repo.NewEmployeeOnboardingRepository(db)
-	empVerificationRepo := employee_repo.NewEmployeeVerificationRepo(db)
-	empProfileRepo := employee_repo.NewEmployeeProfileRepo(db)
-	empEmploymentRepo := employee_repo.NewEmployeeEmploymentRepo(db)
-
+func bootstrapEmployeeIdentity(
+	db *gorm.DB,
+	seroEngine *sero.SEROEngine,
+	txManager dbtx.TxManager,
+	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
+) employee_services.EmployeesIdentityServiceInterface {
+	employeeRepo := employee_repo.NewEmployeeRepository(db)
 	return employee_services.NewEmployeeService(
-		empIdentityRepo,
-		empAuthRepo,
-		empOnboardingRepo,
-		empVerificationRepo,
-		empProfileRepo,
-		empEmploymentRepo,
+		employeeRepo,
+		seroEngine,
+		txManager,
+		mailerEngine,
 	)
-
 }
 
-func bootstrapEmployeeHR(db *gorm.DB) employee_services.EmployeesHRServiceInterface {
-	empIdentityRepo := employee_repo.NewEmployeeIdentityRepository(db)
-	empAuthRepo := employee_repo.NewEmployeeAuthRepository(db)
-	empOnboardingRepo := employee_repo.NewEmployeeOnboardingRepository(db)
-	empVerificationRepo := employee_repo.NewEmployeeVerificationRepo(db)
-	empProfileRepo := employee_repo.NewEmployeeProfileRepo(db)
-	empEmploymentRepo := employee_repo.NewEmployeeEmploymentRepo(db)
-
+func bootstrapEmployeeHR(
+	db *gorm.DB,
+	seroEngine *sero.SEROEngine,
+	txManager dbtx.TxManager,
+	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
+) employee_services.EmployeesHRServiceInterface {
+	employeeRepo := employee_repo.NewEmployeeRepository(db)
 	return employee_services.NewEmployeeService(
-		empIdentityRepo,
-		empAuthRepo,
-		empOnboardingRepo,
-		empVerificationRepo,
-		empProfileRepo,
-		empEmploymentRepo,
+		employeeRepo,
+		seroEngine,
+		txManager,
+		mailerEngine,
 	)
-
 }

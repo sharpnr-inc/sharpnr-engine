@@ -9,15 +9,14 @@ import (
 )
 
 // GetEmployeeProfile retrieves the employee's profile information, including identity and profile details.
-
 func (s *employeeService) GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*employee_contracts.EmployeeProfileOutput, error) {
 
-	emp, err := s.empIdentityRepo.GetByID(ctx, empID)
+	emp, err := s.employeeRepo.GetEmployeeByID(ctx, orgID, empID)
 	if err != nil {
 		return nil, err
 	}
 
-	empProfile, err := s.empProfileRepo.GetByEmployeeID(ctx, empID)
+	empProfile, err := s.employeeRepo.GetProfileByEmployeeID(ctx, empID)
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
@@ -46,12 +45,23 @@ func (s *employeeService) GetEmployeeProfile(ctx context.Context, orgID uuid.UUI
 
 /* ---------------------------------- <***> --------------------------------- */
 
+// GetEmployeeDetails retrieves the employee's basic details, primarily for authentication and authorization purposes.
+// It ensures that the employee belongs to the specified organization and returns essential information such as email, name, role, and ID.
+//
+// Variables:
+// - ctx: The context for managing request-scoped values, cancellation signals, and deadlines.
+// - orgID: The unique identifier of the organization to which the employee belongs.
+// - emplID: The unique identifier of the employee whose details are being retrieved.
+//
+// Returns:
+// - EmployeeDetailsOutput: A struct containing the employee's email, first name, last name, role, and ID.
+// - error: An error object if any issues occur during the retrieval process, such as invalid credentials or database errors.
 func (s *employeeService) GetEmployeeDetails(
 	ctx context.Context,
 	orgID, emplID uuid.UUID,
 ) (*employee_contracts.EmployeeDetailsOutput, error) {
 
-	emp, err := s.empIdentityRepo.GetByID(ctx, emplID)
+	emp, err := s.employeeRepo.GetEmployeeByID(ctx, orgID, emplID)
 	if err != nil {
 		return nil, err
 	}
@@ -72,3 +82,5 @@ func (s *employeeService) GetEmployeeDetails(
 		ID:        emp.ID,
 	}, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */

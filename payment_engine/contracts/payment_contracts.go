@@ -23,7 +23,7 @@ type AddGatewayConfigRequest struct {
 }
 
 type UpdateGatewayConfigRequest struct {
-	Config     map[string]string `json:"config"`
+	Config map[string]string `json:"config"`
 }
 
 // ─── Payment Order ────────────────────────────────────────────────────────────

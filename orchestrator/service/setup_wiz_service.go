@@ -4,45 +4,57 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	dbtx "sharpnr-engine/core/dbTx"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) StepTwoProperty(
+/* -------------------------------------------------------------------------- */
+/*                        Version 1.0.0 of Setup Wizard                       */
+/* -------------------------------------------------------------------------- */
+
+func (s *orchestratorService) SetupWiz_AddProperty(
 	ctx context.Context,
-	orgID uuid.UUID,
+	orgID uuid.UUID, emplID uuid.UUID,
 	req *orchestrator_dtos.SetupOrgPropertyReqDTO,
 ) error {
 
-	stepParse_uuid, err := uuid.Parse(req.StepID)
-	if err != nil {
-		return err
-	}
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		dbtx := dbtx.InjectTx(ctx, tx)
 
-	input := org_setup_wizard_contracts.PropertySetupInput{
-		StepID:      stepParse_uuid,
-		OrgID:       orgID,
-		Name:        req.Name,
-		AddressLine: req.AddressLine,
-		City:        req.City,
-		State:       req.State,
-		Country:     req.Country,
-		Pincode:     req.Pincode,
-	}
+		stepParse_uuid, err := uuid.Parse(req.StepID)
+		if err != nil {
+			return err
+		}
 
-	if err := s.orgSetupWizService.Step_two_AddProperty(ctx, input); err != nil {
-		return err
-	}
-	return nil
+		input := org_setup_wizard_contracts.PropertySetupInput{
+			StepID:      stepParse_uuid,
+			OrgID:       orgID,
+			Name:        req.Name,
+			AddressLine: req.AddressLine,
+			City:        req.City,
+			State:       req.State,
+			Country:     req.Country,
+			Pincode:     req.Pincode,
+		}
+
+		if err := s.orgSetupWizService.Step_two_AddProperty(dbtx, orgID, emplID, input); err != nil {
+			return err
+		}
+
+		return nil
+
+	})
 }
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) StepThreeLegalEntity(
+func (s *orchestratorService) SetupWiz_AddLegalEntity(
 	ctx context.Context,
 	orgID uuid.UUID,
 	req *orchestrator_dtos.SetupLegalEntityReqDTO,
@@ -120,6 +132,10 @@ func (s *orchestratorService) SetUpWizProgress(
 
 /* ---------------------------------- <***> --------------------------------- */
 
+// This super admin completed details will be their regardless of the version
+// this is method completes the super admin details
+//
+// it takes organizationID and emplID id that we created after the signup process
 func (s *orchestratorService) SetUpSuperAdminDetails(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req *orchestrator_dtos.SetupSuperAdminDetailsReqDTO) error {
 	// 1. Verify Org exists and is verified
 	verified, err := s.organizationService.VerifyOrgByID(ctx, orgID)

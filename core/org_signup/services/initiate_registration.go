@@ -64,19 +64,15 @@ func (s *orgSignUpService) InitiateRegistration(
 		return "", err
 	}
 
-	// --- Step 4: Async Email Dispatch ---
-	otpMailData := map[string]interface{}{
-		"Code":   otp,
-		"Expiry": "10 minutes",
-	}
-
-	// Non-blocking send to the mailer channel
-	s.mailerEngine.Queues[sharp_mailer_engine.OTP] <- sharp_mailer_engine.EmailJob{
-		To:       req.Email,
-		Subject:  "Email Verification",
-		Template: sharp_mailer_engine.TmplVerification,
-		Data:     otpMailData,
-	}
+	s.mailerEngine.Enqueue(sharp_mailer_engine.MailTypeNotification, sharp_mailer_engine.NewOTPJob(
+		req.Email, "Sharpnr Signup Verification",
+		sharp_mailer_engine.OTPData{
+			Name:          req.Mobile,
+			Code:          otp,
+			Email:         req.Email,
+			ExpiryMinutes: 10,
+		},
+	))
 
 	return slug, nil
 }

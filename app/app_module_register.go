@@ -6,6 +6,7 @@ import (
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
+
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
@@ -30,7 +31,7 @@ type AppModules struct {
 	sharpAuthService    sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
 	orgPropertyService  org_property_services.OrganizationPropertyServicesInterfaces
 	orchestratorService orchestrator_service.OrchestratorServiceInterface
-	orgSetupWizard      org_setup_wizard_services.OrgSetupWizardServiceInterface
+	orgSetupWizard      org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface
 
 	hospitality              *hospitalitydomain.HospitalityDomain
 	hospitalityOrchestration hospitality_orchestration_service.OrchestrationServiceInterface
@@ -87,7 +88,7 @@ func (m *AppModules) OrganizationService() organization_services.OrganizationSer
 	return m.organizationService
 }
 
-func (m *AppModules) OrgSetupWiz() org_setup_wizard_services.OrgSetupWizardServiceInterface {
+func (m *AppModules) OrgSetupWiz() org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface {
 	return m.orgSetupWizard
 }
 

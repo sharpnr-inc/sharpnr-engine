@@ -1,6 +1,7 @@
 package app
 
 import (
+	dbtx "sharpnr-engine/core/dbTx"
 	organization_repo "sharpnr-engine/core/organization/repo"
 	organization_services "sharpnr-engine/core/organization/services"
 	"sharpnr-engine/sharp_mailer_engine"
@@ -13,6 +14,8 @@ func bootstrapOrganization(
 	db *gorm.DB,
 	redis *redis.Client,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
+	txManager dbtx.TxManager,
+
 ) organization_services.OrganizationServiceInterface {
 	organizationRepo := organization_repo.NewOrganizationRepository(db)
 	organizationRedisRepo := organization_repo.NewRedisOrganizationRepository(redis)
@@ -21,5 +24,6 @@ func bootstrapOrganization(
 		mailerEngine,
 		organizationRedisRepo,
 		organizationRepo,
+		txManager,
 	)
 }

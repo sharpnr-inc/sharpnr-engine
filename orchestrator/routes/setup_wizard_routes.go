@@ -10,8 +10,14 @@ func registerSetupWizardRoutes(webV1 *gin.RouterGroup, controller *orchestrator_
 
 	setupWiz := webV1.Group("/setup-wiz")
 
-	setupWiz.GET("/progress", controller.GetSetupProgress)
-	setupWiz.POST("/sasetup", controller.HandleSuperAdminSetupCompletion)
-	setupWiz.POST("/step3", controller.Step_three_LegalEntity)
+	setupWiz.GET("/progress", controller.SetupWizGetSetupProgress)
+
+	/* -------------------------------------------------------------------------- */
+	/*              these are routes for the setup wiz version 1.0.0              */
+	/* -------------------------------------------------------------------------- */
+	setupWiz.POST("/v1/sasetup", controller.SetupWizHandleSuperAdminSetupCompletion)
+	setupWiz.POST("/v1/property_setup", controller.SetupWizOperation_AddProperty)
+	setupWiz.POST("/v1/legal-entity_setup", controller.SetupWizOperation_AddLegalEntity)
+	
 
 }

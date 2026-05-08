@@ -13,7 +13,7 @@ type orgSignUpService struct {
 	mailerEngine        *sharp_mailer_engine.SharpMailerEngine
 	employeeSvc         employee_services.EmployeesIdentityServiceInterface
 	organizationService organization_services.OrganizationServiceInterface
-	setUpWizService     org_setup_wizard_services.OrgSetupWizardServiceInterface
+	setUpWizService     org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface
 }
 
 func NewOrgSignUpService(
@@ -21,7 +21,7 @@ func NewOrgSignUpService(
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	employeeSvc employee_services.EmployeesIdentityServiceInterface,
 	organizationService organization_services.OrganizationServiceInterface,
-	setUpWizService org_setup_wizard_services.OrgSetupWizardServiceInterface,
+	setUpWizService org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface,
 ) *orgSignUpService {
 	return &orgSignUpService{
 		txManager:           txManager,

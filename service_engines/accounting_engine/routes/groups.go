@@ -11,7 +11,7 @@ func RegisterAccGroupsRoutes(ar *gin.RouterGroup, ac *accounting_controllers.Acc
 	br := ar.Group("/:accountingBookID/group")
 	{
 		br.POST("/add", ac.GetAccountingBooks) // Add Accounting Group
-		br.PATCH("/update") // Update Accounting Book
+		br.PATCH("/update")                    // Update Accounting Book
 
 	}
 }

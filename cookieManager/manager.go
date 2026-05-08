@@ -85,8 +85,6 @@ func (m *manager) ReadCSRF(
 	return m.Read(ctx, CSRF)
 }
 
-
-
 // ---- Signup helpers ----
 
 // SetSignup allows access to onboarding (OTP verified).

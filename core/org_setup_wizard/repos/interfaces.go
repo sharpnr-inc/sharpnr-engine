@@ -17,6 +17,6 @@ type OrganizationSetupWizardRepositoryInterface interface {
 		stepStatus org_setup_wizards_constants.SetupStatus,
 		OrgID uuid.UUID, stepID uuid.UUID,
 	) error
-	
+
 	GetStepByID(ctx context.Context, orgID uuid.UUID, stepID uuid.UUID) (*org_setup_wizard_models.OrganizationSetup, error)
 }

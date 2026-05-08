@@ -21,7 +21,7 @@ import (
 type ModulesProvider interface {
 	OrganizationService() organization_services.OrganizationServiceInterface
 	SharpnrOrchestrator() orchestrator_service.OrchestratorServiceInterface
-	OrgSetupWiz() org_setup_wizard_services.OrgSetupWizardServiceInterface
+	OrgSetupWiz() org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface
 
 	Hospitality() *hospitalitydomain.HospitalityDomain
 	HospitalityOrchestration() hospitality_orchestration_service.OrchestrationServiceInterface

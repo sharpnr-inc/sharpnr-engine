@@ -24,8 +24,8 @@ func BootstrapModules(
 	// Sentinel Engine uses the DB and used to Evaluate the authorization
 	// sentinel_engine := bootStrapSentinelEngine(db)
 
-	organizationService := bootstrapOrganization(db, redis, mailerEngine)
-	orgPropertyService := bootstrapOrgProperty(db, txManager)
+	organizationService := bootstrapOrganization(db, redis, mailerEngine, txManager)
+	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
 
 	/* ---------------------------- inventory engine ---------------------------- */
@@ -33,8 +33,8 @@ func BootstrapModules(
 	inventory_engine_sero_handlers.RegisterSeroHandler(seroEngine, inventoryEngine)
 	/* ---------------------------- inventory engine ---------------------------- */
 
-	employeesIdentityService := bootstrapEmployeeIdentity(db)
-	employeesHRService := bootstrapEmployeeHR(db)
+	employeesIdentityService := bootstrapEmployeeIdentity(db, seroEngine, txManager, mailerEngine)
+	employeesHRService := bootstrapEmployeeHR(db, seroEngine, txManager, mailerEngine)
 
 	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
 	orgSupplierService := bootstrapSupplier(db, txManager, mailerEngine, seroEngine)
@@ -47,6 +47,8 @@ func BootstrapModules(
 		orgPropertyService,
 		organizationService,
 		identityService,
+		txManager,
+		mailerEngine,
 	)
 
 	orgSignupService := bootstrapOrgSignup(

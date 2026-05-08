@@ -42,7 +42,7 @@ func (KitchenTicketItemStaging) TableName() string {
 }
 
 type KitchenTicketItemVariantStaging struct {
-	ID                  uuid.UUID `gorm:"type:uuid;primaryKey"`
+	ID                     uuid.UUID `gorm:"type:uuid;primaryKey"`
 	KitchenTicketStagingID uuid.UUID `gorm:"type:uuid;not null"`
 
 	VariantID   uuid.UUID `gorm:"type:uuid;not null"` // NOTE --> this is the "Varaint in the main table"
@@ -56,7 +56,7 @@ func (KitchenTicketItemVariantStaging) TableName() string {
 }
 
 type KitchenTicketItemAddonStaging struct {
-	ID                  uuid.UUID `gorm:"type:uuid;primaryKey"`
+	ID                     uuid.UUID `gorm:"type:uuid;primaryKey"`
 	KitchenTicketStagingID uuid.UUID `gorm:"type:uuid;not null"`
 
 	AddOnID  uuid.UUID `gorm:"type:uuid;not null"`

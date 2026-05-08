@@ -108,7 +108,7 @@ type JournalLineExternalRequestDto struct {
 }
 
 type JournalResponseDto struct {
-	ID uuid.UUID `json:"id"`
+	ID           uuid.UUID                            `json:"id"`
 	EntryDate    time.Time                            `json:"entry_date"`
 	Reference    string                               `json:"reference"`
 	Narration    string                               `json:"narration"`

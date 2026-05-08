@@ -18,7 +18,7 @@ import (
 type orchestratorService struct {
 	organizationService     organization_services.OrganizationServiceInterface
 	orgPropertyService      org_property_services.OrganizationPropertyServicesInterfaces
-	orgSetupWizService      org_setup_wizard_services.OrgSetupWizardServiceInterface
+	orgSetupWizService      org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface
 	hospitalityDomainSvc    *hospitalitydomain.HospitalityDomain
 	accountingEngineService accounting_service.AccountingServiceInterface
 	legalEntityService      legal_entity_service.OrgLegalEntityServiceInterface
@@ -33,7 +33,7 @@ type orchestratorService struct {
 func NewSharpnrOrchestratorService(
 	organizationService organization_services.OrganizationServiceInterface,
 	orgPropertyService org_property_services.OrganizationPropertyServicesInterfaces,
-	orgSetupWizService org_setup_wizard_services.OrgSetupWizardServiceInterface,
+	orgSetupWizService org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface,
 	hospitalityDomainSvc *hospitalitydomain.HospitalityDomain,
 	accountingEngineService accounting_service.AccountingServiceInterface,
 	legalEntityService legal_entity_service.OrgLegalEntityServiceInterface,

@@ -2,6 +2,7 @@ package organization_repo
 
 import (
 	"context"
+	organization_constants "sharpnr-engine/core/organization/constants"
 	"sharpnr-engine/core/organization/models"
 
 	"github.com/google/uuid"
@@ -39,7 +40,8 @@ type OrganizationRepositoryInterface interface {
 	GetOrganizationByID(ctx context.Context, orgID uuid.UUID) (*models.Organization, error)
 	GetOrganizationBySharpID(ctx context.Context, sharpID string) (*models.Organization, error)
 	GetOrganizationByEmail(ctx context.Context, rootEmail string) (*models.Organization, error)
-	UpdateOrganizationStatus(ctx context.Context, orgID uuid.UUID, status string) error
+	UpdateOrganizationStatus(ctx context.Context, orgID uuid.UUID, status organization_constants.OrgSetupStatusType) error
+	UpdateOrgName(ctx context.Context, orgID uuid.UUID, name string) error
 
 	CreateOrgOffice(ctx context.Context, office *models.OrganizationOffice) error
 	CreateOrgOfficeAddress(ctx context.Context, officeAddr *models.OrganizationOfficeAddress) error

@@ -34,7 +34,7 @@ func (s *orgSetupWizardService) AddStepProgress(
 		OrganizationID: orgID,
 		Status:         stepStatus,
 		CurrentStep:    step,
-		Version:        1,
+		Version:        1.0,
 		StartedAt:      time.Now(),
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),

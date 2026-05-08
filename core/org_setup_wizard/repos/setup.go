@@ -3,6 +3,7 @@ package org_setup_wizard_repos
 import (
 	"context"
 	"errors"
+	dbtx "sharpnr-engine/core/dbTx"
 	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_models "sharpnr-engine/core/org_setup_wizard/models"
 	"time"
@@ -92,14 +93,22 @@ func (d *orgSetupWizardRepo) GetStepByID(
 	stepID uuid.UUID,
 ) (*org_setup_wizard_models.OrganizationSetup, error) {
 
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = d.db
+	}
+
 	var step org_setup_wizard_models.OrganizationSetup
 
-	err := d.db.
+	err := db.
 		WithContext(ctx).
 		Where("id = ? AND organization_id = ?", stepID, orgID).
 		First(&step).Error
 
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, gorm.ErrRecordNotFound
+		}
 		return nil, err
 	}
 

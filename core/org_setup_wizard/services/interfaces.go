@@ -10,8 +10,8 @@ import (
 
 // This si version V1 interface
 // to Upgrade it Just add another interface making the
-type OrgSetupWizardServiceInterface interface {
-	Step_two_AddProperty(ctx context.Context, input org_setup_wizard_contracts.PropertySetupInput) error
+type OrgSetupWizardV1_ServiceInterface interface {
+	Step_two_AddProperty(ctx context.Context, orgID, emplID uuid.UUID, input org_setup_wizard_contracts.PropertySetupInput) error
 	Step_three_AddLegalEntity(
 		ctx context.Context,
 		step_three_input org_setup_wizard_contracts.SetupLegalEntityInput,
@@ -30,6 +30,12 @@ type OrgSetupWizardServiceInterface interface {
 		ctx context.Context,
 		orgID uuid.UUID, emplID uuid.UUID,
 		input org_setup_wizard_contracts.SuperAdminDetailsInput,
+	) error
+
+	UpdateOrgDetailsStep(
+		ctx context.Context,
+		orgID uuid.UUID, emplID uuid.UUID,
+		input org_setup_wizard_contracts.OrganizationDetailsSetupInput,
 	) error
 
 	Progress(ctx context.Context, orgID uuid.UUID) (org_setup_wizard_contracts.SetupProgress, error)

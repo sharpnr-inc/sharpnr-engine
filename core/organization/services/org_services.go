@@ -8,7 +8,6 @@ import (
 	organization_contracts "sharpnr-engine/core/organization/contracts"
 	"sharpnr-engine/core/organization/models"
 	"sharpnr-engine/shared/utils"
-	"sharpnr-engine/sharp_mailer_engine"
 	"strings"
 
 	"github.com/google/uuid"
@@ -96,7 +95,7 @@ func (r *organizationService) CreateNewOrganization(
 		ID:        orgID,
 		Name:      "Default Organization",
 		SharpnrID: sharpID,
-		Status:    string(organization_constants.OrgNotConfigured),
+		Status:    organization_constants.OrgConfigStatusConfigNotStarted,
 		RootEmail: input.Email,
 	}
 
@@ -115,17 +114,6 @@ func (r *organizationService) CreateNewOrganization(
 		return output, err
 	}
 
-	welcomeMailData := map[string]interface{}{
-		"welcome": "to sharpnr",
-	}
-
-	r.mailerEngine.Queues[sharp_mailer_engine.Notification] <- sharp_mailer_engine.EmailJob{
-		To:       org.RootEmail,
-		Subject:  "welcome to sharpnr",
-		Template: sharp_mailer_engine.TmplNotification,
-		Data:     welcomeMailData,
-	}
-
 	// 4. Prepare data for employee creation
 	output = organization_contracts.InputForCreateDefaultEmployee{
 		OrgID:      orgID,
@@ -134,4 +122,8 @@ func (r *organizationService) CreateNewOrganization(
 	}
 
 	return output, nil
+}
+
+func (s *organizationService) UpdateOrganizationName(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, name string) error {
+	return s.orgMainRepo.UpdateOrgName(ctx, orgID, name)
 }

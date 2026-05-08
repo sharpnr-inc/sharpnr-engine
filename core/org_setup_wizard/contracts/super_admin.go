@@ -11,3 +11,9 @@ type SuperAdminDetailsInput struct {
 	SecondaryPhone string    `json:"secondary_phone"`
 	EmployeeID     string    `json:"employee_id"`
 }
+
+type OrganizationDetailsSetupInput struct {
+	StepID uuid.UUID `json:"step_id"`
+	OrgID  uuid.UUID `json:"org_id"`
+	Name   string    `json:"org_name"`
+}

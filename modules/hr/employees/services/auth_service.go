@@ -18,14 +18,14 @@ func (r *employeeService) AuthenticateEmployee(
 ) (*employee_contracts.EmployeeReader, error) {
 
 	// 1. Fetch employee by email
-	empl, err := r.empIdentityRepo.GetByEmail(ctx, email)
+	empl, err := r.employeeRepo.GetEmployeeByEmail(ctx, email)
 	if err != nil {
 		// Do NOT expose whether email exists
 		return nil, ErrInvalidCredentials
 	}
 
 	// 2. Fetch auth credentials
-	authEmployee, err := r.empAuthRepo.GetByEmployeeID(ctx, empl.ID)
+	authEmployee, err := r.employeeRepo.GetAuthByEmployeeID(ctx, empl.ID)
 	if err != nil {
 		return nil, ErrInvalidCredentials
 	}
