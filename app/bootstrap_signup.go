@@ -14,7 +14,7 @@ func bootstrapOrgSignup(
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	employeeSvc employee_services.EmployeesIdentityServiceInterface,
 	organizationService organization_services.OrganizationServiceInterface,
-	setUpWizService org_setup_wizard_services.OrgSetupWizardServiceInterface,
+	setUpWizService org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface,
 ) org_signup_services.OrganizationSignUpServiceInterfaces {
 
 	return org_signup_services.NewOrgSignUpService(

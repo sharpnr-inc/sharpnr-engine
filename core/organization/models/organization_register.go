@@ -12,5 +12,4 @@ type OrganizationModulesRegister struct {
 	Domain         property_constants.PropertyDomainTypes
 }
 
-// If the user have the Domain already we will not add just ignore it
-// so if user
+

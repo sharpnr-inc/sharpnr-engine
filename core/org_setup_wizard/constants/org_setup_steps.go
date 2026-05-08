@@ -11,7 +11,16 @@ type SetupStepType string
 
 const (
 	SetupStepSuperAdminProfile SetupStepType = "SUPER_ADMIN_PROFILE"
+	SetupStepOrgDetailsUpdate  SetupStepType = "ORGANIZATION_DETAILS_UPDATES"
 	SetupStepOperations        SetupStepType = "OPERATIONS_SETUP"
+)
+
+type OverallSetupStatus string
+
+const (
+	OverallStatusNotStarted OverallSetupStatus = "NOT_STARTED"
+	OverallStatusInProgress OverallSetupStatus = "IN_PROGRESS"
+	OverallStatusCompleted  OverallSetupStatus = "COMPLETED"
 )
 
 type StepDefinition struct {
@@ -21,7 +30,8 @@ type StepDefinition struct {
 
 var SetupSteps = []StepDefinition{
 	{Step: SetupStepSuperAdminProfile, Order: 1},
-	{Step: SetupStepOperations, Order: 2},
+	{Step: SetupStepOrgDetailsUpdate, Order: 2},
+	{Step: SetupStepOperations, Order: 3},
 }
 
 func GetNextStep(current SetupStepType) (SetupStepType, bool) {

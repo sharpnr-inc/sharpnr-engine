@@ -52,11 +52,11 @@ type SetupLegalEntityReqDTO struct {
 // It provides a comprehensive view of where the organization stands in the setup
 // process and what steps have been completed, are in progress, or are pending.
 type SetupProgressResponseDTO struct {
-	OverallStatus string                         `json:"overall_status"`
-	CurrentStep   *string                        `json:"current_step,omitempty"`
-	ProgressPct   int                            `json:"progress_pct"`
-	IsCompleted   bool                           `json:"is_completed"`
-	Steps         []SetupStepProgressResponseDTO `json:"steps"`
+	OverallStatus org_setup_wizards_constants.OverallSetupStatus `json:"overall_status"`
+	CurrentStep   *org_setup_wizards_constants.SetupStepType     `json:"current_step,omitempty"`
+	ProgressPct   int                                            `json:"progress_pct"`
+	IsCompleted   bool                                           `json:"is_completed"`
+	Steps         []SetupStepProgressResponseDTO                 `json:"steps"`
 }
 
 type SetupStepProgressResponseDTO struct {

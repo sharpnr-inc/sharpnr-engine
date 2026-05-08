@@ -21,7 +21,7 @@ func bootstrapOrgSetupWizard(
 	sharpIdentity sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-) org_setup_wizard_services.OrgSetupWizardServiceInterface {
+) org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface {
 	repo := org_setup_wizard_repos.NewOrgSetupWizardRepository(db)
 	return org_setup_wizard_services.NewOrgSetupWizardService(
 		repo,

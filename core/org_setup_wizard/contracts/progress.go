@@ -8,11 +8,11 @@ import (
 )
 
 type SetupProgress struct {
-	OverallStatus string              `json:"overall_status"`
-	CurrentStep   *string             `json:"current_step,omitempty"`
-	ProgressPct   int                 `json:"progress_pct"`
-	IsCompleted   bool                `json:"is_completed"`
-	Steps         []SetupStepProgress `json:"steps"`
+	OverallStatus org_setup_wizards_constants.OverallSetupStatus `json:"overall_status"`
+	CurrentStep   *org_setup_wizards_constants.SetupStepType     `json:"current_step,omitempty"`
+	ProgressPct   int                                            `json:"progress_pct"`
+	IsCompleted   bool                                           `json:"is_completed"`
+	Steps         []SetupStepProgress                            `json:"steps"`
 }
 
 type SetupStepProgress struct {

@@ -95,7 +95,7 @@ func (r *organizationService) CreateNewOrganization(
 		ID:        orgID,
 		Name:      "Default Organization",
 		SharpnrID: sharpID,
-		Status:    string(organization_constants.OrgNotConfigured),
+		Status:    organization_constants.OrgConfigStatusConfigNotStarted,
 		RootEmail: input.Email,
 	}
 
@@ -122,4 +122,8 @@ func (r *organizationService) CreateNewOrganization(
 	}
 
 	return output, nil
+}
+
+func (s *organizationService) UpdateOrganizationName(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, name string) error {
+	return s.orgMainRepo.UpdateOrgName(ctx, orgID, name)
 }

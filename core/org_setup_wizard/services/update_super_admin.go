@@ -42,6 +42,50 @@ func (s *orgSetupWizardService) UpdateSuperAdminDetailsStep(ctx context.Context,
 	// We make the next step as in progress, so that the frontend can show the next step to the user.
 	if err := s.AddStepProgress(
 		ctx, orgID,
+		org_setup_wizards_constants.SetupStepOrgDetailsUpdate,
+		org_setup_wizards_constants.SetupStatusInProgress,
+	); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/* --------------------------------- <****> --------------------------------- */
+
+// This is the step in V1 this step simply updates Organization name
+// as we go further we can add the further details
+func (s *orgSetupWizardService) UpdateOrgDetailsStep(
+	ctx context.Context,
+	orgID uuid.UUID, emplID uuid.UUID,
+	input org_setup_wizard_contracts.OrganizationDetailsSetupInput,
+) error {
+
+	// 1. Verification of the Step if it belongs to same organization
+
+	stepstatus, err := s.StepVerication(ctx, orgID, emplID, input.StepID)
+	if err != nil {
+		return err
+	}
+
+	if *stepstatus != org_setup_wizards_constants.SetupStatusInProgress {
+		return ErrorInvalidStepStatus
+	}
+
+	// 2. Update the Organization name
+	if err := s.orgService.UpdateOrganizationName(ctx, orgID, emplID, input.Name); err != nil {
+		return err
+	}
+
+	if err := s.orgSetWizRepo.UpdateCurrentStepStatus(ctx,
+		org_setup_wizards_constants.SetupStatusCompleted,
+		orgID, input.StepID); err != nil {
+		return err
+	}
+
+	// We make the next step as in progress, so that the frontend can show the next step to the user.
+	if err := s.AddStepProgress(
+		ctx, orgID,
 		org_setup_wizards_constants.SetupStepOperations,
 		org_setup_wizards_constants.SetupStatusInProgress,
 	); err != nil {
@@ -50,3 +94,5 @@ func (s *orgSetupWizardService) UpdateSuperAdminDetailsStep(ctx context.Context,
 
 	return nil
 }
+
+/* --------------------------------- <****> --------------------------------- */

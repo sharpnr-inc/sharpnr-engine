@@ -24,8 +24,8 @@ func BootstrapModules(
 	// Sentinel Engine uses the DB and used to Evaluate the authorization
 	// sentinel_engine := bootStrapSentinelEngine(db)
 
-	organizationService := bootstrapOrganization(db, redis, mailerEngine)
-	orgPropertyService := bootstrapOrgProperty(db, txManager)
+	organizationService := bootstrapOrganization(db, redis, mailerEngine, txManager)
+	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
 
 	/* ---------------------------- inventory engine ---------------------------- */

@@ -22,7 +22,7 @@ import (
 // @Failure      401  {object}  utils.Response "Unauthorized"
 // @Failure      500  {object}  utils.Response "Internal Server Error"
 // @Router       /orchestrator/setup-wizard/progress [get]
-func (c *OrchestratorController) GetSetupProgress(ctx *gin.Context) {
+func (c *OrchestratorController) SetupWizGetSetupProgress(ctx *gin.Context) {
 
 	// 1️⃣ Auth check
 	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
@@ -85,7 +85,7 @@ func (c *OrchestratorController) GetSetupProgress(ctx *gin.Context) {
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *OrchestratorController) HandleSuperAdminSetupCompletion(ctx *gin.Context) {
+func (s *OrchestratorController) SetupWizHandleSuperAdminSetupCompletion(ctx *gin.Context) {
 	orgID, emplID, ok := s.resolveRequestContexts(ctx)
 	if !ok {
 		return // Error response already sent in resolveRequestContexts
@@ -118,25 +118,10 @@ func (s *OrchestratorController) HandleSuperAdminSetupCompletion(ctx *gin.Contex
 // @Failure      401  {object}  utils.Response "Unauthorized"
 // @Failure      500  {object}  utils.Response "Internal Server Error"
 // @Router       /orchestrator/setup-wizard/step2 [post]
-func (c *OrchestratorController) Step_two_AddProperty(ctx *gin.Context) {
+func (c *OrchestratorController) SetupWizOperation_AddProperty(ctx *gin.Context) {
 
-	// 1. Authenticated User Check
-	_, exist := ctx.Get(webMiddleware.UserIDContextKey)
-	if !exist {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, nil)
-		return
-	}
-
-	// 2. Organization Context Check
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, nil)
-		return
-	}
-
-	orgID, ok := orgUUIDRaw.(uuid.UUID)
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, nil)
 		return
 	}
 
@@ -148,7 +133,7 @@ func (c *OrchestratorController) Step_two_AddProperty(ctx *gin.Context) {
 	}
 
 	// 4. Call Service Layer
-	if err := c.orchestService.StepTwoProperty(ctx.Request.Context(), orgID, &req); err != nil {
+	if err := c.orchestService.SetupWiz_AddProperty(ctx.Request.Context(), orgID, emplID, &req); err != nil {
 		// Use your stable CodeInternalError or a specific domain code
 		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
 		return
@@ -170,25 +155,10 @@ func (c *OrchestratorController) Step_two_AddProperty(ctx *gin.Context) {
 // @Failure      401 {object} utils.Response "Unauthorized"
 // @Failure      500 {object} utils.Response "Internal server error"
 // @Router       /orchestrator/setup-wiz/step3 [post]
-func (c *OrchestratorController) Step_three_LegalEntity(ctx *gin.Context) {
+func (c *OrchestratorController) SetupWizOperation_AddLegalEntity(ctx *gin.Context) {
 
-	// 1. Check Authentication
-	_, exist := ctx.Get(webMiddleware.UserIDContextKey)
-	if !exist {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, nil)
-		return
-	}
-
-	// 2. Retrieve OrgID from Context
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, nil)
-		return
-	}
-
-	orgID, ok := orgUUIDRaw.(uuid.UUID)
+	orgID, _, ok := c.resolveRequestContexts(ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, nil)
 		return
 	}
 
@@ -200,7 +170,7 @@ func (c *OrchestratorController) Step_three_LegalEntity(ctx *gin.Context) {
 	}
 
 	// 4. Call Service Layer
-	err := c.orchestService.StepThreeLegalEntity(ctx.Request.Context(), orgID, &req)
+	err := c.orchestService.SetupWiz_AddLegalEntity(ctx.Request.Context(), orgID, &req)
 	if err != nil {
 		// Map service error to appropriate failure
 		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)

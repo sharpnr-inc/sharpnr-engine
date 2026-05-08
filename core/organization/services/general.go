@@ -3,11 +3,16 @@ package organization_services
 import (
 	"context"
 	"errors"
+	dbtx "sharpnr-engine/core/dbTx"
+	organization_constants "sharpnr-engine/core/organization/constants"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
 	"sharpnr-engine/core/organization/models"
+	mailer "sharpnr-engine/sharp_mailer"
+	"sharpnr-engine/sharp_mailer_engine"
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // AddHQ implements OrganizationInternalServiceInterface.
@@ -51,24 +56,22 @@ func (r *organizationService) AddHQ(ctx context.Context, input organization_cont
 		return err
 	}
 
-	// notificationMailJob := map[string]interface{}{
-	// 	"Title":      "Kya Baat hai!! Naya Office",
-	// 	"Subtitle":   "Andha Paisa",
-	// 	"FooterNote": "Party kab de raha hai",
-	// }
-	// r.mailerEngine.Queues[sharp_mailer_engine.MailTypeNotification] <- sharp_mailer_engine.EmailJob{
-	// 	To:       verifiedOrg.RootEmail,
-	// 	Subject:  "HQ Updates",
-	// 	Template: sharp_mailer_engine.TmplNotification,
-	// 	Data:     notificationMailJob,
-	// }
-
-
-
+	r.mailerEngine.Enqueue(mailer.Notification, sharp_mailer_engine.NewNotificationJob(
+		verifiedOrg.RootEmail, "HQ Notification", sharp_mailer_engine.NotificationData{
+			Title:      "",
+			Subtitle:   "",
+			Message:    "",
+			ActionURL:  "",
+			ActionText: "",
+			FooterNote: "What the heck",
+		},
+	))
 	return nil
 }
 
-func (r *organizationService) GetStatus(ctx context.Context, orgID uuid.UUID) (string, error) {
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *organizationService) GetStatus(ctx context.Context, orgID uuid.UUID) (organization_constants.OrgSetupStatusType, error) {
 	org, err := r.orgMainRepo.GetOrganizationByID(ctx, orgID)
 	if err != nil {
 		return "", err
@@ -77,7 +80,9 @@ func (r *organizationService) GetStatus(ctx context.Context, orgID uuid.UUID) (s
 	return org.Status, nil
 }
 
-func (r *organizationService) UpdateStatus(ctx context.Context, orgID uuid.UUID, status string) error {
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *organizationService) UpdateStatus(ctx context.Context, orgID uuid.UUID, status organization_constants.OrgSetupStatusType) error {
 	org, err := r.orgMainRepo.GetOrganizationByID(ctx, orgID)
 	if err != nil {
 		return err
@@ -93,14 +98,32 @@ func (r *organizationService) UpdateStatus(ctx context.Context, orgID uuid.UUID,
 	return nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
+// This is the method which Verify the oranisation
 func (r *organizationService) VerifyOrgByID(ctx context.Context, orgID uuid.UUID) (bool, error) {
-	org, err := r.orgMainRepo.GetOrganizationByID(ctx, orgID)
+
+	err := r.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		dbTx := dbtx.InjectTx(ctx, tx)
+
+		org, err := r.orgMainRepo.GetOrganizationByID(dbTx, orgID)
+		if err != nil {
+			return err
+		}
+		if org.ID != orgID {
+			return errors.New("org do not exist")
+		}
+		return nil
+	})
+
 	if err != nil {
 		return false, err
 	}
-	if org.ID != orgID {
-		return false, errors.New("org do not exist")
-	}
-
 	return true, nil
+}
+
+// GetOrgHQ implements OrganizationPublicServiceInterface.
+func (r *organizationService) GetOrgHQ() {
+	panic("unimplemented")
 }
