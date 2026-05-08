@@ -10,7 +10,6 @@ import (
 type SetupProgress struct {
 	OverallStatus org_setup_wizards_constants.OverallSetupStatus `json:"overall_status"`
 	CurrentStep   *org_setup_wizards_constants.SetupStepType     `json:"current_step,omitempty"`
-	ProgressPct   int                                            `json:"progress_pct"`
 	IsCompleted   bool                                           `json:"is_completed"`
 	Steps         []SetupStepProgress                            `json:"steps"`
 }

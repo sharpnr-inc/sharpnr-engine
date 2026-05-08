@@ -54,7 +54,6 @@ type SetupLegalEntityReqDTO struct {
 type SetupProgressResponseDTO struct {
 	OverallStatus org_setup_wizards_constants.OverallSetupStatus `json:"overall_status"`
 	CurrentStep   *org_setup_wizards_constants.SetupStepType     `json:"current_step,omitempty"`
-	ProgressPct   int                                            `json:"progress_pct"`
 	IsCompleted   bool                                           `json:"is_completed"`
 	Steps         []SetupStepProgressResponseDTO                 `json:"steps"`
 }

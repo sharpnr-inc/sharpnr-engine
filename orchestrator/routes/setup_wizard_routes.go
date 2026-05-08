@@ -17,6 +17,7 @@ func registerSetupWizardRoutes(webV1 *gin.RouterGroup, controller *orchestrator_
 	/* -------------------------------------------------------------------------- */
 	setupWiz.POST("/v1/sasetup", controller.SetupWizHandleSuperAdminSetupCompletion)
 	setupWiz.POST("/v1/property_setup", controller.SetupWizOperation_AddProperty)
+	setupWiz.POST("/v1/org_details")
 	setupWiz.POST("/v1/legal-entity_setup", controller.SetupWizOperation_AddLegalEntity)
 	
 

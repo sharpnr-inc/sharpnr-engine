@@ -1,8 +1,5 @@
-.env.alpha
-.env.beta
 .env.production
 .env.development
-.env.test
 .env.docker
 /sharpnr-engine
 .vscode

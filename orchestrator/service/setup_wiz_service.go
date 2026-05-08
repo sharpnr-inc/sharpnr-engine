@@ -124,7 +124,6 @@ func (s *orchestratorService) SetUpWizProgress(
 	return orchestrator_dtos.SetupProgressResponseDTO{
 		OverallStatus: progress.OverallStatus,
 		CurrentStep:   progress.CurrentStep,
-		ProgressPct:   progress.ProgressPct,
 		IsCompleted:   progress.IsCompleted,
 		Steps:         steps,
 	}, nil

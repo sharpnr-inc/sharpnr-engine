@@ -1,9 +1,9 @@
 package org_setup_wizard_resolvers
 
 import (
+	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
 	org_setup_wizard_models "sharpnr-engine/core/org_setup_wizard/models"
-	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	"sort"
 )
 
@@ -12,7 +12,6 @@ func ResolveSetupProgress(steps []*org_setup_wizard_models.OrganizationSetup) or
 	if len(steps) == 0 {
 		return org_setup_wizard_contracts.SetupProgress{
 			OverallStatus: org_setup_wizards_constants.OverallStatusNotStarted,
-			ProgressPct:   0,
 			IsCompleted:   false,
 			Steps:         []org_setup_wizard_contracts.SetupStepProgress{},
 		}
@@ -37,7 +36,7 @@ func ResolveSetupProgress(steps []*org_setup_wizard_models.OrganizationSetup) or
 
 		step := org_setup_wizard_contracts.SetupStepProgress{
 			ID:          s.ID,
-			Step:        s.CurrentStep, // ← was missing
+			Step:        s.CurrentStep,
 			Status:      s.Status,
 			Version:     s.Version,
 			StartedAt:   s.StartedAt,
@@ -51,12 +50,12 @@ func ResolveSetupProgress(steps []*org_setup_wizard_models.OrganizationSetup) or
 			completedCount++
 		case org_setup_wizards_constants.SetupStatusInProgress:
 			if currentStep == nil {
-				currentStep = &s.CurrentStep // ← was an empty block
+				currentStep = &s.CurrentStep
 			}
 		}
 	}
 
-	total := len(steps)
+	total := len(org_setup_wizards_constants.SetupSteps)
 
 	var overallStatus org_setup_wizards_constants.OverallSetupStatus
 	var isCompleted bool
@@ -71,12 +70,9 @@ func ResolveSetupProgress(steps []*org_setup_wizard_models.OrganizationSetup) or
 		overallStatus = org_setup_wizards_constants.OverallStatusInProgress
 	}
 
-	progressPct := int(float64(completedCount) / float64(total) * 100)
-
 	return org_setup_wizard_contracts.SetupProgress{
 		OverallStatus: overallStatus,
 		CurrentStep:   currentStep,
-		ProgressPct:   progressPct,
 		IsCompleted:   isCompleted,
 		Steps:         resultSteps,
 	}
