@@ -19,7 +19,7 @@ type Organization struct {
 	// SharpnrID is usually unique for identification
 	SharpnrID string `gorm:"size:50;not null;uniqueIndex"`
 
-	Status organization_constants.OrgSetupStatusType `gorm:"type:varchar(20)"`
+	Status organization_constants.OrgSetupStatusType `gorm:"type:varchar(100)"`
 
 	// Index added for faster lookups during login/auth
 	RootEmail string `gorm:"size:255;index"`
