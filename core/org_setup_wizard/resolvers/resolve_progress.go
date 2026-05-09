@@ -7,6 +7,8 @@ import (
 	"sort"
 )
 
+// Resolves Steps and return the How much user complete the remain on setup wiz
+// it takes the slice organization setup and resolves it
 func ResolveSetupProgress(steps []*org_setup_wizard_models.OrganizationSetup) org_setup_wizard_contracts.SetupProgress {
 
 	if len(steps) == 0 {
