@@ -147,8 +147,41 @@ func (s *orchestratorService) SetUpSuperAdminDetails(ctx context.Context, orgID 
 	}
 
 	// 2. Now we will call the identity service to update the super admin details
+	if err := s.orgSetupWizService.UpdateSuperAdminDetailsStep(ctx, orgID, emplID, org_setup_wizard_contracts.SuperAdminDetailsInput{
+		StepID:         req.StepID,
+		OrgID:          orgID,
+		FirstName:      req.FirstName,
+		LastName:       req.LastName,
+		SecondaryEmail: req.SecondaryEmail,
+		SecondaryPhone: "",
+		EmployeeID:     *req.EmployeeID,
+	}); err != nil {
+		return err
+	}
 
 	return nil
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) SetupWiz_UpdateOrgName(ctx context.Context, orgID, emplID uuid.UUID, request *orchestrator_dtos.SetupWizUpdateOrgNameRequestDto) error {
+	verified, err := s.organizationService.VerifyOrgByID(ctx, orgID)
+	if err != nil {
+		return err
+	}
+
+	if !verified {
+		return errors.New("organization must be verified before setting up super admin details")
+	}
+
+	if err := s.orgSetupWizService.UpdateOrgDetailsStep(ctx, orgID, emplID, org_setup_wizard_contracts.OrganizationDetailsSetupInput{
+		StepID: request.StepID,
+		OrgID:  orgID,
+		Name:   request.OrgName,
+	}); err != nil {
+		return err
+	}
+
+	return nil
+
+}

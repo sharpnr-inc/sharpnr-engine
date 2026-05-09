@@ -126,6 +126,7 @@ type OrchestratorSetupWizardInterface interface {
 	// This methods updates the superadmin details during setup
 	// we already created the super admin during the signup
 	SetUpSuperAdminDetails(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req *orchestrator_dtos.SetupSuperAdminDetailsReqDTO) error
+	SetupWiz_UpdateOrgName(ctx context.Context, orgID, emplID uuid.UUID, request *orchestrator_dtos.SetupWizUpdateOrgNameRequestDto) error
 }
 
 /* --------------------------------- <****> --------------------------------- */

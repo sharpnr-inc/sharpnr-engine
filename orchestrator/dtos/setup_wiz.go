@@ -81,3 +81,8 @@ type SetupSuperAdminDetailsReqDTO struct {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+type SetupWizUpdateOrgNameRequestDto struct {
+	StepID  uuid.UUID `json:"step_id" binding:"required"`
+	OrgName string    `json:"org_name"`
+}
