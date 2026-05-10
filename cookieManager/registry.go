@@ -1,3 +1,5 @@
+// registry.go
+
 package cookieManager
 
 var registry map[Type]Definition

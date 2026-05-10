@@ -2,6 +2,7 @@ package sharpnr_identity_auth_services
 
 import (
 	"context"
+	"errors"
 	sharpnr_identity_auth_dtos "sharpnr-engine/core/sharpnr_identity/dtos"
 
 	"github.com/google/uuid"
@@ -36,12 +37,26 @@ func (s *sharpnrIdentityAuthService) GetAuthenticatedUserDetails(
 		return sharpnr_identity_auth_dtos.UserDataResponseDto{}, err
 	}
 
+	orgDetails, err := s.orgService.GetOrgDetailsByID(ctx, orgID, emplID)
+	if err != nil {
+		return sharpnr_identity_auth_dtos.UserDataResponseDto{}, err
+	}
+
+	if orgDetails == nil {
+		return sharpnr_identity_auth_dtos.UserDataResponseDto{},
+			errors.New("organization details not found")
+	}
+
 	out := sharpnr_identity_auth_dtos.UserDataResponseDto{
 		Email:     empl.Email,
 		FirstName: empl.FirstName,
 		LastName:  empl.LastName,
 		ID:        empl.ID,
 		Role:      empl.Role,
+		Org: sharpnr_identity_auth_dtos.OrgData{
+			Name:    orgDetails.Name,
+			SharpID: orgDetails.SharpID,
+		},
 	}
 
 	return out, nil

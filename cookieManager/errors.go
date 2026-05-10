@@ -1,3 +1,4 @@
+// error.go
 package cookieManager
 
 import "errors"

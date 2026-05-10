@@ -2,6 +2,7 @@ package org_setup_wizard_services
 
 import (
 	"context"
+	"log"
 	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
 	sharpnr_identity_auth_dtos "sharpnr-engine/core/sharpnr_identity/dtos"
@@ -9,44 +10,141 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *orgSetupWizardService) UpdateSuperAdminDetailsStep(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, input org_setup_wizard_contracts.SuperAdminDetailsInput) error {
+func (s *orgSetupWizardService) UpdateSuperAdminDetailsStep(
+	ctx context.Context,
+	orgID uuid.UUID,
+	emplID uuid.UUID,
+	input org_setup_wizard_contracts.SuperAdminDetailsInput,
+) error {
 
-	stepstatus, err := s.StepVerication(ctx, orgID, emplID, input.StepID)
+	log.Printf(
+		"[ORG_SETUP] Starting UpdateSuperAdminDetailsStep | org_id=%s employee_id=%s step_id=%s",
+		orgID,
+		emplID,
+		input.StepID,
+	)
+
+	stepStatus, err := s.StepVerication(ctx, orgID, emplID, input.StepID)
 	if err != nil {
+		log.Printf(
+			"[ORG_SETUP] Step verification failed | org_id=%s employee_id=%s step_id=%s error=%v",
+			orgID,
+			emplID,
+			input.StepID,
+			err,
+		)
 		return err
 	}
 
-	if *stepstatus != org_setup_wizards_constants.SetupStatusInProgress {
+	log.Printf(
+		"[ORG_SETUP] Step verified successfully | org_id=%s step_id=%s status=%s",
+		orgID,
+		input.StepID,
+		*stepStatus,
+	)
+
+	if *stepStatus != org_setup_wizards_constants.SetupStatusInProgress {
+		log.Printf(
+			"[ORG_SETUP] Invalid step status | org_id=%s expected=%s actual=%s",
+			orgID,
+			org_setup_wizards_constants.SetupStatusInProgress,
+			*stepStatus,
+		)
+
 		return ErrorInvalidStepStatus
 	}
 
-	// before updating the super admin details, we need to check if the organization setup wizard is in the correct step and status. If not, we should return an error.
-	if err := s.sharpIdentity.UpdateSuperAdminDetails(ctx, orgID, emplID, sharpnr_identity_auth_dtos.UpdateSuperAdminDetailsInput{
-		OrgID:          input.OrgID,
-		FirstName:      input.FirstName,
-		LastName:       input.LastName,
-		EmployeeID:     input.EmployeeID,
-		SecondaryEmail: input.SecondaryEmail,
-		PhoneNumber:    input.SecondaryPhone,
-	}); err != nil {
+	log.Printf(
+		"[ORG_SETUP] Updating super admin details | org_id=%s employee_id=%s",
+		orgID,
+		emplID,
+	)
+
+	if err := s.sharpIdentity.UpdateSuperAdminDetails(
+		ctx,
+		orgID,
+		emplID,
+		sharpnr_identity_auth_dtos.UpdateSuperAdminDetailsInput{
+			OrgID:          input.OrgID,
+			FirstName:      input.FirstName,
+			LastName:       input.LastName,
+			EmployeeID:     input.EmployeeID,
+			SecondaryEmail: input.SecondaryEmail,
+			PhoneNumber:    input.SecondaryPhone,
+		},
+	); err != nil {
+
+		log.Printf(
+			"[ORG_SETUP] Failed to update super admin details | org_id=%s employee_id=%s error=%v",
+			orgID,
+			emplID,
+			err,
+		)
+
 		return err
 	}
 
-	// if the super admin details are updated successfully, we can update the organization setup wizard status to completed for this step and move to the next step.
-	if err := s.orgSetWizRepo.UpdateCurrentStepStatus(ctx,
+	log.Printf(
+		"[ORG_SETUP] Super admin details updated successfully | org_id=%s",
+		orgID,
+	)
+
+	log.Printf(
+		"[ORG_SETUP] Marking current step as completed | org_id=%s step_id=%s",
+		orgID,
+		input.StepID,
+	)
+
+	if err := s.orgSetWizRepo.UpdateCurrentStepStatus(
+		ctx,
 		org_setup_wizards_constants.SetupStatusCompleted,
-		orgID, input.StepID); err != nil {
+		orgID,
+		input.StepID,
+	); err != nil {
+
+		log.Printf(
+			"[ORG_SETUP] Failed to update current step status | org_id=%s step_id=%s error=%v",
+			orgID,
+			input.StepID,
+			err,
+		)
+
 		return err
 	}
 
-	// We make the next step as in progress, so that the frontend can show the next step to the user.
+	log.Printf(
+		"[ORG_SETUP] Current step marked as completed | org_id=%s step_id=%s",
+		orgID,
+		input.StepID,
+	)
+
+	log.Printf(
+		"[ORG_SETUP] Moving next step to in-progress | org_id=%s next_step=%s",
+		orgID,
+		org_setup_wizards_constants.SetupStepOrgDetailsUpdate,
+	)
+
 	if err := s.AddStepProgress(
-		ctx, orgID,
+		ctx,
+		orgID,
 		org_setup_wizards_constants.SetupStepOrgDetailsUpdate,
 		org_setup_wizards_constants.SetupStatusInProgress,
 	); err != nil {
+
+		log.Printf(
+			"[ORG_SETUP] Failed to initialize next step | org_id=%s next_step=%s error=%v",
+			orgID,
+			org_setup_wizards_constants.SetupStepOrgDetailsUpdate,
+			err,
+		)
+
 		return err
 	}
+
+	log.Printf(
+		"[ORG_SETUP] UpdateSuperAdminDetailsStep completed successfully | org_id=%s",
+		orgID,
+	)
 
 	return nil
 }

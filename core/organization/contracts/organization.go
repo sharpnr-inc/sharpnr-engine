@@ -4,7 +4,7 @@ import "github.com/google/uuid"
 
 type OrganizationResult struct {
 	ID        uuid.UUID
-	SharpID   uuid.UUID
+	SharpID   string
 	Name      string
 	RootEmail string
 }

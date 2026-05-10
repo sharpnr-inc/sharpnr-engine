@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	dbtx "sharpnr-engine/core/dbTx"
 	organization_constants "sharpnr-engine/core/organization/constants"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
 	"sharpnr-engine/core/organization/models"
@@ -127,3 +128,40 @@ func (r *organizationService) CreateNewOrganization(
 func (s *organizationService) UpdateOrganizationName(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, name string) error {
 	return s.orgMainRepo.UpdateOrgName(ctx, orgID, name)
 }
+
+/* --------------------------------- <****> --------------------------------- */
+
+func (s *organizationService) GetOrgDetailsByID(
+	ctx context.Context,
+	orgID,
+	emplID uuid.UUID,
+) (*organization_contracts.OrganizationResult, error) {
+
+	var orgData *organization_contracts.OrganizationResult
+
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		org, err := s.orgMainRepo.GetOrganizationByID(txCtx, orgID)
+		if err != nil {
+			return err
+		}
+
+		orgData = &organization_contracts.OrganizationResult{
+			ID:        org.ID,
+			SharpID:   org.SharpnrID,
+			Name:      org.Name,
+			RootEmail: org.RootEmail,
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return orgData, nil
+}
+
+/* --------------------------------- <****> --------------------------------- */

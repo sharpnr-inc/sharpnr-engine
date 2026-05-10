@@ -1,3 +1,4 @@
+// writer.go
 package cookieManager
 
 import "github.com/gin-gonic/gin"

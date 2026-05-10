@@ -1,3 +1,5 @@
+// types.go
+
 package cookieManager
 
 import "net/http"

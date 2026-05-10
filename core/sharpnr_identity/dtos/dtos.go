@@ -12,6 +12,12 @@ type WebLoginResponse_dto struct {
 	Email      string    `json:"email"`
 	EmployeeID uuid.UUID `json:"employee_id"`
 	Name       string    `json:"name"`
+	Org        OrgData   `json:"org_data"`
+}
+
+type OrgData struct {
+	Name    string `json:"org_name"`
+	SharpID string `json:"sharp_id"`
 }
 
 type MobileLoginRequest_dto struct {

@@ -32,13 +32,13 @@ func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieM
 	if app.Env == "production" {
 		return map[cookieManager.Type]cookieManager.Definition{
 			cookieManager.Auth: {
-				Name:     "__Host_Auth",
+				Name:     "__Secure-Auth",
 				Scope:    cookieManager.Protected,
 				TTL:      int(ttl.Cookie.Seconds()),
 				SameSite: http.SameSiteNoneMode,
 				Secure:   true,
 				Path:     "/",
-				Domain:   "",
+				Domain:   ".sharpnr.com",
 				HttpOnly: true,
 			},
 			cookieManager.Signup: {
@@ -48,7 +48,7 @@ func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieM
 				SameSite: http.SameSiteNoneMode,
 				Secure:   true,
 				Path:     "/",
-				Domain:   "",
+				Domain:   ".sharpnr.com",
 				HttpOnly: true,
 			},
 			cookieManager.CSRF: {
