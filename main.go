@@ -78,13 +78,7 @@ func main() {
 	mailerEng.Start()
 	defer mailerEng.Shutdown()
 
-	defs := config.CookieRegistry(cfg.App, cfg.TTL)
-
-	cookieManager.Init(defs)
-	cookieMgr := cookieManager.New(cookieManager.Config{
-		Secure: cfg.Cookie.Secure,
-		Domain: cfg.Cookie.Domain,
-	})
+	cookieMgr := cookieManager.New(cfg.Cookies)
 
 	jwtmgr := jwt_manager.New(jwt_manager.Config{
 		Secret:            cfg.JWT.Secret,

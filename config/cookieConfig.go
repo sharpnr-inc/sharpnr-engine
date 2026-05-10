@@ -6,94 +6,78 @@ import (
 	"time"
 )
 
-type CookieConfig struct {
-	Domain string
-	Secure bool
-}
+const (
+	prodDomain = ".sharpnr.com"
+	devDomain  = ".sharpnr.test"
 
-func loadCookie(app AppConfig, ttl TTLConfig) CookieConfig {
+	// csrfDevTTL is intentionally 10x longer than prod for dev convenience.
+	// Do not "fix" this.
+	csrfProdTTL = 30 * time.Minute
+	csrfDevTTL  = 300 * time.Minute
+)
+
+func loadCookies(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieManager.Definition {
+	type envParams struct {
+		authName   string
+		signupName string
+		csrfName   string
+		domain     string
+		csrfTTL    time.Duration
+	}
+
+	var p envParams
 	if app.Env == "production" {
-		return CookieConfig{
-			Domain: ".sharpnr.com",
-			Secure: true,
+		p = envParams{
+			// __Secure- enforces HTTPS delivery.
+			// __Host- was intentionally avoided: it forbids Domain, which we
+			// need for auth.sharpnr.com → iam.sharpnr.com cookie sharing.
+			authName:   "__Secure-Auth",
+			signupName: "__Secure-Signup",
+			csrfName:   "__Secure-CSRF",
+			domain:     prodDomain,
+			csrfTTL:    csrfProdTTL,
+		}
+	} else {
+		p = envParams{
+			authName:   "_dev_auth",
+			signupName: "_dev_signup",
+			csrfName:   "_dev_csrf",
+			domain:     devDomain,
+			csrfTTL:    csrfDevTTL,
 		}
 	}
 
-	// development / test
-	return CookieConfig{
-		Domain: ".localhost",
-		Secure: false,
-	}
-}
+	sessionTTL := int(ttl.Cookie.Seconds())
 
-func CookieRegistry(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieManager.Definition {
-
-	// ---------- PRODUCTION ----------
-	if app.Env == "production" {
-		return map[cookieManager.Type]cookieManager.Definition{
-			cookieManager.Auth: {
-				Name:     "__Secure-Auth",
-				Scope:    cookieManager.Protected,
-				TTL:      int(ttl.Cookie.Seconds()),
-				SameSite: http.SameSiteNoneMode,
-				Secure:   true,
-				Path:     "/",
-				Domain:   ".sharpnr.com",
-				HttpOnly: true,
-			},
-			cookieManager.Signup: {
-				Name:     "__Host_Signup",
-				Scope:    cookieManager.Protected,
-				TTL:      int(ttl.Cookie.Seconds()),
-				SameSite: http.SameSiteNoneMode,
-				Secure:   true,
-				Path:     "/",
-				Domain:   ".sharpnr.com",
-				HttpOnly: true,
-			},
-			cookieManager.CSRF: {
-				Name:     "_CSRF",
-				Scope:    cookieManager.Public,
-				TTL:      int((30 * time.Minute).Seconds()),
-				SameSite: http.SameSiteNoneMode,
-				Secure:   true,
-				Path:     "/",
-				Domain:   ".sharpnr.com",
-				HttpOnly: false,
-			},
-		}
-	}
-
-	// ---------- DEVELOPMENT ----------
 	return map[cookieManager.Type]cookieManager.Definition{
 		cookieManager.Auth: {
-			Name:     "_dev_auth",
+			Name:     p.authName,
 			Scope:    cookieManager.Protected,
-			TTL:      int(ttl.Cookie.Seconds()),
+			TTL:      sessionTTL,
 			SameSite: http.SameSiteNoneMode,
 			Secure:   true,
 			Path:     "/",
-			Domain:   ".sharpnr.test",
+			Domain:   p.domain,
 			HttpOnly: true,
 		},
 		cookieManager.Signup: {
-			Name:     "_dev_signup",
+			Name:     p.signupName,
 			Scope:    cookieManager.Protected,
-			TTL:      int(ttl.Cookie.Seconds()),
+			TTL:      sessionTTL,
 			SameSite: http.SameSiteNoneMode,
 			Secure:   true,
 			Path:     "/",
-			Domain:   ".sharpnr.test",
+			Domain:   p.domain,
 			HttpOnly: true,
 		},
 		cookieManager.CSRF: {
-			Name:     "_dev_csrf",
+			Name:     p.csrfName,
 			Scope:    cookieManager.Public,
-			TTL:      int((300 * time.Minute).Seconds()),
+			TTL:      int(p.csrfTTL.Seconds()),
 			SameSite: http.SameSiteNoneMode,
 			Secure:   true,
 			Path:     "/",
-			Domain:   ".sharpnr.test",
+			Domain:   p.domain,
 			HttpOnly: false,
 		},
 	}
