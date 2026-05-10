@@ -1,6 +1,7 @@
 package webMiddleware
 
 import (
+	"log"
 	"log/slog"
 	"net/http"
 	"sharpnr-engine/cookieManager"
@@ -9,7 +10,6 @@ import (
 )
 
 const (
-	csrfCookieName = "_dev_csrf"
 	csrfHeaderName = "X-CSRF-Token"
 )
 
@@ -24,9 +24,9 @@ func CSRFMiddleware(cookies cookieManager.Manager) gin.HandlerFunc {
 		}
 
 		// 1️⃣ Read CSRF cookie via manager
-		csrfCookie, err := cookies.ReadCSRF(ctx)
+		csrfCookie, err := cookies.Read(ctx, cookieManager.CSRF)
 		if err != nil || csrfCookie == "" {
-			slog.Warn("CSRF validation failed",
+			slog.Error("CSRF validation failed",
 				"reason", "missing_cookie",
 				"method", ctx.Request.Method,
 				"path", ctx.Request.URL.Path,
@@ -38,10 +38,12 @@ func CSRFMiddleware(cookies cookieManager.Manager) gin.HandlerFunc {
 			return
 		}
 
+		log.Println("csfrcookie", csrfCookie)
+
 		// 2️⃣ Read header token
 		csrfHeader := ctx.GetHeader(csrfHeaderName)
 		if csrfHeader == "" {
-			slog.Warn("CSRF validation failed",
+			slog.Error("CSRF validation failed",
 				"reason", "missing_header",
 				"method", ctx.Request.Method,
 				"path", ctx.Request.URL.Path,
@@ -54,7 +56,7 @@ func CSRFMiddleware(cookies cookieManager.Manager) gin.HandlerFunc {
 		}
 
 		if csrfHeader != csrfCookie {
-			slog.Warn("CSRF validation failed",
+			slog.Error("CSRF validation failed",
 				"reason", "mismatch",
 				"method", ctx.Request.Method,
 				"path", ctx.Request.URL.Path,

@@ -23,7 +23,7 @@ func WebAuthMiddleware(
 ) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
-		refreshToken, err := cookies.ReadAuth(ctx)
+		refreshToken, err := cookies.Read(ctx, cookieManager.Auth)
 		if err != nil {
 			slog.Warn("authentication failed",
 				"reason", "missing_auth_cookie",
@@ -63,6 +63,21 @@ func WebAuthMiddleware(
 				"error": "invalid org id in token",
 			})
 			return
+		}
+
+		// 3️⃣ Roll the CSRF cookie — resets the 30min window on every
+		//    authenticated request so active users never get logged out
+		//    mid-session by an expiring CSRF token.
+		//    We only re-set if the cookie already exists; if it's missing
+		//    the CSRF middleware will reject the next unsafe request anyway.
+		if csrfToken, err := cookies.Read(ctx, cookieManager.CSRF); err == nil && csrfToken != "" {
+			if err := cookies.Set(ctx, cookieManager.CSRF, csrfToken); err != nil {
+				slog.Warn("failed to roll CSRF cookie",
+					"error", err.Error(),
+					"path", ctx.Request.URL.Path,
+				)
+				// non-fatal — don't abort, the current request is still valid
+			}
 		}
 
 		// 3️⃣ Populate legacy context keys

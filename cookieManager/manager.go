@@ -1,17 +1,22 @@
 package cookieManager
 
-import "github.com/gin-gonic/gin"
+import (
+	"errors"
 
+	"github.com/gin-gonic/gin"
+)
+
+// Manager is the public API. Use cookieManager.Auth / Signup / CSRF
+// constants as the Type argument — e.g. mgr.Read(ctx, cookieManager.Auth).
 type Manager interface {
 	Set(ctx *gin.Context, t Type, value string) error
 	Clear(ctx *gin.Context, t Type) error
 	Read(ctx *gin.Context, t Type) (string, error)
-	ReadAuth(ctx *gin.Context) (string, error)
-	ReadSignup(ctx *gin.Context) (string, error)
-	ReadCSRF(ctx *gin.Context) (string, error)
-	SetSignup(ctx *gin.Context, value string) error
-	ClearSignup(ctx *gin.Context)
 }
+
+var (
+	ErrUnknownCookie = errors.New("unknown cookie type")
+)
 
 type manager struct {
 	defs map[Type]Definition
@@ -54,10 +59,3 @@ func (m *manager) Read(ctx *gin.Context, t Type) (string, error) {
 	}
 	return ctx.Cookie(def.Name)
 }
-
-func (m *manager) ReadAuth(ctx *gin.Context) (string, error)   { return m.Read(ctx, Auth) }
-func (m *manager) ReadSignup(ctx *gin.Context) (string, error) { return m.Read(ctx, Signup) }
-func (m *manager) ReadCSRF(ctx *gin.Context) (string, error)   { return m.Read(ctx, CSRF) }
-
-func (m *manager) SetSignup(ctx *gin.Context, value string) error { return m.Set(ctx, Signup, value) }
-func (m *manager) ClearSignup(ctx *gin.Context)                   { _ = m.Clear(ctx, Signup) }

@@ -32,6 +32,7 @@ func (s *sharpnrIdentityAuthControllers) WebLogin(ctx *gin.Context) {
 		})
 		return
 	}
+
 	s.cookieMgr.Set(ctx, cookieManager.CSRF, token)
 	s.cookieMgr.Set(ctx, cookieManager.Auth, token)
 

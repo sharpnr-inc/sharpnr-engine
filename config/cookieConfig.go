@@ -10,11 +10,23 @@ const (
 	prodDomain = ".sharpnr.com"
 	devDomain  = ".sharpnr.test"
 
+	csrfProdTTL = 120 * time.Minute
 	// csrfDevTTL is intentionally 10x longer than prod for dev convenience.
 	// Do not "fix" this.
-	csrfProdTTL = 30 * time.Minute
-	csrfDevTTL  = 300 * time.Minute
+	csrfDevTTL = 300 * time.Minute
 )
+
+func newDef(name, domain string, ttl time.Duration, httpOnly bool) cookieManager.Definition {
+	return cookieManager.Definition{
+		Name:     name,
+		TTL:      int(ttl.Seconds()),
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
+		Path:     "/",
+		Domain:   domain,
+		HttpOnly: httpOnly,
+	}
+}
 
 func loadCookies(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieManager.Definition {
 	type envParams struct {
@@ -28,9 +40,6 @@ func loadCookies(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieMana
 	var p envParams
 	if app.Env == "production" {
 		p = envParams{
-			// __Secure- enforces HTTPS delivery.
-			// __Host- was intentionally avoided: it forbids Domain, which we
-			// need for auth.sharpnr.com → iam.sharpnr.com cookie sharing.
 			authName:   "__Secure-Auth",
 			signupName: "__Secure-Signup",
 			csrfName:   "__Secure-CSRF",
@@ -47,38 +56,9 @@ func loadCookies(app AppConfig, ttl TTLConfig) map[cookieManager.Type]cookieMana
 		}
 	}
 
-	sessionTTL := int(ttl.Cookie.Seconds())
-
 	return map[cookieManager.Type]cookieManager.Definition{
-		cookieManager.Auth: {
-			Name:     p.authName,
-			Scope:    cookieManager.Protected,
-			TTL:      sessionTTL,
-			SameSite: http.SameSiteNoneMode,
-			Secure:   true,
-			Path:     "/",
-			Domain:   p.domain,
-			HttpOnly: true,
-		},
-		cookieManager.Signup: {
-			Name:     p.signupName,
-			Scope:    cookieManager.Protected,
-			TTL:      sessionTTL,
-			SameSite: http.SameSiteNoneMode,
-			Secure:   true,
-			Path:     "/",
-			Domain:   p.domain,
-			HttpOnly: true,
-		},
-		cookieManager.CSRF: {
-			Name:     p.csrfName,
-			Scope:    cookieManager.Public,
-			TTL:      int(p.csrfTTL.Seconds()),
-			SameSite: http.SameSiteNoneMode,
-			Secure:   true,
-			Path:     "/",
-			Domain:   p.domain,
-			HttpOnly: false,
-		},
+		cookieManager.Auth:   newDef(p.authName, p.domain, ttl.Cookie, true),
+		cookieManager.Signup: newDef(p.signupName, p.domain, ttl.Cookie, true),
+		cookieManager.CSRF:   newDef(p.csrfName, p.domain, p.csrfTTL, false),
 	}
 }
