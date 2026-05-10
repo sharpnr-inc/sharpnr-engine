@@ -1,7 +1,6 @@
 package webMiddleware
 
 import (
-	"log"
 	"log/slog"
 	"net/http"
 	"sharpnr-engine/cookieManager"
@@ -37,8 +36,6 @@ func CSRFMiddleware(cookies cookieManager.Manager) gin.HandlerFunc {
 			})
 			return
 		}
-
-		log.Println("csfrcookie", csrfCookie)
 
 		// 2️⃣ Read header token
 		csrfHeader := ctx.GetHeader(csrfHeaderName)
