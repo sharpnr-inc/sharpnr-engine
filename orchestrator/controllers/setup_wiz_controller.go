@@ -180,3 +180,26 @@ func (c *OrchestratorController) SetupWizOperation_AddLegalEntity(ctx *gin.Conte
 	// 5. Success Wrap
 	utils.Success(ctx, http.StatusOK, "Legal entity details saved successfully")
 }
+
+func (c *OrchestratorController) SetupWiz_UpdateOrganizationName(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// 3. Bind JSON Request (Fixed: initialized the DTO)
+	var req orchestrator_dtos.SetupWizUpdateOrgNameRequestDto
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.ValidationError(ctx, err)
+		return
+	}
+
+	if err := c.orchestService.SetupWiz_UpdateOrgName(ctx.Request.Context(), orgID, emplID, &req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Organization Name Added Successfully")
+
+}

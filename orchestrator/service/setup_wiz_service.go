@@ -33,14 +33,15 @@ func (s *orchestratorService) SetupWiz_AddProperty(
 		}
 
 		input := org_setup_wizard_contracts.PropertySetupInput{
-			StepID:      stepParse_uuid,
-			OrgID:       orgID,
-			Name:        req.Name,
-			AddressLine: req.AddressLine,
-			City:        req.City,
-			State:       req.State,
-			Country:     req.Country,
-			Pincode:     req.Pincode,
+			StepID:       stepParse_uuid,
+			OrgID:        orgID,
+			Name:         req.Name,
+			PropertyCode: *req.PropertyCode,
+			AddressLine:  req.AddressLine,
+			City:         req.City,
+			State:        req.State,
+			Country:      req.Country,
+			Pincode:      req.Pincode,
 		}
 
 		if err := s.orgSetupWizService.Step_two_AddProperty(dbtx, orgID, emplID, input); err != nil {
@@ -165,6 +166,7 @@ func (s *orchestratorService) SetUpSuperAdminDetails(ctx context.Context, orgID 
 /* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) SetupWiz_UpdateOrgName(ctx context.Context, orgID, emplID uuid.UUID, request *orchestrator_dtos.SetupWizUpdateOrgNameRequestDto) error {
+
 	verified, err := s.organizationService.VerifyOrgByID(ctx, orgID)
 	if err != nil {
 		return err
