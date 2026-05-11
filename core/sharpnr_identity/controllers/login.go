@@ -42,3 +42,7 @@ func (s *sharpnrIdentityAuthControllers) WebLogin(ctx *gin.Context) {
 	})
 
 }
+
+func (s *sharpnrIdentityAuthControllers) MobileLogin(ctx *gin.Context) {
+
+}

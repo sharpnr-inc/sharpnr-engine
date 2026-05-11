@@ -1,3 +1,5 @@
+// manager.go
+
 package jwt_manager
 
 import (

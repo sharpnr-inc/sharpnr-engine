@@ -1,3 +1,5 @@
+// claims.go
+
 package jwt_manager
 
 import (

@@ -1,3 +1,4 @@
+// errors.go
 package jwt_manager
 
 import "errors"

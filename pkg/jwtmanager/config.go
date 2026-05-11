@@ -1,3 +1,4 @@
+// config.go
 package jwt_manager
 
 import "time"

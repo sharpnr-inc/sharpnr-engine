@@ -12,9 +12,8 @@ import (
 )
 
 const (
-	UserIDContextKey    = "user_id"
-	OrgUUIDContextKey   = "OrgUUID"
-	SessionIDContextKey = "session_id"
+	UserIDContextKey  = "user_id"
+	OrgUUIDContextKey = "OrgUUID"
 )
 
 func WebAuthMiddleware(

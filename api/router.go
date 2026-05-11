@@ -2,6 +2,7 @@ package api
 
 import (
 	v1 "sharpnr-engine/api/v1"
+	"sharpnr-engine/api/v1mobile"
 	"sharpnr-engine/app"
 	"sharpnr-engine/config"
 	"sharpnr-engine/cookieManager"
@@ -10,6 +11,7 @@ import (
 	org_signup "sharpnr-engine/core/org_signup"
 	sharpnrIdentity_routes "sharpnr-engine/core/sharpnr_identity/routes"
 	"sharpnr-engine/middlewares"
+	mobile_middleware "sharpnr-engine/middlewares/mobile"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	orchestrator_routes "sharpnr-engine/orchestrator/routes"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
@@ -65,7 +67,19 @@ func SetupRouter(
 	// ========================
 	mobileV1 := router.Group("/api/v1/mobile")
 	{
-		sharpnrIdentity_routes.RegisterSharpnrIdentityMobileRoutes(mobileV1, db, redis)
+		// Unprotected routes for the Login
+		sharpnrIdentity_routes.RegisterSharpnrIdentityMobileRoutes(mobileV1)
+		protected_mobile_routes := mobileV1.Group("/")
+
+		// these are mobile routes for the other user
+		protected_mobile_routes.Use(
+			mobile_middleware.MobileMiddleware(jwtmgr),
+		)
+		
+		orchestrator_routes.RegisterOrchestratorRoutes(protected_mobile_routes, txManager, cookies, jwtmgr, modules)
+		v1mobile.RegisterMobilesModulesRoutes(protected_mobile_routes, modules)
+		sharpnrIdentity_routes.RegisterIdentityProtectedMobileRoutes(protected_mobile_routes)
+
 	}
 
 	return router
