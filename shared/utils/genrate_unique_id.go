@@ -50,8 +50,5 @@ func GenerateUniqueSharpnrOrgID(ctx context.Context, repo organization_repo.Orga
 			// If it's a different error (like DB connection loss), return it
 			return "", err
 		}
-
-		// 3. If err was nil, it means an Org was found.
-		// The loop continues to try a new random ID.
 	}
 }

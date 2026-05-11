@@ -68,17 +68,17 @@ func SetupRouter(
 	mobileV1 := router.Group("/api/v1/mobile")
 	{
 		// Unprotected routes for the Login
-		sharpnrIdentity_routes.RegisterSharpnrIdentityMobileRoutes(mobileV1)
+		sharpnrIdentity_routes.RegisterSharpnrIdentityMobileRoutes(mobileV1, jwtmgr, modules, cookies)
 		protected_mobile_routes := mobileV1.Group("/")
 
 		// these are mobile routes for the other user
 		protected_mobile_routes.Use(
 			mobile_middleware.MobileMiddleware(jwtmgr),
 		)
-		
+
 		orchestrator_routes.RegisterOrchestratorRoutes(protected_mobile_routes, txManager, cookies, jwtmgr, modules)
 		v1mobile.RegisterMobilesModulesRoutes(protected_mobile_routes, modules)
-		sharpnrIdentity_routes.RegisterIdentityProtectedMobileRoutes(protected_mobile_routes)
+		sharpnrIdentity_routes.RegisterIdentityProtectedMobileRoutes(protected_mobile_routes, modules, cookies, jwtmgr)
 
 	}
 

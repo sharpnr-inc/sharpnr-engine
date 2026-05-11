@@ -4,45 +4,70 @@ import (
 	"net/http"
 	"sharpnr-engine/cookieManager"
 	sharpnr_identity_auth_dtos "sharpnr-engine/core/sharpnr_identity/dtos"
+	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func (s *sharpnrIdentityAuthControllers) WebLogin(ctx *gin.Context) {
+
 	var req sharpnr_identity_auth_dtos.LoginRequest_dto
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"message": "Bad Request",
-		})
+		utils.Failure(ctx, http.StatusBadRequest, "Invalid Credentials", err)
 		return
 	}
 
 	res, err := s.IdSvc.LoginUser(ctx.Request.Context(), req)
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, gin.H{
-			"Error": err.Error(),
-		})
+		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
 		return
 	}
 
-	token, err := s.jwtMgr.IssueWebAuthCookieToken(res.EmployeeID, res.OrgId)
+	authToken, err := s.jwtMgr.IssueWebAuthCookieToken(res.EmployeeID, res.OrgId)
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, gin.H{
-			"Error": err.Error(),
-		})
+		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
 		return
 	}
 
-	s.cookieMgr.Set(ctx, cookieManager.CSRF, token)
-	s.cookieMgr.Set(ctx, cookieManager.Auth, token)
+	s.cookieMgr.Set(ctx, cookieManager.Auth, authToken)
+	s.cookieMgr.Set(ctx, cookieManager.CSRF, uuid.New().String())
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"message": "Login Successfully",
-		"data":    res,
-	})
-
+	utils.Success(ctx, http.StatusOK, "Login Successfully", res)
 }
 
-func (s *sharpnrIdentityAuthControllers) MobileLogin(ctx *gin.Context) {
+/* -------------------------------------------------------------------------- */
+/*                           Mobile Login Controller                          */
+/* -------------------------------------------------------------------------- */
 
+func (s *sharpnrIdentityAuthControllers) MobileLogin(ctx *gin.Context) {
+	var req sharpnr_identity_auth_dtos.LoginRequest_dto
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, "Invalid Credentials", err)
+		return
+	}
+
+	res, err := s.IdSvc.LoginUser(ctx.Request.Context(), req)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
+		return
+	}
+
+	// Access is issued first — if it fails we haven't wasted the refresh issuance
+	accessToken, err := s.jwtMgr.IssueAccess(res.EmployeeID, res.OrgId, res.Org.Name)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
+		return
+	}
+
+	refreshToken, err := s.jwtMgr.IssueRefresh(res.EmployeeID, res.OrgId)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
+		return
+	}
+
+	res.AccessToken = &accessToken
+	res.RefreshToken = &refreshToken
+
+	utils.Success(ctx, http.StatusOK, "Logged in Successfully", res)
 }

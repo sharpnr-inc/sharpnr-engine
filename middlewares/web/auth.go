@@ -35,7 +35,7 @@ func WebAuthMiddleware(
 			return
 		}
 
-		// 2️⃣ Verify refresh token
+		// 2️⃣ Verify web token
 		claims, err := jwtMgr.VerifyWebCookie(refreshToken)
 		if err != nil {
 			slog.Warn("authentication failed",
@@ -46,20 +46,6 @@ func WebAuthMiddleware(
 			)
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"message": "Invalid or expired session",
-			})
-			return
-		}
-
-		orgUUID, err := uuid.Parse(claims.OrgID)
-		if err != nil {
-			slog.Error("token payload corruption",
-				"reason", "invalid_org_uuid",
-				"user_id", claims.UserID,
-				"org_id_raw", claims.OrgID,
-				"error", err.Error(),
-			)
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "invalid org id in token",
 			})
 			return
 		}
@@ -83,8 +69,7 @@ func WebAuthMiddleware(
 
 		// 3️⃣ Populate legacy context keys
 		ctx.Set(UserIDContextKey, claims.UserID)
-		ctx.Set(OrgUUIDContextKey, orgUUID)
-
+		ctx.Set(OrgUUIDContextKey, claims.OrgID)
 		ctx.Next()
 	}
 }

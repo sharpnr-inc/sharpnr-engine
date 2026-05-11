@@ -78,17 +78,21 @@ func main() {
 	mailerEng.Start()
 	defer mailerEng.Shutdown()
 
+	/* ---------------------------------- <***> --------------------------------- */
+
 	cookieMgr := cookieManager.New(cfg.Cookies)
 
-	jwtmgr := jwt_manager.New(jwt_manager.Config{
-		Secret:            cfg.JWT.Secret,
-		Issuer:            cfg.JWT.Issuer,
-		Audience:          cfg.JWT.Audience,
-		AccessTTL:         cfg.JWT.AccessTTL,
-		RefreshTTL:        cfg.JWT.RefreshTTL,
-		SignupTTL:         cfg.JWT.SignupTTL,
-		WebCookieTokenTTL: cfg.JWT.WebCookieTokenTTL,
-	})
+	/* ---------------------------------- <***> --------------------------------- */
+
+	// ToManagerConfig() converts config.JwtManagerConfigs → jwt_manager.Config
+	// keeping the two packages independent of each other.
+	// New() validates eagerly — missing secret or issuer fails here at startup,
+	// not silently during the first token operation.
+	jwtmgr, err := jwt_manager.New(cfg.JWT.ToManagerConfig())
+	if err != nil {
+		log.Fatalf("failed to init jwt manager: %v", err)
+	}
+	/* ---------------------------------- <***> --------------------------------- */
 
 	txManager := dbtx.NewGormTxManager(db)
 	sseEngine := sse_engine.NewStreamManager()

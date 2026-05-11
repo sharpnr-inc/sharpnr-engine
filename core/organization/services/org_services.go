@@ -39,22 +39,22 @@ func (r *organizationService) IsOrgExists(ctx context.Context, rootEmail string)
 func (r *organizationService) CreateDraftOrgForSignup(
 	ctx context.Context,
 	input organization_contracts.DraftOrganizationInput,
-) (signupSlug string, otp string, err error) {
+) (signupSlug uuid.UUID, otp string, err error) {
 
 	if input.Email == "" && (input.Mobile == nil || *input.Mobile == "") {
-		return "", "", errors.New("email or phone is required")
+		return uuid.Nil, "", errors.New("email or phone is required")
 	}
 
 	hashPassword, err := utils.HashPassword(input.Password)
 	if err != nil {
-		return "", "", err
+		return uuid.Nil, "", err
 	}
 
 	stagingID := uuid.New()
 
 	otp, err = utils.GenerateOTP()
 	if err != nil {
-		return "", "", err
+		return uuid.Nil, "", err
 	}
 
 	var phone string
@@ -71,10 +71,10 @@ func (r *organizationService) CreateDraftOrgForSignup(
 	}
 
 	if err := r.orgRedisRepo.Create(ctx, tempOrg); err != nil {
-		return "", "", err
+		return uuid.Nil, "", err
 	}
 
-	return stagingID.String(), otp, nil
+	return stagingID, otp, nil
 }
 
 //----------------------------------------------------------------------------------------------------------------//

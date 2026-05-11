@@ -1,6 +1,12 @@
 package sharpnrIdentity_routes
 
 import (
+	"sharpnr-engine/app"
+	"sharpnr-engine/cookieManager"
+	sharpnr_identity_auth_controllers "sharpnr-engine/core/sharpnr_identity/controllers"
+	mobile_middleware "sharpnr-engine/middlewares/mobile"
+	jwt_manager "sharpnr-engine/pkg/jwtmanager"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -8,11 +14,19 @@ import (
 // for the mobile
 func RegisterSharpnrIdentityMobileRoutes(
 	mobileV1 *gin.RouterGroup,
-) {
+	jwtMgr jwt_manager.Manager,
+	modules app.ModulesProvider,
+	cookie cookieManager.Manager,
 
+) {
+	sharpIdService := modules.SharpAuthService()
+	sharpIdController := sharpnr_identity_auth_controllers.NewSharpnrIdentityAuthController(cookie, jwtMgr, sharpIdService)
 	idMobileRoutes := mobileV1.Group("/identity")
 	{
-		idMobileRoutes.POST("/login")
+		idMobileRoutes.POST("/login", sharpIdController.MobileLogin)
+		// Refresh endpoint — only needs the refresh token, NOT the access token
+		// so it sits outside MobileMiddleware
+		idMobileRoutes.POST("/auth/refresh", mobile_middleware.RefreshHandler(jwtMgr))
 
 	}
 
@@ -23,10 +37,17 @@ func RegisterSharpnrIdentityMobileRoutes(
 // both Refresh Token and Access Token
 func RegisterIdentityProtectedMobileRoutes(
 	mobileV1 *gin.RouterGroup,
+	modules app.ModulesProvider,
+	cookie cookieManager.Manager,
+	jwtMgr jwt_manager.Manager,
 ) {
-	idMobileProtectesRoutes := mobileV1.Group("/identity")
+	sharpIdService := modules.SharpAuthService()
+	sharpIdController := sharpnr_identity_auth_controllers.NewSharpnrIdentityAuthController(cookie, jwtMgr, sharpIdService)
 
-	idMobileProtectesRoutes.POST("/refresh")
-	idMobileProtectesRoutes.GET("/myprofile")
-	idMobileProtectesRoutes.POST("/update")
+	idMobileProtectesRoutes := mobileV1.Group("/identity")
+	{
+		idMobileProtectesRoutes.GET("/myprofile", sharpIdController.GetMyProfile)
+		idMobileProtectesRoutes.POST("/update")
+	}
+
 }
