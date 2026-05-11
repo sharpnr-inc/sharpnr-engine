@@ -65,19 +65,21 @@ func WebAuthMiddleware(
 			return
 		}
 
-		// 3️⃣ Roll the CSRF cookie — resets the 30min window on every
-		//    authenticated request so active users never get logged out
-		//    mid-session by an expiring CSRF token.
-		//    We only re-set if the cookie already exists; if it's missing
-		//    the CSRF middleware will reject the next unsafe request anyway.
-		if csrfToken, err := cookies.Read(ctx, cookieManager.CSRF); err == nil && csrfToken != "" {
-			if err := cookies.Set(ctx, cookieManager.CSRF, csrfToken); err != nil {
-				slog.Warn("failed to roll CSRF cookie",
-					"error", err.Error(),
-					"path", ctx.Request.URL.Path,
-				)
-				// non-fatal — don't abort, the current request is still valid
-			}
+		// 3️⃣ Roll CSRF — or mint a new one if it was deleted
+		csrfToken, err := cookies.Read(ctx, cookieManager.CSRF)
+		if err != nil || csrfToken == "" {
+			csrfToken = uuid.New().String()
+			slog.Info("CSRF cookie missing, issuing new token",
+				"path", ctx.Request.URL.Path,
+				"user_id", claims.UserID,
+			)
+		}
+
+		if err := cookies.Set(ctx, cookieManager.CSRF, csrfToken); err != nil {
+			slog.Warn("failed to set CSRF cookie",
+				"error", err.Error(),
+				"path", ctx.Request.URL.Path,
+			)
 		}
 
 		// 3️⃣ Populate legacy context keys
