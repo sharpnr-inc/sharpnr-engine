@@ -2,8 +2,7 @@ package hospitality_routes
 
 import (
 	"sharpnr-engine/app"
-	"sharpnr-engine/modules/hospitality/bar"
-	"sharpnr-engine/modules/hospitality/concierge"
+	bar_routes "sharpnr-engine/modules/hospitality/bar/routes"
 	hotel_routes "sharpnr-engine/modules/hospitality/hotel/routes"
 	kitchen_routes "sharpnr-engine/modules/hospitality/kitchen/routes"
 	menu_routes "sharpnr-engine/modules/hospitality/menu/routes"
@@ -26,9 +25,8 @@ func RegisterHotelModuleRoutes(
 	kitchen_routes.KitchenRoutes(sharpHospitality, modules)
 	menu_routes.RegisterMenuRoutes(sharpHospitality, modules)
 	restaurant_routes.RestaurantRoutes(sharpHospitality, modules)
-	bar.BarRoutes(sharpHospitality, modules)
+	bar_routes.BarRoutes(sharpHospitality, modules)
 
-	concierge.ConciergeRoutes(sharpHospitality, modules)
 	hospitality_utilities.RegisterHospitalityUtilityRoutes(v1)
 	hospitality_orchestration_routes.RegisterOrchestrationRoutes(v1, modules)
 

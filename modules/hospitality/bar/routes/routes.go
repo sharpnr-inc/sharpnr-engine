@@ -1,4 +1,4 @@
-package bar
+package bar_routes
 
 import (
 	"sharpnr-engine/app"
