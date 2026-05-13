@@ -39,8 +39,8 @@ import (
 // @schemes http https
 // @BasePath /api/v1
 func main() {
+	
 	cfg := config.Load()
-
 	redisDb := database.ConnectRedis(cfg.Redis)
 	db := database.ConnectDB(cfg.Database)
 

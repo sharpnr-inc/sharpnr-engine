@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	v1 "sharpnr-engine/api/v1"
 	"sharpnr-engine/api/v1mobile"
 	"sharpnr-engine/app"
@@ -33,6 +34,34 @@ func SetupRouter(
 	corsConfig config.CORSConfig,
 
 ) *gin.Engine {
+	gin.ForceConsoleColor()
+	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
+		methodColors := map[string]string{
+			"GET":    "\033[1;32m", // bold green
+			"POST":   "\033[1;34m", // bold blue
+			"PUT":    "\033[1;33m", // bold yellow
+			"PATCH":  "\033[1;35m", // bold magenta
+			"DELETE": "\033[1;31m", // bold red
+		}
+
+		reset := "\033[0m"
+		pathColor := "\033[1;36m"    // bold cyan  — the endpoint path
+		handlerColor := "\033[2;37m" // dim white  — handler name (less important)
+		arrowColor := "\033[1;90m"   // dark gray  — the --> arrow
+
+		color, ok := methodColors[httpMethod]
+		if !ok {
+			color = "\033[1;37m"
+		}
+
+		fmt.Printf("[GIN-debug] %s%-7s%s %s%-60s%s %s-->%s %s%s%s \033[90m(%d handlers)%s\n",
+			color, httpMethod, reset,
+			pathColor, absolutePath, reset,
+			arrowColor, reset,
+			handlerColor, handlerName, reset,
+			nuHandlers, reset,
+		)
+	}
 
 	router := gin.Default()
 
