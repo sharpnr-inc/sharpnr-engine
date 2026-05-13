@@ -9,5 +9,4 @@ import (
 
 func RegisterMobilesModulesRoutes(mobileV1 *gin.RouterGroup, modules app.ModulesProvider) {
 	hospitality_routes.RegisterHotelModuleRoutes(mobileV1, modules)
-	
 }

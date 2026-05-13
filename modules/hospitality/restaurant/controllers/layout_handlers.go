@@ -23,7 +23,7 @@ func (c *RestaurantController) GetRestaurantLayout(ctx *gin.Context) {
 	// 3. Call Service
 	layout, err := c.resSvc.GetRestaurantLayout(ctx.Request.Context(), orgID, restaurantID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadGateway, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
 		return
 	}
 
