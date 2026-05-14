@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	dbtx "sharpnr-engine/core/dbTx"
 	organization_constants "sharpnr-engine/core/organization/constants"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
 	"sharpnr-engine/core/organization/models"
@@ -38,22 +39,22 @@ func (r *organizationService) IsOrgExists(ctx context.Context, rootEmail string)
 func (r *organizationService) CreateDraftOrgForSignup(
 	ctx context.Context,
 	input organization_contracts.DraftOrganizationInput,
-) (signupSlug string, otp string, err error) {
+) (signupSlug uuid.UUID, otp string, err error) {
 
 	if input.Email == "" && (input.Mobile == nil || *input.Mobile == "") {
-		return "", "", errors.New("email or phone is required")
+		return uuid.Nil, "", errors.New("email or phone is required")
 	}
 
 	hashPassword, err := utils.HashPassword(input.Password)
 	if err != nil {
-		return "", "", err
+		return uuid.Nil, "", err
 	}
 
 	stagingID := uuid.New()
 
 	otp, err = utils.GenerateOTP()
 	if err != nil {
-		return "", "", err
+		return uuid.Nil, "", err
 	}
 
 	var phone string
@@ -70,10 +71,10 @@ func (r *organizationService) CreateDraftOrgForSignup(
 	}
 
 	if err := r.orgRedisRepo.Create(ctx, tempOrg); err != nil {
-		return "", "", err
+		return uuid.Nil, "", err
 	}
 
-	return stagingID.String(), otp, nil
+	return stagingID, otp, nil
 }
 
 //----------------------------------------------------------------------------------------------------------------//
@@ -127,3 +128,40 @@ func (r *organizationService) CreateNewOrganization(
 func (s *organizationService) UpdateOrganizationName(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, name string) error {
 	return s.orgMainRepo.UpdateOrgName(ctx, orgID, name)
 }
+
+/* --------------------------------- <****> --------------------------------- */
+
+func (s *organizationService) GetOrgDetailsByID(
+	ctx context.Context,
+	orgID,
+	emplID uuid.UUID,
+) (*organization_contracts.OrganizationResult, error) {
+
+	var orgData *organization_contracts.OrganizationResult
+
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		org, err := s.orgMainRepo.GetOrganizationByID(txCtx, orgID)
+		if err != nil {
+			return err
+		}
+
+		orgData = &organization_contracts.OrganizationResult{
+			ID:        org.ID,
+			SharpID:   org.SharpnrID,
+			Name:      org.Name,
+			RootEmail: org.RootEmail,
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return orgData, nil
+}
+
+/* --------------------------------- <****> --------------------------------- */

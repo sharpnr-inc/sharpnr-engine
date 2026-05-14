@@ -19,7 +19,7 @@ func SignupGuardMiddleware(
 	return func(ctx *gin.Context) {
 
 		// 2️⃣ Read signup cookie
-		signupToken, err := cookies.ReadSignup(ctx)
+		signupToken, err := cookies.Read(ctx, cookieManager.Signup)
 		if err != nil || signupToken == "" {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"message": "Signup session expired or invalid",

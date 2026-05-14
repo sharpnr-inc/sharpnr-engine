@@ -321,7 +321,7 @@ func (s *restaurantService) CloseDineInSession(
 
 	invoice, err := s.invoiceEngine.GenerateInvoice(ctx, invoice_engine_contracts.CreateInvoiceRequest{
 		OrganizationID: orgID,
-		LegalEntityID:  &rest.LegalEntityID,
+		LegalEntityID:  rest.LegalEntityID,
 		CustomerID:     request.CustomerID,
 		CustomerName:   request.CustomerName,
 		CustomerGST:    request.CustomerGST,
@@ -351,7 +351,7 @@ func (s *restaurantService) CloseDineInSession(
 
 	paymentOrder, err := s.paymentsEngine.CreateOrder(ctx, payment_engine_contracts.CreateOrderRequest{
 		TenantID:         orgID,
-		LegalEntityID:    rest.LegalEntityID,
+		LegalEntityID:    *rest.LegalEntityID,
 		PaymentAccountID: request.PaymentAccountID,
 		PayerType:        "CUSTOMER",
 		PayerName:        request.CustomerName,

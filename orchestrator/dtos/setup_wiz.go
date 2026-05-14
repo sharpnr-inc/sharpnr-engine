@@ -12,13 +12,14 @@ import (
 // This DTO is Request DTO for the API that handles the organization property details step of the setup wizard. It captures all the necessary information about the organization's properties, such
 // as its name, address, and geolocation. This information is crucial for setting up the organization's profile and ensuring accurate location-based services.
 type SetupOrgPropertyReqDTO struct {
-	StepID      string `json:"step_id" binding:"required"`
-	Name        string `json:"name"`
-	AddressLine string `json:"address_line"`
-	City        string `json:"city"`
-	State       string `json:"state"`
-	Country     string `json:"country"`
-	Pincode     string `json:"pincode"`
+	StepID       string  `json:"step_id" binding:"required"`
+	Name         string  `json:"name"`
+	PropertyCode *string `json:"property_code,omitempty"`
+	AddressLine  string  `json:"address_line"`
+	City         string  `json:"city"`
+	State        string  `json:"state"`
+	Country      string  `json:"country"`
+	Pincode      string  `json:"pincode"`
 
 	// Optional geolocation fields to capture the organization's location for location-based services and analytics.
 	Longitude *float64 `json:"longitude,omitempty"`
@@ -54,7 +55,6 @@ type SetupLegalEntityReqDTO struct {
 type SetupProgressResponseDTO struct {
 	OverallStatus org_setup_wizards_constants.OverallSetupStatus `json:"overall_status"`
 	CurrentStep   *org_setup_wizards_constants.SetupStepType     `json:"current_step,omitempty"`
-	ProgressPct   int                                            `json:"progress_pct"`
 	IsCompleted   bool                                           `json:"is_completed"`
 	Steps         []SetupStepProgressResponseDTO                 `json:"steps"`
 }
@@ -82,3 +82,8 @@ type SetupSuperAdminDetailsReqDTO struct {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+type SetupWizUpdateOrgNameRequestDto struct {
+	StepID  uuid.UUID `json:"step_id" binding:"required"`
+	OrgName string    `json:"org_name"`
+}

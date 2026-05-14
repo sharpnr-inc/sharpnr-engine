@@ -21,11 +21,17 @@ func (s *sharpnrIdentityAuthService) LoginUser(
 		return nil, err
 	}
 
+	orgdetails, err := s.orgService.GetOrgDetailsByID(ctx, employee.OrganizationID, employee.EmployeeID)
+	if err != nil {
+		return nil, err
+	}
+
 	resp := &sharpnr_identity_auth_dtos.WebLoginResponse_dto{
 		OrgId:      employee.OrganizationID,
 		Email:      employee.Name,
 		EmployeeID: employee.EmployeeID,
 		Name:       employee.Name,
+		Org:        sharpnr_identity_auth_dtos.OrgData{Name: orgdetails.Name, SharpID: orgdetails.SharpID},
 	}
 
 	return resp, nil

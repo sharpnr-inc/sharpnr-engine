@@ -16,8 +16,12 @@ type Restaurant struct {
 	Name string    `gorm:"size:100;not null" json:"name"`
 
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
-	PropertyID     uuid.UUID `gorm:"type:uuid;not null;index"`
-	LegalEntityID  uuid.UUID `gorm:"type:uuid;not null;index"`
+
+	PropertyID uuid.UUID `gorm:"type:uuid;not null;index"`
+
+	// Legal Entity Can be Null for the Restaurant
+	// It is used for the Getting the Tax Details and Tax Codes for the item Againts the Price
+	LegalEntityID *uuid.UUID `gorm:"type:uuid;index"`
 
 	IsPureVeg   bool   `gorm:"default:false" json:"is_pure_veg"`
 	OpeningTime string `gorm:"type:varchar(5);not null"` // "06:33"
@@ -31,6 +35,8 @@ type Restaurant struct {
 func (Restaurant) TableName() string {
 	return "hospitality.restaurant"
 }
+
+/* ----------------------------- ################### ----------------------------- */
 
 type RestaurantFloor struct {
 	ID           uuid.UUID `gorm:"type:uuid;primaryKey"`

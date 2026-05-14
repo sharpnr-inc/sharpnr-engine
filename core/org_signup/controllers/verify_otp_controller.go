@@ -82,8 +82,9 @@ func (c *orgSignUpController) VerifyOtpForSignup(ctx *gin.Context) {
 	}
 
 	// 7. Cleanup signup cookie & set auth cookie
-	c.cookies.ClearSignup(ctx)
+	c.cookies.Clear(ctx, cookieManager.Signup)
 	c.cookies.Set(ctx, cookieManager.Auth, token)
+	c.cookies.Set(ctx, cookieManager.CSRF, token)
 
 	// 8. Success response (FIXED)
 	utils.Success(

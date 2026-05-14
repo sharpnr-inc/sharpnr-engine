@@ -25,7 +25,7 @@ type Employee struct {
 
 	Role         string `gorm:"type:varchar(50);not null"`
 	Status       string `gorm:"type:varchar(20);default:'ACTIVE'"`
-	EmployeeCode string `gorm:"type:varchar(50);uniqueIndex"    json:"employee_code"`
+	EmployeeCode string `gorm:"type:varchar(50)" json:"employee_code"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

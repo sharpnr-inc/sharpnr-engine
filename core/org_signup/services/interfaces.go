@@ -19,7 +19,7 @@ type OrganizationSignUpServiceInterfaces interface {
 	InitiateRegistration(
 		ctx context.Context,
 		req org_signup_dtos.OrganizationRegistrationDTO,
-	) (string, error)
+	) (uuid.UUID, error)
 
 	// This is method simple verify the slug or token in cookie
 	// which was set by the *org_sign_controller*

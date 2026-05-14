@@ -6,6 +6,7 @@ import (
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
+	organization_constants "sharpnr-engine/core/organization/constants"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -29,6 +30,7 @@ func (s *orgSetupWizardService) Step_two_AddProperty(ctx context.Context, orgID,
 		mappedData := org_property_contracts.CreateOrgPropertyInput{
 			OrgID:       input.OrgID,
 			Name:        input.Name,
+			Code:        input.PropertyCode,
 			AddressLine: input.AddressLine,
 			City:        input.City,
 			State:       input.State,
@@ -44,6 +46,10 @@ func (s *orgSetupWizardService) Step_two_AddProperty(ctx context.Context, orgID,
 			dbTx, org_setup_wizards_constants.SetupStatusCompleted,
 			input.OrgID, input.StepID,
 		); err != nil {
+			return err
+		}
+
+		if err := s.orgService.UpdateStatus(dbTx, orgID, organization_constants.OrgConfigStatusConfigured); err != nil {
 			return err
 		}
 

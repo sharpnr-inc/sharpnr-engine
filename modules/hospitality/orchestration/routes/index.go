@@ -13,6 +13,8 @@ func RegisterOrchestrationRoutes(r *gin.RouterGroup, m app.ModulesProvider) {
 
 	orchestration := r.Group("/orchestration")
 	{
-		orchestration.GET("/", hoc.TestingFunc)
+		orchestration.GET("/hotels", hoc.ListAllHotelsHandler)
+		orchestration.GET("/restuarant", hoc.ListAllRestaurantHandler)
+		orchestration.GET("/bar", hoc.ListAllBarHandler)
 	}
 }

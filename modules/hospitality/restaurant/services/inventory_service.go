@@ -46,7 +46,7 @@ func (s *restaurantService) AddNewInventoryInRestaurant(ctx context.Context, org
 
 		mappedReq := &inventory_dtos.NewInventoryRequestDto{
 			BusinessUnitID: &restaurantID,
-			LegalEntityID:  &restaurantDetails.LegalEntityID,
+			LegalEntityID:  restaurantDetails.LegalEntityID,
 			Name:           request.Name,
 			Description:    request.Description,
 			Location:       request.Location,

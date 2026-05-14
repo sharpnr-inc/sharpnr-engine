@@ -1,7 +1,9 @@
 package api
 
 import (
+	"fmt"
 	v1 "sharpnr-engine/api/v1"
+	"sharpnr-engine/api/v1mobile"
 	"sharpnr-engine/app"
 	"sharpnr-engine/config"
 	"sharpnr-engine/cookieManager"
@@ -10,6 +12,7 @@ import (
 	org_signup "sharpnr-engine/core/org_signup"
 	sharpnrIdentity_routes "sharpnr-engine/core/sharpnr_identity/routes"
 	"sharpnr-engine/middlewares"
+	mobile_middleware "sharpnr-engine/middlewares/mobile"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	orchestrator_routes "sharpnr-engine/orchestrator/routes"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
@@ -31,6 +34,34 @@ func SetupRouter(
 	corsConfig config.CORSConfig,
 
 ) *gin.Engine {
+	gin.ForceConsoleColor()
+	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
+		methodColors := map[string]string{
+			"GET":    "\033[1;32m", // bold green
+			"POST":   "\033[1;34m", // bold blue
+			"PUT":    "\033[1;33m", // bold yellow
+			"PATCH":  "\033[1;35m", // bold magenta
+			"DELETE": "\033[1;31m", // bold red
+		}
+
+		reset := "\033[0m"
+		pathColor := "\033[1;36m"    // bold cyan  — the endpoint path
+		handlerColor := "\033[2;37m" // dim white  — handler name (less important)
+		arrowColor := "\033[1;90m"   // dark gray  — the --> arrow
+
+		color, ok := methodColors[httpMethod]
+		if !ok {
+			color = "\033[1;37m"
+		}
+
+		fmt.Printf("[GIN-debug] %s%-7s%s %s%-60s%s %s-->%s %s%s%s \033[90m(%d handlers)%s\n",
+			color, httpMethod, reset,
+			pathColor, absolutePath, reset,
+			arrowColor, reset,
+			handlerColor, handlerName, reset,
+			nuHandlers, reset,
+		)
+	}
 
 	router := gin.Default()
 
@@ -65,7 +96,19 @@ func SetupRouter(
 	// ========================
 	mobileV1 := router.Group("/api/v1/mobile")
 	{
-		sharpnrIdentity_routes.RegisterSharpnrIdentityMobileRoutes(mobileV1, db, redis)
+		// Unprotected routes for the Login
+		sharpnrIdentity_routes.RegisterSharpnrIdentityMobileRoutes(mobileV1, jwtmgr, modules, cookies)
+		protected_mobile_routes := mobileV1.Group("/")
+
+		// these are mobile routes for the other user
+		protected_mobile_routes.Use(
+			mobile_middleware.MobileMiddleware(jwtmgr),
+		)
+
+		orchestrator_routes.RegisterOrchestratorRoutes(protected_mobile_routes, txManager, cookies, jwtmgr, modules)
+		v1mobile.RegisterMobilesModulesRoutes(protected_mobile_routes, modules)
+		sharpnrIdentity_routes.RegisterIdentityProtectedMobileRoutes(protected_mobile_routes, modules, cookies, jwtmgr)
+
 	}
 
 	return router

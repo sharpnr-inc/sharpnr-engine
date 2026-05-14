@@ -20,9 +20,6 @@ func (s *employeeService) UpdateSuperAdminEmployee(
 	if updates.LastName != nil {
 		updateMap["last_name"] = *updates.LastName
 	}
-	if updates.SecondaryEmail != nil {
-		updateMap["secondary_email"] = *updates.SecondaryEmail
-	}
 
 	// Note: Usually, you wouldn't allow updating OrganizationID or EmployeeID
 	// through a general update map for security, but if required:
