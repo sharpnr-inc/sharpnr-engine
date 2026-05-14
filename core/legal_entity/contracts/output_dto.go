@@ -18,9 +18,10 @@ type LegalEntityTaxCategoryResponseDto struct {
 	ReceivableAccountID uuid.UUID `json:"receivable_account_id"`
 	IncomeAccountID     uuid.UUID `json:"income_account_id"`
 
-	// Multiple rules
 	Rules []LegalEntityTaxCategoryTaxRuleResponseDto `json:"rules"`
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 type LegalEntityTaxCategoryTaxRuleResponseDto struct {
 	LegalEntityTaxRegistrationID uuid.UUID `json:"legal_entity_tax_registration_id"`
@@ -75,3 +76,17 @@ type TaxCategoryTaxComponent struct {
 	Code              string
 	TaxRate           float64
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// Legal Enity General Response DTO,
+//
+// This can be General Slice
+type LegalEntityResponseDto struct {
+	ID          uuid.UUID
+	Name        string
+	LegalName   string
+	EnitityType string
+}
+
+/* ---------------------------------- <***> --------------------------------- */

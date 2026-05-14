@@ -8,7 +8,9 @@ import (
 )
 
 type OrgLegalEntityRepoInterface interface {
+
 	CreateLegalEntity(ctx context.Context, legalEntity *legal_entity_models.LegalEntity) error
+	
 	GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) ([]*legal_entity_models.LegalEntity, error)
 	GetLegalEntityByID(ctx context.Context, legalEntityID uuid.UUID) (*legal_entity_models.LegalEntity, error)
 	UpdateLegalEntityStatus(ctx context.Context, legalEntityID uuid.UUID, isActive bool) error
@@ -20,8 +22,6 @@ type OrgLegalEntityRepoInterface interface {
 	CreateLegalEntityCompliance(ctx context.Context, compliance *legal_entity_models.LegalEntityCompliance) error
 	GetLegalCompliancesByLegalEntityID(ctx context.Context, legalEntityID uuid.UUID) ([]*legal_entity_models.LegalEntityCompliance, error)
 
-	// Binding Tables
-	AddPropertyInLegalEntity(ctx context.Context, propertyLegalEntityRelation *legal_entity_models.PropertyLegalEntity) error
 	LegalEntityTaxRepoInterface
 }
 

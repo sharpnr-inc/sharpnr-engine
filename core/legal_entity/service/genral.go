@@ -86,9 +86,6 @@ func (s *orgLegalEntity) GetLegalEntityDetails(ctx context.Context, orgID, emplI
 			LegalEntityID: le.ID,
 			Name:          le.LegalName,
 			EntityType:    le.EntityType,
-			GST:           le.GSTIN,
-			CIN:           le.CIN,
-			PAN:           le.PAN,
 			Country:       leAddr.Country,
 			AddedAt:       le.CreatedAt,
 		}
@@ -101,6 +98,26 @@ func (s *orgLegalEntity) GetLegalEntityDetails(ctx context.Context, orgID, emplI
 	}
 
 	return result, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orgLegalEntity) GetLegalEntityByID(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (*legal_entity_contracts.LegalEntityResponseDto, error) {
+
+	legalEntity, err := s.legalEntityRepo.GetLegalEntityByID(ctx, legalEntityID)
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, err
+		}
+	}
+
+	return &legal_entity_contracts.LegalEntityResponseDto{
+		ID:          legalEntity.ID,
+		Name:        legalEntity.DisplayName,
+		LegalName:   legalEntity.LegalName,
+		EnitityType: legalEntity.EntityType,
+	}, nil
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -135,9 +152,6 @@ func (s *orgLegalEntity) GetLegalEntityByOrgID(
 				LegalEntityID: le.ID,
 				Name:          le.LegalName,
 				EntityType:    le.EntityType,
-				GST:           le.GSTIN,
-				CIN:           le.CIN,
-				PAN:           le.PAN,
 				Country:       leAddr.Country,
 				AddedAt:       le.CreatedAt,
 			}

@@ -17,11 +17,13 @@ func migrateLegalEntity(db *gorm.DB) error {
 	return db.AutoMigrate(
 
 		&legal_entity_models.LegalEntity{},
-		&legal_entity_models.PropertyLegalEntity{},
+		&legal_entity_models.LegalEntityContact{},
+		&legal_entity_models.LegalEntityIdentifier{},
+		&legal_entity_models.LegalEntityBankAccount{},
 		&legal_entity_models.LegalEntityAddress{},
-		&legal_entity_models.LegalEntityTaxRegistration{},
-		&legal_entity_models.ModuleLegalEntity{},
+
 		&legal_entity_models.LegalEntityCompliance{},
+		&legal_entity_models.LegalEntityTaxRegistration{},
 		&legal_entity_models.TaxCategoryAccountMapping{},
 		&legal_entity_models.LegalEntityTaxCategory{},
 		&legal_entity_models.LegalEntityTaxRule{},

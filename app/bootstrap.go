@@ -79,6 +79,7 @@ func BootstrapModules(
 	hospitalityOrchestration := bootstrapHospitalityDomainOrchestration(
 		orgPropertyService,
 		hospitality,
+		orgLegalEntityService,
 	)
 
 	/* ---------------------------- Accounting Engine --------------------------- */

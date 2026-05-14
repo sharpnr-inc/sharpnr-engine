@@ -50,10 +50,12 @@ func bootstrapSharpnrOrchestrator(
 func bootstrapHospitalityDomainOrchestration(
 	orgPropertyService org_property_services.OrganizationPropertyServicesInterfaces,
 	hospitalityDomainSvc *hospitalitydomain.HospitalityDomain,
+	legalEntityService legal_entity_service.OrgLegalEntityServiceInterface,
 ) hospitality_orchestration_service.OrchestrationServiceInterface {
 	return hospitality_orchestration_service.NewHospitalityOrchestrationService(
 		orgPropertyService,
 		hospitalityDomainSvc.HotelService(),
 		hospitalityDomainSvc.RestaurantService(),
+		legalEntityService,
 	)
 }
