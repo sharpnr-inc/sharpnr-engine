@@ -11,15 +11,9 @@ func (s *orgSetupWizardService) Step_three_AddLegalEntity(
 	step_three_input org_setup_wizard_contracts.SetupLegalEntityInput,
 ) error {
 
-	inputData := legal_entity_contracts.NewLegalEntityInput{
-		OrgID:       step_three_input.OrgID,
-		LegalName:   step_three_input.LegalName,
-		Type:        step_three_input.Type,
-		AddressLine: step_three_input.AddressLine,
-		City:        step_three_input.City,
-		State:       step_three_input.State,
-		Country:     step_three_input.Country,
-		Pincode:     step_three_input.Pincode,
+	inputData := legal_entity_contracts.NewLegalEntityRequestDto{
+		OrgID:     step_three_input.OrgID,
+		LegalName: step_three_input.LegalName,
 	}
 
 	if _, err := s.orgLegalEntitySvc.CreateNewLegalEntity(ctx, inputData); err != nil {

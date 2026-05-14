@@ -23,7 +23,6 @@ type OrchestratorServiceInterface interface {
 	PaymentOrchestratorServiceInterface
 	SuppliersAndVendorsOrchestratorServiceInterface
 	InventoryOrchestratorServiceInterface
-
 	OrchestratorSetupWizardInterface
 }
 
@@ -53,10 +52,9 @@ type OrganizationOrchestartionInterface interface {
 /* -------------------------------------------------------------------------- */
 
 type LegalEntityOrchestrationServiceInterface interface {
-	CreateLegalEntity(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.AddLegalEntity_REQ_DTO) error
-	GetAllLegalEntity(ctx context.Context, orgID uuid.UUID) ([]*orchestrator_dtos.LegalEntity_Response_dto, error)
+	CreateLegalEntity(ctx context.Context, orgID, emplID uuid.UUID, req *legal_entity_contracts.NewLegalEntityRequestDto) error
+	GetAllLegalEntity(ctx context.Context, orgID, emplID uuid.UUID) ([]legal_entity_contracts.LegalEntityResponseDto, error)
 
-	// Tax Registration related OP
 	AddTaxRegsitrationInLegalEntity(
 		ctx context.Context,
 		orgID, emplID, legalEntity uuid.UUID,

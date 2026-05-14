@@ -3,7 +3,6 @@ package orchestrator_controllers
 import (
 	"net/http"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
-	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
@@ -17,18 +16,18 @@ import (
 
 func (c *OrchestratorController) AddLegalEntity(ctx *gin.Context) {
 
-	orgID, _, ok := c.resolveRequestContexts(ctx)
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
 		return
 	}
 
-	var req *orchestrator_dtos.AddLegalEntity_REQ_DTO
+	var req *legal_entity_contracts.NewLegalEntityRequestDto
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
 		return
 	}
 
-	if err := c.orchestService.CreateLegalEntity(ctx, orgID, req); err != nil {
+	if err := c.orchestService.CreateLegalEntity(ctx, orgID, emplID, req); err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
 		return
 	}
@@ -40,12 +39,12 @@ func (c *OrchestratorController) AddLegalEntity(ctx *gin.Context) {
 
 func (c *OrchestratorController) ListAllLegalEntity(ctx *gin.Context) {
 
-	orgID, _, ok := c.resolveRequestContexts(ctx)
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
 		return
 	}
 
-	res, err := c.orchestService.GetAllLegalEntity(ctx, orgID)
+	res, err := c.orchestService.GetAllLegalEntity(ctx, orgID, emplID)
 	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
 		return

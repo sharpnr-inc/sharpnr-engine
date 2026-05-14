@@ -116,8 +116,8 @@ type LegalEntityTaxRule struct {
 	Rate    float64 `gorm:"not null"`         // aggregate rate e.g. 18.0
 
 	ConditionJSON datatypes.JSON // see schema above
-	MinValue      float64
-	MaxValue      float64
+	MinValue      *float64
+	MaxValue      *float64
 
 	// Priority: lower number evaluated first.
 	// Use 1–10 for specific slabs, 99 for catch-all.

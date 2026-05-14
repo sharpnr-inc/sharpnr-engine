@@ -91,6 +91,8 @@ func (s *orgLegalEntity) AddLegalEntityTaxCategory(
 	})
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (c *orgLegalEntity) GetAllLegalEntityTaxCategory(
 	ctx context.Context,
 	orgID, emplID, legalEntityID uuid.UUID,
@@ -152,6 +154,8 @@ func (c *orgLegalEntity) GetAllLegalEntityTaxCategory(
 
 	return res, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (c *orgLegalEntity) buildRuleDtos(
 	ctx context.Context,
@@ -308,3 +312,5 @@ func (s *orgLegalEntity) GetTaxCategoryDetails(
 
 	return response, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */

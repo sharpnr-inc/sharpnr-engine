@@ -78,15 +78,3 @@ type TaxCategoryTaxComponent struct {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
-
-// Legal Enity General Response DTO,
-//
-// This can be General Slice
-type LegalEntityResponseDto struct {
-	ID          uuid.UUID
-	Name        string
-	LegalName   string
-	EnitityType string
-}
-
-/* ---------------------------------- <***> --------------------------------- */

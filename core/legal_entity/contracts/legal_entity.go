@@ -1,29 +1,43 @@
 package legal_entity_contracts
 
 import (
+	legal_entity_constants "sharpnr-engine/core/legal_entity/constants"
 	"time"
 
 	"github.com/google/uuid"
 )
 
-type NewLegalEntityInput struct {
+/* ---------------------------------- <***> --------------------------------- */
+
+type NewLegalEntityRequestDto struct {
 	OrgID       uuid.UUID
 	LegalName   string
-	Type        string
-	AddressLine string
-	City        string
-	State       string
-	Country     string
-	Pincode     string
+	DisplayName string
+	Type        legal_entity_constants.LegalEntityType
+	Addresses   []CreateLegalEntityAddressRequest
 }
 
-type LegalEntityReader struct {
-	LegalEntityID uuid.UUID
-	Name          string
-	EntityType    string
-	GST           *string
-	CIN           *string
-	PAN           *string
-	Country       string
-	AddedAt       time.Time
+type CreateLegalEntityAddressRequest struct {
+	AddressLine1 string
+	AddressLine2 string
+
+	AddressType legal_entity_constants.LegalEntityAddressType
+
+	City         string
+	State        string
+	GSTStateCode string
+	Country      string
+	Pincode      string
+	IsPrimary    bool
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+type LegalEntityResponseDto struct {
+	ID          uuid.UUID
+	DisplayName string
+	
+	EntityType  legal_entity_constants.LegalEntityType
+	Country     string
+	AddedAt     time.Time
 }

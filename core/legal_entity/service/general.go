@@ -2,6 +2,7 @@ package legal_entity_service
 
 import (
 	"context"
+	"fmt"
 	dbtx "sharpnr-engine/core/dbTx"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	legal_entity_models "sharpnr-engine/core/legal_entity/models"
@@ -13,7 +14,7 @@ import (
 
 func (r *orgLegalEntity) CreateNewLegalEntity(
 	ctx context.Context,
-	input legal_entity_contracts.NewLegalEntityInput,
+	input legal_entity_contracts.NewLegalEntityRequestDto,
 ) (legalEntityID uuid.UUID, err error) {
 
 	err = r.txManager.WithTx(ctx, func(tx *gorm.DB) error {
@@ -34,22 +35,6 @@ func (r *orgLegalEntity) CreateNewLegalEntity(
 			return err
 		}
 
-		legEntAddr := &legal_entity_models.LegalEntityAddress{
-			ID:            uuid.New(),
-			LegalEntityID: legalEntity.ID,
-			Type:          "OPERATION",
-			AddressLine:   input.AddressLine,
-			City:          input.City,
-			State:         input.State,
-			Pincode:       input.Pincode,
-			Country:       input.Country,
-			IsPrimary:     true,
-		}
-
-		if err := r.legalEntityRepo.AddAddressInLegalEntity(txCtx, legEntAddr); err != nil {
-			return err
-		}
-
 		legalEntityID = legalEntity.ID
 		return nil
 	})
@@ -63,8 +48,8 @@ func (r *orgLegalEntity) CreateNewLegalEntity(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orgLegalEntity) GetLegalEntityDetails(ctx context.Context, orgID, emplId, legalEntityID uuid.UUID) (*legal_entity_contracts.LegalEntityReader, error) {
-	var result *legal_entity_contracts.LegalEntityReader
+func (s *orgLegalEntity) GetLegalEntityDetails(ctx context.Context, orgID, emplId, legalEntityID uuid.UUID) (*legal_entity_contracts.LegalEntityResponseDto, error) {
+	var result *legal_entity_contracts.LegalEntityResponseDto
 
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
@@ -76,18 +61,19 @@ func (s *orgLegalEntity) GetLegalEntityDetails(ctx context.Context, orgID, emplI
 		}
 
 		// 2. Fetch the associated Address
-		leAddr, err := s.legalEntityRepo.GetAddressOfLegalEntity(txCtx, le.ID)
+		leAddr, err := s.legalEntityRepo.GetAddressesOfLegalEntity(txCtx, le.ID)
 		if err != nil {
 			return err
 		}
 
+		fmt.Println(leAddr)
+
 		// 3. Map the data to the contract
-		result = &legal_entity_contracts.LegalEntityReader{
-			LegalEntityID: le.ID,
-			Name:          le.LegalName,
-			EntityType:    le.EntityType,
-			Country:       leAddr.Country,
-			AddedAt:       le.CreatedAt,
+		result = &legal_entity_contracts.LegalEntityResponseDto{
+			ID:          le.ID,
+			DisplayName: le.LegalName,
+			EntityType:  le.EntityType,
+			AddedAt:     le.CreatedAt,
 		}
 
 		return nil
@@ -114,9 +100,7 @@ func (s *orgLegalEntity) GetLegalEntityByID(ctx context.Context, orgID, emplID, 
 
 	return &legal_entity_contracts.LegalEntityResponseDto{
 		ID:          legalEntity.ID,
-		Name:        legalEntity.DisplayName,
-		LegalName:   legalEntity.LegalName,
-		EnitityType: legalEntity.EntityType,
+		DisplayName: legalEntity.DisplayName,
 	}, nil
 }
 
@@ -125,37 +109,21 @@ func (s *orgLegalEntity) GetLegalEntityByID(ctx context.Context, orgID, emplID, 
 func (s *orgLegalEntity) GetLegalEntityByOrgID(
 	ctx context.Context,
 	orgID uuid.UUID,
-) ([]*legal_entity_contracts.LegalEntityReader, error) {
+) ([]legal_entity_contracts.LegalEntityResponseDto, error) {
 
-	var results []*legal_entity_contracts.LegalEntityReader
+	var results []legal_entity_contracts.LegalEntityResponseDto
 
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 
 		txCtx := dbtx.InjectTx(ctx, tx)
 
 		// Fetch legal entities
-		legalEntities, err := s.legalEntityRepo.GetLegalEntityByOrgID(txCtx, orgID)
+		legalEntities, err := s.legalEntityRepo.GetLegalEntitiesByOrgID(txCtx, orgID)
 		if err != nil {
 			return err
 		}
 
-		results = make([]*legal_entity_contracts.LegalEntityReader, len(legalEntities))
-
-		for i, le := range legalEntities {
-
-			leAddr, err := s.legalEntityRepo.GetAddressOfLegalEntity(txCtx, le.ID)
-			if err != nil {
-				return err
-			}
-
-			results[i] = &legal_entity_contracts.LegalEntityReader{
-				LegalEntityID: le.ID,
-				Name:          le.LegalName,
-				EntityType:    le.EntityType,
-				Country:       leAddr.Country,
-				AddedAt:       le.CreatedAt,
-			}
-		}
+		results = make([]legal_entity_contracts.LegalEntityResponseDto, len(legalEntities))
 
 		return nil
 	})
@@ -166,3 +134,5 @@ func (s *orgLegalEntity) GetLegalEntityByOrgID(
 
 	return results, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */

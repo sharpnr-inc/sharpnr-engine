@@ -65,8 +65,8 @@ func (s *orchestratorService) ListAllOrganizationSuppliers(ctx context.Context, 
 
 				// Append the legal entity info to the supplier's link list
 				supplierDetail.LegalEntityLinks = append(supplierDetail.LegalEntityLinks, suppliers_dtos.SuppliersLegalEntity{
-					LegalEntityID:   leDetails.LegalEntityID,
-					LegalEntityName: leDetails.Name,
+					LegalEntityID:   leDetails.ID,
+					LegalEntityName: leDetails.DisplayName,
 				})
 			}
 

@@ -8,7 +8,6 @@ import (
 	"sharpnr-engine/config"
 	"sharpnr-engine/cookieManager"
 	dbtx "sharpnr-engine/core/dbTx"
-	legal_entity_routes "sharpnr-engine/core/legal_entity/routes"
 	org_signup "sharpnr-engine/core/org_signup"
 	sharpnrIdentity_routes "sharpnr-engine/core/sharpnr_identity/routes"
 	"sharpnr-engine/middlewares"
@@ -86,7 +85,6 @@ func SetupRouter(
 		{
 			v1.RegisterModuleRoutes(protected, modules)
 			orchestrator_routes.RegisterOrchestratorRoutes(protected, txManager, cookies, jwtmgr, modules)
-			legal_entity_routes.RegisterLegalEntityRoutes(protected, modules)
 			sharpnrIdentity_routes.RegisterSharpnrIdentityProtectedWebRoutes(protected, cookies, jwtmgr, modules)
 		}
 	}

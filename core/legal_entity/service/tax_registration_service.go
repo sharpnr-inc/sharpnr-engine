@@ -41,6 +41,8 @@ func (s *orgLegalEntity) AddLegalEntityTaxRegistration(
 	})
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *orgLegalEntity) GetAllLegelEntityTaxRegistration(
 	ctx context.Context,
 	orgID, emplID, legalEntityID uuid.UUID,
