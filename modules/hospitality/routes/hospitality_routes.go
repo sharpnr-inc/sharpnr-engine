@@ -21,13 +21,16 @@ func RegisterHotelModuleRoutes(
 	// Route Group
 	sharpHospitality := v1.Group("/sharp-hospitality")
 
+	// this is the hospitality orchestration layer
+	// which manages What resources organization have in Hospitality sector
+	hospitality_orchestration_routes.RegisterOrchestrationRoutes(sharpHospitality, modules)
+
 	hotel_routes.RegisterHotelRoutes(sharpHospitality, modules)
 	kitchen_routes.KitchenRoutes(sharpHospitality, modules)
 	menu_routes.RegisterMenuRoutes(sharpHospitality, modules)
 	restaurant_routes.RestaurantRoutes(sharpHospitality, modules)
 	bar_routes.BarRoutes(sharpHospitality, modules)
 
+	// !! This need to take the SharpHospitality router group
 	hospitality_utilities.RegisterHospitalityUtilityRoutes(v1)
-	hospitality_orchestration_routes.RegisterOrchestrationRoutes(v1, modules)
-
 }
