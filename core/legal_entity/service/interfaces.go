@@ -8,12 +8,12 @@ import (
 )
 
 type OrgLegalEntityServiceInterface interface {
-	CreateNewLegalEntity(ctx context.Context, input legal_entity_contracts.NewLegalEntityRequestDto) (legalEntityID uuid.UUID, err error)
+	CreateNewLegalEntity(ctx context.Context, orgID, emplID uuid.UUID, input legal_entity_contracts.NewLegalEntityRequestDto) (legalEntityID uuid.UUID, err error)
 	GetLegalEntityByID(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (*legal_entity_contracts.LegalEntityResponseDto, error)
 	GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) ([]legal_entity_contracts.LegalEntityResponseDto, error)
 	GetLegalEntityDetails(ctx context.Context, orgID, emplId, legalEntityID uuid.UUID) (*legal_entity_contracts.LegalEntityResponseDto, error)
 
-	// AddNewAddressInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (addressID uuid.UUID, err error)
+	AddNewAddressInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req legal_entity_contracts.CreateLegalEntityAddressRequest) (addressID uuid.UUID, err error)
 	// GetLegalEntityAddresses(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]string, error)
 
 	LegalEntityTaxCongfigsServiceInterface

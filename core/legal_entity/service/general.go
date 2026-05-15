@@ -12,8 +12,11 @@ import (
 	"gorm.io/gorm"
 )
 
+// Create a new Legal Entity for the organization
+// and returns the LegalEntityID
 func (r *orgLegalEntity) CreateNewLegalEntity(
 	ctx context.Context,
+	orgID, emplID uuid.UUID,
 	input legal_entity_contracts.NewLegalEntityRequestDto,
 ) (legalEntityID uuid.UUID, err error) {
 
@@ -22,20 +25,33 @@ func (r *orgLegalEntity) CreateNewLegalEntity(
 		txCtx := dbtx.InjectTx(ctx, tx)
 
 		legalEntity := &legal_entity_models.LegalEntity{
-			ID:             uuid.New(),
-			OrganizationID: input.OrgID,
-			LegalName:      input.LegalName,
-			DisplayName:    input.DisplayName,
-			EntityType:     input.Type,
-			IsActive:       false,
-			CreatedAt:      time.Now(),
-			UpdatedAt:      time.Now(),
-			// IncorporationDate: ,
-			FYStartMonth: 4,
+			ID:                uuid.New(),
+			OrganizationID:    input.OrgID,
+			LegalName:         input.LegalName,
+			DisplayName:       input.DisplayName,
+			EntityType:        input.Type,
+			IsActive:          false,
+			CreatedAt:         time.Now(),
+			UpdatedAt:         time.Now(),
+			FYStartMonth:      input.FiscalYearMonth,
+			IncorporationDate: &input.IncorporationDate,
 		}
 
+		// Repo methods to create the legal Entity
 		if err := r.legalEntityRepo.CreateLegalEntity(txCtx, legalEntity); err != nil {
 			return err
+		}
+
+		// Corrected slice length check
+		if len(input.Addresses) > 0 {
+			for _, a := range input.Addresses {
+				// Assign to outer-scope 'err' instead of declaring via ':='
+				// Added missing legalEntity.ID and the address request payload 'a'
+				_, err = r.AddNewAddressInLegalEntity(txCtx, orgID, emplID, legalEntity.ID, a)
+				if err != nil {
+					return err
+				}
+			}
 		}
 
 		legalEntityID = legalEntity.ID

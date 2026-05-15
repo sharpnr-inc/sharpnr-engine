@@ -15,7 +15,7 @@ func (c *orchestratorService) CreateLegalEntity(ctx context.Context, orgID, empl
 	return c.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
-		legalEntityID, err := c.legalEntityService.CreateNewLegalEntity(txCtx, *req)
+		legalEntityID, err := c.legalEntityService.CreateNewLegalEntity(txCtx, orgID, emplID, *req)
 		if err != nil {
 			return err
 		}

@@ -115,7 +115,6 @@ type InventoryOrchestratorServiceInterface interface {
 // progress of the setup wizard for a given organization.
 type OrchestratorSetupWizardInterface interface {
 	SetupWiz_AddProperty(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req *orchestrator_dtos.SetupOrgPropertyReqDTO) error
-	SetupWiz_AddLegalEntity(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupLegalEntityReqDTO) error
 
 	// This method retrieves the current progress of the setup wizard for a given organization. It returns a structured response containing the overall status, current step, progress percentage,
 	// completion status, and details of each step in the wizard.
