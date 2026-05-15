@@ -116,3 +116,64 @@ check:
 # Full pipeline: lint → test → build → deploy
 # =========================================================
 ship: lint test deploy
+
+
+# ==========================================
+# Environment setup
+# ==========================================
+ENV ?= development
+ENV_FILE = .env.$(ENV)
+
+ifneq (,$(wildcard $(ENV_FILE)))
+    include $(ENV_FILE)
+    export
+endif
+
+DB_URL = postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=$(DB_SSLMODE)
+MIGRATIONS_PATH = migrations
+
+# ==========================================
+# Migration commands
+# ==========================================
+
+## Run all pending migrations
+migrate-up:
+	@echo "▶ Running migrations ($(ENV))..."
+	@migrate -path $(MIGRATIONS_PATH) -database "$(DB_URL)" up
+	@echo "✓ Migrations applied"
+
+## Rollback last migration
+migrate-down:
+	@echo "▼ Rolling back 1 migration ($(ENV))..."
+	@migrate -path $(MIGRATIONS_PATH) -database "$(DB_URL)" down 1
+	@echo "✓ Rolled back"
+
+## Rollback ALL migrations
+migrate-down-all:
+	@echo "▼ Rolling back ALL migrations ($(ENV))..."
+	@migrate -path $(MIGRATIONS_PATH) -database "$(DB_URL)" down -all
+	@echo "✓ All rolled back"
+
+## Show current migration version
+migrate-version:
+	@migrate -path $(MIGRATIONS_PATH) -database "$(DB_URL)" version
+
+## Create new migration: make migrate-create name=add_cost_center
+migrate-create:
+	@if [ -z "$(name)" ]; then echo "❌ Usage: make migrate-create name=your_migration_name"; exit 1; fi
+	@migrate create -ext sql -dir $(MIGRATIONS_PATH) -seq $(name)
+	@echo "✓ Created migration: $(name)"
+
+## Force a version (fix dirty state): make migrate-force v=1
+migrate-force:
+	@if [ -z "$(v)" ]; then echo "❌ Usage: make migrate-force v=1"; exit 1; fi
+	@migrate -path $(MIGRATIONS_PATH) -database "$(DB_URL)" force $(v)
+	@echo "✓ Forced version: $(v)"
+
+## Go to a specific version: make migrate-goto v=2
+migrate-goto:
+	@if [ -z "$(v)" ]; then echo "❌ Usage: make migrate-goto v=2"; exit 1; fi
+	@migrate -path $(MIGRATIONS_PATH) -database "$(DB_URL)" goto $(v)
+	@echo "✓ Migrated to version: $(v)"
+
+.PHONY: migrate-up migrate-down migrate-down-all migrate-version migrate-create migrate-force migrate-goto

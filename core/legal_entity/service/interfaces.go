@@ -13,6 +13,9 @@ type OrgLegalEntityServiceInterface interface {
 	GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) ([]legal_entity_contracts.LegalEntityResponseDto, error)
 	GetLegalEntityDetails(ctx context.Context, orgID, emplId, legalEntityID uuid.UUID) (*legal_entity_contracts.LegalEntityResponseDto, error)
 
+	// AddNewAddressInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (addressID uuid.UUID, err error)
+	// GetLegalEntityAddresses(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]string, error)
+
 	LegalEntityTaxCongfigsServiceInterface
 	LegalEntityTaxEngineAdapterInterface
 }

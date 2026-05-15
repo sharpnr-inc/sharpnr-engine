@@ -46,6 +46,8 @@ func (r *orgLegalEntity) CreateNewLegalEntity(
 	return legalEntityID, nil
 }
 
+
+
 /* ---------------------------------- <***> --------------------------------- */
 
 func (s *orgLegalEntity) GetLegalEntityDetails(ctx context.Context, orgID, emplId, legalEntityID uuid.UUID) (*legal_entity_contracts.LegalEntityResponseDto, error) {

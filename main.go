@@ -10,7 +10,6 @@ import (
 	"sharpnr-engine/config"
 	"sharpnr-engine/cookieManager"
 	dbtx "sharpnr-engine/core/dbTx"
-	"sharpnr-engine/migrations"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sero"
 	"sharpnr-engine/shared/database"
@@ -39,7 +38,7 @@ import (
 // @schemes http https
 // @BasePath /api/v1
 func main() {
-	
+
 	cfg := config.Load()
 	redisDb := database.ConnectRedis(cfg.Redis)
 	db := database.ConnectDB(cfg.Database)
@@ -50,11 +49,6 @@ func main() {
 		log.Fatalf("DB migration failed: %v", err)
 	}
 	log.Println("✅ Database migration completed.")
-
-	err = migrations.RunDataMigrations(db)
-	if err != nil {
-		log.Fatalf("Data migration failed: %v", err)
-	}
 
 	/* ---------------------------------- <***> --------------------------------- */
 
