@@ -1,6 +1,7 @@
 package legal_entity_models
 
 import (
+	legal_entity_constants "sharpnr-engine/core/legal_entity/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -19,7 +20,7 @@ type LegalEntityContact struct {
 	ID            uuid.UUID `gorm:"type:uuid;primaryKey"`
 	LegalEntityID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	Type string `gorm:"size:30;not null"` // see Contact constants
+	Type legal_entity_constants.LegalEntityContactType `gorm:"size:30;not null"` // see Contact constants
 
 	FirstName   string `gorm:"size:100;not null"`
 	LastName    string `gorm:"size:100"`

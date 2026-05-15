@@ -57,10 +57,10 @@ type LegalEntityIdentifier struct {
 	ID            uuid.UUID `gorm:"type:uuid;primaryKey"`
 	LegalEntityID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	Type  string `gorm:"size:30;not null"` // see Identifier constants
-	Value string `gorm:"size:100;not null"`
+	Type legal_entity_constants.LegalEntityIdentifierTypes `gorm:"size:30;not null"` // see Identifier constants
 
-	IsVerified bool `gorm:"default:false;not null"`
+	Value      string `gorm:"size:100;not null"`
+	IsVerified bool   `gorm:"default:false;not null"`
 	VerifiedAt *time.Time
 
 	// ExpiresAt is null for permanent IDs (PAN, CIN).

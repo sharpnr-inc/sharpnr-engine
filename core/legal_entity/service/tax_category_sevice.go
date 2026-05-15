@@ -75,7 +75,7 @@ func (s *orgLegalEntity) AddLegalEntityTaxCategory(
 			taxRuleComponent := &legal_entity_models.LegalEntityTaxComponent{
 				ID:                   uuid.New(),
 				LegalEntityTaxRuleID: taxCategoryRule.ID,
-				ComponentCode:        tc.ComponentCode,
+		
 				Rate:                 tc.Rate,
 				LiabilityAccountID:   tc.LiabilityAccountID,
 				CreatedAt:            time.Now(),
@@ -175,7 +175,7 @@ func (c *orgLegalEntity) buildRuleDtos(
 
 		for _, comp := range components {
 			componentDtos = append(componentDtos, legal_entity_contracts.TaxComponentResponseDto{
-				ComponentCode:      comp.ComponentCode,
+				
 				Rate:               comp.Rate,
 				LiabilityAccountID: comp.LiabilityAccountID,
 			})
@@ -183,7 +183,7 @@ func (c *orgLegalEntity) buildRuleDtos(
 
 		ruleDtos = append(ruleDtos, legal_entity_contracts.LegalEntityTaxCategoryTaxRuleResponseDto{
 			LegalEntityTaxRegistrationID: rule.LegalEntityTaxRegistrationID,
-			TaxType:                      rule.TaxType,
+			
 			Rate:                         rule.Rate,
 			MinValue:                     rule.MinValue,
 			MaxValue:                     rule.MaxValue,
@@ -269,7 +269,7 @@ func (s *orgLegalEntity) GetTaxCategoryDetails(
 				TaxCategoryRuleID: dbRule.ID,
 				TaxCategoryID:     dbRule.LegalEntityTaxCategoryID,
 				TaxRegistrationID: dbRule.LegalEntityTaxRegistrationID,
-				TaxType:           dbRule.TaxType,
+				
 				Rate:              dbRule.Rate,
 				EffectiveFrom:     dbRule.EffectiveFrom,
 				EffectiveTo:       dbRule.EffectiveTo,
@@ -294,7 +294,7 @@ func (s *orgLegalEntity) GetTaxCategoryDetails(
 			for _, comp := range components {
 				ruleItem.TaxBreakdown = append(ruleItem.TaxBreakdown, legal_entity_contracts.TaxCategoryRule{
 					TaxCategoryRuleID: comp.ID,
-					TaxType:           comp.ComponentCode, // Mapping ComponentCode to TaxType for breakdown
+					
 					Rate:              comp.Rate,
 				})
 			}

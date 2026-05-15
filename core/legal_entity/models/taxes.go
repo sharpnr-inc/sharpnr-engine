@@ -1,6 +1,7 @@
 package legal_entity_models
 
 import (
+	legal_entity_constants "sharpnr-engine/core/legal_entity/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -23,12 +24,13 @@ type LegalEntityTaxRegistration struct {
 	ID            uuid.UUID `gorm:"type:uuid;primaryKey"`
 	LegalEntityID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	TaxType            string `gorm:"size:10;not null"` // GST | VAT
+	TaxType legal_entity_constants.LegalEntityTaxType `gorm:"size:10;not null"` // GST | VAT
+
 	RegistrationNumber string `gorm:"size:20;not null"` // GSTIN is always 15 chars
 
 	// GSTRegistrationType affects rate applicability and return forms.
 	// COMPOSITION entities pay at a flat rate and cannot charge GST to customers.
-	GSTRegistrationType string `gorm:"size:20;not null;default:'REGULAR'"` // see GSTType constants
+	GSTRegistrationType legal_entity_constants.LegalEntityGSTRegistrationType `gorm:"size:20;not null;default:'REGULAR'"` // see GSTType constants
 
 	State        string `gorm:"size:100"`
 	GSTStateCode string `gorm:"size:2"` // "06", "27" — join key for tax resolution
@@ -112,8 +114,9 @@ type LegalEntityTaxRule struct {
 	LegalEntityTaxCategoryID     uuid.UUID `gorm:"type:uuid;not null;index"`
 	LegalEntityTaxRegistrationID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	TaxType string  `gorm:"size:10;not null"` // GST | VAT
-	Rate    float64 `gorm:"not null"`         // aggregate rate e.g. 18.0
+	TaxType legal_entity_constants.LegalEntityTaxType `gorm:"size:10;not null"` // GST | VAT
+
+	Rate float64 `gorm:"not null"` // aggregate rate e.g. 18.0
 
 	ConditionJSON datatypes.JSON // see schema above
 	MinValue      *float64
@@ -161,8 +164,9 @@ type LegalEntityTaxComponent struct {
 	LegalEntityTaxRuleID uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	// ComponentCode: CGST | SGST | IGST | UGST | CESS | VAT
-	ComponentCode string  `gorm:"size:10;not null"`
-	Rate          float64 `gorm:"not null"` // individual % e.g. 9.0
+	ComponentCode legal_entity_constants.LegalEntityTaxComponentType `gorm:"size:10;not null"`
+
+	Rate float64 `gorm:"not null"` // individual % e.g. 9.0
 
 	// LiabilityAccountID points to one specific Tax Payable ledger
 	// in your Chart of Accounts (CGST Payable, SGST Payable, etc.).

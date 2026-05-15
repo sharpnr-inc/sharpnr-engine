@@ -25,10 +25,13 @@ func (r *orgLegalEntity) CreateNewLegalEntity(
 			ID:             uuid.New(),
 			OrganizationID: input.OrgID,
 			LegalName:      input.LegalName,
+			DisplayName:    input.DisplayName,
 			EntityType:     input.Type,
 			IsActive:       false,
 			CreatedAt:      time.Now(),
 			UpdatedAt:      time.Now(),
+			// IncorporationDate: ,
+			FYStartMonth: 4,
 		}
 
 		if err := r.legalEntityRepo.CreateLegalEntity(txCtx, legalEntity); err != nil {
@@ -45,8 +48,6 @@ func (r *orgLegalEntity) CreateNewLegalEntity(
 
 	return legalEntityID, nil
 }
-
-
 
 /* ---------------------------------- <***> --------------------------------- */
 
@@ -75,7 +76,6 @@ func (s *orgLegalEntity) GetLegalEntityDetails(ctx context.Context, orgID, emplI
 			ID:          le.ID,
 			DisplayName: le.LegalName,
 			EntityType:  le.EntityType,
-			AddedAt:     le.CreatedAt,
 		}
 
 		return nil

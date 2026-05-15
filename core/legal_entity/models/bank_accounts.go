@@ -1,6 +1,7 @@
 package legal_entity_models
 
 import (
+	legal_entity_constants "sharpnr-engine/core/legal_entity/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -28,7 +29,7 @@ type LegalEntityBankAccount struct {
 	BranchName        string `gorm:"size:100"`
 	MICRCode          string `gorm:"size:9"` // 9-digit MICR for cheque processing
 
-	AccountType string `gorm:"size:15;not null;default:'CURRENT'"` // see AccountType constants
+	AccountType legal_entity_constants.LegalEntityBankAccountType `gorm:"size:15;not null;default:'CURRENT'"` // see AccountType constants
 
 	// IsPrimary marks the default account for outgoing payments.
 	IsPrimary bool `gorm:"default:false;not null"`

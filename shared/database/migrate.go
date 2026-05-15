@@ -55,7 +55,7 @@ func MigrateNewDB(cfg config.DatabaseConfig) error {
 		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name,
 	)
 
-	m, err := migrate.New("file://db/migrations", dsn)
+	m, err := migrate.New("file://migrations", dsn)
 	if err != nil {
 		return fmt.Errorf("failed to init migrator: %w", err)
 	}

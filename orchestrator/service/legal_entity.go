@@ -20,6 +20,9 @@ func (c *orchestratorService) CreateLegalEntity(ctx context.Context, orgID, empl
 			return err
 		}
 
+		// Whenever a new Legal Entity is Created we create an Accounting books
+		// with proper defaults Accounts and Accounts Groups
+
 		accountInput := accounting_engine_contracts.DraftAccountingSetupInput{
 			OrgID:               orgID,
 			LegalEntityID:       legalEntityID,

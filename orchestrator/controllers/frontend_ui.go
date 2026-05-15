@@ -7,6 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// !! soon to be depricated
+// this is will move to the hospitality orchestrations
+//
+
 func (c *OrchestratorController) GetAllRestaurants(ctx *gin.Context) {
 	orgID, empID, ok := c.resolveRequestContexts(ctx)
 	if !ok {

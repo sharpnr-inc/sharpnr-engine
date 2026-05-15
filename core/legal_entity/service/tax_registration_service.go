@@ -23,7 +23,7 @@ func (s *orgLegalEntity) AddLegalEntityTaxRegistration(
 		taxRegistration := &legal_entity_models.LegalEntityTaxRegistration{
 			ID:                 uuid.New(),
 			LegalEntityID:      request.LegalEntityID,
-			TaxType:            request.TaxType,
+			
 			RegistrationNumber: request.RegistrationNumber,
 			State:              request.State,
 			Country:            request.Country,
@@ -59,7 +59,7 @@ func (s *orgLegalEntity) GetAllLegelEntityTaxRegistration(
 
 		dto := legal_entity_contracts.LegalEntityTaxRegistrationResponseDto{
 			ID:                 tr.ID,
-			TaxType:            tr.TaxType,
+			
 			RegistrationNumber: tr.RegistrationNumber,
 			Country:            tr.Country,
 			State:              tr.State,

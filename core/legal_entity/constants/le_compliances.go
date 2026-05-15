@@ -16,3 +16,14 @@ const (
 	LicenseESIC      LegalEntityLicenseType = "ESIC"
 	LicensePT        LegalEntityLicenseType = "PT" // Professional Tax
 )
+
+type LegalEntityContactType string
+
+// Contact types
+const (
+	ContactTypeDirector   LegalEntityContactType = "DIRECTOR"
+	ContactTypeAuthorized LegalEntityContactType = "AUTHORIZED_SIGNATORY"
+	ContactTypeAccounts   LegalEntityContactType = "ACCOUNTS"
+	ContactTypeCompliance LegalEntityContactType = "COMPLIANCE"
+	ContactTypeOperations LegalEntityContactType = "OPERATIONS"
+)

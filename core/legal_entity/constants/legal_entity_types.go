@@ -54,3 +54,13 @@ func AllBusinessRegistrationTypes() []LegalEntityType {
 
 /* ---------------------------------- <***> --------------------------------- */
 
+type LegalEntityGSTRegistrationType string
+
+// GST registration types
+const (
+	GSTTypeRegular     LegalEntityGSTRegistrationType = "REGULAR"
+	GSTTypeComposition LegalEntityGSTRegistrationType = "COMPOSITION"
+	GSTTypeSEZ         LegalEntityGSTRegistrationType = "SEZ"
+	GSTTypeISD         LegalEntityGSTRegistrationType = "ISD" // Input Service Distributor
+	GSTTypeCasual      LegalEntityGSTRegistrationType = "CASUAL"
+)

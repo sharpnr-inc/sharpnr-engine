@@ -48,6 +48,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("DB migration failed: %v", err)
 	}
+
+	
 	log.Println("✅ Database migration completed.")
 
 	/* ---------------------------------- <***> --------------------------------- */
