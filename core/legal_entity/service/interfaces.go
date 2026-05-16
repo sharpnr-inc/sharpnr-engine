@@ -23,10 +23,7 @@ type OrgLegalEntityServiceInterface interface {
 /* ---------------------------------- <***> --------------------------------- */
 
 type LegalEntityTaxCongfigsServiceInterface interface {
-	AddLegalEntityTaxRegistration(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, request legal_entity_contracts.CreateLegalEntityTaxRegistrationRequestDto) error
-	GetAllLegelEntityTaxRegistration(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]legal_entity_contracts.LegalEntityTaxRegistrationResponseDto, error)
-	AddLegalEntityTaxCategory(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, request legal_entity_contracts.CreateLegalEntityTaxCategory) error
-	GetAllLegalEntityTaxCategory(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]legal_entity_contracts.LegalEntityTaxCategoryResponseDto, error)
+
 	GetTaxCategoryByID(ctx context.Context, taxCategoryID uuid.UUID) (legal_entity_contracts.TaxCategoryReader, error)
 }
 

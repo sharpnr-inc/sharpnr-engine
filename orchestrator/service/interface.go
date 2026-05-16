@@ -50,30 +50,8 @@ type OrganizationOrchestartionInterface interface {
 /* -------------------------------------------------------------------------- */
 
 type LegalEntityOrchestrationServiceInterface interface {
-	CreateLegalEntity(ctx context.Context, orgID, emplID uuid.UUID, req *legal_entity_contracts.NewLegalEntityRequestDto) error
 	GetAllLegalEntity(ctx context.Context, orgID, emplID uuid.UUID) ([]legal_entity_contracts.LegalEntityResponseDto, error)
-
-	AddTaxRegsitrationInLegalEntity(
-		ctx context.Context,
-		orgID, emplID, legalEntity uuid.UUID,
-		req legal_entity_contracts.CreateLegalEntityTaxRegistrationRequestDto,
-	) error
-
-	GetAllTaxRegistrationOfLegalEntity(
-		ctx context.Context,
-		orgID, emplID, legalEntity uuid.UUID,
-	) ([]legal_entity_contracts.LegalEntityTaxRegistrationResponseDto, error)
-
-	AddTaxCategoryInLegalEntiy(
-		ctx context.Context,
-		orgID, emplID, legalEntity uuid.UUID,
-		req legal_entity_contracts.CreateLegalEntityTaxCategory,
-	) error
-
-	ListAllTaxCategoryOfLegalEntity(
-		ctx context.Context,
-		orgID, emplID, legalEntity uuid.UUID,
-	) ([]legal_entity_contracts.LegalEntityTaxCategoryResponseDto, error)
+	CreateLegalEntity(ctx context.Context, orgID, emplID uuid.UUID, req *legal_entity_contracts.NewLegalEntityRequestDto) error
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -86,12 +64,7 @@ type CustomerOrchestratorServiceInterface interface {
 type PaymentOrchestratorServiceInterface interface {
 	AddPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req payment_engine_contracts.CreatePaymentAccountRequest) error
 	GetAllPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]payment_engine_contracts.PaymentAccountResponseDto, error)
-	AddGatewayConfigInPaymentAccount(
-		ctx context.Context,
-		orgID, emplID uuid.UUID,
-		req payment_engine_contracts.AddGatewayConfigRequest,
-	) error
-
+	AddGatewayConfigInPaymentAccount(ctx context.Context, orgID, emplID uuid.UUID, req payment_engine_contracts.AddGatewayConfigRequest) error
 	GetPaymentAccountDetails(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, paymentAccountID uuid.UUID) ([]payment_engine_contracts.GatewayConfigResponse, error)
 }
 
