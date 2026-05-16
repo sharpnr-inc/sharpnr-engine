@@ -64,8 +64,3 @@ func (r *organizationService) VerifyOrgByID(ctx context.Context, orgID uuid.UUID
 	}
 	return true, nil
 }
-
-// GetOrgHQ implements OrganizationPublicServiceInterface.
-func (r *organizationService) GetOrgHQ() {
-	panic("unimplemented")
-}

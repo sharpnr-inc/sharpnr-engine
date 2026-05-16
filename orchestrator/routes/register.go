@@ -26,7 +26,6 @@ func RegisterOrchestratorRoutes(
 	registerPropertyRoutes(org, orchestController)
 	registerLegalEntityRoutes(org, orchestController)
 	registerSetupWizardRoutes(org, orchestController)
-	registerHospitalityRoutes(org, orchestController)
 	registerCustomerRoutes(org, orchestController)
 	paymentOrchestratorRoutes(org, orchestController)
 	registerOrgSupplierRoutes(org, orchestController)

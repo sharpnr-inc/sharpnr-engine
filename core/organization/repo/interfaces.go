@@ -9,29 +9,14 @@ import (
 )
 
 type RedisOrganizationRepositoryInterface interface {
+
 	// Store temp org with TTL
-	Create(
-		ctx context.Context,
-		tempOrg *models.OrganizationSignUpStaging,
-	) error
-
+	Create(ctx context.Context, tempOrg *models.OrganizationSignUpStaging) error
 	// Fetch temp org
-	Get(
-		ctx context.Context,
-		signupID string,
-	) (*models.OrganizationSignUpStaging, error)
-
+	Get(ctx context.Context, signupID string) (*models.OrganizationSignUpStaging, error)
 	// Remove after success or expiry
-	Delete(
-		ctx context.Context,
-		signupID string,
-	) error
-
-	GetByEmailOrPhone(
-		ctx context.Context,
-		email string,
-		phone string,
-	) (bool, error)
+	Delete(ctx context.Context, signupID string) error
+	GetByEmailOrPhone(ctx context.Context, email string, phone string) (bool, error)
 }
 
 type OrganizationRepositoryInterface interface {
@@ -41,19 +26,7 @@ type OrganizationRepositoryInterface interface {
 	GetOrganizationByEmail(ctx context.Context, rootEmail string) (*models.Organization, error)
 	UpdateOrganizationStatus(ctx context.Context, orgID uuid.UUID, status organization_constants.OrgSetupStatusType) error
 	UpdateOrgName(ctx context.Context, orgID uuid.UUID, name string) error
-
-	CreateOrgSubscription(
-		ctx context.Context,
-		orgSub *models.OrganizationSubscription,
-	) error
-
-	GetOrgSubscriptionPlan(
-		ctx context.Context,
-		orgId uuid.UUID,
-	) (*models.OrganizationSubscription, error)
-
-	AddOrgVerificationDetails(
-		ctx context.Context,
-		orgVerification *models.OrganizationVerification,
-	) error
+	CreateOrgSubscription(ctx context.Context, orgSub *models.OrganizationSubscription) error
+	GetOrgSubscriptionPlan(ctx context.Context, orgId uuid.UUID) (*models.OrganizationSubscription, error)
+	AddOrgVerificationDetails(ctx context.Context, orgVerification *models.OrganizationVerification) error
 }
