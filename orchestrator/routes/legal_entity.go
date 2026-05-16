@@ -12,23 +12,10 @@ func registerLegalEntityRoutes(r *gin.RouterGroup, co *orchestrator_controllers.
 	{
 		ler.GET("", co.ListAllLegalEntity)
 		ler.POST("/create", co.AddLegalEntity)
-
-		letr := ler.Group("/tax-registration/:legalEntityID")
-
-		{
-			letr.POST("/add", co.AddTaxRegistrationLegalEntity)
-			letr.GET("", co.ListAllTaxRegistrationOfLegalEntity) // this returns the all tax registration
-		}
-
-		letc := ler.Group("/tax-category/:legalEntityID")
-		{
-			letc.POST("/add", co.AddTaxCategoryInLegalEntity)
-			letc.GET("", co.ListAllTaxCategoryOfLegalEntry) // this will return all the Tax Category of the of Legal Entity
-
-		}
-
-		// These are utils routes where user can fetch the helpers/utils
-		// Legal_entity
+		ler.GET("/:legalEntityID/details")
+		ler.POST("/:legalEntityID/add-address")
+		ler.POST("/:legalEntityID/add-bankaccount")
+		ler.POST("/:legalEntityID/add-identities")
 
 		le_utils := ler.Group("/utils")
 		{
