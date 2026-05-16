@@ -45,8 +45,6 @@ func (r *orgLegalEntity) CreateNewLegalEntity(
 		// Corrected slice length check
 		if len(input.Addresses) > 0 {
 			for _, a := range input.Addresses {
-				// Assign to outer-scope 'err' instead of declaring via ':='
-				// Added missing legalEntity.ID and the address request payload 'a'
 				_, err = r.AddNewAddressInLegalEntity(txCtx, orgID, emplID, legalEntity.ID, a)
 				if err != nil {
 					return err

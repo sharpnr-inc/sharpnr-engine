@@ -36,16 +36,11 @@ type RedisOrganizationRepositoryInterface interface {
 
 type OrganizationRepositoryInterface interface {
 	CreateOrganization(ctx context.Context, org *models.Organization) error
-	CreateOrganizationStatus(ctx context.Context, orgStatus *models.OrganizationSetupStatus) error
 	GetOrganizationByID(ctx context.Context, orgID uuid.UUID) (*models.Organization, error)
 	GetOrganizationBySharpID(ctx context.Context, sharpID string) (*models.Organization, error)
 	GetOrganizationByEmail(ctx context.Context, rootEmail string) (*models.Organization, error)
 	UpdateOrganizationStatus(ctx context.Context, orgID uuid.UUID, status organization_constants.OrgSetupStatusType) error
 	UpdateOrgName(ctx context.Context, orgID uuid.UUID, name string) error
-
-	CreateOrgOffice(ctx context.Context, office *models.OrganizationOffice) error
-	CreateOrgOfficeAddress(ctx context.Context, officeAddr *models.OrganizationOfficeAddress) error
-	CreateOrgOfficeGeoLocation(ctx context.Context, geoLocation *models.OrganizationGeoLocation) error
 
 	CreateOrgSubscription(
 		ctx context.Context,
@@ -60,10 +55,5 @@ type OrganizationRepositoryInterface interface {
 	AddOrgVerificationDetails(
 		ctx context.Context,
 		orgVerification *models.OrganizationVerification,
-	) error
-
-	AddOrgOfficeAddress(
-		ctx context.Context,
-		Addr *models.OrganizationOffice,
 	) error
 }

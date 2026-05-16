@@ -11,13 +11,7 @@ func migrateCore(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&models.Organization{},
 		&models.OrganizationSubscription{},
-		&models.OrganizationOffice{},
-		&models.OrganizationOfficeAddress{},
-		&models.OrganizationOfficeCompliance{},
-		&models.OrganizationOfficeContact{},
 		&models.OrganizationSetting{},
 		&models.OrganizationVerification{},
-		&models.OrganizationSetupStatus{},
-		&models.OrganizationGeoLocation{},
 	)
 }

@@ -111,10 +111,6 @@ func (r *organizationRepo) UpdateOrganizationStatus(ctx context.Context, orgID u
 	return nil
 }
 
-func (d *organizationRepo) AddOrgOfficeAddress(ctx context.Context, Addr *models.OrganizationOffice) error {
-	return d.db.WithContext(ctx).Create(Addr).Error
-}
-
 // AddOrgVerificationDetails implements MainOrgSignUpRepositoryInterface.
 func (d *organizationRepo) AddOrgVerificationDetails(ctx context.Context, orgVerification *models.OrganizationVerification) error {
 	return d.db.WithContext(ctx).Create(orgVerification).Error
@@ -141,10 +137,6 @@ func (d *organizationRepo) GetOrgSubscriptionPlan(ctx context.Context, orgID uui
 	}
 
 	return &subscription, nil
-}
-
-func (d *organizationRepo) CreateOrganizationStatus(ctx context.Context, orgStatus *models.OrganizationSetupStatus) error {
-	return d.db.WithContext(ctx).Create(orgStatus).Error
 }
 
 func (r *organizationRepo) UpdateOrgName(ctx context.Context, orgID uuid.UUID, name string) error {
