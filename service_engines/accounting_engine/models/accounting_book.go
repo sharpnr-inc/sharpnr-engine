@@ -28,9 +28,3 @@ type AccountingBook struct {
 func (AccountingBook) TableName() string {
 	return "accounting_engine.accounting_book"
 }
-
-type AccountingBookMeta struct {
-	ID               uuid.UUID
-	AccountingBookID uuid.UUID
-	Currency         string
-}

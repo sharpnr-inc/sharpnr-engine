@@ -26,23 +26,3 @@ type Organization struct {
 func (Organization) TableName() string {
 	return "core.organization"
 }
-
-type OrganizationContact struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	OrganizationID uuid.UUID `gorm:"type:uuid;index"`
-
-	Label string `gorm:"type:varchar(50);not null"` // SALES, SUPPORT, BILLING
-
-	ContactPerson *string `gorm:"type:varchar(100)"`
-	Email         *string `gorm:"type:varchar(100)"`
-	Phone         *string `gorm:"type:varchar(20)"`
-
-	IsPrimary bool `gorm:"default:false"`
-
-	CreatedAt time.Time
-}
-
-func (OrganizationContact) TableName() string {
-	return "core.organization_contact"
-}

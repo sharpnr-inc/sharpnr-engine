@@ -43,13 +43,11 @@ func main() {
 	redisDb := database.ConnectRedis(cfg.Redis)
 	db := database.ConnectDB(cfg.Database)
 
-	// Run migrations
-	err := database.MigrateDB(db)
+	err := database.MigrateDB(cfg.Database)
 	if err != nil {
 		log.Fatalf("DB migration failed: %v", err)
 	}
 
-	
 	log.Println("✅ Database migration completed.")
 
 	/* ---------------------------------- <***> --------------------------------- */

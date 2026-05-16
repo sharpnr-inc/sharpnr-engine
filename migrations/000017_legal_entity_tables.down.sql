@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS legal_entity.tax_category_account_mapping;
+DROP TABLE IF EXISTS legal_entity.legal_entity_tax_component;
+DROP TABLE IF EXISTS legal_entity.legal_entity_tax_rule;
+DROP TABLE IF EXISTS legal_entity.legal_entity_tax_category;
+DROP TABLE IF EXISTS legal_entity.legal_entity_tax_registration;
+DROP TABLE IF EXISTS legal_entity.legal_entity_compliance;
+DROP TABLE IF EXISTS legal_entity.legal_entity_address;
+DROP TABLE IF EXISTS legal_entity.legal_entity_bank_account;
+DROP TABLE IF EXISTS legal_entity.legal_entity_identifier;
+DROP TABLE IF EXISTS legal_entity.legal_entity_contact;
+DROP TABLE IF EXISTS legal_entity.legal_entity;

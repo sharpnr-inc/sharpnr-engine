@@ -10,8 +10,7 @@ import (
 
 // Replace the return types and arguments with whatever is actually
 // defined in your OrgLegalEntityServiceInterface definition.
-func (s *orgLegalEntity) GetTaxCategoryByID(ctx context.Context, taxCategoryID uuid.UUID) (legal_entity_contracts.TaxCategoryReader, error) {
-	// Your implementation here...
+func (s *orgLegalEntity) GetTaxCategoryByID(ctx context.Context, taxCategoryID uuid.UUID) (legal_entity_contracts.TaxCategoryReader, error) { // Your implementation here...
 
 	panic("implement me")
 }
