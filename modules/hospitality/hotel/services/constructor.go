@@ -1,8 +1,8 @@
 package hotelservices
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
 	hotelrepo "sharpnr-engine/modules/hospitality/hotel/repo"
+	dbtx "sharpnr-engine/pkg/dbTx"
 )
 
 type hotelService struct {

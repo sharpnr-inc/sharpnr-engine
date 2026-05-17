@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	dbtx "sharpnr-engine/core/dbTx"
 	payment_constants "sharpnr-engine/payment_engine/constant"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	contracts "sharpnr-engine/payment_engine/contracts"
 	payment_gateway "sharpnr-engine/payment_engine/gateway"

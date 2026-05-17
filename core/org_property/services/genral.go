@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
 	property_constants "sharpnr-engine/core/org_property/constants"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	org_property_models "sharpnr-engine/core/org_property/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 
 	"github.com/google/uuid"

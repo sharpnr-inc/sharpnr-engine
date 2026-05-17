@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/shared/utils"
 	"sync"
 

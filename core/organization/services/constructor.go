@@ -1,8 +1,8 @@
 package organization_services
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
 	organization_repo "sharpnr-engine/core/organization/repo"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sharp_mailer_engine"
 )
 

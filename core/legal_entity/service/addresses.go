@@ -2,10 +2,10 @@ package legal_entity_service
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
 	legal_entity_constants "sharpnr-engine/core/legal_entity/constants"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	legal_entity_models "sharpnr-engine/core/legal_entity/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 
 	"github.com/google/uuid"

@@ -3,9 +3,9 @@ package organization_repo
 import (
 	"context"
 	"errors"
-	dbtx "sharpnr-engine/core/dbTx"
 	organization_constants "sharpnr-engine/core/organization/constants"
 	"sharpnr-engine/core/organization/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"strings"
 
 	"github.com/google/uuid"

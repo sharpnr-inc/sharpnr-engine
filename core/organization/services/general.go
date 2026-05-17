@@ -3,8 +3,8 @@ package organization_services
 import (
 	"context"
 	"errors"
-	dbtx "sharpnr-engine/core/dbTx"
 	organization_constants "sharpnr-engine/core/organization/constants"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 
 	"github.com/google/uuid"

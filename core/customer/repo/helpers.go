@@ -3,7 +3,7 @@ package org_customer_repo
 import (
 	"context"
 	org_customer_models "sharpnr-engine/core/customer/models"
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 )

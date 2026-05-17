@@ -1,8 +1,8 @@
 package kitchenservices
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
 	kitchenrepo "sharpnr-engine/modules/hospitality/kitchen/repos"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 	sse_engine "sharpnr-engine/sse"
 )

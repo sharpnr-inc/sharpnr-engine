@@ -2,7 +2,7 @@ package inventory_engine_services
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
 	inventory_engine_repo "sharpnr-engine/service_engines/inventory_engine/repo"

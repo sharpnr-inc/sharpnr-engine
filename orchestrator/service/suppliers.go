@@ -3,9 +3,9 @@ package orchestrator_service
 import (
 	"context"
 	"errors"
-	dbtx "sharpnr-engine/core/dbTx"
 	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

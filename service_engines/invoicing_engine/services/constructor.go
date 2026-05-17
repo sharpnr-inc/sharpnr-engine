@@ -1,8 +1,8 @@
 package invoice_engine_services
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 	invoice_engine_repos "sharpnr-engine/service_engines/invoicing_engine/repos"
 	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"

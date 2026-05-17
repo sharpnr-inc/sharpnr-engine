@@ -2,8 +2,8 @@ package orchestrator_service
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	accounting_engine_contracts "sharpnr-engine/service_engines/accounting_engine/contracts"
 
 	"github.com/google/uuid"

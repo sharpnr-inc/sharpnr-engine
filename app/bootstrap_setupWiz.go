@@ -1,13 +1,13 @@
 package app
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_repos "sharpnr-engine/core/org_setup_wizard/repos"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
 	"gorm.io/gorm"

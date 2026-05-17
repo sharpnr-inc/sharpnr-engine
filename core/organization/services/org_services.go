@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
 	organization_constants "sharpnr-engine/core/organization/constants"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
 	"sharpnr-engine/core/organization/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/shared/utils"
 	"strings"
 

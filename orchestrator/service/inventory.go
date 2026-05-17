@@ -2,7 +2,7 @@ package orchestrator_service
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	inventory_dtos "sharpnr-engine/service_engines/inventory_engine/dtos"
 	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
 

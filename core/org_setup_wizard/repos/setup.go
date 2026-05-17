@@ -3,9 +3,9 @@ package org_setup_wizard_repos
 import (
 	"context"
 	"errors"
-	dbtx "sharpnr-engine/core/dbTx"
 	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_models "sharpnr-engine/core/org_setup_wizard/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 
 	"github.com/google/uuid"

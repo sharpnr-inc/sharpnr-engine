@@ -4,8 +4,8 @@ import (
 	"sharpnr-engine/app"
 	"sharpnr-engine/pkg/cookieManager"
 
-	dbtx "sharpnr-engine/core/dbTx"
 	orchestrator_controllers "sharpnr-engine/orchestrator/controllers"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 
 	"github.com/gin-gonic/gin"

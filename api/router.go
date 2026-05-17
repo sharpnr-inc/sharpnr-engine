@@ -6,7 +6,6 @@ import (
 	"sharpnr-engine/api/v1mobile"
 	"sharpnr-engine/app"
 	"sharpnr-engine/config"
-	dbtx "sharpnr-engine/core/dbTx"
 	org_signup "sharpnr-engine/core/org_signup"
 	sharpnrIdentity_routes "sharpnr-engine/core/sharpnr_identity/routes"
 	"sharpnr-engine/middlewares"
@@ -14,6 +13,7 @@ import (
 	webMiddleware "sharpnr-engine/middlewares/web"
 	orchestrator_routes "sharpnr-engine/orchestrator/routes"
 	"sharpnr-engine/pkg/cookieManager"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 
 	"github.com/gin-gonic/gin"

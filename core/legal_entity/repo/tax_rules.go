@@ -2,8 +2,8 @@ package legal_entity_repo
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
 	legal_entity_models "sharpnr-engine/core/legal_entity/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 
 	"github.com/google/uuid"

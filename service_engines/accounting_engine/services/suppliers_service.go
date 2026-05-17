@@ -2,7 +2,7 @@ package accounting_service
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	accounting_engine_contracts "sharpnr-engine/service_engines/accounting_engine/contracts"
 
 	"github.com/google/uuid"
