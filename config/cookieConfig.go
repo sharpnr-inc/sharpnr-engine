@@ -2,7 +2,7 @@ package config
 
 import (
 	"net/http"
-	"sharpnr-engine/cookieManager"
+	"sharpnr-engine/pkg/cookieManager"
 	"time"
 )
 

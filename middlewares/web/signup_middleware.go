@@ -2,7 +2,7 @@ package webMiddleware
 
 import (
 	"net/http"
-	"sharpnr-engine/cookieManager"
+	"sharpnr-engine/pkg/cookieManager"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 
 	"github.com/gin-gonic/gin"

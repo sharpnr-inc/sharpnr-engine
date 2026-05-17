@@ -4,9 +4,9 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"sharpnr-engine/cookieManager"
 	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
 	webMiddleware "sharpnr-engine/middlewares/web"
+	"sharpnr-engine/pkg/cookieManager"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"

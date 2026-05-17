@@ -2,8 +2,8 @@ package sharpnr_identity_auth_controllers
 
 import (
 	"net/http"
-	"sharpnr-engine/cookieManager"
 	sharpnr_identity_auth_dtos "sharpnr-engine/core/sharpnr_identity/dtos"
+	"sharpnr-engine/pkg/cookieManager"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"

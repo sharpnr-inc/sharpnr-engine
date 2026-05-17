@@ -2,7 +2,8 @@ package orchestrator_routes
 
 import (
 	"sharpnr-engine/app"
-	"sharpnr-engine/cookieManager"
+	"sharpnr-engine/pkg/cookieManager"
+
 	dbtx "sharpnr-engine/core/dbTx"
 	orchestrator_controllers "sharpnr-engine/orchestrator/controllers"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
