@@ -23,7 +23,7 @@ func RegisterOrchestratorRoutes(
 	orchestController := orchestrator_controllers.NewOrchestratorController(orchestService)
 
 	org := webV1.Group("/orchestrator")
-
+	registerOrgRoutes(org, orchestController)
 	registerPropertyRoutes(org, orchestController)
 	registerLegalEntityRoutes(org, orchestController)
 	registerSetupWizardRoutes(org, orchestController)
