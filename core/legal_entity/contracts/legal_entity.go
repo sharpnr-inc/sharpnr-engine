@@ -10,14 +10,13 @@ import (
 /* ---------------------------------- <***> --------------------------------- */
 
 type NewLegalEntityRequestDto struct {
-	OrgID             uuid.UUID                              `json:"org_id"`
 	LegalName         string                                 `json:"legal_name"`
 	DisplayName       string                                 `json:"display_name"`
 	Type              legal_entity_constants.LegalEntityType `json:"type"`
 	IncorporationDate time.Time                              `json:"incorporation_date"`
 	FiscalYearMonth   int                                    `json:"fiscal_year_month"`
-	// Address is Optional 
-	Addresses         []CreateLegalEntityAddressRequest      `json:"addresses,omitempty"`
+	// Address is Optional
+	Addresses []CreateLegalEntityAddressRequest `json:"addresses,omitempty"`
 }
 
 type CreateLegalEntityAddressRequest struct {

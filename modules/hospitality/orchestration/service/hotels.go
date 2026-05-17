@@ -21,7 +21,18 @@ func (s *hospitalityOrchestrationService) ListAllOrgsHotels(ctx context.Context,
 
 	// // for hotels we need to find the legal Entity details
 
-	
-
 	return "Hi", nil
+}
+
+func (s *hospitalityOrchestrationService) ListAllRestaurant(ctx context.Context, orgID, emplID uuid.UUID) error {
+
+	return nil
+}
+
+func (s *hospitalityOrchestrationService) ListAllBar(ctx context.Context, orgID, emplID uuid.UUID) error {
+	return nil
+}
+
+func (s *hospitalityOrchestrationService) ListAllInfra(ctx context.Context, orgID, empplID uuid.UUID) error {
+	return nil
 }

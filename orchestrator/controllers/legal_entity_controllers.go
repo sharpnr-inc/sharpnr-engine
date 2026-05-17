@@ -13,6 +13,24 @@ import (
 /*           All controllers legal entity management will be defined          */
 /* -------------------------------------------------------------------------- */
 
+/* -------------------------- list all Legal Entity ------------------------- */
+
+func (c *OrchestratorController) ListAllLegalEntity(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	res, err := c.orchestService.GetAllLegalEntity(ctx, orgID, emplID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Legal Entities retrieved successfully", res)
+}
+
 /* ---------------------------- Add Legal Entity ---------------------------- */
 
 func (c *OrchestratorController) AddLegalEntity(ctx *gin.Context) {
@@ -34,24 +52,6 @@ func (c *OrchestratorController) AddLegalEntity(ctx *gin.Context) {
 	}
 
 	utils.Success(ctx, http.StatusOK, "Legal Entity Created successfully")
-}
-
-/* -------------------------- list all Legal Entity ------------------------- */
-
-func (c *OrchestratorController) ListAllLegalEntity(ctx *gin.Context) {
-
-	orgID, emplID, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return
-	}
-
-	res, err := c.orchestService.GetAllLegalEntity(ctx, orgID, emplID)
-	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
-		return
-	}
-
-	utils.Success(ctx, http.StatusOK, "Legal Entities retrieved successfully", res)
 }
 
 /* -------------------------------------------------------------------------- */

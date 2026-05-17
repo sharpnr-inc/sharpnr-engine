@@ -57,5 +57,6 @@ func bootstrapHospitalityDomainOrchestration(
 		hospitalityDomainSvc.HotelService(),
 		hospitalityDomainSvc.RestaurantService(),
 		legalEntityService,
+		hospitalityDomainSvc.KitchenService(),
 	)
 }

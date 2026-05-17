@@ -26,7 +26,7 @@ func (r *orgLegalEntity) CreateNewLegalEntity(
 
 		legalEntity := &legal_entity_models.LegalEntity{
 			ID:                uuid.New(),
-			OrganizationID:    input.OrgID,
+			OrganizationID:    orgID,
 			LegalName:         input.LegalName,
 			DisplayName:       input.DisplayName,
 			EntityType:        input.Type,
@@ -125,6 +125,7 @@ func (s *orgLegalEntity) GetLegalEntityByID(ctx context.Context, orgID, emplID, 
 func (s *orgLegalEntity) GetLegalEntityByOrgID(
 	ctx context.Context,
 	orgID uuid.UUID,
+	emplID uuid.UUID,
 ) ([]legal_entity_contracts.LegalEntityResponseDto, error) {
 
 	var results []legal_entity_contracts.LegalEntityResponseDto

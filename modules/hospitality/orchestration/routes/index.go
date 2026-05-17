@@ -16,5 +16,6 @@ func RegisterOrchestrationRoutes(r *gin.RouterGroup, m app.ModulesProvider) {
 		orchestration.GET("/hotels", hoc.ListAllHotelsHandler)
 		orchestration.GET("/restuarant", hoc.ListAllRestaurantHandler)
 		orchestration.GET("/bar", hoc.ListAllBarHandler)
+		orchestration.GET("/infra", hoc.ListAllInfraHandler)
 	}
 }

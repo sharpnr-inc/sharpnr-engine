@@ -10,9 +10,9 @@ func registerLegalEntityRoutes(r *gin.RouterGroup, co *orchestrator_controllers.
 
 	ler := r.Group("/legal-entity")
 	{
-		ler.GET("", co.ListAllLegalEntity)
-		ler.POST("/create", co.AddLegalEntity)
+		ler.GET("", co.ListAllLegalEntity) // fetches the all the legal Entity of the Organizations
 		ler.GET("/:legalEntityID/details")
+		ler.POST("/create", co.AddLegalEntity)
 		ler.POST("/:legalEntityID/add-address")
 		ler.POST("/:legalEntityID/add-bankaccount")
 		ler.POST("/:legalEntityID/add-identities")

@@ -12,13 +12,27 @@ import (
 
 func (c *orchestratorService) GetAllLegalEntity(ctx context.Context, orgID, emplID uuid.UUID) ([]legal_entity_contracts.LegalEntityResponseDto, error) {
 
-	les, err := c.legalEntityService.GetLegalEntityByOrgID(ctx, orgID)
+	var response []legal_entity_contracts.LegalEntityResponseDto
+
+	err := c.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		les, err := c.legalEntityService.GetLegalEntityByOrgID(txCtx, orgID, emplID)
+		if err != nil {
+			return err
+		}
+
+		response = les
+
+		return nil
+	})
+
 	if err != nil {
-		return nil, err
+		return []legal_entity_contracts.LegalEntityResponseDto{}, err
 	}
 
-	return les, nil
-
+	return response, nil
 }
 
 /* ---------------------------------- <***> --------------------------------- */

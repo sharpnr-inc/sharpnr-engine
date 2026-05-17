@@ -80,6 +80,7 @@ func BootstrapModules(
 		orgPropertyService,
 		hospitality,
 		orgLegalEntityService,
+		
 	)
 
 	/* ---------------------------- Accounting Engine --------------------------- */
