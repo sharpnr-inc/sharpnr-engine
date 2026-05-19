@@ -2,6 +2,7 @@ package legal_entity_contracts
 
 import (
 	legal_entity_constants "sharpnr-engine/core/legal_entity/constants"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -38,9 +39,10 @@ type CreateLegalEntityAddressRequest struct {
 /* ---------------------------------- <***> --------------------------------- */
 
 type LegalEntityResponseDto struct {
-	ID          uuid.UUID `json:"id"`
-	DisplayName string    `json:"display_name"`
-	LegalName   string
-	Status      bool
-	EntityType  legal_entity_constants.LegalEntityType `json:"entity_type"`
+	ID                uuid.UUID                              `json:"id"`
+	DisplayName       string                                 `json:"display_name"`
+	LegalName         string                                 `json:"legal_name"`
+	Status            bool                                   `json:"status"`
+	EntityType        legal_entity_constants.LegalEntityType `json:"entity_type"`
+	IncorporationDate time.Time                              `json:"inc_date"`
 }

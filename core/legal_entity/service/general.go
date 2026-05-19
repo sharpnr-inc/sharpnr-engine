@@ -146,6 +146,22 @@ func (s *orgLegalEntity) GetLegalEntityByOrgID(
 
 		results = make([]legal_entity_contracts.LegalEntityResponseDto, len(legalEntities))
 
+		for i, entity := range legalEntities {
+			var incDate time.Time
+			if entity.IncorporationDate != nil {
+				incDate = *entity.IncorporationDate
+			}
+
+			results[i] = legal_entity_contracts.LegalEntityResponseDto{
+				ID:                entity.ID,
+				DisplayName:       entity.DisplayName,
+				LegalName:         entity.LegalName,
+				Status:            entity.IsActive, // Maps IsActive to Status
+				EntityType:        entity.EntityType,
+				IncorporationDate: incDate,
+			}
+		}
+
 		return nil
 	})
 
