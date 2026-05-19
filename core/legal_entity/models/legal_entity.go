@@ -24,7 +24,7 @@ type LegalEntity struct {
 
 	// EntityType drives which identifiers are expected and which
 	// compliance rules apply. e.g. PVT_LTD requires CIN, LLP requires LLPIN.
-	EntityType legal_entity_constants.LegalEntityType `gorm:"size:20;not null"` // see EntityType constants
+	EntityType legal_entity_constants.LegalEntityType `gorm:"size:50;not null"` // see EntityType constants
 
 	// IncorporationDate is needed for MCA filings, ROC compliance,
 	// and age-gating checks in certain regulated sectors.

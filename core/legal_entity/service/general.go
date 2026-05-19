@@ -6,6 +6,7 @@ import (
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	legal_entity_models "sharpnr-engine/core/legal_entity/models"
 	dbtx "sharpnr-engine/pkg/dbTx"
+	"sharpnr-engine/shared/utils"
 	"time"
 
 	"github.com/google/uuid"
@@ -24,6 +25,11 @@ func (r *orgLegalEntity) CreateNewLegalEntity(
 
 		txCtx := dbtx.InjectTx(ctx, tx)
 
+		incorporationDate, err := utils.ConvertDate(input.IncorporationDate)
+		if err != nil {
+			return err
+		}
+
 		legalEntity := &legal_entity_models.LegalEntity{
 			ID:                uuid.New(),
 			OrganizationID:    orgID,
@@ -34,15 +40,13 @@ func (r *orgLegalEntity) CreateNewLegalEntity(
 			CreatedAt:         time.Now(),
 			UpdatedAt:         time.Now(),
 			FYStartMonth:      input.FiscalYearMonth,
-			IncorporationDate: &input.IncorporationDate,
+			IncorporationDate: &incorporationDate,
 		}
 
-		// Repo methods to create the legal Entity
 		if err := r.legalEntityRepo.CreateLegalEntity(txCtx, legalEntity); err != nil {
 			return err
 		}
 
-		// Corrected slice length check
 		if len(input.Addresses) > 0 {
 			for _, a := range input.Addresses {
 				_, err = r.AddNewAddressInLegalEntity(txCtx, orgID, emplID, legalEntity.ID, a)
