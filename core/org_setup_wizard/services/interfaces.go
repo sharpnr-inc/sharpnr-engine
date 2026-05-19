@@ -12,10 +12,6 @@ import (
 // to Upgrade it Just add another interface making the
 type OrgSetupWizardV1_ServiceInterface interface {
 	Step_two_AddProperty(ctx context.Context, orgID, emplID uuid.UUID, input org_setup_wizard_contracts.PropertySetupInput) error
-	Step_three_AddLegalEntity(
-		ctx context.Context,
-		step_three_input org_setup_wizard_contracts.SetupLegalEntityInput,
-	) error
 
 	AddStepProgress(
 		ctx context.Context,

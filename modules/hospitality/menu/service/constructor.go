@@ -1,8 +1,8 @@
 package menuservice
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
 	menurepo "sharpnr-engine/modules/hospitality/menu/repo"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"
 )
 

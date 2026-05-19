@@ -23,7 +23,6 @@ type OrchestratorServiceInterface interface {
 	PaymentOrchestratorServiceInterface
 	SuppliersAndVendorsOrchestratorServiceInterface
 	InventoryOrchestratorServiceInterface
-
 	OrchestratorSetupWizardInterface
 }
 
@@ -35,8 +34,6 @@ type OrganizationPropertyOrchestrationInterface interface {
 }
 
 type HospitalityPropertyOrchestrationInterface interface {
-	GetAllRestaurant(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]orchestrator_dtos.AllRestaurantsResponseDto, error)
-	GetAllKitchen(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]orchestrator_dtos.AllKitchenResponseDto, error)
 	GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
 	CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error
 	GetPropertyInfra(ctx context.Context, propertyID uuid.UUID, orgID uuid.UUID, infraType *string) (*orchestrator_dtos.ListAllInfraOfProperty_Res_dto, error)
@@ -53,31 +50,8 @@ type OrganizationOrchestartionInterface interface {
 /* -------------------------------------------------------------------------- */
 
 type LegalEntityOrchestrationServiceInterface interface {
-	CreateLegalEntity(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.AddLegalEntity_REQ_DTO) error
-	GetAllLegalEntity(ctx context.Context, orgID uuid.UUID) ([]*orchestrator_dtos.LegalEntity_Response_dto, error)
-
-	// Tax Registration related OP
-	AddTaxRegsitrationInLegalEntity(
-		ctx context.Context,
-		orgID, emplID, legalEntity uuid.UUID,
-		req legal_entity_contracts.CreateLegalEntityTaxRegistrationRequestDto,
-	) error
-
-	GetAllTaxRegistrationOfLegalEntity(
-		ctx context.Context,
-		orgID, emplID, legalEntity uuid.UUID,
-	) ([]legal_entity_contracts.LegalEntityTaxRegistrationResponseDto, error)
-
-	AddTaxCategoryInLegalEntiy(
-		ctx context.Context,
-		orgID, emplID, legalEntity uuid.UUID,
-		req legal_entity_contracts.CreateLegalEntityTaxCategory,
-	) error
-
-	ListAllTaxCategoryOfLegalEntity(
-		ctx context.Context,
-		orgID, emplID, legalEntity uuid.UUID,
-	) ([]legal_entity_contracts.LegalEntityTaxCategoryResponseDto, error)
+	GetAllLegalEntity(ctx context.Context, orgID, emplID uuid.UUID) ([]legal_entity_contracts.LegalEntityResponseDto, error)
+	CreateLegalEntity(ctx context.Context, orgID, emplID uuid.UUID, req *legal_entity_contracts.NewLegalEntityRequestDto) error
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -90,12 +64,7 @@ type CustomerOrchestratorServiceInterface interface {
 type PaymentOrchestratorServiceInterface interface {
 	AddPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req payment_engine_contracts.CreatePaymentAccountRequest) error
 	GetAllPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]payment_engine_contracts.PaymentAccountResponseDto, error)
-	AddGatewayConfigInPaymentAccount(
-		ctx context.Context,
-		orgID, emplID uuid.UUID,
-		req payment_engine_contracts.AddGatewayConfigRequest,
-	) error
-
+	AddGatewayConfigInPaymentAccount(ctx context.Context, orgID, emplID uuid.UUID, req payment_engine_contracts.AddGatewayConfigRequest) error
 	GetPaymentAccountDetails(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, paymentAccountID uuid.UUID) ([]payment_engine_contracts.GatewayConfigResponse, error)
 }
 
@@ -117,7 +86,6 @@ type InventoryOrchestratorServiceInterface interface {
 // progress of the setup wizard for a given organization.
 type OrchestratorSetupWizardInterface interface {
 	SetupWiz_AddProperty(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req *orchestrator_dtos.SetupOrgPropertyReqDTO) error
-	SetupWiz_AddLegalEntity(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupLegalEntityReqDTO) error
 
 	// This method retrieves the current progress of the setup wizard for a given organization. It returns a structured response containing the overall status, current step, progress percentage,
 	// completion status, and details of each step in the wizard.

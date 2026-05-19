@@ -3,7 +3,7 @@ package accounting_service
 import (
 	"context"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	accountingconstants "sharpnr-engine/service_engines/accounting_engine/constants"
 	accounting_engine_contracts "sharpnr-engine/service_engines/accounting_engine/contracts"
 	accounting_engine_helpers "sharpnr-engine/service_engines/accounting_engine/helpers"

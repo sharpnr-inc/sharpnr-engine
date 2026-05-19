@@ -2,8 +2,8 @@ package org_supplier_repository
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
 	org_suppliers_models "sharpnr-engine/core/org_supplier/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 )

@@ -25,6 +25,5 @@ type OrganizationServiceInterface interface {
 
 	VerifySlugCreateDefaultOrg(ctx context.Context, otp string, slugID uuid.UUID) (output organization_contracts.InputDataForOrgAndEmp, err error)
 
-	AddHQ(ctx context.Context, input organization_contracts.OrganizationHQ) error
 	GetOrgDetailsByID(ctx context.Context, orgID, emplID uuid.UUID) (*organization_contracts.OrganizationResult, error)
 }

@@ -143,44 +143,6 @@ func (c *OrchestratorController) SetupWizOperation_AddProperty(ctx *gin.Context)
 	utils.Success(ctx, http.StatusOK, "Property Added Successfully")
 }
 
-// Step_three_LegalEntity godoc
-// @Summary      Setup Legal Entity
-// @Description  Third step of the onboarding wizard to define the organization's legal and physical presence.
-// @Tags         core-setup
-// @Accept       json
-// @Produce      json
-// @Param        request body orchestrator_dtos.SetupLegalEntityReqDTO true "Legal Entity Details"
-// @Success      200 {object} utils.Response "Legal entity configured successfully"
-// @Failure      400 {object} utils.Response "Validation or binding error"
-// @Failure      401 {object} utils.Response "Unauthorized"
-// @Failure      500 {object} utils.Response "Internal server error"
-// @Router       /orchestrator/setup-wiz/step3 [post]
-func (c *OrchestratorController) SetupWizOperation_AddLegalEntity(ctx *gin.Context) {
-
-	orgID, _, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return
-	}
-
-	// 3. Bind JSON Request (Fixed: initialized the DTO)
-	var req orchestrator_dtos.SetupLegalEntityReqDTO
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.ValidationError(ctx, err)
-		return
-	}
-
-	// 4. Call Service Layer
-	err := c.orchestService.SetupWiz_AddLegalEntity(ctx.Request.Context(), orgID, &req)
-	if err != nil {
-		// Map service error to appropriate failure
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
-		return
-	}
-
-	// 5. Success Wrap
-	utils.Success(ctx, http.StatusOK, "Legal entity details saved successfully")
-}
-
 func (c *OrchestratorController) SetupWiz_UpdateOrganizationName(ctx *gin.Context) {
 
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)

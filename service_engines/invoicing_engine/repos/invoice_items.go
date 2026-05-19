@@ -3,7 +3,7 @@ package invoice_engine_repos
 import (
 	"context"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	invoice_engine_models "sharpnr-engine/service_engines/invoicing_engine/models"
 )
 

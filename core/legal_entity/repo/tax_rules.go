@@ -2,8 +2,8 @@ package legal_entity_repo
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
 	legal_entity_models "sharpnr-engine/core/legal_entity/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 
 	"github.com/google/uuid"
@@ -33,6 +33,8 @@ func (r *orgLegalEntityRepo) CreateTaxRuleOfTaxCategory(
 	})
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (r *orgLegalEntityRepo) CreateTaxComponentOfTaxRule(
 	ctx context.Context,
 	tax_components *legal_entity_models.LegalEntityTaxComponent,
@@ -44,6 +46,8 @@ func (r *orgLegalEntityRepo) CreateTaxComponentOfTaxRule(
 
 	return db.WithContext(ctx).Create(tax_components).Error
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (r *orgLegalEntityRepo) GetActiveRulesByCategory(ctx context.Context, categoryID uuid.UUID) ([]legal_entity_models.LegalEntityTaxRule, error) {
 	db, ok := dbtx.ExtractTx(ctx)
@@ -67,6 +71,8 @@ func (r *orgLegalEntityRepo) GetActiveRulesByCategory(ctx context.Context, categ
 	return rules, err
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (r *orgLegalEntityRepo) GetTaxRuleComponents(ctx context.Context, ruleID uuid.UUID) ([]legal_entity_models.LegalEntityTaxComponent, error) {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
@@ -84,9 +90,10 @@ func (r *orgLegalEntityRepo) GetTaxRuleComponents(ctx context.Context, ruleID uu
 	return components, err
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 // --- Accounting Mapping (The "Where" in the Ledger) ---
 // Links a Tax Category to specific Ledger Accounts in a specific Book
-
 func (r *orgLegalEntityRepo) UpsertAccountingMapping(ctx context.Context, mapping *legal_entity_models.TaxCategoryAccountMapping) error {
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
@@ -96,6 +103,8 @@ func (r *orgLegalEntityRepo) UpsertAccountingMapping(ctx context.Context, mappin
 	// .Save handles both INSERT and UPDATE based on the Primary Key (ID)
 	return db.WithContext(ctx).Save(mapping).Error
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (r *orgLegalEntityRepo) ToggleRuleStatus(ctx context.Context, ruleID uuid.UUID, isActive bool) error {
 	db, ok := dbtx.ExtractTx(ctx)
@@ -110,3 +119,5 @@ func (r *orgLegalEntityRepo) ToggleRuleStatus(ctx context.Context, ruleID uuid.U
 		Update("is_active", isActive).
 		Error
 }
+
+/* ---------------------------------- <***> --------------------------------- */

@@ -1,7 +1,7 @@
 package org_signup_services
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	employee_services "sharpnr-engine/modules/hr/employees/services"

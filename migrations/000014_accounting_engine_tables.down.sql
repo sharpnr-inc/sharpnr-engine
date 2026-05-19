@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS accounting_engine.purchase_payment;
+DROP TABLE IF EXISTS accounting_engine.purchase_invoice_line;
+DROP TABLE IF EXISTS accounting_engine.purchase_invoice;
+DROP TABLE IF EXISTS accounting_engine.expense;
+DROP TABLE IF EXISTS accounting_engine.journal_line;
+DROP TABLE IF EXISTS accounting_engine.journal_entry;
+DROP TABLE IF EXISTS accounting_engine.account;
+DROP TABLE IF EXISTS accounting_engine.account_group;
+DROP TABLE IF EXISTS accounting_engine.fiscal_year;
+DROP TABLE IF EXISTS accounting_engine.accounting_book_setting;
+DROP TABLE IF EXISTS accounting_engine.accounting_book;

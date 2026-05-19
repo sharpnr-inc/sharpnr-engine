@@ -2,8 +2,8 @@ package orchestrator_service
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

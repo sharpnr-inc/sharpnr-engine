@@ -1,9 +1,9 @@
 package app
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
 	employee_repo "sharpnr-engine/modules/hr/employees/repo"
 	employee_services "sharpnr-engine/modules/hr/employees/services"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 

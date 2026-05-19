@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
 	organization_constants "sharpnr-engine/core/organization/constants"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
 	"sharpnr-engine/core/organization/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/shared/utils"
 	"strings"
 
@@ -105,15 +105,15 @@ func (r *organizationService) CreateNewOrganization(
 		return output, err
 	}
 
-	orgStatus := &models.OrganizationSetupStatus{
-		ID:              uuid.New(),
-		OrganizationID:  org.ID,
-		IsSetupComplete: false,
-	}
+	// orgStatus := &models.OrganizationSetupStatus{
+	// 	ID:              uuid.New(),
+	// 	OrganizationID:  org.ID,
+	// 	IsSetupComplete: false,
+	// }
 
-	if err := r.orgMainRepo.CreateOrganizationStatus(ctx, orgStatus); err != nil {
-		return output, err
-	}
+	// if err := r.orgMainRepo.CreateOrganizationStatus(ctx, orgStatus); err != nil {
+	// 	return output, err
+	// }
 
 	// 4. Prepare data for employee creation
 	output = organization_contracts.InputForCreateDefaultEmployee{

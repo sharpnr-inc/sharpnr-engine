@@ -2,11 +2,11 @@ package org_setup_wizard_services
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
 	organization_constants "sharpnr-engine/core/organization/constants"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

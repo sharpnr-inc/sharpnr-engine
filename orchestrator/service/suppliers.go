@@ -3,9 +3,9 @@ package orchestrator_service
 import (
 	"context"
 	"errors"
-	dbtx "sharpnr-engine/core/dbTx"
 	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -65,8 +65,8 @@ func (s *orchestratorService) ListAllOrganizationSuppliers(ctx context.Context, 
 
 				// Append the legal entity info to the supplier's link list
 				supplierDetail.LegalEntityLinks = append(supplierDetail.LegalEntityLinks, suppliers_dtos.SuppliersLegalEntity{
-					LegalEntityID:   leDetails.LegalEntityID,
-					LegalEntityName: leDetails.Name,
+					LegalEntityID:   leDetails.ID,
+					LegalEntityName: leDetails.DisplayName,
 				})
 			}
 

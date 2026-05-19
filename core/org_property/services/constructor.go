@@ -1,8 +1,8 @@
 package org_property_services
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
 	org_property_repo "sharpnr-engine/core/org_property/repo"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sharp_mailer_engine"
 )
 

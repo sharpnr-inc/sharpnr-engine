@@ -1,9 +1,9 @@
 package app
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
 	organization_repo "sharpnr-engine/core/organization/repo"
 	organization_services "sharpnr-engine/core/organization/services"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sharp_mailer_engine"
 
 	"github.com/redis/go-redis/v9"

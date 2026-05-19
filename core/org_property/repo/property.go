@@ -3,8 +3,8 @@ package org_property_repo
 import (
 	"context"
 	"errors"
-	dbtx "sharpnr-engine/core/dbTx"
 	org_property_models "sharpnr-engine/core/org_property/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 )

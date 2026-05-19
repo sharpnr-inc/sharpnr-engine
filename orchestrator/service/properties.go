@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/shared/utils"
 	"sync"
 
@@ -16,10 +16,6 @@ import (
 )
 
 /* ---------------------------------- <***> --------------------------------- */
-
-// GetAllPropertiesOfOrg retrieves all properties associated with a given organization ID. It returns a structured response containing the list of properties or an error if the retrieval fails.
-// ? Point to improve, :--> Need to add the emplID, sharpnr_sentinel can be check is employee is authorised to see this or not, currently any employee of the org can see all the properties, in future we can have
-// ? some restriction based on role or permission
 
 func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error) {
 
@@ -213,7 +209,7 @@ func (c *orchestratorService) enrichHospitalityData(
 	return nil
 }
 
-// =---------------------------------------------------------------//
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) ConfigurePropertyToDomain(
 	ctx context.Context,
@@ -234,7 +230,7 @@ func (s *orchestratorService) ConfigurePropertyToDomain(
 	return s.orgPropertyService.AddDomain(ctx, orgID, propertyID, req.Domain)
 }
 
-//=---------------------------------------------------------------//
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) AddModulesInProperty(
 	ctx context.Context,

@@ -3,7 +3,7 @@ package webMiddleware
 import (
 	"log/slog"
 	"net/http"
-	"sharpnr-engine/cookieManager"
+	"sharpnr-engine/pkg/cookieManager"
 
 	"github.com/gin-gonic/gin"
 )

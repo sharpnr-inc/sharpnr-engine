@@ -2,8 +2,8 @@ package kitchenservices
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
 	kitchen_contracts "sharpnr-engine/modules/hospitality/kitchen/contracts"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 
 	"github.com/google/uuid"

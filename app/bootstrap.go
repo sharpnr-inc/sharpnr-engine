@@ -1,7 +1,7 @@
 package app
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 	accounting_sero_event_handler "sharpnr-engine/service_engines/accounting_engine/sero_handler"
 	inventory_engine_sero_handlers "sharpnr-engine/service_engines/inventory_engine/sero_handlers"
@@ -79,6 +79,7 @@ func BootstrapModules(
 	hospitalityOrchestration := bootstrapHospitalityDomainOrchestration(
 		orgPropertyService,
 		hospitality,
+		orgLegalEntityService,
 	)
 
 	/* ---------------------------- Accounting Engine --------------------------- */

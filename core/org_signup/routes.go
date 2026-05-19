@@ -2,9 +2,9 @@ package org_signup
 
 import (
 	"sharpnr-engine/app"
-	"sharpnr-engine/cookieManager"
 	org_signup_controllers "sharpnr-engine/core/org_signup/controllers"
 	webMiddleware "sharpnr-engine/middlewares/web"
+	"sharpnr-engine/pkg/cookieManager"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 
 	"github.com/gin-gonic/gin"

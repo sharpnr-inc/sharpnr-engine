@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS organization_property.organization_property_domain_infra;
+DROP TABLE IF EXISTS organization_property.organization_property_domain_modules;
+DROP TABLE IF EXISTS organization_property.organization_property_domain;
+DROP TABLE IF EXISTS organization_property.organization_property_geo_location;
+DROP TABLE IF EXISTS organization_property.organization_property_timezone;
+DROP TABLE IF EXISTS organization_property.organization_property_address;
+DROP TABLE IF EXISTS organization_property.organization_property;

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	accountingconstants "sharpnr-engine/service_engines/accounting_engine/constants"
 	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"

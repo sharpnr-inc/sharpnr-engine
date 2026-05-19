@@ -1,6 +1,6 @@
 package config
 
-import "sharpnr-engine/cookieManager"
+import "sharpnr-engine/pkg/cookieManager"
 
 type Config struct {
 	App      AppConfig

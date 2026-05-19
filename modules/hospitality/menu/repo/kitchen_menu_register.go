@@ -2,8 +2,8 @@ package menurepo
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
 	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm/clause"

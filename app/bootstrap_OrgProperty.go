@@ -1,9 +1,9 @@
 package app
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
 	org_property_repo "sharpnr-engine/core/org_property/repo"
 	org_property_services "sharpnr-engine/core/org_property/services"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
 	"gorm.io/gorm"

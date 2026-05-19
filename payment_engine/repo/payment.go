@@ -3,8 +3,8 @@ package payment_engine_repo
 import (
 	"context"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
 	payment_engine_models "sharpnr-engine/payment_engine/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

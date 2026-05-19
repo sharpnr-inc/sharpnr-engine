@@ -13,15 +13,3 @@ type PropertySetupInput struct {
 	Country      string
 	Pincode      string
 }
-
-type SetupLegalEntityInput struct {
-	StepID      uuid.UUID
-	OrgID       uuid.UUID
-	LegalName   string
-	Type        string
-	AddressLine string
-	City        string
-	State       string
-	Country     string
-	Pincode     string
-}

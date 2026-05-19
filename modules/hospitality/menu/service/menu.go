@@ -2,10 +2,10 @@ package menuservice
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
 	hospitality_menu_contracts "sharpnr-engine/modules/hospitality/menu/contracts"
 	menu_helpers "sharpnr-engine/modules/hospitality/menu/helpers"
 	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 
 	"github.com/google/uuid"
