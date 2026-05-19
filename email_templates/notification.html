@@ -1,0 +1,37 @@
+{{template "base_layout.html" .}}
+
+{{define "content"}}
+<!-- Badge -->
+<p style="display:inline-block;background:#EEF0FA;color:#0A0A2E;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:5px;margin:0 0 16px;">Notification</p>
+
+<h1 style="color:#0A0A2E;font-size:22px;font-weight:700;letter-spacing:-0.5px;line-height:1.3;margin:0 0 12px;">{{.Title}}</h1>
+
+{{if .Subtitle}}
+<p style="color:#5A607A;font-size:15px;line-height:1.7;margin:0 0 24px;">{{.Subtitle}}</p>
+{{end}}
+
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:24px;">
+  <tr>
+    <td style="background-color:#F7F8FC;border:1px solid #EEF0F8;border-radius:10px;padding:22px 20px;">
+      <p style="color:#3D4560;font-size:15px;line-height:1.7;margin:0;">{{.Message}}</p>
+    </td>
+  </tr>
+</table>
+
+{{if .ActionURL}}
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:24px 0 8px;">
+  <tr>
+    <td align="center">
+      <a href="{{.ActionURL}}" style="display:inline-block;background-color:#0A0A2E;color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;padding:14px 36px;border-radius:8px;line-height:1;">{{.ActionText}}</a>
+    </td>
+  </tr>
+</table>
+{{end}}
+
+{{if .FooterNote}}
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 12px;">
+  <tr><td style="border-top:1px solid #F0F2F8;font-size:0;line-height:0;">&nbsp;</td></tr>
+</table>
+<p style="color:#9CA3C0;font-size:12px;line-height:1.65;margin:0;">{{.FooterNote}}</p>
+{{end}}
+{{end}}

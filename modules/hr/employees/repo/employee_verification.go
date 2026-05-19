@@ -6,29 +6,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
-// This file implements all the methods of EmployeeVerificationRepositoryInterface
-/*
-type EmployeeVerificationRepositoryInterface interface {
-	Create(ctx context.Context, v *employee_models.EmployeeVerification) error
-	GetByTokenHash(ctx context.Context, hash string) (*employee_models.EmployeeVerification, error)
-	MarkVerified(ctx context.Context, id uuid.UUID, at time.Time) error
-}
-*/
-// employeeVerificationRepo implements EmployeeVerificationRepositoryInterface
-type employeeVerificationRepo struct {
-	db *gorm.DB
-}
-
-func NewEmployeeVerificationRepo(db *gorm.DB) *employeeVerificationRepo {
-	return &employeeVerificationRepo{
-		db: db,
-	}
-}
-
-func (r *employeeVerificationRepo) Create(
+func (r *employeeRepo) CreateEmplVerification(
 	ctx context.Context,
 	v *employee_models.EmployeeVerification,
 ) error {
@@ -40,7 +20,7 @@ func (r *employeeVerificationRepo) Create(
 	return r.db.WithContext(ctx).Create(v).Error
 }
 
-func (r *employeeVerificationRepo) GetByTokenHash(
+func (r *employeeRepo) GetByTokenHash(
 	ctx context.Context,
 	hash string,
 ) (*employee_models.EmployeeVerification, error) {
@@ -60,7 +40,7 @@ func (r *employeeVerificationRepo) GetByTokenHash(
 	return &verification, nil
 }
 
-func (r *employeeVerificationRepo) MarkVerified(
+func (r *employeeRepo) MarkVerified(
 	ctx context.Context,
 	id uuid.UUID,
 	at time.Time,
@@ -75,5 +55,3 @@ func (r *employeeVerificationRepo) MarkVerified(
 		}).
 		Error
 }
-
-var _ EmployeeVerificationRepositoryInterface = (*employeeVerificationRepo)(nil)

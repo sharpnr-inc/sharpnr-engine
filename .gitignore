@@ -1,13 +1,19 @@
-.env.alpha
-.env.beta
 .env.production
 .env.development
-.env.test
 .env.docker
 /sharpnr-engine
 .vscode
 
 __debug_bin*
 .debug/
-
+**/build/
 .temp/
+
+deploy-be.sh
+
+# Python virtual environment
+**/venv/
+
+# Python cache
+**/__pycache__/
+*.py[cod]

@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
 	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
 	restaurant_events "sharpnr-engine/modules/hospitality/restaurant/events"
@@ -12,6 +11,7 @@ import (
 	payment_constants "sharpnr-engine/payment_engine/constant"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 	payment_engine_models "sharpnr-engine/payment_engine/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	invoice_engine_contracts "sharpnr-engine/service_engines/invoicing_engine/contracts"
 	"time"
 
@@ -321,7 +321,7 @@ func (s *restaurantService) CloseDineInSession(
 
 	invoice, err := s.invoiceEngine.GenerateInvoice(ctx, invoice_engine_contracts.CreateInvoiceRequest{
 		OrganizationID: orgID,
-		LegalEntityID:  &rest.LegalEntityID,
+		LegalEntityID:  rest.LegalEntityID,
 		CustomerID:     request.CustomerID,
 		CustomerName:   request.CustomerName,
 		CustomerGST:    request.CustomerGST,
@@ -351,7 +351,7 @@ func (s *restaurantService) CloseDineInSession(
 
 	paymentOrder, err := s.paymentsEngine.CreateOrder(ctx, payment_engine_contracts.CreateOrderRequest{
 		TenantID:         orgID,
-		LegalEntityID:    rest.LegalEntityID,
+		LegalEntityID:    *rest.LegalEntityID,
 		PaymentAccountID: request.PaymentAccountID,
 		PayerType:        "CUSTOMER",
 		PayerName:        request.CustomerName,

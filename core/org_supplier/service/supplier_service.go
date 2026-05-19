@@ -2,10 +2,10 @@ package suppliers_service
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
 	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
 	org_suppliers_models "sharpnr-engine/core/org_supplier/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 
 	"github.com/google/uuid"

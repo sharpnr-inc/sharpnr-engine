@@ -1,16 +1,19 @@
 package org_setup_wizard_resolvers
 
 import (
+	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
 	org_setup_wizard_models "sharpnr-engine/core/org_setup_wizard/models"
 	"sort"
 )
 
+// Resolves Steps and return the How much user complete the remain on setup wiz
+// it takes the slice organization setup and resolves it
 func ResolveSetupProgress(steps []*org_setup_wizard_models.OrganizationSetup) org_setup_wizard_contracts.SetupProgress {
+
 	if len(steps) == 0 {
 		return org_setup_wizard_contracts.SetupProgress{
-			OverallStatus: "NOT_STARTED",
-			ProgressPct:   0,
+			OverallStatus: org_setup_wizards_constants.OverallStatusNotStarted,
 			IsCompleted:   false,
 			Steps:         []org_setup_wizard_contracts.SetupStepProgress{},
 		}
@@ -28,8 +31,7 @@ func ResolveSetupProgress(steps []*org_setup_wizard_models.OrganizationSetup) or
 
 	var (
 		completedCount int
-		currentStep    *string
-		hasBlocked     bool
+		currentStep    *org_setup_wizards_constants.SetupStepType
 	)
 
 	for _, s := range steps {
@@ -46,40 +48,33 @@ func ResolveSetupProgress(steps []*org_setup_wizard_models.OrganizationSetup) or
 		resultSteps = append(resultSteps, step)
 
 		switch s.Status {
-		case "COMPLETED":
+		case org_setup_wizards_constants.SetupStatusCompleted:
 			completedCount++
-		case "IN_PROGRESS":
+		case org_setup_wizards_constants.SetupStatusInProgress:
 			if currentStep == nil {
 				currentStep = &s.CurrentStep
 			}
-		case "BLOCKED":
-			hasBlocked = true
 		}
 	}
 
-	total := len(steps)
+	total := len(org_setup_wizards_constants.SetupSteps)
 
-	var overallStatus string
+	var overallStatus org_setup_wizards_constants.OverallSetupStatus
 	var isCompleted bool
 
 	switch {
-	case hasBlocked:
-		overallStatus = "BLOCKED"
 	case completedCount == 0:
-		overallStatus = "NOT_STARTED"
+		overallStatus = org_setup_wizards_constants.OverallStatusNotStarted
 	case completedCount == total:
-		overallStatus = "COMPLETED"
+		overallStatus = org_setup_wizards_constants.OverallStatusCompleted
 		isCompleted = true
 	default:
-		overallStatus = "IN_PROGRESS"
+		overallStatus = org_setup_wizards_constants.OverallStatusInProgress
 	}
-
-	progressPct := int(float64(completedCount) / float64(total) * 100)
 
 	return org_setup_wizard_contracts.SetupProgress{
 		OverallStatus: overallStatus,
 		CurrentStep:   currentStep,
-		ProgressPct:   progressPct,
 		IsCompleted:   isCompleted,
 		Steps:         resultSteps,
 	}

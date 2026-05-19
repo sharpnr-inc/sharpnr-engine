@@ -8,9 +8,8 @@ import (
 	"sharpnr-engine/api"
 	"sharpnr-engine/app"
 	"sharpnr-engine/config"
-	"sharpnr-engine/cookieManager"
-	dbtx "sharpnr-engine/core/dbTx"
-	"sharpnr-engine/migrations"
+	"sharpnr-engine/pkg/cookieManager"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sero"
 	"sharpnr-engine/shared/database"
@@ -39,22 +38,17 @@ import (
 // @schemes http https
 // @BasePath /api/v1
 func main() {
-	cfg := config.Load()
 
+	cfg := config.Load()
 	redisDb := database.ConnectRedis(cfg.Redis)
 	db := database.ConnectDB(cfg.Database)
 
-	// Run migrations
-	err := database.MigrateDB(db)
+	err := database.MigrateDB(cfg.Database)
 	if err != nil {
 		log.Fatalf("DB migration failed: %v", err)
 	}
-	log.Println("✅ Database migration completed.")
 
-	err = migrations.RunDataMigrations(db)
-	if err != nil {
-		log.Fatalf("Data migration failed: %v", err)
-	}
+	log.Println("✅ Database migration completed.")
 
 	/* ---------------------------------- <***> --------------------------------- */
 
@@ -71,29 +65,28 @@ func main() {
 	/* ---------------------------------- <***> --------------------------------- */
 
 	mailerEng := sharp_mailer_engine.New(cfg)
-	if err := mailerEng.LoadTemplates("./sharp_mailer_engine/templates"); err != nil {
+	if err := mailerEng.LoadTemplates("./email_templates"); err != nil {
 		log.Fatal(err)
 	}
+
 	mailerEng.Start()
 	defer mailerEng.Shutdown()
 
-	defs := config.CookieRegistry(cfg.App, cfg.TTL)
+	/* ---------------------------------- <***> --------------------------------- */
 
-	cookieManager.Init(defs)
-	cookieMgr := cookieManager.New(cookieManager.Config{
-		Secure: cfg.Cookie.Secure,
-		Domain: cfg.Cookie.Domain,
-	})
+	cookieMgr := cookieManager.New(cfg.Cookies)
 
-	jwtmgr := jwt_manager.New(jwt_manager.Config{
-		Secret:            cfg.JWT.Secret,
-		Issuer:            cfg.JWT.Issuer,
-		Audience:          cfg.JWT.Audience,
-		AccessTTL:         cfg.JWT.AccessTTL,
-		RefreshTTL:        cfg.JWT.RefreshTTL,
-		SignupTTL:         cfg.JWT.SignupTTL,
-		WebCookieTokenTTL: cfg.JWT.WebCookieTokenTTL,
-	})
+	/* ---------------------------------- <***> --------------------------------- */
+
+	// ToManagerConfig() converts config.JwtManagerConfigs → jwt_manager.Config
+	// keeping the two packages independent of each other.
+	// New() validates eagerly — missing secret or issuer fails here at startup,
+	// not silently during the first token operation.
+	jwtmgr, err := jwt_manager.New(cfg.JWT.ToManagerConfig())
+	if err != nil {
+		log.Fatalf("failed to init jwt manager: %v", err)
+	}
+	/* ---------------------------------- <***> --------------------------------- */
 
 	txManager := dbtx.NewGormTxManager(db)
 	sseEngine := sse_engine.NewStreamManager()

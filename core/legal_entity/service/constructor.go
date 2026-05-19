@@ -1,8 +1,8 @@
 package legal_entity_service
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
 	legal_entity_repo "sharpnr-engine/core/legal_entity/repo"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sharp_mailer_engine"
 )
 

@@ -1,76 +1,87 @@
 package jwt_manager
 
 import (
+	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
 
-// ---------- Issue Access ----------
+// --------------------------------------------------------------------------
+// signer.go — token issuance
+//
+// All Issue* methods follow the same pattern:
+//   1. Build the specific claims struct for that token type
+//   2. Attach standard registered claims via buildRegistered()
+//   3. Sign with HMAC-SHA256 via sign()
+// --------------------------------------------------------------------------
 
-func (m *manager) IssueAccess(userID, orgID, role string) (string, error) {
-	claims := AccessClaims{
-		UserID: userID,
-		OrgID:  orgID,
-		Role:   role,
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    m.cfg.Issuer,
-			Audience:  []string{m.cfg.Audience},
-			IssuedAt:  jwt.NewNumericDate(m.now()),
-			ExpiresAt: jwt.NewNumericDate(m.now().Add(m.cfg.AccessTTL)),
-		},
+// buildRegistered constructs the standard JWT fields shared by all token types.
+//
+// subject identifies the token type ("access", "refresh", "signup", "web_cookie").
+// It is checked during verification to prevent a token issued for one purpose
+// from being accepted by a verifier for a different purpose.
+func (m *manager) buildRegistered(subject string, ttl time.Duration) jwt.RegisteredClaims {
+	now := m.now() // captured once so IssuedAt and ExpiresAt are always consistent
+	return jwt.RegisteredClaims{
+		Subject:   subject,
+		Issuer:    m.cfg.Issuer,
+		Audience:  jwt.ClaimStrings{m.cfg.Audience},
+		IssuedAt:  jwt.NewNumericDate(now),
+		ExpiresAt: jwt.NewNumericDate(now.Add(ttl)),
 	}
+}
 
+// sign serialises the claims and signs them with HMAC-SHA256.
+// All token types use the same signing algorithm and secret.
+// To change the algorithm later (e.g. RS256), update only this function.
+func (m *manager) sign(claims jwt.Claims) (string, error) {
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).
 		SignedString([]byte(m.cfg.Secret))
 }
 
-// ---------- Issue Refresh ----------
-
-func (m *manager) IssueRefresh(userID string, orgId uuid.UUID, sessionID string) (string, error) {
-	claims := RefreshClaims{
-		UserID:    userID,
-		SessionID: sessionID,
-		OrgID:     orgId,
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    m.cfg.Issuer,
-			Audience:  []string{m.cfg.Audience},
-			IssuedAt:  jwt.NewNumericDate(m.now()),
-			ExpiresAt: jwt.NewNumericDate(m.now().Add(m.cfg.RefreshTTL)),
-		},
-	}
-
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).
-		SignedString([]byte(m.cfg.Secret))
+// IssueAccess creates a short-lived access token for the mobile API.
+// Carries the user's identity, org, and role so downstream services
+// don't need a database lookup on every request.
+func (m *manager) IssueAccess(userID, orgID uuid.UUID, role string) (string, error) {
+	return m.sign(AccessClaims{
+		UserID:           userID,
+		OrgID:            orgID,
+		Role:             role,
+		RegisteredClaims: m.buildRegistered("access", m.cfg.AccessTTL),
+	})
 }
 
-// ---------- Issue Signup ----------
-
-func (m *manager) IssueSignup(userID string) (string, error) {
-	claims := SignupClaims{
-		UserID: userID,
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    m.cfg.Issuer,
-			Audience:  []string{m.cfg.Audience},
-			IssuedAt:  jwt.NewNumericDate(m.now()),
-			ExpiresAt: jwt.NewNumericDate(m.now().Add(m.cfg.SignupTTL)),
-		},
-	}
-
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).
-		SignedString([]byte(m.cfg.Secret))
+// IssueRefresh creates a long-lived refresh token for the mobile API.
+// The sessionID must match a record in the sessions table — this is what
+// allows individual sessions to be revoked (e.g. "log out this device").
+func (m *manager) IssueRefresh(userID, orgID uuid.UUID) (string, error) {
+	return m.sign(RefreshClaims{
+		UserID:           userID,
+		OrgID:            orgID,
+		RegisteredClaims: m.buildRegistered("refresh", m.cfg.RefreshTTL),
+	})
 }
 
+// IssueSignup creates a short-lived onboarding token.
+// Issued after OTP is verified. The token gates the "complete your profile"
+// step — without it, the signup routes reject the request.
+func (m *manager) IssueSignup(userID uuid.UUID) (string, error) {
+	return m.sign(SignupClaims{
+		UserID:           userID,
+		RegisteredClaims: m.buildRegistered("signup", m.cfg.SignupTTL),
+	})
+}
+
+// IssueWebAuthCookieToken creates the HttpOnly cookie token for the web frontend.
+// Unlike mobile, the web does not use access/refresh token pairs — this single
+// token covers the full session and is rolled (re-issued with a fresh TTL) by
+// WebAuthMiddleware on every authenticated request so active users never get
+// logged out mid-session.
 func (m *manager) IssueWebAuthCookieToken(userID, orgID uuid.UUID) (string, error) {
-	claims := WebCookieTokenClaims{
-		UserID: userID.String(),
-		OrgID:  orgID.String(),
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    m.cfg.Issuer,
-			Audience:  []string{m.cfg.Audience},
-			IssuedAt:  jwt.NewNumericDate(m.now()),
-			ExpiresAt: jwt.NewNumericDate(m.now().Add(m.cfg.WebCookieTokenTTL)),
-		},
-	}
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).
-		SignedString([]byte(m.cfg.Secret))
+	return m.sign(WebCookieTokenClaims{
+		UserID:           userID,
+		OrgID:            orgID,
+		RegisteredClaims: m.buildRegistered("web_cookie", m.cfg.WebCookieTokenTTL),
+	})
 }

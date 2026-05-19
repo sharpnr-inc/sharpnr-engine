@@ -12,7 +12,10 @@ type HotelServiceInterface interface {
 	SetupDefaultHotel(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (uuid.UUID, error)
 	GetHotelDetails(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (*hotel_contracts.HotelsReader, error)
 	GetHotelLayout(ctx context.Context, hotelID uuid.UUID) (res *hoteldtos.HotelLayoutResponseDTO, err error)
+	
 	GetHotelByPropertyID(ctx context.Context, propertyID uuid.UUID) (*hotel_contracts.HotelsReader, error)
+
+	GetHotelsByOrgID(ctx context.Context, orgID, emplID uuid.UUID) ([]hotel_contracts.Hotels, error)
 	SetupFloors(ctx context.Context, req *hotel_contracts.FloorInput) (floorID uuid.UUID, err error)
 	SetUpLayout(ctx context.Context, layout []hotel_contracts.FloorInput) error
 	SetupRoom(ctx context.Context, req *hotel_contracts.RoomInput) (hotelRoomID uuid.UUID, err error)

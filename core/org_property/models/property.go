@@ -22,17 +22,6 @@ func (OrganizationProperty) TableName() string {
 	return "organization_property.organization_property"
 }
 
-// TODO we will do the Data Migration later
-type OrganizationPropertyConfigurationStatus struct {
-	ID                     uuid.UUID
-	OrganizationPropertyID uuid.UUID
-	IsConfigured           bool
-}
-
-func (OrganizationPropertyConfigurationStatus) TableName() string {
-	return "organization_property.organization_property_configuration_statuses"
-}
-
 type OrganizationPropertyAddress struct {
 	ID                     uuid.UUID `gorm:"primaryKey"`
 	OrganizationID         uuid.UUID `gorm:"index;not null"`

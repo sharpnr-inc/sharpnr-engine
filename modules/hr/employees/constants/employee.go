@@ -27,4 +27,14 @@ type EmployeeRoleType string
 const (
 	EmployeeRoleSuperAdmin EmployeeRoleType = "SUPER_ADMIN"
 	EmployeeRoleAdmin      EmployeeRoleType = "ADMIN"
+	EmployeeRoleManager    EmployeeRoleType = "MANAGER"
+)
+
+type EmployeeEmployementType string
+
+const (
+	EmployeeEmploymentTypeFullTime EmployeeEmployementType = "FULL_TIME"
+	EmployeeEmploymentTypePartTime EmployeeEmployementType = "PART_TIME"
+	EmployeeEmploymentTypeContract EmployeeEmployementType = "CONTRACT"
+	EmployeeEmploymentTypeIntern   EmployeeEmployementType = "INTERN"
 )

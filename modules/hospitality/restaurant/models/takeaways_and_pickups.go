@@ -92,10 +92,3 @@ type RestaurantPickUpOrderCustomer struct {
 func (RestaurantPickUpOrderCustomer) TableName() string {
 	return "hospitality.restaurant_pickup_order_customers"
 }
-
-/* ---------------------------------- <***> --------------------------------- */
-
-// hospitality.restaurant_pickup_orders           ← order header + status machine
-// hospitality.restaurant_pickup_order_customers  ← customer snapshot (1:1)
-// hospitality.restaurant_pickup_order_items      ← what was ordered (1:many)
-// hospitality.restaurant_pickup_order_payments   ← payment engine refs (1:1)

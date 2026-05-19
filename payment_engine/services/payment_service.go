@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"time"
 
-	dbtx "sharpnr-engine/core/dbTx"
 	payment_constants "sharpnr-engine/payment_engine/constant"
 	contracts "sharpnr-engine/payment_engine/contracts"
 	payment_gateway "sharpnr-engine/payment_engine/gateway"
 	models "sharpnr-engine/payment_engine/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

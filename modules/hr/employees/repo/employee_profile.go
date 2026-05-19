@@ -5,30 +5,24 @@ import (
 	employee_models "sharpnr-engine/modules/hr/employees/models"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
-// This file implements the all methods of EmployeeProfileRepositoryInterface
-
-/*
-type EmployeeProfileRepositoryInterface interface {
-	Create(ctx context.Context, profile *employee_models.EmployeeProfile) error
-	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*employee_models.EmployeeProfile, error)
-	Update(ctx context.Context, profile *employee_models.EmployeeProfile) error
-}
-*/
-//
-type employeeProfileRepo struct {
-	db *gorm.DB
+// CreateEmployeeSystemAccess implements [EmployeeProfileRepositoryInterface].
+func (r *employeeRepo) CreateEmployeeSystemAccess(ctx context.Context, access *employee_models.EmployeeSystemAccess) (*employee_models.EmployeeSystemAccess, error) {
+	panic("unimplemented")
 }
 
-func NewEmployeeProfileRepo(db *gorm.DB) *employeeProfileRepo {
-	return &employeeProfileRepo{
-		db: db,
-	}
+// GetEmployeeSystemAccessByEmployeeID implements [EmployeeProfileRepositoryInterface].
+func (r *employeeRepo) GetEmployeeSystemAccessByEmployeeID(ctx context.Context, empID uuid.UUID) ([]*employee_models.EmployeeSystemAccess, error) {
+	panic("unimplemented")
 }
 
-func (r *employeeProfileRepo) Create(
+// IsEmployeeHaveOnlineAccess implements [EmployeeProfileRepositoryInterface].
+func (r *employeeRepo) IsEmployeeHaveOnlineAccess(ctx context.Context, empID uuid.UUID) (bool, error) {
+	panic("unimplemented")
+}
+
+func (r *employeeRepo) CreateEmployeeProfile(
 	ctx context.Context,
 	profile *employee_models.EmployeeProfile,
 ) error {
@@ -40,7 +34,7 @@ func (r *employeeProfileRepo) Create(
 	return r.db.WithContext(ctx).Create(profile).Error
 }
 
-func (r *employeeProfileRepo) GetByEmployeeID(
+func (r *employeeRepo) GetProfileByEmployeeID(
 	ctx context.Context,
 	empID uuid.UUID,
 ) (*employee_models.EmployeeProfile, error) {
@@ -60,7 +54,7 @@ func (r *employeeProfileRepo) GetByEmployeeID(
 	return &profile, nil
 }
 
-func (r *employeeProfileRepo) Update(
+func (r *employeeRepo) UpdateEmployeeProfile(
 	ctx context.Context,
 	profile *employee_models.EmployeeProfile,
 ) error {

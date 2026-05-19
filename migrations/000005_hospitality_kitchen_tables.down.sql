@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS hospitality.kitchen_operating_hours;
+DROP TABLE IF EXISTS hospitality.kitchen_throttling_configs;
+DROP TABLE IF EXISTS hospitality.kitchen_printer_configs;
+DROP TABLE IF EXISTS hospitality.kitchen_auto_accept_orders;
+DROP TABLE IF EXISTS hospitality.kitchen_ticket_item_addon;
+DROP TABLE IF EXISTS hospitality.kitchen_ticket_item_variants;
+DROP TABLE IF EXISTS hospitality.kitchen_ticket_item;
+DROP TABLE IF EXISTS hospitality.kitchen_ticket;
+DROP TABLE IF EXISTS hospitality.kitchen;

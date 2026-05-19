@@ -2,8 +2,8 @@ package kitchenrepo
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
 	kitchen_models "sharpnr-engine/modules/hospitality/kitchen/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 )

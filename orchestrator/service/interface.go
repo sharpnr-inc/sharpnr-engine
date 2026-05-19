@@ -23,18 +23,7 @@ type OrchestratorServiceInterface interface {
 	PaymentOrchestratorServiceInterface
 	SuppliersAndVendorsOrchestratorServiceInterface
 	InventoryOrchestratorServiceInterface
-	/* -------------------------------------------------------------------------- */
-	/*                       Setupwizard related operations                       */
-	/* -------------------------------------------------------------------------- */
-	AddOrganizationHQAddress(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupOrganizationHQAddressReqDTO) error
-	StepTwoProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupOrgPropertyReqDTO) error
-	StepThreeLegalEntity(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.SetupLegalEntityReqDTO) error
-	SetUpWizProgress(ctx context.Context, orgID uuid.UUID) (orchestrator_dtos.SetupProgressResponseDTO, error)
-
-	/* -------------------------------------------------------------------------- */
-	/*                                 UI related                                 */
-	/* -------------------------------------------------------------------------- */
-
+	OrchestratorSetupWizardInterface
 }
 
 type OrganizationPropertyOrchestrationInterface interface {
@@ -45,15 +34,12 @@ type OrganizationPropertyOrchestrationInterface interface {
 }
 
 type HospitalityPropertyOrchestrationInterface interface {
-	GetAllRestaurant(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]orchestrator_dtos.AllRestaurantsResponseDto, error)
-	GetAllKitchen(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]orchestrator_dtos.AllKitchenResponseDto, error)
 	GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
 	CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error
 	GetPropertyInfra(ctx context.Context, propertyID uuid.UUID, orgID uuid.UUID, infraType *string) (*orchestrator_dtos.ListAllInfraOfProperty_Res_dto, error)
 }
 
 type OrganizationOrchestartionInterface interface {
-	GetOrganizationStatus(ctx context.Context, orgID uuid.UUID) (*string, error)
 	GetAllPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
 }
 
@@ -64,31 +50,8 @@ type OrganizationOrchestartionInterface interface {
 /* -------------------------------------------------------------------------- */
 
 type LegalEntityOrchestrationServiceInterface interface {
-	CreateLegalEntity(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.AddLegalEntity_REQ_DTO) error
-	GetAllLegalEntity(ctx context.Context, orgID uuid.UUID) ([]*orchestrator_dtos.LegalEntity_Response_dto, error)
-
-	// Tax Registration related OP
-	AddTaxRegsitrationInLegalEntity(
-		ctx context.Context,
-		orgID, emplID, legalEntity uuid.UUID,
-		req legal_entity_contracts.CreateLegalEntityTaxRegistrationRequestDto,
-	) error
-
-	GetAllTaxRegistrationOfLegalEntity(
-		ctx context.Context,
-		orgID, emplID, legalEntity uuid.UUID,
-	) ([]legal_entity_contracts.LegalEntityTaxRegistrationResponseDto, error)
-
-	AddTaxCategoryInLegalEntiy(
-		ctx context.Context,
-		orgID, emplID, legalEntity uuid.UUID,
-		req legal_entity_contracts.CreateLegalEntityTaxCategory,
-	) error
-
-	ListAllTaxCategoryOfLegalEntity(
-		ctx context.Context,
-		orgID, emplID, legalEntity uuid.UUID,
-	) ([]legal_entity_contracts.LegalEntityTaxCategoryResponseDto, error)
+	GetAllLegalEntity(ctx context.Context, orgID, emplID uuid.UUID) ([]legal_entity_contracts.LegalEntityResponseDto, error)
+	CreateLegalEntity(ctx context.Context, orgID, emplID uuid.UUID, req *legal_entity_contracts.NewLegalEntityRequestDto) error
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -101,12 +64,7 @@ type CustomerOrchestratorServiceInterface interface {
 type PaymentOrchestratorServiceInterface interface {
 	AddPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req payment_engine_contracts.CreatePaymentAccountRequest) error
 	GetAllPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]payment_engine_contracts.PaymentAccountResponseDto, error)
-	AddGatewayConfigInPaymentAccount(
-		ctx context.Context,
-		orgID, emplID uuid.UUID,
-		req payment_engine_contracts.AddGatewayConfigRequest,
-	) error
-
+	AddGatewayConfigInPaymentAccount(ctx context.Context, orgID, emplID uuid.UUID, req payment_engine_contracts.AddGatewayConfigRequest) error
 	GetPaymentAccountDetails(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, paymentAccountID uuid.UUID) ([]payment_engine_contracts.GatewayConfigResponse, error)
 }
 
@@ -121,3 +79,22 @@ type InventoryOrchestratorServiceInterface interface {
 	ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error)
 	GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]inventory_engine_models.Inventory, error)
 }
+
+/* --------------------------------- <****> --------------------------------- */
+
+// All methods related to the setup wizard orchestration will be defined in this interface. This includes methods for each step of the setup wizard, as well as a method to retrieve the current
+// progress of the setup wizard for a given organization.
+type OrchestratorSetupWizardInterface interface {
+	SetupWiz_AddProperty(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req *orchestrator_dtos.SetupOrgPropertyReqDTO) error
+
+	// This method retrieves the current progress of the setup wizard for a given organization. It returns a structured response containing the overall status, current step, progress percentage,
+	// completion status, and details of each step in the wizard.
+	SetUpWizProgress(ctx context.Context, orgID uuid.UUID) (orchestrator_dtos.SetupProgressResponseDTO, error)
+
+	// This methods updates the superadmin details during setup
+	// we already created the super admin during the signup
+	SetUpSuperAdminDetails(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req *orchestrator_dtos.SetupSuperAdminDetailsReqDTO) error
+	SetupWiz_UpdateOrgName(ctx context.Context, orgID, emplID uuid.UUID, request *orchestrator_dtos.SetupWizUpdateOrgNameRequestDto) error
+}
+
+/* --------------------------------- <****> --------------------------------- */

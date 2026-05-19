@@ -18,9 +18,9 @@ type PropertiesReader struct {
 	Domain       property_constants.PropertyDomainTypes
 	IsConfigured bool
 	Code         string
-
-	// We can add Country later
 }
+
+
 type PropertyDetailsReader struct {
 	Domain      property_constants.PropertyDomainTypes
 	Name        string

@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS setup_wizard.organization_setup;

@@ -1,3 +1,4 @@
+// models/employee.go
 package employee_models
 
 import (
@@ -14,18 +15,17 @@ type Employee struct {
 	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	FirstName string `gorm:"type:varchar(50);not null"`
-	LastName  string `gorm:"type:varchar(50)"`
-	NickName  string `gorm:"type:varchar(50)"`
+	FirstName  string `gorm:"type:varchar(50);not null"`
+	MiddleName string `gorm:"type:varchar(50)"`
+	LastName   string `gorm:"type:varchar(50)"`
+	NickName   string `gorm:"type:varchar(50)"`
 
 	Email       string `gorm:"type:varchar(150);not null;index"`
 	PhoneNumber string `gorm:"type:varchar(20)"`
 
-	// Role comes from your constants package
-	// Status: ACTIVE, INACTIVE, ON_LEAVE, TERMINATED
-	Role     string `gorm:"type:varchar(50);not null"`
-	Status   string `gorm:"type:varchar(20);default:'ACTIVE'"`
-	OrgEmpID string `gorm:"type:varchar(20);"`
+	Role         string `gorm:"type:varchar(50);not null"`
+	Status       string `gorm:"type:varchar(20);default:'ACTIVE'"`
+	EmployeeCode string `gorm:"type:varchar(50)" json:"employee_code"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -35,6 +35,24 @@ type Employee struct {
 func (Employee) TableName() string {
 	return "employee.employee"
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+type EmployeeSystemAccess struct {
+	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
+	EmployeeID uuid.UUID `gorm:"type:uuid;index"`
+	App        string    `gorm:"type:varchar(50)"`
+	Online     bool      `gorm:"default:false"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+func (EmployeeSystemAccess) TableName() string {
+	return "employee.employee_system_access"
+}
+
+/* ---------------------------------- <***> --------------------------------- */
 
 // -------------------------------
 // 2️⃣ VERIFICATION & AUTH
@@ -56,6 +74,8 @@ func (EmployeeVerification) TableName() string {
 	return "employee.employee_verification"
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 type EmployeeSession struct {
 	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
 	EmployeeID uuid.UUID `gorm:"type:uuid;index"`
@@ -71,6 +91,8 @@ type EmployeeSession struct {
 func (EmployeeSession) TableName() string {
 	return "employee.employee_session"
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 // -------------------------------
 // 3️⃣ REPORTING HIERARCHY
@@ -88,3 +110,5 @@ type EmployeeReporting struct {
 func (EmployeeReporting) TableName() string {
 	return "employee.employee_reporting"
 }
+
+/* ---------------------------------- <***> --------------------------------- */

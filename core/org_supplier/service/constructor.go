@@ -1,8 +1,8 @@
 package suppliers_service
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
 	org_supplier_repository "sharpnr-engine/core/org_supplier/repository"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 	"sharpnr-engine/sharp_mailer_engine"
 )

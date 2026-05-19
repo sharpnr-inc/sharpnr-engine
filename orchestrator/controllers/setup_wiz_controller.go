@@ -22,7 +22,7 @@ import (
 // @Failure      401  {object}  utils.Response "Unauthorized"
 // @Failure      500  {object}  utils.Response "Internal Server Error"
 // @Router       /orchestrator/setup-wizard/progress [get]
-func (c *OrchestratorController) GetSetupProgress(ctx *gin.Context) {
+func (c *OrchestratorController) SetupWizGetSetupProgress(ctx *gin.Context) {
 
 	// 1️⃣ Auth check
 	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
@@ -83,57 +83,28 @@ func (c *OrchestratorController) GetSetupProgress(ctx *gin.Context) {
 	)
 }
 
-// Step_one_AddOrgHQ godoc
-// @Summary      Short, punchy summary of the action
-// @Description  Detailed explanation of what happens (e.g., database changes, emails sent).
-// @Tags         CategoryName (e.g., accounting-ap)
-// @Accept       json
-// @Produce      json
-// @Param        request  body  orchestrator_dtos.SetupOrganizationHQAddressReqDTO  true  "Input description"
-// @Success      200  {object}  utils.Response "Org HQ successfully" "Success message"
-// @Failure      400  {object}  utils.Response "Validation Error"
-// @Failure      401  {object}  utils.Response "Unauthorized"
-// @Failure      500  {object}  utils.Response "Internal Server Error"
-// @Router        /orchestrator/setup-wizard/step1 [post]
-func (c *OrchestratorController) Step_one_AddOrgHQ(ctx *gin.Context) {
+/* ---------------------------------- <***> --------------------------------- */
 
-	_, exist := ctx.Get(webMiddleware.UserIDContextKey)
-	if !exist {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "user not authenticated",
-		})
-		return
-	}
-
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "organization not found in context",
-		})
-		return
-	}
-
-	orgID, ok := orgUUIDRaw.(uuid.UUID)
+func (s *OrchestratorController) SetupWizHandleSuperAdminSetupCompletion(ctx *gin.Context) {
+	orgID, emplID, ok := s.resolveRequestContexts(ctx)
 	if !ok {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"message": "invalid org uuid type",
-		})
+		return // Error response already sent in resolveRequestContexts
+	}
+
+	req, ok := utils.BindJSON[orchestrator_dtos.SetupSuperAdminDetailsReqDTO](ctx)
+	if !ok {
 		return
 	}
 
-	var req *orchestrator_dtos.SetupOrganizationHQAddressReqDTO
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "Invalid Request",
-		})
+	if err := s.orchestService.SetUpSuperAdminDetails(ctx.Request.Context(), orgID, emplID, req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
 		return
 	}
 
-	if err := c.orchestService.AddOrganizationHQAddress(ctx.Request.Context(), orgID, req); err != nil {
-		utils.Success(ctx, 200, "Organization HQ Added")
-	}
-
+	utils.Success(ctx, http.StatusOK, "Super admin details saved successfully")
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 // Step_two_AddProperty godoc
 // @Summary      Setup Organization Property
@@ -147,25 +118,10 @@ func (c *OrchestratorController) Step_one_AddOrgHQ(ctx *gin.Context) {
 // @Failure      401  {object}  utils.Response "Unauthorized"
 // @Failure      500  {object}  utils.Response "Internal Server Error"
 // @Router       /orchestrator/setup-wizard/step2 [post]
-func (c *OrchestratorController) Step_two_AddProperty(ctx *gin.Context) {
+func (c *OrchestratorController) SetupWizOperation_AddProperty(ctx *gin.Context) {
 
-	// 1. Authenticated User Check
-	_, exist := ctx.Get(webMiddleware.UserIDContextKey)
-	if !exist {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, nil)
-		return
-	}
-
-	// 2. Organization Context Check
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, nil)
-		return
-	}
-
-	orgID, ok := orgUUIDRaw.(uuid.UUID)
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, nil)
 		return
 	}
 
@@ -177,7 +133,7 @@ func (c *OrchestratorController) Step_two_AddProperty(ctx *gin.Context) {
 	}
 
 	// 4. Call Service Layer
-	if err := c.orchestService.StepTwoProperty(ctx.Request.Context(), orgID, &req); err != nil {
+	if err := c.orchestService.SetupWiz_AddProperty(ctx.Request.Context(), orgID, emplID, &req); err != nil {
 		// Use your stable CodeInternalError or a specific domain code
 		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
 		return
@@ -187,55 +143,25 @@ func (c *OrchestratorController) Step_two_AddProperty(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusOK, "Property Added Successfully")
 }
 
-// Step_three_LegalEntity godoc
-// @Summary      Setup Legal Entity
-// @Description  Third step of the onboarding wizard to define the organization's legal and physical presence.
-// @Tags         core-setup
-// @Accept       json
-// @Produce      json
-// @Param        request body orchestrator_dtos.SetupLegalEntityReqDTO true "Legal Entity Details"
-// @Success      200 {object} utils.Response "Legal entity configured successfully"
-// @Failure      400 {object} utils.Response "Validation or binding error"
-// @Failure      401 {object} utils.Response "Unauthorized"
-// @Failure      500 {object} utils.Response "Internal server error"
-// @Router       /orchestrator/setup-wiz/step3 [post]
-func (c *OrchestratorController) Step_three_LegalEntity(ctx *gin.Context) {
+func (c *OrchestratorController) SetupWiz_UpdateOrganizationName(ctx *gin.Context) {
 
-	// 1. Check Authentication
-	_, exist := ctx.Get(webMiddleware.UserIDContextKey)
-	if !exist {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, nil)
-		return
-	}
-
-	// 2. Retrieve OrgID from Context
-	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
-	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, nil)
-		return
-	}
-
-	orgID, ok := orgUUIDRaw.(uuid.UUID)
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, nil)
 		return
 	}
 
 	// 3. Bind JSON Request (Fixed: initialized the DTO)
-	var req orchestrator_dtos.SetupLegalEntityReqDTO
+	var req orchestrator_dtos.SetupWizUpdateOrgNameRequestDto
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		utils.ValidationError(ctx, err)
 		return
 	}
 
-	// 4. Call Service Layer
-	err := c.orchestService.StepThreeLegalEntity(ctx.Request.Context(), orgID, &req)
-	if err != nil {
-		// Map service error to appropriate failure
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+	if err := c.orchestService.SetupWiz_UpdateOrgName(ctx.Request.Context(), orgID, emplID, &req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something went wrong", err)
 		return
 	}
 
-	// 5. Success Wrap
-	utils.Success(ctx, http.StatusOK, "Legal entity details saved successfully")
+	utils.Success(ctx, http.StatusOK, "Organization Name Added Successfully")
+
 }

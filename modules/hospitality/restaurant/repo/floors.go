@@ -3,8 +3,8 @@ package restaurantrepo
 import (
 	"context"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 )

@@ -2,7 +2,7 @@ package organization_services
 
 import (
 	organization_repo "sharpnr-engine/core/organization/repo"
-	sharpIam_services "sharpnr-engine/core/sharp_iam/services"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sharp_mailer_engine"
 )
 
@@ -10,24 +10,20 @@ type organizationService struct {
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine
 	orgRedisRepo organization_repo.RedisOrganizationRepositoryInterface
 	orgMainRepo  organization_repo.OrganizationRepositoryInterface
-	iam          *sharpIam_services.SharpIamService
-}
-
-// GetOrgHQ implements OrganizationPublicServiceInterface.
-func (r *organizationService) GetOrgHQ() {
-	panic("unimplemented")
+	txManager    dbtx.TxManager
 }
 
 func NewOrganizationService(
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	orgRedisRepo organization_repo.RedisOrganizationRepositoryInterface,
 	orgMainRepo organization_repo.OrganizationRepositoryInterface,
-	iam *sharpIam_services.SharpIamService,
+	txManager dbtx.TxManager,
+
 ) *organizationService {
 	return &organizationService{
 		mailerEngine: mailerEngine,
 		orgRedisRepo: orgRedisRepo,
 		orgMainRepo:  orgMainRepo,
-		iam:          iam,
+		txManager:    txManager,
 	}
 }

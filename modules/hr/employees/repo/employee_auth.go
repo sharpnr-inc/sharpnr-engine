@@ -6,20 +6,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
-type hrEmployeeAuthRepo struct {
-	db *gorm.DB
-}
-
-func NewEmployeeAuthRepository(db *gorm.DB) *hrEmployeeAuthRepo {
-	return &hrEmployeeAuthRepo{
-		db: db,
-	}
-}
-
-func (r *hrEmployeeAuthRepo) Create(
+func (r *employeeRepo) CreateEmployeeAuth(
 	ctx context.Context,
 	auth *employee_models.EmployeeAuth,
 ) error {
@@ -31,7 +20,9 @@ func (r *hrEmployeeAuthRepo) Create(
 	return r.db.WithContext(ctx).Create(auth).Error
 }
 
-func (r *hrEmployeeAuthRepo) GetByEmployeeID(
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *employeeRepo) GetAuthByEmployeeID(
 	ctx context.Context,
 	empID uuid.UUID,
 ) (*employee_models.EmployeeAuth, error) {
@@ -46,7 +37,9 @@ func (r *hrEmployeeAuthRepo) GetByEmployeeID(
 	return &auth, nil
 }
 
-func (r *hrEmployeeAuthRepo) GetByUsername(
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *employeeRepo) GetByUsername(
 	ctx context.Context,
 	username string,
 ) (*employee_models.EmployeeAuth, error) {
@@ -61,7 +54,9 @@ func (r *hrEmployeeAuthRepo) GetByUsername(
 	return &auth, nil
 }
 
-func (r *hrEmployeeAuthRepo) UpdateLastLogin(
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *employeeRepo) UpdateLastLogin(
 	ctx context.Context,
 	empID uuid.UUID,
 	at time.Time,
@@ -73,3 +68,5 @@ func (r *hrEmployeeAuthRepo) UpdateLastLogin(
 		Update("last_login_at", at).
 		Error
 }
+
+/* ---------------------------------- <***> --------------------------------- */

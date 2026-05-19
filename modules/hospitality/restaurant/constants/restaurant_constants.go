@@ -37,6 +37,7 @@ const (
 /*                   Restaurant Configuration Related Enums                   */
 /* -------------------------------------------------------------------------- */
 
+// Restaurant Configuration
 type RestaurantConfigurationStatusType string
 
 const (

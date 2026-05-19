@@ -1,0 +1,15 @@
+DROP TABLE IF EXISTS hospitality.menu_item_tax_category;
+DROP TABLE IF EXISTS hospitality.menu_sub_category_tax_category;
+DROP TABLE IF EXISTS hospitality.menu_category_tax_category;
+DROP TABLE IF EXISTS hospitality.menu_group_tax_category;
+DROP TABLE IF EXISTS hospitality.menu_item_kitchen_register;
+DROP TABLE IF EXISTS hospitality.menu_subcategory_kitchen_register;
+DROP TABLE IF EXISTS hospitality.menu_category_kitchen_register;
+DROP TABLE IF EXISTS hospitality.menu_group_kitchen_register;
+DROP TABLE IF EXISTS hospitality.menu_item_addon;
+DROP TABLE IF EXISTS hospitality.menu_variant;
+DROP TABLE IF EXISTS hospitality.menu_variant_group;
+DROP TABLE IF EXISTS hospitality.menu_item;
+DROP TABLE IF EXISTS hospitality.menu_subcategory;
+DROP TABLE IF EXISTS hospitality.menu_category;
+DROP TABLE IF EXISTS hospitality.menu_group;

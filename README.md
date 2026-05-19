@@ -1,32 +1,33 @@
 # Sharpnr Engine
 
-Sharpnr Engine is a backend project designed to provide robust and scalable solutions for modern applications.
+**Multi-tenant SaaS Orchestration & ERP Core**
 
+Sharpnr is a high-performance orchestration engine designed to coordinate complex workflows across distributed modules. It serves as the backbone for hospitality, accounting, and human resource systems, ensuring data integrity and cross-domain communication.
+
+---
+
+## 1. System Architecture
+
+Sharpnr operates as a centralized orchestrator (API Gateway) that manages the lifecycle of requests and coordinates between specialized domain engines.
+
+```text
 ┌─────────────────────────────────────────────────────┐
 │            ORCHESTRATOR (API Gateway)                │
 │     Coordinates workflows across domains             │
-└──────────────┬──────────────────────────────────────┘
+└──────────────┬──────────────┬────────────────────────┘
+               │              │
+    ┌──────────┴──────────┐   └──────────────┐
+    │  DOMAIN ENGINES     │                  │
+    ├─────────────────────┤         ┌────────▼────────┐
+    │ modules/hr/         │         │ sharp_services/ │
+    │ modules/accounting/ │         │ (Internal/Auth) │
+    │ modules/hospitality/│         └─────────────────┘
+    └──────────┬──────────┘
                │
-    ┌──────────┴──────────┬─────────────┬──────────────┐
-    │                     │             │              │
-┌───▼────┐    ┌──────────▼───┐  ┌─────▼─────┐  ┌────▼──────┐
-│  core/ │    │  modules/    │  │  sharp_   │  │  payment/ │
-│        │    │ hospitality/ │  │ services/ │  │           │
-└────────┘    └──────────────┘  └───────────┘  └───────────┘
+    ┌──────────▼──────────┐
+    │ DATA PERSISTENCE    │
+    │ (PostgreSQL/SQLx)   │
+    └─────────────────────┘
+```
 
-## Getting Started
-
-## Requirements
-
-## Contributing
-
-Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-| Folder    | Responsibility                                  |
-| --------- | ----------------------------------------------- |
-| models    | DB truth (Invoice, InvoiceItem, etc.)           |
-| contracts | Input/output DTOs used by other domains         |
-| services  | Business actions (issue, cancel, apply payment) |
-| resolvers | Integration logic (legal entity, accounting)    |
-| helpers   | Numbering, formatting, calculations             |
-| constants | Status, types, enums                            |
+#0A0A2E

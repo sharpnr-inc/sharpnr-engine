@@ -2,28 +2,49 @@ package legal_entity_repo
 
 import (
 	"context"
+	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	legal_entity_models "sharpnr-engine/core/legal_entity/models"
 
 	"github.com/google/uuid"
 )
 
 type OrgLegalEntityRepoInterface interface {
+
+	// Creates a New Legal Entity
 	CreateLegalEntity(ctx context.Context, legalEntity *legal_entity_models.LegalEntity) error
-	GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID) ([]*legal_entity_models.LegalEntity, error)
 	GetLegalEntityByID(ctx context.Context, legalEntityID uuid.UUID) (*legal_entity_models.LegalEntity, error)
+	// Updates Legal Entity on Allowed
+	// the models it updates is legal_entity_models.LegalEntity
+	UpdateLegalEntity(ctx context.Context, legalEntityID uuid.UUID, req legal_entity_contracts.UpdateLegalEntityNamesRequestDto) error
+
+	// List all the Legal Entity of the Organization,
+	// Returns the Slices if No record found it returns the gorm Err Record Nt found
+	GetLegalEntitiesByOrgID(ctx context.Context, orgID uuid.UUID) ([]legal_entity_models.LegalEntity, error)
+	// Switch on/Off for the Legal Entity
 	UpdateLegalEntityStatus(ctx context.Context, legalEntityID uuid.UUID, isActive bool) error
 
-	AddAddressInLegalEntity(ctx context.Context, address *legal_entity_models.LegalEntityAddress) error
-	GetAddressOfLegalEntity(ctx context.Context, legalEntityID uuid.UUID) (*legal_entity_models.LegalEntityAddress, error)
-	UpdateLegalEntityAddress(ctx context.Context, addressID uuid.UUID, updates map[string]interface{}) error
+	CreateAddressOfLegalEntity(ctx context.Context, address *legal_entity_models.LegalEntityAddress) error
+	GetAddressesOfLegalEntity(ctx context.Context, legalEntityID uuid.UUID) ([]legal_entity_models.LegalEntityAddress, error)
+	UpdateLegalEntityAddress(ctx context.Context, legalEntityID, addressID uuid.UUID, req legal_entity_contracts.UpdateLegalEntityAddressRequestDto) error
 
-	CreateLegalEntityCompliance(ctx context.Context, compliance *legal_entity_models.LegalEntityCompliance) error
-	GetLegalCompliancesByLegalEntityID(ctx context.Context, legalEntityID uuid.UUID) ([]*legal_entity_models.LegalEntityCompliance, error)
-
-	// Binding Tables
-	AddPropertyInLegalEntity(ctx context.Context, propertyLegalEntityRelation *legal_entity_models.PropertyLegalEntity) error
+	LegalEntityBankAccountRepoInterface
+	LegalEntityComplianceRepoInterface
 	LegalEntityTaxRepoInterface
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+type LegalEntityBankAccountRepoInterface interface {
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+type LegalEntityComplianceRepoInterface interface {
+	CreateLegalEntityCompliance(ctx context.Context, compliance *legal_entity_models.LegalEntityCompliance) error
+	GetLegalCompliancesByLegalEntityID(ctx context.Context, legalEntityID uuid.UUID) ([]*legal_entity_models.LegalEntityCompliance, error)
+}
+
+/* ---------------------------------- <***> --------------------------------- */
 
 type LegalEntityTaxRepoInterface interface {
 
@@ -39,15 +60,8 @@ type LegalEntityTaxRepoInterface interface {
 
 	// --- Tax Rules & Components (The "How Much") ---
 	// Atomic creation of a rule and its constituent parts (CGST, SGST, etc.)
-	CreateTaxRuleOfTaxCategory(
-		ctx context.Context,
-		rule *legal_entity_models.LegalEntityTaxRule,
-	) error
-
-	CreateTaxComponentOfTaxRule(
-		ctx context.Context,
-		tax_components *legal_entity_models.LegalEntityTaxComponent,
-	) error
+	CreateTaxRuleOfTaxCategory(ctx context.Context, rule *legal_entity_models.LegalEntityTaxRule) error
+	CreateTaxComponentOfTaxRule(ctx context.Context, tax_components *legal_entity_models.LegalEntityTaxComponent) error
 
 	// Fetching active rules for the Accounting Engine to calculate tax
 	GetActiveRulesByCategory(ctx context.Context, categoryID uuid.UUID) ([]legal_entity_models.LegalEntityTaxRule, error)
@@ -61,5 +75,4 @@ type LegalEntityTaxRepoInterface interface {
 
 	// --- Maintenance ---
 	ToggleRuleStatus(ctx context.Context, ruleID uuid.UUID, isActive bool) error
-	// DeleteTaxRule(ctx context.Context, ruleID uuid.UUID) error // Use carefully for audit trails
 }

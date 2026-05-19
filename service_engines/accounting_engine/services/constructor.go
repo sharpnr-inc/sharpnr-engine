@@ -1,9 +1,9 @@
 package accounting_service
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 	accounting_repo "sharpnr-engine/service_engines/accounting_engine/repository"
 	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"

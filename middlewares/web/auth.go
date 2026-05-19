@@ -1,9 +1,10 @@
 package webMiddleware
 
 import (
+	"log/slog"
 	"net/http"
 
-	"sharpnr-engine/cookieManager"
+	"sharpnr-engine/pkg/cookieManager"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 
 	"github.com/gin-gonic/gin"
@@ -11,9 +12,8 @@ import (
 )
 
 const (
-	UserIDContextKey    = "user_id"
-	OrgUUIDContextKey   = "OrgUUID"
-	SessionIDContextKey = "session_id"
+	UserIDContextKey  = "user_id"
+	OrgUUIDContextKey = "OrgUUID"
 )
 
 func WebAuthMiddleware(
@@ -22,36 +22,54 @@ func WebAuthMiddleware(
 ) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
-		refreshToken, err := cookies.ReadAuth(ctx)
+		refreshToken, err := cookies.Read(ctx, cookieManager.Auth)
 		if err != nil {
+			slog.Warn("authentication failed",
+				"reason", "missing_auth_cookie",
+				"path", ctx.Request.URL.Path,
+				"ip", ctx.ClientIP(),
+			)
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"message": "Authentication required",
 			})
 			return
 		}
 
-		// 2️⃣ Verify refresh token
+		// 2️⃣ Verify web token
 		claims, err := jwtMgr.VerifyWebCookie(refreshToken)
 		if err != nil {
+			slog.Warn("authentication failed",
+				"reason", "invalid_token",
+				"error", err.Error(),
+				"path", ctx.Request.URL.Path,
+				"ip", ctx.ClientIP(),
+			)
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"message": "Invalid or expired session",
 			})
 			return
 		}
 
-		orgUUID, err := uuid.Parse(claims.OrgID)
-		if err != nil {
-			// token is already invalid if this fails
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "invalid org id in token",
-			})
-			return
+		// 3️⃣ Roll CSRF — or mint a new one if it was deleted
+		csrfToken, err := cookies.Read(ctx, cookieManager.CSRF)
+		if err != nil || csrfToken == "" {
+			csrfToken = uuid.New().String()
+			slog.Info("CSRF cookie missing, issuing new token",
+				"path", ctx.Request.URL.Path,
+				"user_id", claims.UserID,
+			)
+		}
+
+		if err := cookies.Set(ctx, cookieManager.CSRF, csrfToken); err != nil {
+			slog.Warn("failed to set CSRF cookie",
+				"error", err.Error(),
+				"path", ctx.Request.URL.Path,
+			)
 		}
 
 		// 3️⃣ Populate legacy context keys
 		ctx.Set(UserIDContextKey, claims.UserID)
-		ctx.Set(OrgUUIDContextKey, orgUUID) // 👈 legacy-compatible
-
+		ctx.Set(OrgUUIDContextKey, claims.OrgID)
 		ctx.Next()
 	}
 }

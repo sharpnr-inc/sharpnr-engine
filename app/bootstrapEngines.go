@@ -3,12 +3,12 @@ package app
 import (
 	org_customer_repo "sharpnr-engine/core/customer/repo"
 	org_customer_service "sharpnr-engine/core/customer/service"
-	dbtx "sharpnr-engine/core/dbTx"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	payment_gateway "sharpnr-engine/payment_engine/gateway"
 	"sharpnr-engine/payment_engine/gateway/cash"
 	payment_engine_repo "sharpnr-engine/payment_engine/repo"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 	inventory_engine_repo "sharpnr-engine/service_engines/inventory_engine/repo"
 	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"

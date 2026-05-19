@@ -105,7 +105,7 @@ func (rd *organizationRedisRepo) Create(
 //	    return ErrInvalidOTP
 //	}
 //
-//	// Proceed with organization creation
+// Proceed with organization creation
 func (rd *organizationRedisRepo) Get(
 	ctx context.Context,
 	signupID string,

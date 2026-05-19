@@ -3,7 +3,7 @@ package accounting_repo
 import (
 	"context"
 	"errors"
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	accounting_models "sharpnr-engine/service_engines/accounting_engine/models"
 
 	"github.com/google/uuid"

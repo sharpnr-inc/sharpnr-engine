@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
 	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

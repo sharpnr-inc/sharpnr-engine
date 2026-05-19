@@ -2,13 +2,15 @@ package orchestrator_service
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	inventory_dtos "sharpnr-engine/service_engines/inventory_engine/dtos"
 	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *inventory_dtos.NewInventoryAccountRequestDto) error {
 
@@ -23,6 +25,8 @@ func (s *orchestratorService) AddNewInventoryAccount(ctx context.Context, orgID,
 
 	})
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error) {
 	var results []inventory_engine_models.InventoryAccount
@@ -49,6 +53,8 @@ func (s *orchestratorService) ListAllInventoryAccount(ctx context.Context, orgID
 	return results, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (s *orchestratorService) GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]inventory_engine_models.Inventory, error) {
 	var inventoryList []inventory_engine_models.Inventory
 
@@ -69,3 +75,5 @@ func (s *orchestratorService) GetInventoryAccountDetails(ctx context.Context, or
 
 	return inventoryList, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
