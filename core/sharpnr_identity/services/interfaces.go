@@ -20,11 +20,6 @@ type SharpnrIdentityAuthServiceInterface interface {
 		empID uuid.UUID,
 	) (*sharpnr_identity_auth_dtos.ProfileResponse_dto, error)
 
-	VerifyLoggedInEmployee(
-		ctx context.Context,
-		orgID uuid.UUID,
-		employeeID uuid.UUID,
-	) error
-
 	GetAuthenticatedUserDetails(ctx context.Context, orgID, emplID uuid.UUID) (sharpnr_identity_auth_dtos.UserDataResponseDto, error)
+	UpdateSuperAdminDetails(ctx context.Context, orgID, empID uuid.UUID, input sharpnr_identity_auth_dtos.UpdateSuperAdminDetailsInput) error
 }

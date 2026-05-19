@@ -2,7 +2,7 @@ package org_customer_service
 
 import (
 	org_customer_repo "sharpnr-engine/core/customer/repo"
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 )
 

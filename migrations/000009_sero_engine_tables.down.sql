@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS sero_engine.sero_outbox;

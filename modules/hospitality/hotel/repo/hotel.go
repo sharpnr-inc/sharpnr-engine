@@ -12,6 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Create Hotel
 func (h *hotelRepository) CreateHotel(ctx context.Context, hotel *hotel_models.Hotel) error {
 
 	if err := h.db.WithContext(ctx).Create(hotel).Error; err != nil {
@@ -20,6 +21,9 @@ func (h *hotelRepository) CreateHotel(ctx context.Context, hotel *hotel_models.H
 	return nil
 }
 
+/* --------------------------------- <****> --------------------------------- */
+
+// Update Hotels Details
 func (r *hotelRepository) UpdateHotelGenDetails(ctx context.Context, updates *hotel_contracts.HotelMainGenDetailsInput) error {
 	// We use a map to ensure GORM updates all fields, even if they are 'false' or empty strings.
 	updateData := map[string]interface{}{
@@ -43,6 +47,8 @@ func (r *hotelRepository) UpdateHotelGenDetails(ctx context.Context, updates *ho
 
 	return nil
 }
+
+/* --------------------------------- <****> --------------------------------- */
 
 // This return one Hotel by the its own ID hotel ID
 func (h *hotelRepository) GetHotelByID(ctx context.Context, hotelID uuid.UUID) (*hotel_models.Hotel, error) {
@@ -82,10 +88,12 @@ func (h *hotelRepository) UpdateHotelStatus(ctx context.Context, hotelID uuid.UU
 	return nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 // GetHotelByID implements HotelRepository.
-func (h *hotelRepository) GetHotelsByOrgID(ctx context.Context, orgID uuid.UUID) ([]*hotel_models.Hotel, error) {
+func (h *hotelRepository) GetHotelsByOrgID(ctx context.Context, orgID uuid.UUID) ([]hotel_models.Hotel, error) {
 	// 1. Initialize a slice of pointers to match your return type
-	var hotels []*hotel_models.Hotel
+	var hotels []hotel_models.Hotel
 
 	// 2. Use .Find() instead of .First() to retrieve multiple records
 	err := h.db.WithContext(ctx).
@@ -105,9 +113,11 @@ func (h *hotelRepository) GetHotelsByOrgID(ctx context.Context, orgID uuid.UUID)
 	return hotels, nil
 }
 
-func (d *hotelRepository) GetHotelsByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]*hotel_models.Hotel, error) {
+/* ---------------------------------- <***> --------------------------------- */
 
-	var hotels []*hotel_models.Hotel
+func (d *hotelRepository) GetHotelsByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]hotel_models.Hotel, error) {
+
+	var hotels []hotel_models.Hotel
 
 	err := d.db.WithContext(ctx).Where("property_id = ?", propertyID).Find(&hotels).Error
 	if err != nil {
@@ -120,6 +130,8 @@ func (d *hotelRepository) GetHotelsByPropertyID(ctx context.Context, propertyID 
 
 	return hotels, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 // GetHotelByOrgID implements HotelRepositoryInterface.
 func (h *hotelRepository) GetHotelByOrgID(
@@ -140,3 +152,5 @@ func (h *hotelRepository) GetHotelByOrgID(
 
 	return hotels, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */

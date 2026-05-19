@@ -3,7 +3,9 @@ package org_setup_wizard_repos
 import (
 	"context"
 	"errors"
+	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_models "sharpnr-engine/core/org_setup_wizard/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 
 	"github.com/google/uuid"
@@ -54,7 +56,7 @@ func (d *orgSetupWizardRepo) GetAllSetupStepByOrgID(
 
 func (d *orgSetupWizardRepo) UpdateCurrentStepStatus(
 	ctx context.Context,
-	stepStatus string,
+	stepStatus org_setup_wizards_constants.SetupStatus,
 	orgID uuid.UUID,
 	ID uuid.UUID,
 ) error {
@@ -84,3 +86,31 @@ func (d *orgSetupWizardRepo) UpdateCurrentStepStatus(
 }
 
 //--------------------------------------------------------------------//
+
+func (d *orgSetupWizardRepo) GetStepByID(
+	ctx context.Context,
+	orgID uuid.UUID,
+	stepID uuid.UUID,
+) (*org_setup_wizard_models.OrganizationSetup, error) {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = d.db
+	}
+
+	var step org_setup_wizard_models.OrganizationSetup
+
+	err := db.
+		WithContext(ctx).
+		Where("id = ? AND organization_id = ?", stepID, orgID).
+		First(&step).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, gorm.ErrRecordNotFound
+		}
+		return nil, err
+	}
+
+	return &step, nil
+}

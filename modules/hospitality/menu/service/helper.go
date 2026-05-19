@@ -2,8 +2,8 @@ package menuservice
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
 	hospitality_menu_contracts "sharpnr-engine/modules/hospitality/menu/contracts"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

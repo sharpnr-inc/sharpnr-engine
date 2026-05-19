@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	invoice_engine_contracts "sharpnr-engine/service_engines/invoicing_engine/contracts"
 	invoice_engine_models "sharpnr-engine/service_engines/invoicing_engine/models"
 	tax_engine_contracts "sharpnr-engine/service_engines/tax_engine/contracts"

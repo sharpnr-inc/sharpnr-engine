@@ -2,8 +2,8 @@ package restaurantservices
 
 import (
 	"context"
-	dbtx "sharpnr-engine/core/dbTx"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	inventory_dtos "sharpnr-engine/service_engines/inventory_engine/dtos"
 	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
 
@@ -46,7 +46,7 @@ func (s *restaurantService) AddNewInventoryInRestaurant(ctx context.Context, org
 
 		mappedReq := &inventory_dtos.NewInventoryRequestDto{
 			BusinessUnitID: &restaurantID,
-			LegalEntityID:  &restaurantDetails.LegalEntityID,
+			LegalEntityID:  restaurantDetails.LegalEntityID,
 			Name:           request.Name,
 			Description:    request.Description,
 			Location:       request.Location,

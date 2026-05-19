@@ -1,7 +1,7 @@
 package app
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 	accounting_sero_event_handler "sharpnr-engine/service_engines/accounting_engine/sero_handler"
 	inventory_engine_sero_handlers "sharpnr-engine/service_engines/inventory_engine/sero_handlers"
@@ -21,9 +21,11 @@ func BootstrapModules(
 	sseEngine *sse_engine.StreamManager,
 ) *AppModules {
 
-	iAM := bootstrapSharIAM(db)
-	organizationService := bootstrapOrganization(db, redis, mailerEngine, iAM)
-	orgPropertyService := bootstrapOrgProperty(db, txManager)
+	// Sentinel Engine uses the DB and used to Evaluate the authorization
+	// sentinel_engine := bootStrapSentinelEngine(db)
+
+	organizationService := bootstrapOrganization(db, redis, mailerEngine, txManager)
+	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
 
 	/* ---------------------------- inventory engine ---------------------------- */
@@ -31,26 +33,31 @@ func BootstrapModules(
 	inventory_engine_sero_handlers.RegisterSeroHandler(seroEngine, inventoryEngine)
 	/* ---------------------------- inventory engine ---------------------------- */
 
-	employeeService := bootstrapEmployee(db)
+	employeesIdentityService := bootstrapEmployeeIdentity(db, seroEngine, txManager, mailerEngine)
+	employeesHRService := bootstrapEmployeeHR(db, seroEngine, txManager, mailerEngine)
+
+	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
+	orgSupplierService := bootstrapSupplier(db, txManager, mailerEngine, seroEngine)
+
+	identityService := bootstrapIdentity(employeesIdentityService, organizationService)
+
 	orgSetupWizardService := bootstrapOrgSetupWizard(
 		db,
 		orgLegalEntityService,
 		orgPropertyService,
 		organizationService,
+		identityService,
+		txManager,
+		mailerEngine,
 	)
 
 	orgSignupService := bootstrapOrgSignup(
 		txManager,
 		mailerEngine,
-		employeeService,
+		employeesIdentityService,
 		organizationService,
 		orgSetupWizardService,
 	)
-
-	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
-	orgSupplierService := bootstrapSupplier(db, txManager, mailerEngine, seroEngine)
-
-	identityService := bootstrapIdentity(db, employeeService)
 
 	paymentsEngine := bootstrapPaymentEngine(db, mailerEngine, txManager, seroEngine)
 
@@ -68,6 +75,13 @@ func BootstrapModules(
 		paymentsEngine,
 		inventoryEngine,
 	)
+
+	hospitalityOrchestration := bootstrapHospitalityDomainOrchestration(
+		orgPropertyService,
+		hospitality,
+		orgLegalEntityService,
+	)
+
 	/* ---------------------------- Accounting Engine --------------------------- */
 	accountingService := bootstrapAccounting(
 		db,
@@ -102,15 +116,19 @@ func BootstrapModules(
 		orgSignupService:      orgSignupService,
 		orgPropertyService:    orgPropertyService,
 		orgLegalEntityService: orgLegalEntityService,
-		employeeService:       employeeService,
-		accountingService:     accountingService,
-		sharpAuthService:      identityService,
-		hospitality:           hospitality,
-		orchestratorService:   orchestratorService,
-		orgSetupWizard:        orgSetupWizardService,
-		sseEngine:             sseEngine,
-		taxEngineService:      taxEngineService,
-		orgCustomerService:    orgCustomerService,
+
+		employeesIdentityService: employeesIdentityService,
+		employeesHRService:       employeesHRService,
+
+		accountingService:        accountingService,
+		sharpAuthService:         identityService,
+		hospitality:              hospitality,
+		hospitalityOrchestration: hospitalityOrchestration,
+		orchestratorService:      orchestratorService,
+		orgSetupWizard:           orgSetupWizardService,
+		sseEngine:                sseEngine,
+		taxEngineService:         taxEngineService,
+		orgCustomerService:       orgCustomerService,
 	}
 
 }

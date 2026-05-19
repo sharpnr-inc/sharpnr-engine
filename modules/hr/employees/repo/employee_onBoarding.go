@@ -5,29 +5,9 @@ import (
 	employee_models "sharpnr-engine/modules/hr/employees/models"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
-// *This File Implements all the methods from the EmployeeOnboardingRepositoryInterface
-/*
-type EmployeeOnboardingRepositoryInterface interface {
-	Create(ctx context.Context, onboarding *employee_models.EmployeeOnboarding) error
-	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*employee_models.EmployeeOnboarding, error)
-	UpdateStatus(ctx context.Context, empID uuid.UUID, status string) error
-}
-*/
-// employeeOnboardingRepo implements EmployeeOnboardingRepositoryInterface
-type employeeOnboardingRepo struct {
-	db *gorm.DB
-}
-
-func NewEmployeeOnboardingRepository(db *gorm.DB) *employeeOnboardingRepo {
-	return &employeeOnboardingRepo{
-		db: db,
-	}
-}
-
-func (r *employeeOnboardingRepo) Create(
+func (r *employeeRepo) CreateEmployeeOnBoarding(
 	ctx context.Context,
 	onboarding *employee_models.EmployeeOnboarding,
 ) error {
@@ -39,7 +19,9 @@ func (r *employeeOnboardingRepo) Create(
 	return r.db.WithContext(ctx).Create(onboarding).Error
 }
 
-func (r *employeeOnboardingRepo) GetByEmployeeID(
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *employeeRepo) GetEmplOnBoardingByEmployeeID(
 	ctx context.Context,
 	empID uuid.UUID,
 ) (*employee_models.EmployeeOnboarding, error) {
@@ -59,7 +41,9 @@ func (r *employeeOnboardingRepo) GetByEmployeeID(
 	return &onboarding, nil
 }
 
-func (r *employeeOnboardingRepo) UpdateStatus(
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *employeeRepo) UpdateStatus(
 	ctx context.Context,
 	empID uuid.UUID,
 	status string,
@@ -73,4 +57,4 @@ func (r *employeeOnboardingRepo) UpdateStatus(
 		Error
 }
 
-var _ EmployeeOnboardingRepositoryInterface = (*employeeOnboardingRepo)(nil)
+/* ---------------------------------- <***> --------------------------------- */

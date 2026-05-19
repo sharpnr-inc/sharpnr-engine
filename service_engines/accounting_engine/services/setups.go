@@ -3,7 +3,7 @@ package accounting_service
 import (
 	"context"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	accountingconstants "sharpnr-engine/service_engines/accounting_engine/constants"
 	accounting_engine_contracts "sharpnr-engine/service_engines/accounting_engine/contracts"
 	accounting_engine_helpers "sharpnr-engine/service_engines/accounting_engine/helpers"
@@ -34,13 +34,13 @@ func (r *accountingServices) CreateDraftAccountingSetup(ctx context.Context, inp
 
 		// Step One: Create The Accounting book
 		accBookInput := &accounting_models.AccountingBook{
-			ID:                        uuid.New(),
-			OrganizationID:            input.OrgID,
-			LegalEntityID: input.LegalEntityID,
-			Name:                      accbookname(input.Name_of_legalEntity),
-			Status:                    accountingconstants.Active,
-			CreatedAt:                 now,
-			UpdatedAt:                 now,
+			ID:             uuid.New(),
+			OrganizationID: input.OrgID,
+			LegalEntityID:  input.LegalEntityID,
+			Name:           accbookname(input.Name_of_legalEntity),
+			Status:         accountingconstants.Active,
+			CreatedAt:      now,
+			UpdatedAt:      now,
 		}
 
 		// Pass txCtx so repo can ExtractTx

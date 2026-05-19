@@ -7,6 +7,4 @@ import (
 
 func Register(seroEngine *sero.SEROEngine, service kitchenservices.KitchenServiceInterface) {
 
- 
-
 }

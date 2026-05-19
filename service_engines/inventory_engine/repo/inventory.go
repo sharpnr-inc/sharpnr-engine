@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	inventory_engine_contracts "sharpnr-engine/service_engines/inventory_engine/contracts"
 	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
 

@@ -1,14 +1,14 @@
 package webMiddleware
 
 import (
+	"log/slog"
 	"net/http"
-	"sharpnr-engine/cookieManager"
+	"sharpnr-engine/pkg/cookieManager"
 
 	"github.com/gin-gonic/gin"
 )
 
 const (
-	csrfCookieName = "_dev_csrf"
 	csrfHeaderName = "X-CSRF-Token"
 )
 
@@ -23,8 +23,14 @@ func CSRFMiddleware(cookies cookieManager.Manager) gin.HandlerFunc {
 		}
 
 		// 1️⃣ Read CSRF cookie via manager
-		csrfCookie, err := cookies.ReadCSRF(ctx)
+		csrfCookie, err := cookies.Read(ctx, cookieManager.CSRF)
 		if err != nil || csrfCookie == "" {
+			slog.Error("CSRF validation failed",
+				"reason", "missing_cookie",
+				"method", ctx.Request.Method,
+				"path", ctx.Request.URL.Path,
+				"ip", ctx.ClientIP(),
+			)
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"message": "CSRF cookie missing",
 			})
@@ -33,7 +39,26 @@ func CSRFMiddleware(cookies cookieManager.Manager) gin.HandlerFunc {
 
 		// 2️⃣ Read header token
 		csrfHeader := ctx.GetHeader(csrfHeaderName)
-		if csrfHeader == "" || csrfHeader != csrfCookie {
+		if csrfHeader == "" {
+			slog.Error("CSRF validation failed",
+				"reason", "missing_header",
+				"method", ctx.Request.Method,
+				"path", ctx.Request.URL.Path,
+				"ip", ctx.ClientIP(),
+			)
+			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+				"message": "CSRF header missing",
+			})
+			return
+		}
+
+		if csrfHeader != csrfCookie {
+			slog.Error("CSRF validation failed",
+				"reason", "mismatch",
+				"method", ctx.Request.Method,
+				"path", ctx.Request.URL.Path,
+				"ip", ctx.ClientIP(),
+			)
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"message": "CSRF validation failed",
 			})

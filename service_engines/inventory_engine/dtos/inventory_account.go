@@ -5,4 +5,3 @@ type NewInventoryAccountRequestDto struct {
 	Type     string `json:"type"` // Likely "KITCHEN", "BAR", etc.
 	IsShared bool   `json:"is_shared"`
 }
-

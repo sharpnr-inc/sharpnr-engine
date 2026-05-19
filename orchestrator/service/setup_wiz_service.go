@@ -3,119 +3,60 @@ package orchestrator_service
 import (
 	"context"
 	"errors"
-	"fmt"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
-// These all service uses the Service from the SetupWizard
-// These are service we have to implement the contracts
+/* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) AddOrganizationHQAddress(
+/* -------------------------------------------------------------------------- */
+/*                        Version 1.0.0 of Setup Wizard                       */
+/* -------------------------------------------------------------------------- */
+
+func (s *orchestratorService) SetupWiz_AddProperty(
 	ctx context.Context,
-	orgID uuid.UUID,
-	req *orchestrator_dtos.SetupOrganizationHQAddressReqDTO,
-) error {
-
-	// Step 1 --> This is the mapping process, orchestrator implements the contracts of
-	// setup wizard
-
-	valiStepID, err := uuid.Parse(req.StepID)
-	if err != nil {
-		return err
-	}
-
-	input := org_setup_wizard_contracts.StepOneOrganizationHQ{
-		OrgID:        orgID,
-		StepID:       valiStepID,
-		Address_line: req.AddressLine,
-		Country:      req.Country,
-		City:         req.City,
-		State:        req.State,
-		Pincode:      req.Pincode,
-		Location: org_setup_wizard_contracts.StepOneOrganizationHQGeoLocation{
-			Longitude: req.Longitude,
-			Latitude:  req.Latitude,
-			Accuracy:  req.AccuracyM,
-		},
-	}
-
-	if err := s.orgSetupWizService.Step_one_AddOrgHqAddrAndGeoLocation(ctx, input); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *orchestratorService) StepTwoProperty(
-	ctx context.Context,
-	orgID uuid.UUID,
+	orgID uuid.UUID, emplID uuid.UUID,
 	req *orchestrator_dtos.SetupOrgPropertyReqDTO,
 ) error {
 
-	stepParse_uuid, err := uuid.Parse(req.StepID)
-	if err != nil {
-		return err
-	}
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		dbtx := dbtx.InjectTx(ctx, tx)
 
-	input := org_setup_wizard_contracts.PropertySetupInput{
-		StepID:      stepParse_uuid,
-		OrgID:       orgID,
-		Name:        req.Name,
-		AddressLine: req.AddressLine,
-		City:        req.City,
-		State:       req.State,
-		Country:     req.Country,
-		Pincode:     req.Pincode,
-	}
+		stepParse_uuid, err := uuid.Parse(req.StepID)
+		if err != nil {
+			return err
+		}
 
-	if err := s.orgSetupWizService.Step_two_AddProperty(ctx, input); err != nil {
-		return err
-	}
-	return nil
+		input := org_setup_wizard_contracts.PropertySetupInput{
+			StepID:       stepParse_uuid,
+			OrgID:        orgID,
+			Name:         req.Name,
+			PropertyCode: *req.PropertyCode,
+			AddressLine:  req.AddressLine,
+			City:         req.City,
+			State:        req.State,
+			Country:      req.Country,
+			Pincode:      req.Pincode,
+		}
+
+		if err := s.orgSetupWizService.Step_two_AddProperty(dbtx, orgID, emplID, input); err != nil {
+			return err
+		}
+
+		return nil
+
+	})
 }
 
-func (s *orchestratorService) StepThreeLegalEntity(
-	ctx context.Context,
-	orgID uuid.UUID,
-	req *orchestrator_dtos.SetupLegalEntityReqDTO,
-) error {
+/* ---------------------------------- <***> --------------------------------- */
 
-	// 1. Check if the Org exists and is verified
-	verified, err := s.organizationService.VerifyOrgByID(ctx, orgID)
-	if err != nil {
-		return err
-	}
-
-	// 2. Explicitly handle the "Not Verified" state
-	if !verified {
-		return errors.New("organization must be verified before adding legal entity details")
-	}
-
-	// 3. Map to the internal contract
-	// Tip: Use a mapper function if this grows larger
-	stepInput := org_setup_wizard_contracts.SetupLegalEntityInput{
-		StepID:      req.StepID,
-		OrgID:       orgID,
-		LegalName:   req.Name,
-		Type:        req.Type,
-		AddressLine: req.AddressLine,
-		City:        req.City,
-		State:       req.State,
-		Country:     req.Country,
-		Pincode:     req.Pincode,
-	}
-
-	// 4. Execute the wizard step
-	if err := s.orgSetupWizService.Step_three_AddLegalEntity(ctx, stepInput); err != nil {
-		return fmt.Errorf("failed to save legal entity: %w", err)
-	}
-
-	return nil
-}
-
+// This method retrieves the current progress of the setup wizard for a given organization.
+// It returns a structured response containing the overall status, current step, progress percentage, completion
+// status, and details of each step in the wizard.
 func (s *orchestratorService) SetUpWizProgress(
 	ctx context.Context,
 	orgID uuid.UUID,
@@ -142,8 +83,65 @@ func (s *orchestratorService) SetUpWizProgress(
 	return orchestrator_dtos.SetupProgressResponseDTO{
 		OverallStatus: progress.OverallStatus,
 		CurrentStep:   progress.CurrentStep,
-		ProgressPct:   progress.ProgressPct,
 		IsCompleted:   progress.IsCompleted,
 		Steps:         steps,
 	}, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// This super admin completed details will be their regardless of the version
+// this is method completes the super admin details
+//
+// it takes organizationID and emplID id that we created after the signup process
+func (s *orchestratorService) SetUpSuperAdminDetails(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req *orchestrator_dtos.SetupSuperAdminDetailsReqDTO) error {
+	// 1. Verify Org exists and is verified
+	verified, err := s.organizationService.VerifyOrgByID(ctx, orgID)
+	if err != nil {
+		return err
+	}
+
+	if !verified {
+		return errors.New("organization must be verified before setting up super admin details")
+	}
+
+	// 2. Now we will call the identity service to update the super admin details
+	if err := s.orgSetupWizService.UpdateSuperAdminDetailsStep(ctx, orgID, emplID, org_setup_wizard_contracts.SuperAdminDetailsInput{
+		StepID:         req.StepID,
+		OrgID:          orgID,
+		FirstName:      req.FirstName,
+		LastName:       req.LastName,
+		SecondaryEmail: req.SecondaryEmail,
+		SecondaryPhone: "",
+		EmployeeID:     *req.EmployeeID,
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) SetupWiz_UpdateOrgName(ctx context.Context, orgID, emplID uuid.UUID, request *orchestrator_dtos.SetupWizUpdateOrgNameRequestDto) error {
+
+	verified, err := s.organizationService.VerifyOrgByID(ctx, orgID)
+	if err != nil {
+		return err
+	}
+
+	if !verified {
+		return errors.New("organization must be verified before setting up super admin details")
+	}
+
+	if err := s.orgSetupWizService.UpdateOrgDetailsStep(ctx, orgID, emplID, org_setup_wizard_contracts.OrganizationDetailsSetupInput{
+		StepID: request.StepID,
+		OrgID:  orgID,
+		Name:   request.OrgName,
+	}); err != nil {
+		return err
+	}
+
+	return nil
+
 }

@@ -23,7 +23,7 @@ var HospitalityModules = []HospitalityDomainModule{
 		ID:          "HOTEL",
 		ModuleName:  Hotel,
 		Description: "Comprehensive hotel management module for handling reservations, room inventory, guest check-ins/outs, housekeeping, billing, and reporting.",
-		IsAvailable: false,
+		IsAvailable: true,
 	},
 	{
 		ID:          "RESTAURANT",
@@ -41,7 +41,7 @@ var HospitalityModules = []HospitalityDomainModule{
 		ID:          "BAR",
 		ModuleName:  Bar,
 		Description: "Bar and lounge management system focusing on inventory tracking, liquor control, bartender sales monitoring, and daily revenue insights.",
-		IsAvailable: false,
+		IsAvailable: true,
 	},
 	{
 		ID:          "CLOUD_KITCHEN_TAKEAWAYS",

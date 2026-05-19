@@ -3,13 +3,13 @@ package orchestrator_service
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	org_customer_service "sharpnr-engine/core/customer/service"
-	dbtx "sharpnr-engine/core/dbTx"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	organization_services "sharpnr-engine/core/organization/services"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
 	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
@@ -18,7 +18,7 @@ import (
 type orchestratorService struct {
 	organizationService     organization_services.OrganizationServiceInterface
 	orgPropertyService      org_property_services.OrganizationPropertyServicesInterfaces
-	orgSetupWizService      org_setup_wizard_services.OrgSetupWizardServiceInterface
+	orgSetupWizService      org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface
 	hospitalityDomainSvc    *hospitalitydomain.HospitalityDomain
 	accountingEngineService accounting_service.AccountingServiceInterface
 	legalEntityService      legal_entity_service.OrgLegalEntityServiceInterface
@@ -33,7 +33,7 @@ type orchestratorService struct {
 func NewSharpnrOrchestratorService(
 	organizationService organization_services.OrganizationServiceInterface,
 	orgPropertyService org_property_services.OrganizationPropertyServicesInterfaces,
-	orgSetupWizService org_setup_wizard_services.OrgSetupWizardServiceInterface,
+	orgSetupWizService org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface,
 	hospitalityDomainSvc *hospitalitydomain.HospitalityDomain,
 	accountingEngineService accounting_service.AccountingServiceInterface,
 	legalEntityService legal_entity_service.OrgLegalEntityServiceInterface,

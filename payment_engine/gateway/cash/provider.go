@@ -54,8 +54,8 @@ func (c *CashProvider) VerifyPayment(
 	now := time.Now()
 	return &payment_gateway.GatewayVerifyResponse{
 		Status:          "SUCCESS",
-		GatewayTxnID:   req.GatewayOrderID,
-		GatewayOrderID: req.GatewayOrderID,
+		GatewayTxnID:    req.GatewayOrderID,
+		GatewayOrderID:  req.GatewayOrderID,
 		PaidAmountPaise: req.AmountPaise,
 		PaidAt:          now,
 		RawResponse:     `{"method":"CASH","auto_confirmed":true}`,

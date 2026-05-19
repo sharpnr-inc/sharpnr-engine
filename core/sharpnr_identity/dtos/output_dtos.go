@@ -17,4 +17,5 @@ type UserDataResponseDto struct {
 	LastName  string    `json:"lastName"`
 	ID        uuid.UUID `json:"id"`
 	Role      string    `json:"role"`
+	Org       OrgData   `json:"org_data"`
 }

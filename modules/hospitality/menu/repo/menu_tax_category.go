@@ -3,8 +3,8 @@ package menurepo
 import (
 	"context"
 	"errors"
-	dbtx "sharpnr-engine/core/dbTx"
 	hospitalityMenu_models "sharpnr-engine/modules/hospitality/menu/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 
 	"github.com/google/uuid"

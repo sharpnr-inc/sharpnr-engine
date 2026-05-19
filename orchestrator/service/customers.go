@@ -4,11 +4,13 @@ import (
 	"context"
 	org_customer_contracts "sharpnr-engine/core/customer/contracts"
 	org_customer_models "sharpnr-engine/core/customer/models"
-	dbtx "sharpnr-engine/core/dbTx"
+	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) AddCustomer(ctx context.Context, orgID, emplID uuid.UUID, req org_customer_contracts.AddCustomerRequestDto) error {
 
@@ -42,3 +44,5 @@ func (s *orchestratorService) SearchCustomer(ctx context.Context, orgID, emplID 
 
 	return results, err
 }
+
+/* ---------------------------------- <***> --------------------------------- */

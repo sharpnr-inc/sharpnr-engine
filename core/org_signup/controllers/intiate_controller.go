@@ -2,8 +2,8 @@ package org_signup_controllers
 
 import (
 	"net/http"
-	"sharpnr-engine/cookieManager"
 	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
+	"sharpnr-engine/pkg/cookieManager"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
@@ -31,7 +31,7 @@ func (c *orgSignUpController) InitiateNewOrgRegistration(ctx *gin.Context) {
 
 	slug, err := c.signUpSvc.InitiateRegistration(ctx.Request.Context(), req)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadGateway, "", err)
+		utils.Failure(ctx, http.StatusBadRequest, "Signup error", err)
 		return
 	}
 

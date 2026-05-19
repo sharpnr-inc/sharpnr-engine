@@ -3,7 +3,9 @@ package organization_repo
 import (
 	"context"
 	"errors"
+	organization_constants "sharpnr-engine/core/organization/constants"
 	"sharpnr-engine/core/organization/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"strings"
 
 	"github.com/google/uuid"
@@ -29,23 +31,31 @@ func (r *organizationRepo) CreateOrganization(
 		Error
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (r *organizationRepo) GetOrganizationByID(ctx context.Context, orgID uuid.UUID) (*models.Organization, error) {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
 	var organization models.Organization
 
-	// .First() searches by the primary key (ID).
-	// It automatically adds "LIMIT 1" to the SQL query.
-	err := r.db.WithContext(ctx).
+	err := db.WithContext(ctx).
 		Where("id = ?", orgID).
 		First(&organization).Error
 
 	if err != nil {
-		// If no record is found, GORM returns gorm.ErrRecordNotFound.
-		// We return the error so the service layer can decide the HTTP status (e.g., 404).
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, gorm.ErrRecordNotFound
+		}
 		return nil, err
 	}
 
 	return &organization, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (r *organizationRepo) GetOrganizationBySharpID(ctx context.Context, sharpID string) (*models.Organization, error) {
 	var organization models.Organization
@@ -81,13 +91,13 @@ func (r *organizationRepo) GetOrganizationByEmail(ctx context.Context, rootEmail
 	return &organization, nil
 }
 
-func (r *organizationRepo) UpdateOrganizationStatus(ctx context.Context, orgID uuid.UUID, status string) error {
+func (r *organizationRepo) UpdateOrganizationStatus(ctx context.Context, orgID uuid.UUID, status organization_constants.OrgSetupStatusType) error {
 	// We target the Organization model and filter by its Primary Key
 	// .Update() only changes the specified column and updates the 'updated_at' timestamp
 	result := r.db.WithContext(ctx).
 		Model(&models.Organization{}).
 		Where("id = ?", orgID).
-		Update("status", strings.ToUpper(status)) // Ensuring status follows your CAPS convention
+		Update("status", status) // Ensuring status follows your CAPS convention
 
 	if result.Error != nil {
 		return result.Error
@@ -99,10 +109,6 @@ func (r *organizationRepo) UpdateOrganizationStatus(ctx context.Context, orgID u
 	}
 
 	return nil
-}
-
-func (d *organizationRepo) AddOrgOfficeAddress(ctx context.Context, Addr *models.OrganizationOffice) error {
-	return d.db.WithContext(ctx).Create(Addr).Error
 }
 
 // AddOrgVerificationDetails implements MainOrgSignUpRepositoryInterface.
@@ -133,6 +139,23 @@ func (d *organizationRepo) GetOrgSubscriptionPlan(ctx context.Context, orgID uui
 	return &subscription, nil
 }
 
-func (d *organizationRepo) CreateOrganizationStatus(ctx context.Context, orgStatus *models.OrganizationSetupStatus) error {
-	return d.db.WithContext(ctx).Create(orgStatus).Error
+func (r *organizationRepo) UpdateOrgName(ctx context.Context, orgID uuid.UUID, name string) error {
+	// Using Model(&Organization{}) tells GORM which table to use.
+	// Where("id = ?", orgID) ensures we only update the specific record.
+	// Update("name", name) updates the single column and automatically handles UpdatedAt.
+	result := r.db.WithContext(ctx).
+		Model(&models.Organization{}).
+		Where("id = ?", orgID).
+		Update("name", name)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	// Optional: Check if the record actually existed
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+
+	return nil
 }

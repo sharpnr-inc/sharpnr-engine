@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
 	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
 	restaurant_models "sharpnr-engine/modules/hospitality/restaurant/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 
 	"github.com/google/uuid"
@@ -195,7 +195,7 @@ func (s *restaurantService) GetGeneralDetails(
 		// 4. Map base restaurant fields
 		response = restaurant_contracts.RestaurantGeneralInfo_resp_dto{
 			RestaurantID:            restaurant.ID,
-			RestaurantLegalEntityID: restaurant.LegalEntityID,
+			RestaurantLegalEntityID: *restaurant.LegalEntityID,
 			Name:                    restaurant.Name,
 			OpeningTime:             restaurant.OpeningTime,
 			ClosingTime:             restaurant.ClosingTime,

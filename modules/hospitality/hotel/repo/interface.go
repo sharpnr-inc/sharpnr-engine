@@ -14,10 +14,21 @@ type HotelRepositoryInterface interface {
 	// Hotel
 	//--------------------------------------------------------------
 	CreateHotel(ctx context.Context, hotel *hotel_models.Hotel) error
+
+	// Return a Pointer of Hotel Objects
 	GetHotelByID(ctx context.Context, id uuid.UUID) (*hotel_models.Hotel, error)
-	GetHotelByOrgID(ctx context.Context, orgid uuid.UUID) ([]*hotel_models.Hotel, error)
+
+	// Returns Slice of Hotel Object
+	// If No Hotel it will be empty
+	GetHotelsByOrgID(ctx context.Context, orgid uuid.UUID) ([]hotel_models.Hotel, error)
+
+	// Updates the Hotel Status it takes hotelID and Status
 	UpdateHotelStatus(ctx context.Context, hotelID uuid.UUID, status string) error
-	GetHotelsByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]*hotel_models.Hotel, error)
+
+	// Return the Hotel By PropertyID
+	//
+	// it takes proproperyID as the Paramnerter
+	GetHotelsByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]hotel_models.Hotel, error)
 
 	UpdateHotelGenDetails(ctx context.Context, updates *hotel_contracts.HotelMainGenDetailsInput) error
 	CreateHotelOperationalTiming(ctx context.Context, hotel_timing *hotel_models.HotelOperationsTiming) error
@@ -60,12 +71,4 @@ type HotelRepositoryInterface interface {
 	GetHotelGuests(ctx context.Context, hotelId uuid.UUID) ([]hotel_models.HotelGuest, error)
 	SearchHotelGuest(ctx context.Context, hotelId uuid.UUID, qry string) ([]hotel_models.HotelGuest, error)
 	GetHotelGuestById(ctx context.Context, guestId uuid.UUID) (hotel_models.HotelGuest, error)
-}
-
-/*******************************************
- * this is the Interface for House Keeping *
- *******************************************/
-type HotelHouseKeepingRepositoryInterface interface {
-
-	// TODO :- This need To Implemented
 }

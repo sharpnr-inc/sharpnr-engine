@@ -7,8 +7,8 @@ import (
 	organization_constants "sharpnr-engine/core/organization/constants"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
 	"sharpnr-engine/core/organization/models"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/shared/utils"
-	"sharpnr-engine/sharp_mailer_engine"
 	"strings"
 
 	"github.com/google/uuid"
@@ -34,25 +34,27 @@ func (r *organizationService) IsOrgExists(ctx context.Context, rootEmail string)
 	return true, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (r *organizationService) CreateDraftOrgForSignup(
 	ctx context.Context,
 	input organization_contracts.DraftOrganizationInput,
-) (signupSlug string, otp string, err error) {
+) (signupSlug uuid.UUID, otp string, err error) {
 
 	if input.Email == "" && (input.Mobile == nil || *input.Mobile == "") {
-		return "", "", errors.New("email or phone is required")
+		return uuid.Nil, "", errors.New("email or phone is required")
 	}
 
 	hashPassword, err := utils.HashPassword(input.Password)
 	if err != nil {
-		return "", "", err
+		return uuid.Nil, "", err
 	}
 
 	stagingID := uuid.New()
 
 	otp, err = utils.GenerateOTP()
 	if err != nil {
-		return "", "", err
+		return uuid.Nil, "", err
 	}
 
 	var phone string
@@ -69,10 +71,10 @@ func (r *organizationService) CreateDraftOrgForSignup(
 	}
 
 	if err := r.orgRedisRepo.Create(ctx, tempOrg); err != nil {
-		return "", "", err
+		return uuid.Nil, "", err
 	}
 
-	return stagingID.String(), otp, nil
+	return stagingID, otp, nil
 }
 
 //----------------------------------------------------------------------------------------------------------------//
@@ -94,7 +96,7 @@ func (r *organizationService) CreateNewOrganization(
 		ID:        orgID,
 		Name:      "Default Organization",
 		SharpnrID: sharpID,
-		Status:    string(organization_constants.OrgNotConfigured),
+		Status:    organization_constants.OrgConfigStatusConfigNotStarted,
 		RootEmail: input.Email,
 	}
 
@@ -103,26 +105,15 @@ func (r *organizationService) CreateNewOrganization(
 		return output, err
 	}
 
-	orgStatus := &models.OrganizationSetupStatus{
-		ID:              uuid.New(),
-		OrganizationID:  org.ID,
-		IsSetupComplete: false,
-	}
+	// orgStatus := &models.OrganizationSetupStatus{
+	// 	ID:              uuid.New(),
+	// 	OrganizationID:  org.ID,
+	// 	IsSetupComplete: false,
+	// }
 
-	if err := r.orgMainRepo.CreateOrganizationStatus(ctx, orgStatus); err != nil {
-		return output, err
-	}
-
-	welcomeMailData := map[string]interface{}{
-		"welcome": "to sharpnr",
-	}
-
-	r.mailerEngine.Queues[sharp_mailer_engine.Notification] <- sharp_mailer_engine.EmailJob{
-		To:       org.RootEmail,
-		Subject:  "welcome to sharpnr",
-		Template: sharp_mailer_engine.TmplNotification,
-		Data:     welcomeMailData,
-	}
+	// if err := r.orgMainRepo.CreateOrganizationStatus(ctx, orgStatus); err != nil {
+	// 	return output, err
+	// }
 
 	// 4. Prepare data for employee creation
 	output = organization_contracts.InputForCreateDefaultEmployee{
@@ -133,3 +124,44 @@ func (r *organizationService) CreateNewOrganization(
 
 	return output, nil
 }
+
+func (s *organizationService) UpdateOrganizationName(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, name string) error {
+	return s.orgMainRepo.UpdateOrgName(ctx, orgID, name)
+}
+
+/* --------------------------------- <****> --------------------------------- */
+
+func (s *organizationService) GetOrgDetailsByID(
+	ctx context.Context,
+	orgID,
+	emplID uuid.UUID,
+) (*organization_contracts.OrganizationResult, error) {
+
+	var orgData *organization_contracts.OrganizationResult
+
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		org, err := s.orgMainRepo.GetOrganizationByID(txCtx, orgID)
+		if err != nil {
+			return err
+		}
+
+		orgData = &organization_contracts.OrganizationResult{
+			ID:        org.ID,
+			SharpID:   org.SharpnrID,
+			Name:      org.Name,
+			RootEmail: org.RootEmail,
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return orgData, nil
+}
+
+/* --------------------------------- <****> --------------------------------- */

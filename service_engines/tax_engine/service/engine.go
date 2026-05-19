@@ -1,8 +1,8 @@
 package tax_engine_service
 
 import (
-	dbtx "sharpnr-engine/core/dbTx"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 )
 

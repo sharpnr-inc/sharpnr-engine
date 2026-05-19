@@ -3,71 +3,17 @@ package organization_services
 import (
 	"context"
 	"errors"
-	organization_contracts "sharpnr-engine/core/organization/contracts"
-	"sharpnr-engine/core/organization/models"
-	"sharpnr-engine/sharp_mailer_engine"
+	organization_constants "sharpnr-engine/core/organization/constants"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
-// AddHQ implements OrganizationInternalServiceInterface.
-func (r *organizationService) AddHQ(ctx context.Context, input organization_contracts.OrganizationHQ) error {
+/* ---------------------------------- <***> --------------------------------- */
 
-	verifiedOrg, err := r.orgMainRepo.GetOrganizationByID(ctx, input.OrgID)
-	if err != nil {
-		return err
-	}
-
-	office := &models.OrganizationOffice{
-		ID:             uuid.New(),
-		OrganizationID: verifiedOrg.ID,
-		Code:           "HQ",
-		Name:           "Default Org Office",
-		IsHQ:           true,
-		IsActive:       false,
-		CreatedAt:      time.Now(),
-		UpdatedAt:      time.Now(),
-	}
-
-	if err := r.orgMainRepo.CreateOrgOffice(ctx, office); err != nil {
-		return err
-	}
-
-	officeAddr := &models.OrganizationOfficeAddress{
-		ID:          uuid.New(),
-		OfficeID:    office.ID,
-		Type:        "",
-		AddressLine: input.Address_line,
-		City:        input.City,
-		State:       input.State,
-		Pincode:     input.Pincode,
-		Country:     input.Country,
-		IsPrimary:   true,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
-	}
-
-	if err := r.orgMainRepo.CreateOrgOfficeAddress(ctx, officeAddr); err != nil {
-		return err
-	}
-
-	notificationMailJob := map[string]interface{}{
-		"Title":      "Kya Baat hai!! Naya Office",
-		"Subtitle":   "Andha Paisa",
-		"FooterNote": "Party kab de raha hai",
-	}
-	r.mailerEngine.Queues[sharp_mailer_engine.Notification] <- sharp_mailer_engine.EmailJob{
-		To:       verifiedOrg.RootEmail,
-		Subject:  "HQ Updates",
-		Template: sharp_mailer_engine.TmplNotification,
-		Data:     notificationMailJob,
-	}
-
-	return nil
-}
-
-func (r *organizationService) GetStatus(ctx context.Context, orgID uuid.UUID) (string, error) {
+func (r *organizationService) GetStatus(ctx context.Context, orgID uuid.UUID) (organization_constants.OrgSetupStatusType, error) {
 	org, err := r.orgMainRepo.GetOrganizationByID(ctx, orgID)
 	if err != nil {
 		return "", err
@@ -76,7 +22,9 @@ func (r *organizationService) GetStatus(ctx context.Context, orgID uuid.UUID) (s
 	return org.Status, nil
 }
 
-func (r *organizationService) UpdateStatus(ctx context.Context, orgID uuid.UUID, status string) error {
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *organizationService) UpdateStatus(ctx context.Context, orgID uuid.UUID, status organization_constants.OrgSetupStatusType) error {
 	org, err := r.orgMainRepo.GetOrganizationByID(ctx, orgID)
 	if err != nil {
 		return err
@@ -92,14 +40,27 @@ func (r *organizationService) UpdateStatus(ctx context.Context, orgID uuid.UUID,
 	return nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
+// This is the method which Verify the oranisation
 func (r *organizationService) VerifyOrgByID(ctx context.Context, orgID uuid.UUID) (bool, error) {
-	org, err := r.orgMainRepo.GetOrganizationByID(ctx, orgID)
+
+	err := r.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		dbTx := dbtx.InjectTx(ctx, tx)
+
+		org, err := r.orgMainRepo.GetOrganizationByID(dbTx, orgID)
+		if err != nil {
+			return err
+		}
+		if org.ID != orgID {
+			return errors.New("org do not exist")
+		}
+		return nil
+	})
+
 	if err != nil {
 		return false, err
 	}
-	if org.ID != orgID {
-		return false, errors.New("org do not exist")
-	}
-
 	return true, nil
 }

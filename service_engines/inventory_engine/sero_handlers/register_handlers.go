@@ -10,7 +10,7 @@ func RegisterSeroHandler(
 	seroEngine *sero.SEROEngine,
 	inventoryEngineService inventory_engine_services.InventoryEngineServicesInterface,
 ) {
-	
+
 	seroEngine.Subscribe(
 		accounting_engine_events.PurchaseInvoiceCreated,
 		handlePurchaseInvoiceCreationEvent(inventoryEngineService),

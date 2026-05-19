@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	dbtx "sharpnr-engine/core/dbTx"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
+	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/shared/utils"
 	"sync"
 
@@ -14,6 +14,8 @@ import (
 	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 )
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error) {
 
@@ -41,7 +43,7 @@ func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID u
 	}, nil
 }
 
-//=---------------------------------------------------------------//
+/* ---------------------------------- <***> --------------------------------- */
 
 func (c *orchestratorService) GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error) {
 
@@ -207,7 +209,7 @@ func (c *orchestratorService) enrichHospitalityData(
 	return nil
 }
 
-// =---------------------------------------------------------------//
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) ConfigurePropertyToDomain(
 	ctx context.Context,
@@ -228,7 +230,7 @@ func (s *orchestratorService) ConfigurePropertyToDomain(
 	return s.orgPropertyService.AddDomain(ctx, orgID, propertyID, req.Domain)
 }
 
-//=---------------------------------------------------------------//
+/* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) AddModulesInProperty(
 	ctx context.Context,
