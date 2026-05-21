@@ -6,6 +6,7 @@ import (
 	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func (r *orgLegalEntityRepo) AddNewTaxRegistration(ctx context.Context, reg *legal_entity_models.LegalEntityTaxRegistration) error {
@@ -35,6 +36,11 @@ func (r *orgLegalEntityRepo) FindAllTaxRegistrationOfLegalEntity(ctx context.Con
 
 	if err != nil {
 		return nil, err
+	}
+
+	// Explicitly return gorm.ErrRecordNotFound if no registrations are found
+	if len(registrations) == 0 {
+		return nil, gorm.ErrRecordNotFound
 	}
 
 	return registrations, nil

@@ -122,6 +122,31 @@ func (r *orgLegalEntityRepo) ToggleRuleStatus(ctx context.Context, ruleID uuid.U
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (d *orgLegalEntityRepo) FindAllTaxCategoryRules(ctx context.Context, taxCategoryID uuid.UUID) ([]legal_entity_models.LegalEntityTaxRule, error) {
-	panic("")
+func (d *orgLegalEntityRepo) FindAllTaxCategoryRules(
+	ctx context.Context,
+	taxCategoryID uuid.UUID,
+) ([]legal_entity_models.LegalEntityTaxRule, error) {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = d.db
+	}
+
+	var taxRules []legal_entity_models.LegalEntityTaxRule
+
+	err := db.WithContext(ctx).
+		Where("tax_category_id = ?", taxCategoryID).
+		Find(&taxRules).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	// Explicitly return gorm.ErrRecordNotFound if no rules are found for this category
+	if len(taxRules) == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+
+	return taxRules, nil
 }
