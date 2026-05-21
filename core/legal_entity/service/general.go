@@ -116,6 +116,9 @@ func (s *orgLegalEntity) GetLegalEntityDetails(
 	g.Go(func() error {
 		var err error
 		leContacts, err = s.legalEntityRepo.FindAddAllContactsOfLegalEntity(groupCtx, legalEntityID)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil // Soft fallback: Keep group context alive, array remains empty slice
+		}
 		return err
 	})
 
@@ -123,6 +126,9 @@ func (s *orgLegalEntity) GetLegalEntityDetails(
 	g.Go(func() error {
 		var err error
 		leBankAccounts, err = s.legalEntityRepo.FindBankAccountsByLegalEntityID(groupCtx, legalEntityID)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil
+		}
 		return err
 	})
 
@@ -130,6 +136,9 @@ func (s *orgLegalEntity) GetLegalEntityDetails(
 	g.Go(func() error {
 		var err error
 		leAddr, err = s.legalEntityRepo.GetAddressesOfLegalEntity(groupCtx, le.ID)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil
+		}
 		return err
 	})
 
@@ -137,6 +146,9 @@ func (s *orgLegalEntity) GetLegalEntityDetails(
 	g.Go(func() error {
 		var err error
 		leLicenseComp, err = s.legalEntityRepo.FindAllLegalCompliancesByLegalEntityID(groupCtx, legalEntityID)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil
+		}
 		return err
 	})
 
@@ -144,6 +156,9 @@ func (s *orgLegalEntity) GetLegalEntityDetails(
 	g.Go(func() error {
 		var err error
 		leIdentifiers, err = s.legalEntityRepo.FindAllIdentitifiersOfLegalEntity(groupCtx, legalEntityID)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil
+		}
 		return err
 	})
 
@@ -151,17 +166,23 @@ func (s *orgLegalEntity) GetLegalEntityDetails(
 	g.Go(func() error {
 		var err error
 		leTaxRegistration, err = s.legalEntityRepo.FindAllTaxRegistrationOfLegalEntity(groupCtx, legalEntityID)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil
+		}
 		return err
 	})
 
-	// Parallel Worker 7: Nested Tax Categories (Invokes your internal service tree resolver)
+	// Parallel Worker 7: Nested Tax Categories
 	g.Go(func() error {
 		var err error
 		taxCategory, err = s.GetLegalEntityTaxCategory(groupCtx, orgID, emplId, legalEntityID)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil
+		}
 		return err
 	})
 
-	// 3. Wait block: Block routine until workers yield or any single task encounters an error
+	// 3. Wait block: Block routine until workers yield or any genuine critical DB error hits
 	if err := g.Wait(); err != nil {
 		return legal_entity_contracts.LegalEntityDetails{}, err
 	}
