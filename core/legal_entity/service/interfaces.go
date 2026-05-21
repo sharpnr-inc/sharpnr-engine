@@ -19,6 +19,13 @@ type OrgLegalEntityServiceInterface interface {
 	LegalEntityTaxCongfigsServiceInterface
 	LegalEntityTaxEngineAdapterInterface
 	LegalEntityTaxCategoryService
+
+	// Adds New Contact in Legal Entity
+	AddNewContactInLegalEntity(
+		ctx context.Context,
+		orgID, emplID, legalEntityID uuid.UUID,
+		req *legal_entity_contracts.CreateLegalEntityContactsRequestDto,
+	) error
 }
 
 type LegalEntityTaxCategoryService interface {

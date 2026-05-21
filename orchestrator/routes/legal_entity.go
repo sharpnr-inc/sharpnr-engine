@@ -16,6 +16,7 @@ func registerLegalEntityRoutes(r *gin.RouterGroup, co *orchestrator_controllers.
 		ler.POST("/:legalEntityID/add-address")
 		ler.POST("/:legalEntityID/add-bankaccount")
 		ler.POST("/:legalEntityID/add-identities")
+		ler.POST("/:legalEntityID/add-contact", co.AddContactsInLegalEntityHandler)
 
 		le_utils := ler.Group("/utils")
 		{

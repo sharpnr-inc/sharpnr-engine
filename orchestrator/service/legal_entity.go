@@ -2,6 +2,7 @@ package orchestrator_service
 
 import (
 	"context"
+	"errors"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	accounting_engine_contracts "sharpnr-engine/service_engines/accounting_engine/contracts"
@@ -74,4 +75,28 @@ func (s *orchestratorService) GetDetailsOfLegalEntity(ctx context.Context, orgID
 	}
 
 	return res, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) AddContactsInLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntityID uuid.UUID,
+	req *legal_entity_contracts.CreateLegalEntityContactsRequestDto,
+) error {
+	if req == nil {
+		return errors.New("request body should not be empty")
+	}
+
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		return s.legalEntityService.AddNewContactInLegalEntity(
+			txCtx,
+			orgID,
+			emplID,
+			legalEntityID,
+			req,
+		)
+	})
 }

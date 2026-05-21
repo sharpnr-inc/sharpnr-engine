@@ -39,6 +39,19 @@ type CreateLegalEntityAddressRequest struct {
 
 /* ---------------------------------- <***> --------------------------------- */
 
+type CreateLegalEntityContactsRequestDto struct {
+	Type        legal_entity_constants.LegalEntityContactType `json:"type"`
+	FirstName   string                                        `json:"first_name"`
+	LastName    string                                        `json:"last_name,omitempty"`
+	Designation string                                        `json:"designation,omitempty"`
+	Email       string                                        `json:"email,omitempty"`
+	Mobile      string                                        `json:"mobile,omitempty"`
+	DIN         *string                                       `json:"din,omitempty"`
+	IsPrimary   bool                                          `json:"is_primary"`
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
 type LegalEntityResponseDto struct {
 	ID                uuid.UUID                              `json:"id"`
 	DisplayName       string                                 `json:"display_name"`
