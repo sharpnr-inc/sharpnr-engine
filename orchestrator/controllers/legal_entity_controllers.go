@@ -194,3 +194,60 @@ func (c *OrchestratorController) GetLegalEntityIdentifierTypes(ctx *gin.Context)
 	}
 	utils.Success(ctx, http.StatusOK, "Legal entity identifier types fetched successfully", response)
 }
+
+// GetLegalEntityTaxTypes handles GET /utils/tax_types
+func (c *OrchestratorController) GetLegalEntityTaxTypes(ctx *gin.Context) {
+	_, _, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	types := legal_entity_constants.AllTaxTypes()
+	response := make([]legal_entity_constants.LegalEntityTaxTypeResponse, len(types))
+	for i, t := range types {
+		response[i] = legal_entity_constants.LegalEntityTaxTypeResponse{
+			ID:          string(t),
+			Label:       t.Label(),
+			Description: t.Description(),
+		}
+	}
+	utils.Success(ctx, http.StatusOK, "Legal entity tax types fetched successfully", response)
+}
+
+// GetLegalEntityTaxComponentTypes handles GET /utils/tax-components_types
+func (c *OrchestratorController) GetLegalEntityTaxComponentTypes(ctx *gin.Context) {
+	_, _, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	types := legal_entity_constants.AllTaxComponentTypes()
+	response := make([]legal_entity_constants.LegalEntityTaxComponentTypeResponse, len(types))
+	for i, t := range types {
+		response[i] = legal_entity_constants.LegalEntityTaxComponentTypeResponse{
+			ID:          string(t),
+			Label:       t.Label(),
+			Description: t.Description(),
+		}
+	}
+	utils.Success(ctx, http.StatusOK, "Legal entity tax component types fetched successfully", response)
+}
+
+// GetLegalEntityBankAccountTypes handles GET /utils/bank-acc_types
+func (c *OrchestratorController) GetLegalEntityBankAccountTypes(ctx *gin.Context) {
+	_, _, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	types := legal_entity_constants.AllBankAccountTypes()
+	response := make([]legal_entity_constants.LegalEntityBankAccountTypeResponse, len(types))
+	for i, t := range types {
+		response[i] = legal_entity_constants.LegalEntityBankAccountTypeResponse{
+			ID:          string(t),
+			Label:       t.Label(),
+			Description: t.Description(),
+		}
+	}
+	utils.Success(ctx, http.StatusOK, "Legal entity bank account types fetched successfully", response)
+}

@@ -10,9 +10,9 @@ func registerLegalEntityRoutes(r *gin.RouterGroup, co *orchestrator_controllers.
 
 	ler := r.Group("/legal-entity")
 	{
-		ler.GET("", co.ListAllLegalEntity) // fetches the all the legal Entity of the Organizations
+		ler.GET("", co.ListAllLegalEntity)                                  // fetches the all the legal Entity of the Organizations
 		ler.GET("/:legalEntityID/details", co.GetLegalEntityDetailsHandler) // return the legal entity details by ID
-		ler.POST("/create", co.AddLegalEntity) // creates a new Legal entity in the organization
+		ler.POST("/create", co.AddLegalEntity)                              // creates a new Legal entity in the organization
 		ler.POST("/:legalEntityID/add-address")
 		ler.POST("/:legalEntityID/add-bankaccount")
 		ler.POST("/:legalEntityID/add-identities")
@@ -25,6 +25,9 @@ func registerLegalEntityRoutes(r *gin.RouterGroup, co *orchestrator_controllers.
 			le_utils.GET("/license_types", co.GetLegalEntityLicenseTypes)
 			le_utils.GET("/contact_types", co.GetLegalEntityContactTypes)
 			le_utils.GET("/identifier_types", co.GetLegalEntityIdentifierTypes)
+			le_utils.GET("/tax-components_types", co.GetLegalEntityTaxComponentTypes)
+			le_utils.GET("/bank-acc_types", co.GetLegalEntityBankAccountTypes)
+			le_utils.GET("/tax_types", co.GetLegalEntityTaxTypes)
 		}
 	}
 }
