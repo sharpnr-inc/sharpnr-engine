@@ -52,6 +52,7 @@ type OrganizationOrchestartionInterface interface {
 type LegalEntityOrchestrationServiceInterface interface {
 	GetAllLegalEntity(ctx context.Context, orgID, emplID uuid.UUID) ([]legal_entity_contracts.LegalEntityResponseDto, error)
 	CreateLegalEntity(ctx context.Context, orgID, emplID uuid.UUID, req *legal_entity_contracts.NewLegalEntityRequestDto) error
+	GetDetailsOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (legal_entity_contracts.LegalEntityDetails, error)
 }
 
 /* ---------------------------------- <***> --------------------------------- */

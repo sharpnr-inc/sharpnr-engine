@@ -64,3 +64,14 @@ func (c *orchestratorService) CreateLegalEntity(ctx context.Context, orgID, empl
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) GetDetailsOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (legal_entity_contracts.LegalEntityDetails, error) {
+	// Simply invoke the downstream service directly using the request context.
+	// If you implemented errgroup inside GetLegalEntityDetails, it will safely spawn sub-connections here.
+	res, err := s.legalEntityService.GetLegalEntityDetails(ctx, orgID, emplID, legalEntityID)
+	if err != nil {
+		return legal_entity_contracts.LegalEntityDetails{}, err // Properly bubble up the error
+	}
+
+	return res, nil
+}

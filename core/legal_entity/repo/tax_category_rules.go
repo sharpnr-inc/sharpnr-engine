@@ -121,3 +121,7 @@ func (r *orgLegalEntityRepo) ToggleRuleStatus(ctx context.Context, ruleID uuid.U
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (d *orgLegalEntityRepo) FindAllTaxCategoryRules(ctx context.Context, taxCategoryID uuid.UUID) ([]legal_entity_models.LegalEntityTaxRule, error) {
+	panic("")
+}

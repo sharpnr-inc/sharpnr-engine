@@ -54,6 +54,27 @@ func (c *OrchestratorController) AddLegalEntity(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusOK, "Legal Entity Created successfully")
 }
 
+func (c *OrchestratorController) GetLegalEntityDetailsHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	response, err := c.orchestService.GetDetailsOfLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "some thing went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Details Fetched successfully", response)
+}
+
 /* -------------------------------------------------------------------------- */
 /*                        Legal entitys utils endpoints                       */
 /* -------------------------------------------------------------------------- */
