@@ -100,3 +100,79 @@ func (s *orchestratorService) AddContactsInLegalEntity(
 		)
 	})
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) AddAddressInLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntityID uuid.UUID,
+	req *legal_entity_contracts.CreateLegalEntityAddressRequest,
+) error {
+	if req == nil {
+		return errors.New("request body should not be empty")
+	}
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		_, err := s.legalEntityService.AddNewAddressInLegalEntity(
+			txCtx,
+			orgID,
+			emplID,
+			legalEntityID,
+			*req,
+		)
+
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) AddBankAccountDetailsInLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntityID uuid.UUID,
+	req *legal_entity_contracts.AddBankAccountInLegalEntityRequestDto,
+) error {
+	if req == nil {
+		return errors.New("request body should not be empty")
+	}
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		return s.legalEntityService.AddNewBankAccounInLegalEntity(
+			txCtx,
+			orgID,
+			emplID,
+			legalEntityID,
+			req,
+		)
+	})
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+func (s *orchestratorService) AddIdentifiersInLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntityID uuid.UUID,
+	req *legal_entity_contracts.AddIdentifiersInLegalEntityRequestDto,
+) error {
+	if req == nil {
+		return errors.New("request body should not be empty")
+	}
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		return s.legalEntityService.AddNewIdentifiersInLegalEntity(
+			txCtx,
+			orgID,
+			emplID,
+			legalEntityID,
+			req,
+		)
+	})
+}
+
+/* ---------------------------------- <***> --------------------------------- */

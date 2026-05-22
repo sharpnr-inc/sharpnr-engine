@@ -26,6 +26,18 @@ type OrgLegalEntityServiceInterface interface {
 		orgID, emplID, legalEntityID uuid.UUID,
 		req *legal_entity_contracts.CreateLegalEntityContactsRequestDto,
 	) error
+
+	AddNewBankAccounInLegalEntity(
+		ctx context.Context,
+		orgID, emplID, legalEntityID uuid.UUID,
+		req *legal_entity_contracts.AddBankAccountInLegalEntityRequestDto,
+	) error
+
+	AddNewIdentifiersInLegalEntity(
+		ctx context.Context,
+		orgID, emplID, legalEntityID uuid.UUID,
+		req *legal_entity_contracts.AddIdentifiersInLegalEntityRequestDto,
+	) error
 }
 
 type LegalEntityTaxCategoryService interface {

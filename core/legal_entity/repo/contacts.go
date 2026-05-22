@@ -27,6 +27,8 @@ func (d *orgLegalEntityRepo) AddLegalEntityContacts(
 	return nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (d *orgLegalEntityRepo) FindAddAllContactsOfLegalEntity(
 	ctx context.Context,
 	legalEntityID uuid.UUID,
@@ -55,3 +57,5 @@ func (d *orgLegalEntityRepo) FindAddAllContactsOfLegalEntity(
 
 	return contacts, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */

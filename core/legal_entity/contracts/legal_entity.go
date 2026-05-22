@@ -20,6 +20,8 @@ type NewLegalEntityRequestDto struct {
 	Addresses []CreateLegalEntityAddressRequest `json:"addresses,omitempty"`
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 type CreateLegalEntityAddressRequest struct {
 	AddressLine1 string `json:"address_line_1"`
 	AddressLine2 string `json:"address_line_2,omitempty"`
@@ -51,6 +53,31 @@ type CreateLegalEntityContactsRequestDto struct {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+type AddBankAccountInLegalEntityRequestDto struct {
+	AccountHolderName string                                            `json:"account_holder_name"`
+	AccountNumber     string                                            `json:"account_number"`
+	IFSC              string                                            `json:"ifsc"`
+	BankName          string                                            `json:"bank_name"`
+	BranchName        string                                            `json:"branch_name"`
+	MICRCode          string                                            `json:"micr_code"`
+	AccountType       legal_entity_constants.LegalEntityBankAccountType `json:"account_type"`
+	IsPrimary         bool                                              `json:"is_primary"`
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+type AddIdentifiersInLegalEntityRequestDto struct {
+	Type       legal_entity_constants.LegalEntityIdentifierTypes `json:"type"`
+	Value      string                                            `json:"value"`
+	IsVerified bool                                              `json:"is_verified"`
+	VerifiedAt *time.Time                                        `json:"verified_at,omitempty"`
+	ExpiresAt  *time.Time                                        `json:"expires_at,omitempty"`
+}
+
+/* -------------------------------------------------------------------------- */
+/*                            API RESPONSE STRUCTS                            */
+/* -------------------------------------------------------------------------- */
 
 type LegalEntityResponseDto struct {
 	ID                uuid.UUID                              `json:"id"`

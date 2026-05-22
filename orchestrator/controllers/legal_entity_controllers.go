@@ -54,6 +54,8 @@ func (c *OrchestratorController) AddLegalEntity(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusOK, "Legal Entity Created successfully")
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (c *OrchestratorController) GetLegalEntityDetailsHandler(ctx *gin.Context) {
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
@@ -101,6 +103,93 @@ func (c *OrchestratorController) AddContactsInLegalEntityHandler(ctx *gin.Contex
 	}
 
 	utils.Success(ctx, http.StatusOK, "Contact Added Successfully")
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) AddAddressesInLegalEntityHandler(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	req, ok := utils.BindJSON[legal_entity_contracts.CreateLegalEntityAddressRequest](ctx)
+	if !ok {
+		return
+	}
+
+	if err := c.orchestService.AddAddressInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Address Added")
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) AddBankAccountDetailsInLegalEntityHandler(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	req, ok := utils.BindJSON[legal_entity_contracts.AddBankAccountInLegalEntityRequestDto](ctx)
+	if !ok {
+		return
+	}
+
+	if err := c.orchestService.AddBankAccountDetailsInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Bank Account Added")
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) AddIdentifiersInLegalEntityHandler(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	req, ok := utils.BindJSON[legal_entity_contracts.AddIdentifiersInLegalEntityRequestDto](ctx)
+	if !ok {
+		return
+	}
+
+	if err := c.orchestService.AddIdentifiersInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Identifiers Added")
+
 }
 
 /* ---------------------------------- <***> --------------------------------- */
