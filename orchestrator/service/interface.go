@@ -58,6 +58,7 @@ type LegalEntityOrchestrationServiceInterface interface {
 	AddAddressInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req *legal_entity_contracts.CreateLegalEntityAddressRequest) error
 	AddBankAccountDetailsInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req *legal_entity_contracts.AddBankAccountInLegalEntityRequestDto) error
 	AddIdentifiersInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req *legal_entity_contracts.AddIdentifiersInLegalEntityRequestDto) error
+	AddLicenseOrComplianceInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req legal_entity_contracts.AddNewLicenseAndComplianceRequestDto) error
 }
 
 /* ---------------------------------- <***> --------------------------------- */

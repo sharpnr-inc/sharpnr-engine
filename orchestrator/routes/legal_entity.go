@@ -67,8 +67,8 @@ func registerLegalEntityRoutes(r *gin.RouterGroup, co *orchestrator_controllers.
 		/* ------------------------------------------------------------------ */
 		license := ler.Group("/:legalEntityID/licenses")
 		{
-			license.GET("")
-			license.POST("")
+			license.GET("", co.ListAllLicenseAndComplianceHandler)
+			license.POST("", co.AddLicenseAndComplianceHandler)
 			license.PUT("/:licenseID")
 			license.DELETE("/:licenseID")
 		}

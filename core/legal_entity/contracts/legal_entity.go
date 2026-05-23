@@ -73,6 +73,16 @@ type AddIdentifiersInLegalEntityRequestDto struct {
 	ExpiresAt *time.Time                                        `json:"expires_at,omitempty"`
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
+type AddNewLicenseAndComplianceRequestDto struct {
+	Type             legal_entity_constants.LegalEntityLicenseType `json:"type"`
+	LicenseNumber    string                                        `json:"license_number"`
+	IssuingAuthority string                                        `json:"issuing_authority,omitempty"`
+	ValidFrom        time.Time                                     `json:"valid_from"`
+	ValidTo          *time.Time                                    `json:"valid_to,omitempty"`
+}
+
 /* -------------------------------------------------------------------------- */
 /*                            API RESPONSE STRUCTS                            */
 /* -------------------------------------------------------------------------- */

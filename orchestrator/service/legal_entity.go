@@ -177,7 +177,20 @@ func (s *orchestratorService) AddIdentifiersInLegalEntity(
 
 /* ---------------------------------- <***> --------------------------------- */
 
+func (s *orchestratorService) AddLicenseOrComplianceInLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntityID uuid.UUID,
+	req legal_entity_contracts.AddNewLicenseAndComplianceRequestDto,
+) error {
+
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		return s.legalEntityService.AddNewLicenseOrComplianceInLegalEntity(txCtx, orgID, emplID, legalEntityID, req)
+	})
+}
+
 /* -------------------------------------------------------------------------- */
 /*                       Legal Entity Accounting Service                      */
 /* -------------------------------------------------------------------------- */
-

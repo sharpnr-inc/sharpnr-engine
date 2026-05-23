@@ -185,6 +185,8 @@ func (c *OrchestratorController) ListAllIdentifiersOfLegalEntity(ctx *gin.Contex
 
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (c *OrchestratorController) AddIdentifiersInLegalEntityHandler(ctx *gin.Context) {
 
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
@@ -213,6 +215,37 @@ func (c *OrchestratorController) AddIdentifiersInLegalEntityHandler(ctx *gin.Con
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) AddLicenseAndComplianceHandler(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	req, ok := utils.BindJSON[legal_entity_contracts.AddNewLicenseAndComplianceRequestDto](ctx)
+	if !ok {
+		return
+	}
+
+	if err := c.orchestService.AddLicenseOrComplianceInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, *req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "License and Compliance Added")
+
+}
+
+func (c *OrchestratorController) ListAllLicenseAndComplianceHandler(ctx *gin.Context) {
+
+}
 
 /* -------------------------------------------------------------------------- */
 /*                        Legal entitys utils endpoints                       */

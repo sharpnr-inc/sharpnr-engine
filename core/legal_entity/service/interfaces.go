@@ -38,6 +38,8 @@ type OrgLegalEntityServiceInterface interface {
 		orgID, emplID, legalEntityID uuid.UUID,
 		req *legal_entity_contracts.AddIdentifiersInLegalEntityRequestDto,
 	) error
+
+	AddNewLicenseOrComplianceInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req legal_entity_contracts.AddNewLicenseAndComplianceRequestDto) error
 }
 
 type LegalEntityTaxCategoryService interface {
