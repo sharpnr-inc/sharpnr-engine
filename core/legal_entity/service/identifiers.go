@@ -18,19 +18,24 @@ func (s *orgLegalEntity) AddNewIdentifiersInLegalEntity(
 ) error {
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
-
 		txCtx := dbtx.InjectTx(ctx, tx)
 
-		s.legalEntityRepo.AddLegalEntityIdentifier(txCtx, legal_entity_models.LegalEntityIdentifier{
+		// Map structural state into model instance
+		identifierModel := legal_entity_models.LegalEntityIdentifier{
 			ID:            uuid.New(),
 			LegalEntityID: legalEntityID,
 			Type:          req.Type,
 			Value:         req.Value,
-			IsVerified:    false,
+			ExpiresAt:     nil,
 			CreatedAt:     time.Now(),
 			UpdatedAt:     time.Now(),
-		})
+		}
+
+		// Ensure we capture, evaluate, and return database error signatures
+		if err := s.legalEntityRepo.AddLegalEntityIdentifier(txCtx, identifierModel); err != nil {
+			return err
+		}
+
 		return nil
 	})
-
 }

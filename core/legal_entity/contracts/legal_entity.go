@@ -68,11 +68,9 @@ type AddBankAccountInLegalEntityRequestDto struct {
 /* ---------------------------------- <***> --------------------------------- */
 
 type AddIdentifiersInLegalEntityRequestDto struct {
-	Type       legal_entity_constants.LegalEntityIdentifierTypes `json:"type"`
-	Value      string                                            `json:"value"`
-	IsVerified bool                                              `json:"is_verified"`
-	VerifiedAt *time.Time                                        `json:"verified_at,omitempty"`
-	ExpiresAt  *time.Time                                        `json:"expires_at,omitempty"`
+	Type      legal_entity_constants.LegalEntityIdentifierTypes `json:"type"`
+	Value     string                                            `json:"value"`
+	ExpiresAt *time.Time                                        `json:"expires_at,omitempty"`
 }
 
 /* -------------------------------------------------------------------------- */

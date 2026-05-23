@@ -79,6 +79,10 @@ func (c *OrchestratorController) GetLegalEntityDetailsHandler(ctx *gin.Context) 
 
 /* ---------------------- Add Contacts in Legal Entity ---------------------- */
 
+func (c *OrchestratorController) ListAllContactsOfLegalEntity(ctx *gin.Context) {
+
+}
+
 func (c *OrchestratorController) AddContactsInLegalEntityHandler(ctx *gin.Context) {
 
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
@@ -103,6 +107,12 @@ func (c *OrchestratorController) AddContactsInLegalEntityHandler(ctx *gin.Contex
 	}
 
 	utils.Success(ctx, http.StatusOK, "Contact Added Successfully")
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) ListAllAddressesOfLegalEntity(ctx *gin.Context) {
+
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -136,6 +146,12 @@ func (c *OrchestratorController) AddAddressesInLegalEntityHandler(ctx *gin.Conte
 
 /* ---------------------------------- <***> --------------------------------- */
 
+func (c *OrchestratorController) ListAllBankAccountsOfLegalEntity(ctx *gin.Context) {
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
 func (c *OrchestratorController) AddBankAccountDetailsInLegalEntityHandler(ctx *gin.Context) {
 
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
@@ -164,6 +180,10 @@ func (c *OrchestratorController) AddBankAccountDetailsInLegalEntityHandler(ctx *
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) ListAllIdentifiersOfLegalEntity(ctx *gin.Context) {
+
+}
 
 func (c *OrchestratorController) AddIdentifiersInLegalEntityHandler(ctx *gin.Context) {
 

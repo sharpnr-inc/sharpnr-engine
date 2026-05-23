@@ -10,39 +10,110 @@ func registerLegalEntityRoutes(r *gin.RouterGroup, co *orchestrator_controllers.
 
 	ler := r.Group("/legal-entity")
 	{
-		ler.GET("", co.ListAllLegalEntity)                                  // fetches the all the legal Entity of the Organizations
-		ler.GET("/:legalEntityID/details", co.GetLegalEntityDetailsHandler) // return the legal entity details by ID
-		ler.POST("/create", co.AddLegalEntity)                              // creates a new Legal entity in the organization
+		// --- Root Legal Entity CRUD ---
+		ler.GET("", co.ListAllLegalEntity)
+		ler.POST("", co.AddLegalEntity)
+		ler.GET("/:legalEntityID", co.GetLegalEntityDetailsHandler)
+		ler.PUT("/:legalEntityID")
+		ler.DELETE("/:legalEntityID")
 
-		ler.POST("/:legalEntityID/add-address", co.AddAddressesInLegalEntityHandler)
-		ler.POST("/:legalEntityID/add-bankaccount", co.AddBankAccountDetailsInLegalEntityHandler)
-		ler.POST("/:legalEntityID/add-identities", co.AddIdentifiersInLegalEntityHandler)
-		ler.POST("/:legalEntityID/add-contact", co.AddContactsInLegalEntityHandler)
-
-		/* -------------------------------------------------------------------------- */
-		/*                       legal entity accounting routes                       */
-		/* -------------------------------------------------------------------------- */
-
-		le_acc := ler.Group("/:legalEntityID/accounting")
+		/* ------------------------------------------------------------------ */
+		/*                         Address Routes                              */
+		/* ------------------------------------------------------------------ */
+		addr := ler.Group("/:legalEntityID/addresses")
 		{
-			le_acc.GET("")
-
+			addr.GET("", co.ListAllAddressesOfLegalEntity)
+			addr.POST("", co.AddAddressesInLegalEntityHandler)
+			addr.PUT("/:addressID")
+			addr.DELETE("/:addressID")
+			addr.GET("/:addressID")
 		}
 
-		/* -------------------------------------------------------------------------- */
-		/*                            Legal Entity Details                            */
-		/* -------------------------------------------------------------------------- */
-		le_utils := ler.Group("/utils")
+		/* ------------------------------------------------------------------ */
+		/*                       Bank Account Routes                           */
+		/* ------------------------------------------------------------------ */
+		bank := ler.Group("/:legalEntityID/bank-accounts")
 		{
-			le_utils.GET("/entity_types", co.GetEntityTypes)
-			le_utils.GET("/gst_types", co.GetGSTRegistrationTypes)
-			le_utils.GET("/address_types", co.GetLegalEntityAddressTypes)
-			le_utils.GET("/license_types", co.GetLegalEntityLicenseTypes)
-			le_utils.GET("/contact_types", co.GetLegalEntityContactTypes)
-			le_utils.GET("/identifier_types", co.GetLegalEntityIdentifierTypes)
-			le_utils.GET("/tax-components_types", co.GetLegalEntityTaxComponentTypes)
-			le_utils.GET("/bank-acc_types", co.GetLegalEntityBankAccountTypes)
-			le_utils.GET("/tax_types", co.GetLegalEntityTaxTypes)
+			bank.GET("", co.ListAllBankAccountsOfLegalEntity)
+			bank.POST("", co.AddBankAccountDetailsInLegalEntityHandler)
+			bank.PUT("/:bankAccountID")
+			bank.DELETE("/:bankAccountID")
+		}
+
+		/* ------------------------------------------------------------------ */
+		/*                        Identity Routes                              */
+		/* ------------------------------------------------------------------ */
+		identity := ler.Group("/:legalEntityID/identities")
+		{
+			identity.GET("", co.ListAllIdentifiersOfLegalEntity)
+			identity.POST("", co.AddIdentifiersInLegalEntityHandler)
+			identity.PUT("/:identityID")
+			identity.DELETE("/:identityID")
+		}
+
+		/* ------------------------------------------------------------------ */
+		/*                         Contact Routes                              */
+		/* ------------------------------------------------------------------ */
+		contact := ler.Group("/:legalEntityID/contacts")
+		{
+			contact.GET("", co.ListAllContactsOfLegalEntity)
+			contact.POST("", co.AddContactsInLegalEntityHandler)
+			contact.PUT("/:contactID")
+			contact.DELETE("/:contactID")
+		}
+
+		/* ------------------------------------------------------------------ */
+		/*                        License & Compliance                         */
+		/* ------------------------------------------------------------------ */
+		license := ler.Group("/:legalEntityID/licenses")
+		{
+			license.GET("")
+			license.POST("")
+			license.PUT("/:licenseID")
+			license.DELETE("/:licenseID")
+		}
+
+		/* ------------------------------------------------------------------ */
+		/*                        Tax Registration                             */
+		/* ------------------------------------------------------------------ */
+		tax := ler.Group("/:legalEntityID/tax-registrations")
+		{
+			tax.GET("")
+			tax.POST("")
+			tax.PUT("/:taxRegID")
+			tax.DELETE("/:taxRegID")
+		}
+
+		tax_categories := ler.Group("/:legalEntityID/tax-categories")
+		{
+			tax_categories.GET("")
+			tax_categories.POST("")
+			tax_categories.PUT("/:taxCatID")
+			tax_categories.DELETE("/:taxCatID")
+		}
+
+		/* ------------------------------------------------------------------ */
+		/*                          Accounting                                 */
+		/* ------------------------------------------------------------------ */
+		accounting := ler.Group("/:legalEntityID/accounting")
+		{
+			accounting.GET("")
+		}
+
+		/* ------------------------------------------------------------------ */
+		/*                        Utility/Lookup Routes                        */
+		/* ------------------------------------------------------------------ */
+		utils := ler.Group("/utils")
+		{
+			utils.GET("/entity-types", co.GetEntityTypes)
+			utils.GET("/gst-types", co.GetGSTRegistrationTypes)
+			utils.GET("/address-types", co.GetLegalEntityAddressTypes)
+			utils.GET("/license-types", co.GetLegalEntityLicenseTypes)
+			utils.GET("/contact-types", co.GetLegalEntityContactTypes)
+			utils.GET("/identifier-types", co.GetLegalEntityIdentifierTypes)
+			utils.GET("/tax-component-types", co.GetLegalEntityTaxComponentTypes)
+			utils.GET("/bank-account-types", co.GetLegalEntityBankAccountTypes)
+			utils.GET("/tax-types", co.GetLegalEntityTaxTypes)
 		}
 	}
 }
