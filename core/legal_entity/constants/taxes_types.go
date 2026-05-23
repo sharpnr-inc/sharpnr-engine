@@ -46,6 +46,8 @@ func AllTaxTypes() []LegalEntityTaxType {
 	}
 }
 
+/* --------------------------------- <*****> -------------------------------- */
+
 type LegalEntityTaxComponentType string
 
 // Tax component codes
