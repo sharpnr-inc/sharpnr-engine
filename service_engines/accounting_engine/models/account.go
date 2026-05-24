@@ -7,10 +7,11 @@ import (
 )
 
 type Account struct {
-	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
-	AccountGroupID uuid.UUID `gorm:"type:uuid;index"`
-	Name           string    `gorm:"not null"`
-	Code           string    `gorm:"not null"`
+	ID               uuid.UUID `gorm:"type:uuid;primaryKey"`
+	AccountingBookID uuid.UUID `gorm:"type:uuid;index"` // newly added
+	AccountGroupID   uuid.UUID `gorm:"type:uuid;index"`
+	Name             string    `gorm:"not null"`
+	Code             string    `gorm:"not null"`
 
 	OpeningBalance float64 `gorm:"default:0"`
 	OpeningIsDebit bool    `gorm:"default:true"`

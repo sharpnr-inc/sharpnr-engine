@@ -60,6 +60,8 @@ type LegalEntityOrchestrationServiceInterface interface {
 	AddIdentifiersInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req *legal_entity_contracts.AddIdentifiersInLegalEntityRequestDto) error
 	AddLicenseOrComplianceInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req legal_entity_contracts.AddNewLicenseAndComplianceRequestDto) error
 	AddTaxRegistrationInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req legal_entity_contracts.AddNewTaxRegistrationInLegalEntityRequestDto) error
+
+	// ListAllAccountingBooksOfLegalEntity()
 }
 
 /* ---------------------------------- <***> --------------------------------- */

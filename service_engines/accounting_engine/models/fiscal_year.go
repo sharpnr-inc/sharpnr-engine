@@ -8,19 +8,14 @@ import (
 )
 
 type FiscalYear struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
+	ID               uuid.UUID `gorm:"type:uuid;primaryKey"`
 	AccountingBookID uuid.UUID `gorm:"type:uuid;not null;index"`
-
-	Name string
-
-	StartDate time.Time
-	EndDate   time.Time
-
-	Status    accountingconstants.FiscalYearType
-	CreatedAt time.Time
-
-	UpdatedAt time.Time
+	Name             string
+	StartDate        time.Time
+	EndDate          time.Time
+	Status           accountingconstants.FiscalYearType
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
 }
 
 func (FiscalYear) TableName() string {
