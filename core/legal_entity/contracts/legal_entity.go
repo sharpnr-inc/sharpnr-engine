@@ -83,6 +83,19 @@ type AddNewLicenseAndComplianceRequestDto struct {
 	ValidTo          *time.Time                                    `json:"valid_to,omitempty"`
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
+type AddNewTaxRegistrationInLegalEntityRequestDto struct {
+	TaxType             legal_entity_constants.LegalEntityTaxType             `json:"tax_type"`
+	RegistrationNumber  string                                                `json:"registration_number"`
+	GSTRegistrationType legal_entity_constants.LegalEntityGSTRegistrationType `json:"gst_registration_type"`
+	State               string                                                `json:"state,omitempty"`
+	GSTStateCode        string                                                `json:"gst_state_code,omitempty"`
+	Country             string                                                `json:"country"`
+	EffectiveFrom       time.Time                                             `json:"effective_from"`
+	EffectiveTo         *time.Time                                            `json:"effective_to,omitempty"`
+}
+
 /* -------------------------------------------------------------------------- */
 /*                            API RESPONSE STRUCTS                            */
 /* -------------------------------------------------------------------------- */

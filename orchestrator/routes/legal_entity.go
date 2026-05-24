@@ -78,8 +78,8 @@ func registerLegalEntityRoutes(r *gin.RouterGroup, co *orchestrator_controllers.
 		/* ------------------------------------------------------------------ */
 		tax := ler.Group("/:legalEntityID/tax-registrations")
 		{
-			tax.GET("")
-			tax.POST("")
+			tax.GET("", co.ListAllTaxRegistrationOfLegalEntityHandler)
+			tax.POST("", co.AddTaxRegistrationInLegalEntityHandler)
 			tax.PUT("/:taxRegID")
 			tax.DELETE("/:taxRegID")
 		}

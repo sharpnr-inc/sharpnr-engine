@@ -191,6 +191,21 @@ func (s *orchestratorService) AddLicenseOrComplianceInLegalEntity(
 	})
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) AddTaxRegistrationInLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntityID uuid.UUID,
+	req legal_entity_contracts.AddNewTaxRegistrationInLegalEntityRequestDto,
+) error {
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		return s.legalEntityService.AddNewTaxRegistration(txCtx, orgID, emplID, legalEntityID, req)
+	})
+}
+
 /* -------------------------------------------------------------------------- */
 /*                       Legal Entity Accounting Service                      */
 /* -------------------------------------------------------------------------- */

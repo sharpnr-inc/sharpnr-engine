@@ -40,6 +40,7 @@ type OrgLegalEntityServiceInterface interface {
 	) error
 
 	AddNewLicenseOrComplianceInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req legal_entity_contracts.AddNewLicenseAndComplianceRequestDto) error
+	AddNewTaxRegistration(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req legal_entity_contracts.AddNewTaxRegistrationInLegalEntityRequestDto) error
 }
 
 type LegalEntityTaxCategoryService interface {
