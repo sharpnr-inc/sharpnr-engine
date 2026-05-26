@@ -72,3 +72,25 @@ func (r *accountingRepository) GetAccountingBookByLegalEntityID(
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (r *accountingRepository) GetAllFiscalYearsByBookID(ctx context.Context, bookID uuid.UUID) ([]accounting_models.FiscalYear, error) {
+
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
+
+	var fiscalYears []accounting_models.FiscalYear
+
+	err := db.WithContext(ctx).
+		Where("accounting_book_id = ?", bookID).
+		Find(&fiscalYears).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return fiscalYears, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */

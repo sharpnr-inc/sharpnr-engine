@@ -1,6 +1,7 @@
 package accountingdtos
 
 import (
+	accountingconstants "sharpnr-engine/service_engines/accounting_engine/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -27,4 +28,19 @@ type AccountsResponseDto struct {
 	Code        string    `json:"code"`
 	Status      string    `json:"status"`
 	LastUpdated time.Time `json:"last_updated"`
+}
+
+type FiscalYearResponseDto struct {
+	ID        uuid.UUID                          `json:"id"`
+	Name      string                             `json:"name"`
+	StartDate time.Time                          `json:"start_date"`
+	EndDate   time.Time                          `json:"end_date"`
+	Status    accountingconstants.FiscalYearType `json:"status"`
+	UpdatedAt time.Time                          `json:"updated_at"`
+}
+
+type AccountingBookOfLegalEntity_Response_dto struct {
+	Name        string                                   `json:"name"`
+	Status      accountingconstants.AccountingBookStatus `json:"status"`
+	FiscalYears []FiscalYearResponseDto                  `json:"fiscal_years"`
 }

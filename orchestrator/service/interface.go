@@ -9,6 +9,7 @@ import (
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
+	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"
 	inventory_dtos "sharpnr-engine/service_engines/inventory_engine/dtos"
 	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
 
@@ -55,13 +56,16 @@ type LegalEntityOrchestrationServiceInterface interface {
 	GetDetailsOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (legal_entity_contracts.LegalEntityDetails, error)
 
 	AddContactsInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req *legal_entity_contracts.CreateLegalEntityContactsRequestDto) error
+
 	AddAddressInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req *legal_entity_contracts.CreateLegalEntityAddressRequest) error
 	AddBankAccountDetailsInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req *legal_entity_contracts.AddBankAccountInLegalEntityRequestDto) error
 	AddIdentifiersInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req *legal_entity_contracts.AddIdentifiersInLegalEntityRequestDto) error
 	AddLicenseOrComplianceInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req legal_entity_contracts.AddNewLicenseAndComplianceRequestDto) error
 	AddTaxRegistrationInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req legal_entity_contracts.AddNewTaxRegistrationInLegalEntityRequestDto) error
 
-	// ListAllAccountingBooksOfLegalEntity()
+	/* -------------------------------- acconting ------------------------------- */
+	GetAccountingBooksOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.AccountingBookOfLegalEntity_Response_dto, error)
+	GetAllAccountBalancesOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accountingdtos.AccountGroupBalanceResponseDto, error)
 }
 
 /* ---------------------------------- <***> --------------------------------- */

@@ -285,6 +285,61 @@ func (c *OrchestratorController) ListAllTaxRegistrationOfLegalEntityHandler(ctx 
 }
 
 /* -------------------------------------------------------------------------- */
+/*                  Legal Entity Accounting related handlers                  */
+/* -------------------------------------------------------------------------- */
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) ListAllAccountingBooksOfLegalEntityHandler(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	response, err := c.orchestService.GetAccountingBooksOfLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "some thing went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Accounting Books of Legal Entity fetched successfully", response)
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) GetAccountBalancesOfLegalEntityHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	response, err := c.orchestService.GetAllAccountBalancesOfLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "some thing went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Account balances of legal entity fetched successfully", response)
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+/* -------------------------------------------------------------------------- */
 /*                        Legal entitys utils endpoints                       */
 /* -------------------------------------------------------------------------- */
 

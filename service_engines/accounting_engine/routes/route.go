@@ -12,8 +12,11 @@ func RegisterAccountingRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) 
 	accountingService := modules.AccountingService()
 	accController := accounting_controllers.NewAccountingController(accountingService)
 
-	accRoutes := v1.Group("/accounting/:legalEntityID/")
+	// GET /accounting/e — fetch all legal entities of the organization
+	v1.GET("/accounting/e", accController.GetAllLegalEntities)
 
+	// All entity-scoped routes live under /accounting/:legalEntityID
+	accRoutes := v1.Group("/accounting/:legalEntityID")
 	RegisterAccBooksRoutes(accRoutes, accController)
 	RegisterAccGroupsRoutes(accRoutes, accController)
 	registerJournalEntryRoutes(accRoutes, accController)
@@ -22,5 +25,4 @@ func RegisterAccountingRoutes(v1 *gin.RouterGroup, modules app.ModulesProvider) 
 	registerReportsRoutes(accRoutes, accController)
 	registerAccountingSuppliersRoutes(accRoutes, accController)
 	registerInventoryRoutes(accRoutes, accController)
-
 }

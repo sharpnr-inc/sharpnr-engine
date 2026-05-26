@@ -1,6 +1,7 @@
 package accounting_service
 
 import (
+	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
@@ -20,6 +21,7 @@ type accountingServices struct {
 	paymentEngine   payment_engine_service.PaymentServiceInterface
 	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface
 	supplierService suppliers_service.SupplierServiceInterface
+	legalEntity     legal_entity_service.OrgLegalEntityServiceInterface
 }
 
 func NewAccountingService(
@@ -31,6 +33,7 @@ func NewAccountingService(
 	paymentEngine payment_engine_service.PaymentServiceInterface,
 	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
+	legalEntity legal_entity_service.OrgLegalEntityServiceInterface,
 ) *accountingServices {
 	return &accountingServices{
 		seroEngine:      seroEngine,
@@ -41,5 +44,6 @@ func NewAccountingService(
 		paymentEngine:   paymentEngine,
 		inventoryEngine: inventoryEngine,
 		supplierService: supplierService,
+		legalEntity:     legalEntity,
 	}
 }

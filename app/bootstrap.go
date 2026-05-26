@@ -92,6 +92,7 @@ func BootstrapModules(
 		inventoryEngine,
 		orgSupplierService,
 		seroEngine,
+		orgLegalEntityService,
 	)
 	accounting_sero_event_handler.Register(seroEngine, accountingService)
 	/* ---------------------------- Accounting Engine --------------------------- */

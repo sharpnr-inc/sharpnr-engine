@@ -97,7 +97,8 @@ func registerLegalEntityRoutes(r *gin.RouterGroup, co *orchestrator_controllers.
 		/* ------------------------------------------------------------------ */
 		accounting := ler.Group("/:legalEntityID/accounting")
 		{
-			accounting.GET("")
+			accounting.GET("/books", co.ListAllAccountingBooksOfLegalEntityHandler)
+			accounting.GET("/account-balances", co.GetAccountBalancesOfLegalEntityHandler)
 		}
 
 		/* ------------------------------------------------------------------ */

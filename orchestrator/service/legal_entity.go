@@ -6,6 +6,7 @@ import (
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	accounting_engine_contracts "sharpnr-engine/service_engines/accounting_engine/contracts"
+	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -209,3 +210,12 @@ func (s *orchestratorService) AddTaxRegistrationInLegalEntity(
 /* -------------------------------------------------------------------------- */
 /*                       Legal Entity Accounting Service                      */
 /* -------------------------------------------------------------------------- */
+
+func (s *orchestratorService) GetAccountingBooksOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.AccountingBookOfLegalEntity_Response_dto, error) {
+
+	panic("")
+}
+
+func (s *orchestratorService) GetAllAccountBalancesOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accountingdtos.AccountGroupBalanceResponseDto, error) {
+	panic("")
+}
