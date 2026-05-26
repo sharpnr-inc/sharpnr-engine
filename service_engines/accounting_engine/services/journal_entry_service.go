@@ -45,15 +45,6 @@ func (s *accountingServices) CreateJournalEntry(
 			return err
 		}
 
-		// Fetch accounting book using request value (correct source of truth)
-		// accBook, err := s.accRepo.GetAccountingBookByID(
-		// 	txCtx,
-		// 	journalEntryRequest.AccountingBookID,
-		// )
-		// if err != nil {
-		// 	return err
-		// }
-
 		if accBook == nil {
 			return fmt.Errorf("accounting book not found")
 		}

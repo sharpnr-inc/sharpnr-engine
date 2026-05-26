@@ -58,7 +58,7 @@ func (r *accountingServices) CreateDraftAccountingSetup(ctx context.Context, inp
 		for _, ag := range accountingconstants.AllAccountGroups {
 			accgrp := &accounting_models.AccountGroup{
 				ID:               uuid.New(),
-				Name:             fmt.Sprintf("Default %s Group", ag),
+				Name:             fmt.Sprintf("%s Group", ag),
 				AccountingBookID: accBookInput.ID,
 				Type:             ag,
 				CreatedAt:        now,
@@ -75,7 +75,7 @@ func (r *accountingServices) CreateDraftAccountingSetup(ctx context.Context, inp
 			defaultAcc := &accounting_models.Account{
 				ID:             uuid.New(),
 				AccountGroupID: accgrp.ID,
-				Name:           fmt.Sprintf("General %s Ledger", ag),
+				Name:           fmt.Sprintf("%s Ledger", ag),
 				Code:           fmt.Sprintf("%s-001", ag),
 				OpeningBalance: 0,
 				OpeningIsDebit: isDebit,
