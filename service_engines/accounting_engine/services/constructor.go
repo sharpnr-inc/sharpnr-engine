@@ -27,6 +27,11 @@ type accountingServices struct {
 	legalEntity     legal_entity_service.OrgLegalEntityServiceInterface
 }
 
+// GetAccountsSummaryOfLegalEntity implements [AccountingServiceInterface].
+func (s *accountingServices) GetAccountsSummaryOfLegalEntity(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, legalEntityID uuid.UUID) {
+	panic("unimplemented")
+}
+
 // GetAccountGroupDetails implements [AccountingServiceInterface].
 func (s *accountingServices) GetAccountGroupDetails(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, accountGroupID uuid.UUID) (accountingdtos.AccountingGroup_Response_dto, error) {
 	panic("unimplemented")

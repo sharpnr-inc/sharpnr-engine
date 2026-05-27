@@ -26,9 +26,14 @@ type AccountingServiceInterface interface {
 	CreateJournalLine(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, journalLineRequest accountingdtos.JournalLineExternalRequestDto) (journalLineID uuid.UUID, err error)
 	GetJournalEntries(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accountingdtos.JournalResponseDto, error)
 	CreateDraftAccountingSetup(ctx context.Context, input *accounting_engine_contracts.DraftAccountingSetupInput) error
+
+	GetAccountsSummaryOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID)
+
 	legalEntityservice
 }
 
 type legalEntityservice interface {
 	GetLegalEntities(ctx context.Context, orgID, emplID uuid.UUID) ([]legal_entity_contracts.LegalEntityResponseDto, error)
+	// GetAllTaxRegistrationsOfLegalEntity()
+	// GetAllTaxCategoriesOfLegalEntity()
 }
