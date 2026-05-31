@@ -2,7 +2,7 @@ package accounting_service
 
 import (
 	"context"
-	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
+	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
 
 	"github.com/google/uuid"
 )

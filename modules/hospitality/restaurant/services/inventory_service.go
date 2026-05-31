@@ -4,8 +4,8 @@ import (
 	"context"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	inventory_dtos "sharpnr-engine/service_engines/inventory_engine/dtos"
-	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
+	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
+	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

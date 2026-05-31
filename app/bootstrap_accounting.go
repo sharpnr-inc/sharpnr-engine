@@ -8,9 +8,9 @@ import (
 	"sharpnr-engine/sero"
 	accounting_repo "sharpnr-engine/service_engines/accounting_engine/repository"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
-	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
+	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
+
 	invoice_engine_services "sharpnr-engine/service_engines/invoicing_engine/services"
-	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"
 
 	"gorm.io/gorm"
 )
@@ -18,7 +18,7 @@ import (
 func bootstrapAccounting(
 	db *gorm.DB,
 	txManager dbtx.TxManager,
-	taxEngine tax_engine_service.TaxEngineServiceInterface,
+
 	invoiceEngine invoice_engine_services.InvoiceEngineServiceInterface,
 	paymentEngine payment_engine_service.PaymentServiceInterface,
 	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
@@ -31,7 +31,6 @@ func bootstrapAccounting(
 		seroEngine,
 		repo,
 		txManager,
-		taxEngine,
 		invoiceEngine,
 		paymentEngine,
 		inventoryEngine,

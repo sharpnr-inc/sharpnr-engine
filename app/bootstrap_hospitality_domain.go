@@ -22,9 +22,9 @@ import (
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
-	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
+	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
+
 	invoice_engine_services "sharpnr-engine/service_engines/invoicing_engine/services"
-	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"
 	sse_engine "sharpnr-engine/sse"
 
 	"gorm.io/gorm"
@@ -35,7 +35,6 @@ func bootstrapHospitality(
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
 	sseEngine *sse_engine.StreamManager,
-	taxEngine tax_engine_service.TaxEngineServiceInterface,
 	customerEngineService org_customer_service.OrgCustomerServiceInterface,
 	invoiceEngine invoice_engine_services.InvoiceEngineServiceInterface,
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
@@ -49,7 +48,7 @@ func bootstrapHospitality(
 
 	// Menu
 	menuRepo := menurepo.NewHospitalityMenuRepository(db)
-	menuService := menuservice.NewHospitalityMenuService(menuRepo, txManager, taxEngine)
+	menuService := menuservice.NewHospitalityMenuService(menuRepo, txManager)
 
 	// order engine
 	orderEnginerepo := hospitality_order_engine_repository.NewHospitalityOrderEngine(db)

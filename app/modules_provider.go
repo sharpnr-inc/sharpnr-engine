@@ -14,7 +14,7 @@ import (
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
-	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"
+
 	sse_engine "sharpnr-engine/sse"
 )
 
@@ -36,7 +36,6 @@ type ModulesProvider interface {
 	AccountingService() accounting_service.AccountingServiceInterface
 	SseEngine() *sse_engine.StreamManager
 	LegalEntityService() legal_entity_service.OrgLegalEntityServiceInterface
-	TaxEngineService() tax_engine_service.TaxEngineServiceInterface
 	CustomerEngineService() org_customer_service.OrgCustomerServiceInterface
 	PaymentEngineService() payment_engine_service.PaymentServiceInterface
 }

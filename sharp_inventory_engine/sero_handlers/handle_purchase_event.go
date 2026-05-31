@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sharpnr-engine/sero"
 	accounting_engine_events "sharpnr-engine/service_engines/accounting_engine/events"
-	inventory_engine_contracts "sharpnr-engine/service_engines/inventory_engine/contracts"
-	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
+	inventory_engine_contracts "sharpnr-engine/sharp_inventory_engine/contracts"
+	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
 )
 
 func handlePurchaseInvoiceCreationEvent(

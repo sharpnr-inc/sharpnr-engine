@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	inventory_constants "sharpnr-engine/service_engines/inventory_engine/constants"
-	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
+	inventory_constants "sharpnr-engine/sharp_inventory_engine/constants"
+	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
+
 	"time"
 
 	"github.com/google/uuid"

@@ -4,7 +4,8 @@ import (
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 	accounting_sero_event_handler "sharpnr-engine/service_engines/accounting_engine/sero_handler"
-	inventory_engine_sero_handlers "sharpnr-engine/service_engines/inventory_engine/sero_handlers"
+	inventory_engine_sero_handlers "sharpnr-engine/sharp_inventory_engine/sero_handlers"
+
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 	sse_engine "sharpnr-engine/sse"
 
@@ -61,15 +62,13 @@ func BootstrapModules(
 
 	paymentsEngine := bootstrapPaymentEngine(db, mailerEngine, txManager, seroEngine)
 
-	taxEngineService := bootstrapTaxEngine(orgLegalEntityService, txManager, seroEngine)
-	invoiceEngine := bootStrapInvoicingEngine(db, txManager, seroEngine, taxEngineService, orgLegalEntityService)
+	invoiceEngine := bootStrapInvoicingEngine(db, txManager, seroEngine, orgLegalEntityService)
 
 	hospitality := bootstrapHospitality(
 		db,
 		txManager,
 		seroEngine,
 		sseEngine,
-		taxEngineService,
 		orgCustomerService,
 		invoiceEngine,
 		paymentsEngine,
@@ -86,7 +85,6 @@ func BootstrapModules(
 	accountingService := bootstrapAccounting(
 		db,
 		txManager,
-		taxEngineService,
 		invoiceEngine,
 		paymentsEngine,
 		inventoryEngine,
@@ -128,7 +126,6 @@ func BootstrapModules(
 		orchestratorService:      orchestratorService,
 		orgSetupWizard:           orgSetupWizardService,
 		sseEngine:                sseEngine,
-		taxEngineService:         taxEngineService,
 		orgCustomerService:       orgCustomerService,
 	}
 

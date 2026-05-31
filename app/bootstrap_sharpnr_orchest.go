@@ -14,7 +14,7 @@ import (
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
-	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
+	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
 )
 
 func bootstrapSharpnrOrchestrator(

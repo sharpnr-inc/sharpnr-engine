@@ -1,7 +1,7 @@
 package inventory_dtos
 
 import (
-	inventory_constants "sharpnr-engine/service_engines/inventory_engine/constants"
+	inventory_constants "sharpnr-engine/sharp_inventory_engine/constants"
 	"time"
 
 	"github.com/google/uuid"

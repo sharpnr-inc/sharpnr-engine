@@ -8,7 +8,8 @@ import (
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
-	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
+	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
+
 	invoice_engine_services "sharpnr-engine/service_engines/invoicing_engine/services"
 )
 

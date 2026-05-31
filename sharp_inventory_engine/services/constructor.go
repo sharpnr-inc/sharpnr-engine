@@ -4,8 +4,8 @@ import (
 	"context"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
-	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
-	inventory_engine_repo "sharpnr-engine/service_engines/inventory_engine/repo"
+	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
+	inventory_engine_repo "sharpnr-engine/sharp_inventory_engine/repo"
 
 	"github.com/google/uuid"
 )

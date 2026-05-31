@@ -11,7 +11,6 @@ import (
 	dbtx "sharpnr-engine/pkg/dbTx"
 	invoice_engine_contracts "sharpnr-engine/service_engines/invoicing_engine/contracts"
 	invoice_engine_models "sharpnr-engine/service_engines/invoicing_engine/models"
-	tax_engine_contracts "sharpnr-engine/service_engines/tax_engine/contracts"
 )
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -41,46 +40,46 @@ func (s *invoiceEngineService) GenerateInvoice(
 			breakups []*invoice_engine_models.InvoiceTaxBreakup
 		)
 
-		for _, itemReq := range req.Items {
-			amount := itemReq.Quantity * itemReq.Rate
+		// for _, itemReq := range req.Items {
+		// 	amount := itemReq.Quantity * itemReq.Rate
 
-			taxResult, err := s.taxEngine.CalculateTax(txCtx, tax_engine_contracts.TaxCalculationRequest{
-				LegalEntityID: *req.LegalEntityID,
-				TaxCategoryID: *itemReq.TaxCategoryID,
-				BaseAmount:    amount,
-			})
-			if err != nil {
-				return fmt.Errorf("tax calculation failed for '%s': %w", itemReq.Description, err)
-			}
+		// 	taxResult, err := s.taxEngine.CalculateTax(txCtx, tax_engine_contracts.TaxCalculationRequest{
+		// 		LegalEntityID: *req.LegalEntityID,
+		// 		TaxCategoryID: *itemReq.TaxCategoryID,
+		// 		BaseAmount:    amount,
+		// 	})
+		// 	if err != nil {
+		// 		return fmt.Errorf("tax calculation failed for '%s': %w", itemReq.Description, err)
+		// 	}
 
-			items = append(items, &invoice_engine_models.InvoiceItem{
-				ID:            uuid.New(),
-				InvoiceID:     invoiceID,
-				Description:   itemReq.Description,
-				Quantity:      itemReq.Quantity,
-				Rate:          itemReq.Rate,
-				Amount:        amount,
-				TaxCategoryID: itemReq.TaxCategoryID,
-				HSNCode:       itemReq.HSNCode,
-				TaxRate:       taxResult.TotalTax,
-				TaxAmount:     taxResult.TotalTax,
-				TotalAmount:   amount + taxResult.TotalTax,
-			})
+		// 	items = append(items, &invoice_engine_models.InvoiceItem{
+		// 		ID:            uuid.New(),
+		// 		InvoiceID:     invoiceID,
+		// 		Description:   itemReq.Description,
+		// 		Quantity:      itemReq.Quantity,
+		// 		Rate:          itemReq.Rate,
+		// 		Amount:        amount,
+		// 		TaxCategoryID: itemReq.TaxCategoryID,
+		// 		HSNCode:       itemReq.HSNCode,
+		// 		TaxRate:       taxResult.TotalTax,
+		// 		TaxAmount:     taxResult.TotalTax,
+		// 		TotalAmount:   amount + taxResult.TotalTax,
+		// 	})
 
-			subTotal += amount
-			taxTotal += taxResult.TotalTax
+		// 	subTotal += amount
+		// 	taxTotal += taxResult.TotalTax
 
-			for _, component := range taxResult.Components {
-				breakups = append(breakups, &invoice_engine_models.InvoiceTaxBreakup{
-					ID:        uuid.New(),
-					InvoiceID: invoiceID,
-					TaxType:   component.Name,
-					Rate:      component.Rate,
-					Amount:    component.Rate,
-					CreatedAt: time.Now(),
-				})
-			}
-		}
+		// 	for _, component := range taxResult.Components {
+		// 		breakups = append(breakups, &invoice_engine_models.InvoiceTaxBreakup{
+		// 			ID:        uuid.New(),
+		// 			InvoiceID: invoiceID,
+		// 			TaxType:   component.Name,
+		// 			Rate:      component.Rate,
+		// 			Amount:    component.Rate,
+		// 			CreatedAt: time.Now(),
+		// 		})
+		// 	}
+		// }
 
 		now := time.Now()
 

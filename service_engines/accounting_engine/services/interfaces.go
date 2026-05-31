@@ -5,7 +5,7 @@ import (
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	accounting_engine_contracts "sharpnr-engine/service_engines/accounting_engine/contracts"
 	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"
-	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
+	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
 
 	"github.com/google/uuid"
 )

@@ -2,9 +2,9 @@ package inventory_engine_services
 
 import (
 	"context"
-	inventory_engine_contracts "sharpnr-engine/service_engines/inventory_engine/contracts"
-	inventory_dtos "sharpnr-engine/service_engines/inventory_engine/dtos"
-	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
+	inventory_engine_contracts "sharpnr-engine/sharp_inventory_engine/contracts"
+	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
+	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
 
 	"github.com/google/uuid"
 )

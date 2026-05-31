@@ -10,8 +10,8 @@ import (
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"
-	inventory_dtos "sharpnr-engine/service_engines/inventory_engine/dtos"
-	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
+	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
+	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
 
 	"github.com/google/uuid"
 )

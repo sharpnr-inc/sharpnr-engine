@@ -4,7 +4,7 @@ import (
 	"context"
 	restaurant_constants "sharpnr-engine/modules/hospitality/restaurant/constants"
 	restaurant_contracts "sharpnr-engine/modules/hospitality/restaurant/contracts"
-	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
+	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
 
 	"github.com/google/uuid"
 )

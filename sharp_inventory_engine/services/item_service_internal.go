@@ -3,9 +3,9 @@ package inventory_engine_services
 import (
 	"context"
 	"fmt"
-	inventory_constants "sharpnr-engine/service_engines/inventory_engine/constants"
-	inventory_engine_contracts "sharpnr-engine/service_engines/inventory_engine/contracts"
-	inventory_engine_models "sharpnr-engine/service_engines/inventory_engine/models"
+	inventory_constants "sharpnr-engine/sharp_inventory_engine/constants"
+	inventory_engine_contracts "sharpnr-engine/sharp_inventory_engine/contracts"
+	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
 	"strings"
 	"time"
 

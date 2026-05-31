@@ -99,20 +99,20 @@ func (s *menuService) GetMenu(ctx context.Context, orgID, emplID, menuID uuid.UU
 				itemTaxDetails := make([]hospitality_menu_contracts.ItemTaxDetails, 0)
 
 				// 2. Resolve Tax (Tracing through the hierarchy)
-				taxCatID, _, err := s.GetTaxCategoryOfMenuItem(ctx, orgID, emplID, item.ID)
+				// taxCatID, _, err := s.GetTaxCategoryOfMenuItem(ctx, orgID, emplID, item.ID)
 
 				// Only fetch breakdown if a Category ID was actually found
-				if err == nil && taxCatID != uuid.Nil {
-					breakdown, err := s.taxEngine.GetTaxCategoryTaxBreakdown(ctx, taxCatID, item.BasePrice)
-					if err == nil && breakdown != nil {
-						for _, b := range breakdown {
-							itemTaxDetails = append(itemTaxDetails, hospitality_menu_contracts.ItemTaxDetails{
-								TaxComponentName: b.Name,
-								TaxRate:          b.Rate,
-							})
-						}
-					}
-				}
+				// if err == nil && taxCatID != uuid.Nil {
+				// 	breakdown, err := s.taxEngine.GetTaxCategoryTaxBreakdown(ctx, taxCatID, item.BasePrice)
+				// 	if err == nil && breakdown != nil {
+				// 		for _, b := range breakdown {
+				// 			itemTaxDetails = append(itemTaxDetails, hospitality_menu_contracts.ItemTaxDetails{
+				// 				TaxComponentName: b.Name,
+				// 				TaxRate:          b.Rate,
+				// 			})
+				// 		}
+				// 	}
+				// }
 
 				kitchenReg, err := s.menuRepo.GetMenuItemKitchen(ctx, item.ID)
 				if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
