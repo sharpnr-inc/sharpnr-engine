@@ -20,16 +20,12 @@ type JournalEntry struct {
 	ID               uuid.UUID `gorm:"type:uuid;primaryKey"`
 	AccountingBookID uuid.UUID `gorm:"type:uuid;not null;index"`
 	FiscalYearID     uuid.UUID `gorm:"type:uuid;not null;index"`
-
-	EntryDate time.Time `gorm:"not null"`
-
-	Reference string // Invoice no, Payment ref, etc.
-	Narration string // Human readable explanation
-
-	EntryType accountingconstants.JournalEntryType
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	EntryDate        time.Time `gorm:"not null"`
+	Reference        string    // Invoice no, Payment ref, etc.
+	Narration        string    // Human readable explanation
+	EntryType        accountingconstants.JournalEntryType
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
 }
 
 func (JournalEntry) TableName() string {

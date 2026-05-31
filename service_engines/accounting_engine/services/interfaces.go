@@ -12,10 +12,7 @@ import (
 
 type AccountingServiceInterface interface {
 	ListAllPaymentOrder(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accountingdtos.PaymentOrderResponseDTO, error)
-	GenerateProfitAndLossReport(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, periodFrom, periodTo string) (accountingdtos.ProfitAndLossReportResponseDto, error)
-	ResolveAccountIDByTaxComponent(ctx context.Context)
 	GetAccountingBook(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.AccountingBook_Response_dto, error)
-	GetAccountGroupDetails(ctx context.Context, orgID, emplID, accountGroupID uuid.UUID) (accountingdtos.AccountingGroup_Response_dto, error)
 	CreateAccount(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, accountRequest accountingdtos.CreateAccountRequest) (accountID uuid.UUID, err error)
 	GetAccountLeger(ctx context.Context, orgID, emplID, legalEntityID, accountID uuid.UUID) (accountingdtos.AccountLedgerDto, error)
 	GetAllInventoriesAccounts(ctx context.Context, orgID, emplID, legalEntity uuid.UUID) ([]inventory_engine_models.Inventory, error)
@@ -27,13 +24,14 @@ type AccountingServiceInterface interface {
 	GetJournalEntries(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accountingdtos.JournalResponseDto, error)
 	CreateDraftAccountingSetup(ctx context.Context, input *accounting_engine_contracts.DraftAccountingSetupInput) error
 
-	GetAccountsSummaryOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID)
-
 	legalEntityservice
+	// Reports
+	GenerateProfitAndLossReport(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, periodFrom, periodTo string) (accountingdtos.ProfitAndLossReportResponseDto, error)
+
+	// New Temporary APIs
+	GetAccountsSummaryOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID)
 }
 
 type legalEntityservice interface {
 	GetLegalEntities(ctx context.Context, orgID, emplID uuid.UUID) ([]legal_entity_contracts.LegalEntityResponseDto, error)
-	// GetAllTaxRegistrationsOfLegalEntity()
-	// GetAllTaxCategoriesOfLegalEntity()
 }

@@ -7,17 +7,12 @@ import (
 )
 
 type JournalLine struct {
-	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
-
-	JournalEntryID uuid.UUID `gorm:"type:uuid;not null;index"`
-
-	AccountID uuid.UUID `gorm:"type:uuid;not null;index"` // this is the
-
-	Debit  float64 `gorm:"default:0"`
-	Credit float64 `gorm:"default:0"`
-
-	PartyID *uuid.UUID // customer / supplier
-
+	ID             uuid.UUID  `gorm:"type:uuid;primaryKey"`
+	JournalEntryID uuid.UUID  `gorm:"type:uuid;not null;index"`
+	AccountID      uuid.UUID  `gorm:"type:uuid;not null;index"` // this is the
+	Debit          float64    `gorm:"default:0"`
+	Credit         float64    `gorm:"default:0"`
+	PartyID        *uuid.UUID // customer / supplier
 	CreatedAt time.Time
 }
 

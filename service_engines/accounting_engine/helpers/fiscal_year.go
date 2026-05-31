@@ -12,6 +12,7 @@ import (
 
 // GenerateIndianFiscalYear creates a FiscalYear model based on Indian standards
 func GenerateIndianFiscalYear(bookID uuid.UUID) *accounting_models.FiscalYear {
+	
 	now := time.Now()
 	var startYear int
 
