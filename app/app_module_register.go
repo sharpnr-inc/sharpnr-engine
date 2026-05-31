@@ -16,7 +16,7 @@ import (
 	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
 	employee_services "sharpnr-engine/sharp_hrms_engine/employees/services"
 
-	sse_engine "sharpnr-engine/sse"
+	sse_engine "sharpnr-engine/sse_engine"
 )
 
 type AppModules struct {

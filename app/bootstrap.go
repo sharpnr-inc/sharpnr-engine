@@ -7,7 +7,7 @@ import (
 	inventory_engine_sero_handlers "sharpnr-engine/sharp_inventory_engine/sero_handlers"
 
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
-	sse_engine "sharpnr-engine/sse"
+	sse_engine "sharpnr-engine/sse_engine"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"

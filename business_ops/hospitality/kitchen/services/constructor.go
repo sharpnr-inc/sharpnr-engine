@@ -4,7 +4,7 @@ import (
 	kitchenrepo "sharpnr-engine/business_ops/hospitality/kitchen/repos"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
-	sse_engine "sharpnr-engine/sse"
+	sse_engine "sharpnr-engine/sse_engine"
 )
 
 type kitchenService struct {

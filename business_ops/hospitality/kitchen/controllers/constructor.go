@@ -2,7 +2,7 @@ package kitchencontrollers
 
 import (
 	kitchenservices "sharpnr-engine/business_ops/hospitality/kitchen/services"
-	sse_engine "sharpnr-engine/sse"
+	sse_engine "sharpnr-engine/sse_engine"
 )
 
 type KitchenController struct {

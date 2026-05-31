@@ -25,7 +25,7 @@ import (
 	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
 
 	invoice_engine_services "sharpnr-engine/sharp_accounting_engine/invoicing_engine/services"
-	sse_engine "sharpnr-engine/sse"
+	sse_engine "sharpnr-engine/sse_engine"
 
 	"gorm.io/gorm"
 )

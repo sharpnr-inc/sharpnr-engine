@@ -7,7 +7,7 @@ import (
 	kitchen_contracts "sharpnr-engine/business_ops/hospitality/kitchen/contracts"
 	restaurant_events "sharpnr-engine/business_ops/hospitality/restaurant/events"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	sse_engine "sharpnr-engine/sse"
+	sse_engine "sharpnr-engine/sse_engine"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

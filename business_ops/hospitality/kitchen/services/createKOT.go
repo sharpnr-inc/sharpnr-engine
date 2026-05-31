@@ -5,7 +5,7 @@ import (
 	"fmt"
 	kitchen_contracts "sharpnr-engine/business_ops/hospitality/kitchen/contracts"
 	kitchen_models "sharpnr-engine/business_ops/hospitality/kitchen/models"
-	sse_engine "sharpnr-engine/sse"
+	sse_engine "sharpnr-engine/sse_engine"
 	"time"
 
 	"github.com/google/uuid"
