@@ -5,8 +5,8 @@ import (
 	payment_engine_routes "sharpnr-engine/payment_engine/routes"
 	accounting_engine_routes "sharpnr-engine/service_engines/accounting_engine/routes"
 
-	hospitality_routes "sharpnr-engine/modules/hospitality/routes"
-	hr_routes "sharpnr-engine/modules/hr/routes"
+	hospitality_routes "sharpnr-engine/business_ops/hospitality/routes"
+	hr_routes "sharpnr-engine/sharp_hrms_engine/routes"
 
 	"github.com/gin-gonic/gin"
 )

@@ -1,7 +1,7 @@
 package accounting_sero_event_handler
 
 import (
-	restaurant_events "sharpnr-engine/modules/hospitality/restaurant/events"
+	restaurant_events "sharpnr-engine/business_ops/hospitality/restaurant/events"
 	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
 )

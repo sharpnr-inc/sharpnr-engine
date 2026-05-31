@@ -19,7 +19,7 @@ Sharpnr operates as a centralized orchestrator (API Gateway) that manages the li
     ┌──────────┴──────────┐   └──────────────┐
     │  DOMAIN ENGINES     │                  │
     ├─────────────────────┤         ┌────────▼────────┐
-    │ modules/hr/         │         │ sharp_services/ │
+    │ sharp_hrms_engine/         │         │ sharp_services/ │
     │ modules/accounting/ │         │ (Internal/Auth) │
     │ modules/hospitality/│         └─────────────────┘
     └──────────┬──────────┘
