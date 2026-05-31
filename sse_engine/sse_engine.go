@@ -12,6 +12,7 @@ type Event struct {
 type StreamManager struct {
 	// Map of Topic -> Map of Client Channels
 	// We use a map of maps to quickly find who is listening to "kitchen_1"
+	
 	Subscribers map[string]map[chan interface{}]bool
 	Mu          sync.RWMutex
 	MessageChan chan Event
