@@ -5,8 +5,8 @@ import (
 	"errors"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	accounting_engine_contracts "sharpnr-engine/service_engines/accounting_engine/contracts"
-	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"
+	accounting_engine_contracts "sharpnr-engine/sharp_accounting_engine/accounting_engine/contracts"
+	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

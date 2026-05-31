@@ -9,7 +9,7 @@ import (
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
-	accountingdtos "sharpnr-engine/service_engines/accounting_engine/dto"
+	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
 	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
 

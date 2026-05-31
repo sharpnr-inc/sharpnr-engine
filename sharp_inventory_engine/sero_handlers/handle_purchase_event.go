@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"sharpnr-engine/sero"
-	accounting_engine_events "sharpnr-engine/service_engines/accounting_engine/events"
+	accounting_engine_events "sharpnr-engine/sharp_accounting_engine/accounting_engine/events"
 	inventory_engine_contracts "sharpnr-engine/sharp_inventory_engine/contracts"
 	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
 )

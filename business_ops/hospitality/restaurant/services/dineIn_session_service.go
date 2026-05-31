@@ -12,7 +12,7 @@ import (
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 	payment_engine_models "sharpnr-engine/payment_engine/models"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	invoice_engine_contracts "sharpnr-engine/service_engines/invoicing_engine/contracts"
+	invoice_engine_contracts "sharpnr-engine/sharp_accounting_engine/invoicing_engine/contracts"
 	"time"
 
 	"github.com/google/uuid"

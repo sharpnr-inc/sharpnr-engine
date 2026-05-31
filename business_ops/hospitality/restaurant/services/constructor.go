@@ -10,7 +10,7 @@ import (
 	"sharpnr-engine/sero"
 	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
 
-	invoice_engine_services "sharpnr-engine/service_engines/invoicing_engine/services"
+	invoice_engine_services "sharpnr-engine/sharp_accounting_engine/invoicing_engine/services"
 )
 
 type restaurantService struct {

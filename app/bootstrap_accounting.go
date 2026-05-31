@@ -6,11 +6,11 @@ import (
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
-	accounting_repo "sharpnr-engine/service_engines/accounting_engine/repository"
-	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
+	accounting_repo "sharpnr-engine/sharp_accounting_engine/accounting_engine/repository"
+	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
 	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
 
-	invoice_engine_services "sharpnr-engine/service_engines/invoicing_engine/services"
+	invoice_engine_services "sharpnr-engine/sharp_accounting_engine/invoicing_engine/services"
 
 	"gorm.io/gorm"
 )

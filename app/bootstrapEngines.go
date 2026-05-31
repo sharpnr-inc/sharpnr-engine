@@ -13,8 +13,8 @@ import (
 	inventory_engine_repo "sharpnr-engine/sharp_inventory_engine/repo"
 	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
 
-	invoice_engine_repos "sharpnr-engine/service_engines/invoicing_engine/repos"
-	invoice_engine_services "sharpnr-engine/service_engines/invoicing_engine/services"
+	invoice_engine_repos "sharpnr-engine/sharp_accounting_engine/invoicing_engine/repos"
+	invoice_engine_services "sharpnr-engine/sharp_accounting_engine/invoicing_engine/services"
 
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 

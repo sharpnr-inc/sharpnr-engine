@@ -3,7 +3,7 @@ package v1
 import (
 	"sharpnr-engine/app"
 	payment_engine_routes "sharpnr-engine/payment_engine/routes"
-	accounting_engine_routes "sharpnr-engine/service_engines/accounting_engine/routes"
+	accounting_engine_routes "sharpnr-engine/sharp_accounting_engine/accounting_engine/routes"
 
 	hospitality_routes "sharpnr-engine/business_ops/hospitality/routes"
 	hr_routes "sharpnr-engine/sharp_hrms_engine/routes"
