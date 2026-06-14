@@ -1,33 +1,12 @@
 # Sharpnr Engine
 
-**Multi-tenant SaaS Orchestration & ERP Core**
+**Powers the sharpnr platform and all services.**
 
-Sharpnr is a high-performance orchestration engine designed to coordinate complex workflows across distributed modules. It serves as the backbone for hospitality, accounting, and human resource systems, ensuring data integrity and cross-domain communication.
+## About the Project
+
+- Written in Golang go 1.24.4
+- Using Gin Framework v1.11.0
+- For more details on the project check go.mod and go.sum
+- Postgressql and Redis For Cache
 
 ---
-
-## 1. System Architecture
-
-Sharpnr operates as a centralized orchestrator (API Gateway) that manages the lifecycle of requests and coordinates between specialized domain engines.
-
-```text
-┌─────────────────────────────────────────────────────┐
-│            ORCHESTRATOR (API Gateway)                │
-│     Coordinates workflows across domains             │
-└──────────────┬──────────────┬────────────────────────┘
-               │              │
-    ┌──────────┴──────────┐   └──────────────┐
-    │  DOMAIN ENGINES     │                  │
-    ├─────────────────────┤         ┌────────▼────────┐
-    │ sharp_hrms_engine/         │         │ sharp_services/ │
-    │ modules/accounting/ │         │ (Internal/Auth) │
-    │ modules/hospitality/│         └─────────────────┘
-    └──────────┬──────────┘
-               │
-    ┌──────────▼──────────┐
-    │ DATA PERSISTENCE    │
-    │ (PostgreSQL/SQLx)   │
-    └─────────────────────┘
-```
-
-#0A0A2E
