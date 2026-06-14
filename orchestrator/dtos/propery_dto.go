@@ -13,27 +13,26 @@ type PropertiesOfOrganization_ResDto struct {
 }
 
 type PropertiesReaderSlice struct {
-	ID           uuid.UUID                              `json:"id"`
-	Name         string                                 `json:"name"`
-	City         string                                 `json:"city"`
-	State        string                                 `json:"state"`
-	Domain       property_constants.PropertyDomainTypes `json:"domain"`
-	IsConfigured bool                                   `json:"is_configured"`
-	Code         string                                 `json:"code"`
+	ID          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	AddressLine string    `json:"address_line"`
+	City        string    `json:"city"`
+	State       string    `json:"state"`
+	Country     string    `json:"country"`
+	Code        string    `json:"code"`
 }
 
 // --------------------------------------------------------------------------------------//
 
 type PropertyDetails_res_dto struct {
-	Name        string                                  `json:"name"`
-	Code        string                                  `json:"code"`
-	City        string                                  `json:"city"`
-	AddressLine string                                  `json:"address_line"`
-	State       string                                  `json:"state"`
-	Country     string                                  `json:"country"`
-	Domain      *property_constants.PropertyDomainTypes `json:"domain,omitempty"`
-	Modules     *[]ModulesDetails_dto                   `json:"__modules__data__,omitempty"`
-	Infra       *[]PropertyInfra_res_dto                `json:"infra,omitempty"`
+	Name        string                   `json:"name"`
+	Code        string                   `json:"code"`
+	City        string                   `json:"city"`
+	AddressLine string                   `json:"address_line"`
+	State       string                   `json:"state"`
+	Country     string                   `json:"country"`
+	Modules     *[]ModulesDetails_dto    `json:"__modules__data__,omitempty"`
+	Infra       *[]PropertyInfra_res_dto `json:"infra,omitempty"`
 }
 
 type ModulesDetails_dto struct {

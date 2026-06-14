@@ -6,20 +6,15 @@ import (
 	"github.com/google/uuid"
 )
 
-type OrganizationProperties struct {
-	Properties []PropertiesReader
-}
-
 type PropertiesReader struct {
-	ID           uuid.UUID
-	Name         string
-	City         string
-	State        string
-	Domain       property_constants.PropertyDomainTypes
-	IsConfigured bool
-	Code         string
+	ID          uuid.UUID
+	Name        string
+	AddressLine string
+	City        string
+	State       string
+	Code        string
+	Country     string
 }
-
 
 type PropertyDetailsReader struct {
 	Domain      property_constants.PropertyDomainTypes

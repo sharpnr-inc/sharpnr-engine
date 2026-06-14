@@ -10,26 +10,11 @@ type OrganizationProperty struct {
 	ID             uuid.UUID `gorm:"primaryKey"`
 	OrganizationID uuid.UUID `gorm:"index;not null"`
 
-	Code string `gorm:"type:varchar(50);index;not null"` // internal short code
+	Code string `gorm:"type:varchar(50);index;not null"`
 	Name string `gorm:"type:varchar(150);not null"`
 
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt time.Time
-}
-
-func (OrganizationProperty) TableName() string {
-	return "organization_property.organization_property"
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
-type OrganizationPropertyAddress struct {
-	ID                     uuid.UUID `gorm:"primaryKey"`
-	OrganizationID         uuid.UUID `gorm:"index;not null"`
-	OrganizationPropertyID uuid.UUID `gorm:"index;not null"`
-
-	AddressLine string `gorm:"type:text;not null"`
+	// Address
+	AddressLine string `gorm:"type:text"`
 	City        string `gorm:"type:varchar(100);index"`
 	CityCode    string `gorm:"type:varchar(20);index"`
 	State       string `gorm:"type:varchar(100);index"`
@@ -38,10 +23,11 @@ type OrganizationPropertyAddress struct {
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	DeletedAt time.Time
 }
 
-func (OrganizationPropertyAddress) TableName() string {
-	return "organization_property.organization_property_address"
+func (OrganizationProperty) TableName() string {
+	return "organization_property.organization_property"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
