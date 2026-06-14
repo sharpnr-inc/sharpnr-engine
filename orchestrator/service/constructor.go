@@ -11,8 +11,8 @@ import (
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
-	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
-	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
+	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
+	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
 )
 
 type orchestratorService struct {

@@ -54,6 +54,291 @@ func (c *OrchestratorController) AddLegalEntity(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusOK, "Legal Entity Created successfully")
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) GetLegalEntityDetailsHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	response, err := c.orchestService.GetDetailsOfLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "some thing went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Details Fetched successfully", response)
+}
+
+/* ---------------------- Add Contacts in Legal Entity ---------------------- */
+
+func (c *OrchestratorController) ListAllContactsOfLegalEntity(ctx *gin.Context) {
+
+}
+
+func (c *OrchestratorController) AddContactsInLegalEntityHandler(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	req, ok := utils.BindJSON[legal_entity_contracts.CreateLegalEntityContactsRequestDto](ctx)
+	if !ok {
+		return
+	}
+
+	if err := c.orchestService.AddContactsInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "something went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Contact Added Successfully")
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) ListAllAddressesOfLegalEntity(ctx *gin.Context) {
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) AddAddressesInLegalEntityHandler(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	req, ok := utils.BindJSON[legal_entity_contracts.CreateLegalEntityAddressRequest](ctx)
+	if !ok {
+		return
+	}
+
+	if err := c.orchestService.AddAddressInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Address Added")
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) ListAllBankAccountsOfLegalEntity(ctx *gin.Context) {
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) AddBankAccountDetailsInLegalEntityHandler(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	req, ok := utils.BindJSON[legal_entity_contracts.AddBankAccountInLegalEntityRequestDto](ctx)
+	if !ok {
+		return
+	}
+
+	if err := c.orchestService.AddBankAccountDetailsInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Bank Account Added")
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) ListAllIdentifiersOfLegalEntity(ctx *gin.Context) {
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) AddIdentifiersInLegalEntityHandler(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	req, ok := utils.BindJSON[legal_entity_contracts.AddIdentifiersInLegalEntityRequestDto](ctx)
+	if !ok {
+		return
+	}
+
+	if err := c.orchestService.AddIdentifiersInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Identifiers Added")
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) AddLicenseAndComplianceHandler(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	req, ok := utils.BindJSON[legal_entity_contracts.AddNewLicenseAndComplianceRequestDto](ctx)
+	if !ok {
+		return
+	}
+
+	if err := c.orchestService.AddLicenseOrComplianceInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, *req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "License and Compliance Added")
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) ListAllLicenseAndComplianceHandler(ctx *gin.Context) {
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) AddTaxRegistrationInLegalEntityHandler(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	req, ok := utils.BindJSON[legal_entity_contracts.AddNewTaxRegistrationInLegalEntityRequestDto](ctx)
+	if !ok {
+		return
+	}
+
+	if err := c.orchestService.AddTaxRegistrationInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, *req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, " Tax Registration Added")
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) ListAllTaxRegistrationOfLegalEntityHandler(ctx *gin.Context) {
+
+}
+
+/* -------------------------------------------------------------------------- */
+/*                  Legal Entity Accounting related handlers                  */
+/* -------------------------------------------------------------------------- */
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) ListAllAccountingBooksOfLegalEntityHandler(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	response, err := c.orchestService.GetAccountingBooksOfLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "some thing went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Accounting Books of Legal Entity fetched successfully", response)
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) GetAccountBalancesOfLegalEntityHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	// we will take out the legalEntityID from ID
+	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
+	if err != nil {
+		return
+	}
+
+	response, err := c.orchestService.GetAllAccountBalancesOfLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "some thing went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Account balances of legal entity fetched successfully", response)
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
 /* -------------------------------------------------------------------------- */
 /*                        Legal entitys utils endpoints                       */
 /* -------------------------------------------------------------------------- */
@@ -172,4 +457,61 @@ func (c *OrchestratorController) GetLegalEntityIdentifierTypes(ctx *gin.Context)
 		}
 	}
 	utils.Success(ctx, http.StatusOK, "Legal entity identifier types fetched successfully", response)
+}
+
+// GetLegalEntityTaxTypes handles GET /utils/tax_types
+func (c *OrchestratorController) GetLegalEntityTaxTypes(ctx *gin.Context) {
+	_, _, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	types := legal_entity_constants.AllTaxTypes()
+	response := make([]legal_entity_constants.LegalEntityTaxTypeResponse, len(types))
+	for i, t := range types {
+		response[i] = legal_entity_constants.LegalEntityTaxTypeResponse{
+			ID:          string(t),
+			Label:       t.Label(),
+			Description: t.Description(),
+		}
+	}
+	utils.Success(ctx, http.StatusOK, "Legal entity tax types fetched successfully", response)
+}
+
+// GetLegalEntityTaxComponentTypes handles GET /utils/tax-components_types
+func (c *OrchestratorController) GetLegalEntityTaxComponentTypes(ctx *gin.Context) {
+	_, _, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	types := legal_entity_constants.AllTaxComponentTypes()
+	response := make([]legal_entity_constants.LegalEntityTaxComponentTypeResponse, len(types))
+	for i, t := range types {
+		response[i] = legal_entity_constants.LegalEntityTaxComponentTypeResponse{
+			ID:          string(t),
+			Label:       t.Label(),
+			Description: t.Description(),
+		}
+	}
+	utils.Success(ctx, http.StatusOK, "Legal entity tax component types fetched successfully", response)
+}
+
+// GetLegalEntityBankAccountTypes handles GET /utils/bank-acc_types
+func (c *OrchestratorController) GetLegalEntityBankAccountTypes(ctx *gin.Context) {
+	_, _, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	types := legal_entity_constants.AllBankAccountTypes()
+	response := make([]legal_entity_constants.LegalEntityBankAccountTypeResponse, len(types))
+	for i, t := range types {
+		response[i] = legal_entity_constants.LegalEntityBankAccountTypeResponse{
+			ID:          string(t),
+			Label:       t.Label(),
+			Description: t.Description(),
+		}
+	}
+	utils.Success(ctx, http.StatusOK, "Legal entity bank account types fetched successfully", response)
 }

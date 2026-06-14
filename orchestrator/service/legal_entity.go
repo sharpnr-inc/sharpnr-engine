@@ -2,9 +2,11 @@ package orchestrator_service
 
 import (
 	"context"
+	"errors"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	accounting_engine_contracts "sharpnr-engine/service_engines/accounting_engine/contracts"
+	accounting_engine_contracts "sharpnr-engine/sharp_accounting_engine/accounting_engine/contracts"
+	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -64,3 +66,156 @@ func (c *orchestratorService) CreateLegalEntity(ctx context.Context, orgID, empl
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) GetDetailsOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (legal_entity_contracts.LegalEntityDetails, error) {
+	// Simply invoke the downstream service directly using the request context.
+	// If you implemented errgroup inside GetLegalEntityDetails, it will safely spawn sub-connections here.
+	res, err := s.legalEntityService.GetLegalEntityDetails(ctx, orgID, emplID, legalEntityID)
+	if err != nil {
+		return legal_entity_contracts.LegalEntityDetails{}, err // Properly bubble up the error
+	}
+
+	return res, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) AddContactsInLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntityID uuid.UUID,
+	req *legal_entity_contracts.CreateLegalEntityContactsRequestDto,
+) error {
+	if req == nil {
+		return errors.New("request body should not be empty")
+	}
+
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		return s.legalEntityService.AddNewContactInLegalEntity(
+			txCtx,
+			orgID,
+			emplID,
+			legalEntityID,
+			req,
+		)
+	})
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) AddAddressInLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntityID uuid.UUID,
+	req *legal_entity_contracts.CreateLegalEntityAddressRequest,
+) error {
+	if req == nil {
+		return errors.New("request body should not be empty")
+	}
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		_, err := s.legalEntityService.AddNewAddressInLegalEntity(
+			txCtx,
+			orgID,
+			emplID,
+			legalEntityID,
+			*req,
+		)
+
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) AddBankAccountDetailsInLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntityID uuid.UUID,
+	req *legal_entity_contracts.AddBankAccountInLegalEntityRequestDto,
+) error {
+	if req == nil {
+		return errors.New("request body should not be empty")
+	}
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		return s.legalEntityService.AddNewBankAccounInLegalEntity(
+			txCtx,
+			orgID,
+			emplID,
+			legalEntityID,
+			req,
+		)
+	})
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+func (s *orchestratorService) AddIdentifiersInLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntityID uuid.UUID,
+	req *legal_entity_contracts.AddIdentifiersInLegalEntityRequestDto,
+) error {
+	if req == nil {
+		return errors.New("request body should not be empty")
+	}
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		return s.legalEntityService.AddNewIdentifiersInLegalEntity(
+			txCtx,
+			orgID,
+			emplID,
+			legalEntityID,
+			req,
+		)
+	})
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) AddLicenseOrComplianceInLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntityID uuid.UUID,
+	req legal_entity_contracts.AddNewLicenseAndComplianceRequestDto,
+) error {
+
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		return s.legalEntityService.AddNewLicenseOrComplianceInLegalEntity(txCtx, orgID, emplID, legalEntityID, req)
+	})
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) AddTaxRegistrationInLegalEntity(
+	ctx context.Context,
+	orgID, emplID, legalEntityID uuid.UUID,
+	req legal_entity_contracts.AddNewTaxRegistrationInLegalEntityRequestDto,
+) error {
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+
+		txCtx := dbtx.InjectTx(ctx, tx)
+
+		return s.legalEntityService.AddNewTaxRegistration(txCtx, orgID, emplID, legalEntityID, req)
+	})
+}
+
+/* -------------------------------------------------------------------------- */
+/*                       Legal Entity Accounting Service                      */
+/* -------------------------------------------------------------------------- */
+
+func (s *orchestratorService) GetAccountingBooksOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.AccountingBookOfLegalEntity_Response_dto, error) {
+
+	panic("")
+}
+
+func (s *orchestratorService) GetAllAccountBalancesOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accountingdtos.AccountGroupBalanceResponseDto, error) {
+	panic("")
+}

@@ -2,19 +2,19 @@ package app
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
+	hospitality_orchestration_service "sharpnr-engine/business_ops/hospitality/orchestration/service"
 	org_customer_service "sharpnr-engine/core/customer/service"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	organization_services "sharpnr-engine/core/organization/services"
-	hospitality_orchestration_service "sharpnr-engine/modules/hospitality/orchestration/service"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
-	accounting_service "sharpnr-engine/service_engines/accounting_engine/services"
-	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
+	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
+	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
 )
 
 func bootstrapSharpnrOrchestrator(
