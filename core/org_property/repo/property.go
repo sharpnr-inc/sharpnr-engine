@@ -58,13 +58,12 @@ func (o *organizationPropertyRepo) GetPropertyByID(ctx context.Context, property
 	return &property, nil
 }
 
-func (repo *organizationPropertyRepo) UpdateConfigurationStatus(ctx context.Context, propertyID uuid.UUID, status bool) error {
+func (repo *organizationPropertyRepo) UpdateConfigurationStatus(ctx context.Context, propertyID uuid.UUID) error {
 	// We use Model() with the ID to ensure GORM knows which record to target
 	// and Update() to change the specific boolean field.
 	result := repo.db.WithContext(ctx).
 		Model(&org_property_models.OrganizationProperty{}).
-		Where("id = ?", propertyID).
-		Update("is_configured", status)
+		Where("id = ?", propertyID)
 
 	if result.Error != nil {
 		return result.Error

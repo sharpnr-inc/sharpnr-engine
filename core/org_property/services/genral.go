@@ -3,8 +3,6 @@ package org_property_services
 import (
 	"context"
 	"errors"
-	"fmt"
-	property_constants "sharpnr-engine/core/org_property/constants"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	org_property_models "sharpnr-engine/core/org_property/models"
 	dbtx "sharpnr-engine/pkg/dbTx"
@@ -54,6 +52,8 @@ func (c *organizationPropertyService) CreatePropertyDefault(ctx context.Context,
 
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (r *organizationPropertyService) GetPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*org_property_contracts.OrganizationProperties, error) {
 	properties, err := r.orgPropertyRepo.GetAllPropertiesByOrgID(ctx, orgID)
 	if err != nil {
@@ -68,28 +68,18 @@ func (r *organizationPropertyService) GetPropertiesOfOrg(ctx context.Context, or
 			return nil, err
 		}
 
-		domain, err := r.orgPropertyRepo.GetPropertyDomain(ctx, p.ID)
-		if err != nil {
-			return nil, err
-		}
-
 		reader := org_property_contracts.PropertiesReader{
-			ID:           p.ID,
-			Name:         p.Name,
-			Code:         p.Code,
-			City:         "",
-			State:        "",
-			Domain:       "",
-			IsConfigured: p.IsConfigured,
+			ID:     p.ID,
+			Name:   p.Name,
+			Code:   p.Code,
+			City:   "",
+			State:  "",
+			Domain: "",
 		}
 
 		if address != nil {
 			reader.City = address.City
 			reader.State = address.State
-		}
-
-		if domain != nil {
-			reader.Domain = domain.Domain
 		}
 
 		readers = append(readers, reader)
@@ -99,6 +89,8 @@ func (r *organizationPropertyService) GetPropertiesOfOrg(ctx context.Context, or
 		Properties: readers,
 	}, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (r *organizationPropertyService) GetPropertyDetailsByID(
 	ctx context.Context,
@@ -119,11 +111,6 @@ func (r *organizationPropertyService) GetPropertyDetailsByID(
 		return nil, errors.New("invalid property")
 	}
 
-	prDomain, err := r.orgPropertyRepo.GetPropertyDomain(ctx, propertyID)
-	if err != nil {
-		return nil, err
-	}
-
 	prLocation, err := r.orgPropertyRepo.GetPropertyAddress(ctx, propertyID)
 	if err != nil {
 		return nil, err
@@ -135,7 +122,6 @@ func (r *organizationPropertyService) GetPropertyDetailsByID(
 	}
 
 	res := &org_property_contracts.PropertyDetailsReader{
-		Domain:      prDomain.Domain, // Use the safe variable
 		Name:        pr.Name,
 		Code:        pr.Code,
 		AddressLine: prLocation.AddressLine,
@@ -148,42 +134,4 @@ func (r *organizationPropertyService) GetPropertyDetailsByID(
 	return res, nil
 }
 
-func (r *organizationPropertyService) AddDomain(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, Domain property_constants.PropertyDomainTypes) error {
-
-	pr, err := r.orgPropertyRepo.GetPropertyByID(ctx, propertyID)
-	if err != nil {
-		return err
-	}
-
-	if pr.ID != propertyID {
-		return errors.New("invalid resources")
-	}
-
-	domain := org_property_models.OrganizationPropertyDomain{
-		ID:                     uuid.New(),
-		OrganizationPropertyID: propertyID,
-		Domain:                 Domain,
-		Status:                 "NOT_CONFIGURED",
-		CreatedAt:              time.Now(),
-		UpdatedAt:              time.Now(),
-	}
-
-	if err := r.orgPropertyRepo.AddDomainOfProperty(ctx, &domain); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (r *organizationPropertyService) UpdatePropertyConfigurationStatus(ctx context.Context, propertyID uuid.UUID, status bool) error {
-	// In the future, you could add business logic here to check if
-	// Bar or Kitchen modules are ready before setting status to true.
-
-	err := r.orgPropertyRepo.UpdateConfigurationStatus(ctx, propertyID, status)
-	if err != nil {
-		// Log error or wrap it with context-specific messages
-		return fmt.Errorf("failed to update property configuration: %w", err)
-	}
-
-	return nil
-}
+/* ---------------------------------- <***> --------------------------------- */
