@@ -3,7 +3,7 @@ package app
 import (
 	organization_services "sharpnr-engine/core/organization/services"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
-	employee_services "sharpnr-engine/modules/hr/employees/services"
+	employee_services "sharpnr-engine/sharp_hrms_engine/employees/services"
 )
 
 func bootstrapIdentity(
