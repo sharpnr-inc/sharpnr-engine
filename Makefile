@@ -4,7 +4,6 @@
 
 APP_NAME=sharpnr-engine
 BUILD_DIR=build
-APP_DIR=/opt/apps/sharpnr-engine
 
 # =========================================================
 # Version info (injected into the binary via -ldflags)
@@ -20,7 +19,7 @@ LDFLAGS=-s -w \
 	-X '$(META_PKG).Commit=$(COMMIT)' \
 	-X '$(META_PKG).BuildTime=$(BUILD_TIME)'
 
-.PHONY: build run clean deploy restart status logs scp install lint test watch env version
+.PHONY: build run clean lint test watch version
 
 # =========================================================
 # Build Linux production binary into build/ folder
@@ -71,72 +70,11 @@ lint:
 	golangci-lint run ./...
 
 # =========================================================
-# Execute full deployment script
+# NOTE: Deployment is fully automated by Jenkins (see Jenkinsfile).
+# Jenkins and the app run on the same machine, so the old ssh/scp
+# remote targets and deploy-be.sh have been removed. This Makefile is
+# now for local development, building, and versioning only.
 # =========================================================
-deploy:
-	chmod +x deploy-be.sh
-	./deploy-be.sh
-
-# =========================================================
-# Restart remote systemd service
-# =========================================================
-restart:
-	ssh $(SERVER) "sudo systemctl restart $(APP_NAME)"
-
-# =========================================================
-# Check remote service status
-# =========================================================
-status:
-	ssh $(SERVER) "sudo systemctl status $(APP_NAME) --no-pager"
-
-# =========================================================
-# Stream live logs from remote server
-# =========================================================
-logs:
-	ssh $(SERVER) "journalctl -u $(APP_NAME) -f"
-
-# =========================================================
-# Show last 50 log lines
-# =========================================================
-logs-tail:
-	ssh $(SERVER) "journalctl -u $(APP_NAME) -n 50 --no-pager"
-
-# =========================================================
-# Show only errors in logs
-# =========================================================
-logs-errors:
-	ssh $(SERVER) "journalctl -u $(APP_NAME) -n 100 --no-pager | grep -i 'error\|failed\|panic'"
-
-# =========================================================
-# Upload compiled binary to remote home directory
-# =========================================================
-scp:
-	scp $(BUILD_DIR)/$(APP_NAME) $(SERVER):~/
-
-# =========================================================
-# Move uploaded binary into application directory
-# =========================================================
-install:
-	ssh $(SERVER) "\
-		mv ~/$(APP_NAME) $(APP_DIR)/$(APP_NAME) && \
-		chmod +x $(APP_DIR)/$(APP_NAME)"
-
-# =========================================================
-# Show remote .env (without secrets)
-# =========================================================
-env:
-	ssh $(SERVER) "grep -v 'PASSWORD\|SECRET\|KEY' $(APP_DIR)/.env"
-
-# =========================================================
-# Check if port 8080 is listening on remote
-# =========================================================
-check:
-	ssh $(SERVER) "ss -tlnp | grep 8080 && echo '✅ Port 8080 open' || echo '❌ Port 8080 not found'"
-
-# =========================================================
-# Full pipeline: lint → test → build → deploy
-# =========================================================
-ship: lint test deploy
 
 
 # ==========================================

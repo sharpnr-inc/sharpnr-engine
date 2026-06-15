@@ -6,7 +6,6 @@ pipeline {
         BACKUP_DIR    = '/media/sharpnrllpDrive/engines'
         BINARY_NAME   = 'sharpnr-engine'
         SERVICE_NAME  = 'sharpnr-engine'
-        GO_VERSION    = '1.22'  // adjust to your Go version
     }
 
     options {
@@ -59,17 +58,38 @@ pipeline {
         }
 
         // ─────────────────────────────────────────
-        // Step 5 — Build binary (linux/amd64)
+        // Step 5 — Build binary (linux/amd64) with version injected
+        // `make build` stamps the version/commit/build-time into the binary
+        // via -ldflags. Fetch tags first so `git describe` resolves the
+        // semantic version (e.g. v1.2.0) instead of just a short SHA.
         // ─────────────────────────────────────────
         stage('Build') {
             steps {
                 sh '''
+                    echo "▶ Fetching git tags for versioning..."
+                    git fetch --tags --force 2>/dev/null || true
+
                     echo "▶ Building ${BINARY_NAME}..."
-                    mkdir -p build
-                    GOOS=linux GOARCH=amd64 go build \
-                        -ldflags="-s -w" \
-                        -o build/${BINARY_NAME} .
-                    echo "✅ Build size: $(du -sh build/${BINARY_NAME} | cut -f1)"
+                    make build
+                '''
+            }
+        }
+
+        // ─────────────────────────────────────────
+        // Step 5.5 — Ensure APP_ENV=production in systemd
+        // The app loads .env.production only when APP_ENV=production
+        // (see config/env.go). This idempotent drop-in guarantees it,
+        // so the deployed .env.production is actually picked up.
+        // ─────────────────────────────────────────
+        stage('Configure Env') {
+            steps {
+                sh '''
+                    echo "▶ Ensuring APP_ENV=production for ${SERVICE_NAME}..."
+                    sudo mkdir -p /etc/systemd/system/${SERVICE_NAME}.service.d
+                    printf '[Service]\\nEnvironment=APP_ENV=production\\n' \
+                        | sudo tee /etc/systemd/system/${SERVICE_NAME}.service.d/10-app-env.conf > /dev/null
+                    sudo systemctl daemon-reload
+                    echo "✅ APP_ENV=production enforced"
                 '''
             }
         }
@@ -137,6 +157,19 @@ pipeline {
                     echo "▶ Removing backups older than 7 days..."
                     find ${BACKUP_DIR} -maxdepth 1 -type d -mtime +7 -exec rm -rf {} \\; 2>/dev/null || true
                 '''
+
+                // ── Environment file ────────────────────────
+                // The .env.production secret file is stored in Jenkins
+                // credentials. The app loads .env.production from its working
+                // dir when APP_ENV=production (see config/env.go).
+                withCredentials([file(credentialsId: 'sharpnr-engine-env-production', variable: 'ENV_FILE')]) {
+                    sh '''
+                        echo "▶ Installing .env.production..."
+                        cp "$ENV_FILE" ${APP_DIR}/.env.production
+                        chmod 600 ${APP_DIR}/.env.production
+                        echo "✅ .env.production installed"
+                    '''
+                }
             }
         }
 
@@ -157,6 +190,10 @@ pipeline {
 
                     echo "▶ Verifying port 8080..."
                     ss -tlnp | grep 8080 && echo "✅ Port 8080 is open" || { echo "❌ Port 8080 not found"; exit 1; }
+
+                    echo "▶ Deployed version:"
+                    curl -fsS http://localhost:8080/version || echo "⚠️ /version not reachable"
+                    echo ""
 
                     echo "▶ Checking recent logs for errors..."
                     journalctl -u ${SERVICE_NAME} -n 20 --no-pager \
