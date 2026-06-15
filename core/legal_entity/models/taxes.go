@@ -30,7 +30,7 @@ type LegalEntityTaxRegistration struct {
 
 	// GSTRegistrationType affects rate applicability and return forms.
 	// COMPOSITION entities pay at a flat rate and cannot charge GST to customers.
-	GSTRegistrationType legal_entity_constants.LegalEntityGSTRegistrationType `gorm:"size:20;not null;default:'REGULAR'"` // see GSTType constants
+	GSTRegistrationType legal_entity_constants.LegalEntityGSTRegistrationType `gorm:"size:20;not null;default:'REGULAR'"`
 
 	State        string `gorm:"size:100"`
 	GSTStateCode string `gorm:"size:2"` // "06", "27" — join key for tax resolution

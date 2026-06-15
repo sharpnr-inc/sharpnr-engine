@@ -1,6 +1,9 @@
 package legal_entity_contracts
 
-import "time"
+import (
+	legal_entity_constants "sharpnr-engine/core/legal_entity/constants"
+	"time"
+)
 
 type UpdateLegalEntityNamesRequestDto struct {
 	LegalName         *string
@@ -26,3 +29,15 @@ type UpdateLegalEntityAddressRequestDto struct {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+type UpdateLegalEntityBankAccountDetailsRequest struct {
+	AccountHolderName *string                                            `json:"account_holder_name"`
+	AccountNumber     *string                                            `json:"account_number"`
+	IFSC              *string                                            `json:"ifsc"`
+	BankName          *string                                            `json:"bank_name"`
+	BranchName        *string                                            `json:"branch_name"`
+	MICRCode          *string                                            `json:"micr_code"`
+	AccountType       *legal_entity_constants.LegalEntityBankAccountType `json:"account_type"`
+	IsPrimary         *bool                                              `json:"is_primary"`
+	IsActive          *bool                                              `json:"is_active"`
+}

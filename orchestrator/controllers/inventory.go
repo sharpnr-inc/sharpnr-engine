@@ -2,8 +2,9 @@ package orchestrator_controllers
 
 import (
 	"net/http"
-	inventory_dtos "sharpnr-engine/service_engines/inventory_engine/dtos"
+
 	"sharpnr-engine/shared/utils"
+	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
 
 	"github.com/gin-gonic/gin"
 )

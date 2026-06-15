@@ -11,13 +11,40 @@ type OrgLegalEntityServiceInterface interface {
 	CreateNewLegalEntity(ctx context.Context, orgID, emplID uuid.UUID, input legal_entity_contracts.NewLegalEntityRequestDto) (legalEntityID uuid.UUID, err error)
 	GetLegalEntityByID(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (*legal_entity_contracts.LegalEntityResponseDto, error)
 	GetLegalEntityByOrgID(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]legal_entity_contracts.LegalEntityResponseDto, error)
-	GetLegalEntityDetails(ctx context.Context, orgID, emplId, legalEntityID uuid.UUID) (*legal_entity_contracts.LegalEntityResponseDto, error)
+	GetLegalEntityDetails(ctx context.Context, orgID, emplId, legalEntityID uuid.UUID) (legal_entity_contracts.LegalEntityDetails, error)
 
 	AddNewAddressInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req legal_entity_contracts.CreateLegalEntityAddressRequest) (addressID uuid.UUID, err error)
 	// GetLegalEntityAddresses(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]string, error)
 
 	LegalEntityTaxCongfigsServiceInterface
 	LegalEntityTaxEngineAdapterInterface
+	LegalEntityTaxCategoryService
+
+	// Adds New Contact in Legal Entity
+	AddNewContactInLegalEntity(
+		ctx context.Context,
+		orgID, emplID, legalEntityID uuid.UUID,
+		req *legal_entity_contracts.CreateLegalEntityContactsRequestDto,
+	) error
+
+	AddNewBankAccounInLegalEntity(
+		ctx context.Context,
+		orgID, emplID, legalEntityID uuid.UUID,
+		req *legal_entity_contracts.AddBankAccountInLegalEntityRequestDto,
+	) error
+
+	AddNewIdentifiersInLegalEntity(
+		ctx context.Context,
+		orgID, emplID, legalEntityID uuid.UUID,
+		req *legal_entity_contracts.AddIdentifiersInLegalEntityRequestDto,
+	) error
+
+	AddNewLicenseOrComplianceInLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req legal_entity_contracts.AddNewLicenseAndComplianceRequestDto) error
+	AddNewTaxRegistration(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, req legal_entity_contracts.AddNewTaxRegistrationInLegalEntityRequestDto) error
+}
+
+type LegalEntityTaxCategoryService interface {
+	GetLegalEntityTaxCategory(ctx context.Context, orgID, emplID, LegalEntityID uuid.UUID) ([]legal_entity_contracts.LegalEntityTaxCategoryResponseDto, error)
 }
 
 /* ---------------------------------- <***> --------------------------------- */

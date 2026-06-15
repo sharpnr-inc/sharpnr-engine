@@ -14,7 +14,7 @@ import (
 	"sharpnr-engine/sero"
 	"sharpnr-engine/shared/database"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
-	sse_engine "sharpnr-engine/sse"
+	sse_engine "sharpnr-engine/sse_engine"
 
 	_ "sharpnr-engine/docs"
 

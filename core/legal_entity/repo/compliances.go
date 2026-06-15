@@ -20,7 +20,7 @@ func (r *orgLegalEntityRepo) CreateLegalEntityCompliance(ctx context.Context, co
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (r *orgLegalEntityRepo) GetLegalCompliancesByLegalEntityID(ctx context.Context, legalEntityID uuid.UUID) ([]*legal_entity_models.LegalEntityCompliance, error) {
+func (r *orgLegalEntityRepo) FindAllLegalCompliancesByLegalEntityID(ctx context.Context, legalEntityID uuid.UUID) ([]*legal_entity_models.LegalEntityCompliance, error) {
 
 	db, ok := dbtx.ExtractTx(ctx)
 	if !ok {
@@ -43,3 +43,10 @@ func (r *orgLegalEntityRepo) GetLegalCompliancesByLegalEntityID(ctx context.Cont
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (d *orgLegalEntityRepo) UpdateLegalEntityCompliance(
+	ctx context.Context,
+	complianceID uuid.UUID,
+) error {
+	panic("")
+}

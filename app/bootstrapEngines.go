@@ -10,27 +10,16 @@ import (
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
-	inventory_engine_repo "sharpnr-engine/service_engines/inventory_engine/repo"
-	inventory_engine_services "sharpnr-engine/service_engines/inventory_engine/services"
-	invoice_engine_repos "sharpnr-engine/service_engines/invoicing_engine/repos"
-	invoice_engine_services "sharpnr-engine/service_engines/invoicing_engine/services"
-	tax_engine_service "sharpnr-engine/service_engines/tax_engine/service"
+	inventory_engine_repo "sharpnr-engine/sharp_inventory_engine/repo"
+	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
+
+	invoice_engine_repos "sharpnr-engine/sharp_accounting_engine/invoicing_engine/repos"
+	invoice_engine_services "sharpnr-engine/sharp_accounting_engine/invoicing_engine/services"
+
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
 	"gorm.io/gorm"
 )
-
-func bootstrapTaxEngine(
-	legalEntityService legal_entity_service.OrgLegalEntityServiceInterface,
-	txManager dbtx.TxManager,
-	seroEngine *sero.SEROEngine,
-) tax_engine_service.TaxEngineServiceInterface {
-	return tax_engine_service.NewTaxEngine(
-		legalEntityService,
-		txManager,
-		seroEngine,
-	)
-}
 
 func bootStrapCustomerEngine(
 	db *gorm.DB,
@@ -49,7 +38,7 @@ func bootStrapInvoicingEngine(
 	db *gorm.DB,
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
-	taxEngine tax_engine_service.TaxEngineServiceInterface,
+
 	legalEntityService legal_entity_service.OrgLegalEntityServiceInterface,
 ) invoice_engine_services.InvoiceEngineServiceInterface {
 	repo := invoice_engine_repos.NewInvoiceEngineRepo(db)
@@ -57,7 +46,6 @@ func bootStrapInvoicingEngine(
 		repo,
 		txManager,
 		seroEngine,
-		taxEngine,
 		legalEntityService,
 	)
 }
