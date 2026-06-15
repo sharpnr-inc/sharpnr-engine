@@ -8,6 +8,7 @@ import (
 	"sharpnr-engine/api"
 	"sharpnr-engine/app"
 	"sharpnr-engine/config"
+	"sharpnr-engine/meta"
 	"sharpnr-engine/pkg/cookieManager"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
@@ -38,6 +39,8 @@ import (
 // @schemes http https
 // @BasePath /api/v1
 func main() {
+
+	log.Printf("🏷️  Sharpnr Engine %s", meta.Get())
 
 	cfg := config.Load()
 	redisDb := database.ConnectRedis(cfg.Redis)

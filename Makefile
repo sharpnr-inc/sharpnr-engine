@@ -4,18 +4,39 @@
 
 APP_NAME=sharpnr-engine
 BUILD_DIR=build
-SERVER=sharpnrllp@192.168.1.51
 APP_DIR=/opt/apps/sharpnr-engine
 
-.PHONY: build run clean deploy restart status logs scp install lint test watch env
+# =========================================================
+# Version info (injected into the binary via -ldflags)
+# VERSION  -> nearest git tag + commits since (e.g. v1.0.0-alpha-772-gc87f028)
+# COMMIT   -> short SHA; BUILD_TIME -> UTC build timestamp
+# =========================================================
+META_PKG=sharpnr-engine/meta
+VERSION?=$(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
+COMMIT?=$(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
+BUILD_TIME?=$(shell date -u +%Y-%m-%dT%H:%M:%SZ)
+LDFLAGS=-s -w \
+	-X '$(META_PKG).Version=$(VERSION)' \
+	-X '$(META_PKG).Commit=$(COMMIT)' \
+	-X '$(META_PKG).BuildTime=$(BUILD_TIME)'
+
+.PHONY: build run clean deploy restart status logs scp install lint test watch env version
 
 # =========================================================
 # Build Linux production binary into build/ folder
 # =========================================================
 build:
 	mkdir -p $(BUILD_DIR)
-	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o $(BUILD_DIR)/$(APP_NAME) .
-	@echo "✅ Build size: $$(du -sh $(BUILD_DIR)/$(APP_NAME) | cut -f1)"
+	GOOS=linux GOARCH=amd64 go build -ldflags="$(LDFLAGS)" -o $(BUILD_DIR)/$(APP_NAME) .
+	@echo "✅ Built $(APP_NAME) $(VERSION) ($(COMMIT)) — $$(du -sh $(BUILD_DIR)/$(APP_NAME) | cut -f1)"
+
+# =========================================================
+# Print the version that a build would embed
+# =========================================================
+version:
+	@echo "Version:    $(VERSION)"
+	@echo "Commit:     $(COMMIT)"
+	@echo "Build time: $(BUILD_TIME)"
 
 # =========================================================
 # Run application locally in development mode
