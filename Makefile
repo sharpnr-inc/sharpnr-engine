@@ -4,18 +4,38 @@
 
 APP_NAME=sharpnr-engine
 BUILD_DIR=build
-SERVER=sharpnrllp@192.168.1.51
-APP_DIR=/opt/apps/sharpnr-engine
 
-.PHONY: build run clean deploy restart status logs scp install lint test watch env
+# =========================================================
+# Version info (injected into the binary via -ldflags)
+# VERSION  -> nearest git tag + commits since (e.g. v1.0.0-alpha-772-gc87f028)
+# COMMIT   -> short SHA; BUILD_TIME -> UTC build timestamp
+# =========================================================
+META_PKG=sharpnr-engine/meta
+VERSION?=$(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
+COMMIT?=$(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
+BUILD_TIME?=$(shell date -u +%Y-%m-%dT%H:%M:%SZ)
+LDFLAGS=-s -w \
+	-X '$(META_PKG).Version=$(VERSION)' \
+	-X '$(META_PKG).Commit=$(COMMIT)' \
+	-X '$(META_PKG).BuildTime=$(BUILD_TIME)'
+
+.PHONY: build run clean lint test watch version
 
 # =========================================================
 # Build Linux production binary into build/ folder
 # =========================================================
 build:
 	mkdir -p $(BUILD_DIR)
-	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o $(BUILD_DIR)/$(APP_NAME) .
-	@echo "✅ Build size: $$(du -sh $(BUILD_DIR)/$(APP_NAME) | cut -f1)"
+	GOOS=linux GOARCH=amd64 go build -ldflags="$(LDFLAGS)" -o $(BUILD_DIR)/$(APP_NAME) .
+	@echo "✅ Built $(APP_NAME) $(VERSION) ($(COMMIT)) — $$(du -sh $(BUILD_DIR)/$(APP_NAME) | cut -f1)"
+
+# =========================================================
+# Print the version that a build would embed
+# =========================================================
+version:
+	@echo "Version:    $(VERSION)"
+	@echo "Commit:     $(COMMIT)"
+	@echo "Build time: $(BUILD_TIME)"
 
 # =========================================================
 # Run application locally in development mode
@@ -50,72 +70,11 @@ lint:
 	golangci-lint run ./...
 
 # =========================================================
-# Execute full deployment script
+# NOTE: Deployment is fully automated by Jenkins (see Jenkinsfile).
+# Jenkins and the app run on the same machine, so the old ssh/scp
+# remote targets and deploy-be.sh have been removed. This Makefile is
+# now for local development, building, and versioning only.
 # =========================================================
-deploy:
-	chmod +x deploy-be.sh
-	./deploy-be.sh
-
-# =========================================================
-# Restart remote systemd service
-# =========================================================
-restart:
-	ssh $(SERVER) "sudo systemctl restart $(APP_NAME)"
-
-# =========================================================
-# Check remote service status
-# =========================================================
-status:
-	ssh $(SERVER) "sudo systemctl status $(APP_NAME) --no-pager"
-
-# =========================================================
-# Stream live logs from remote server
-# =========================================================
-logs:
-	ssh $(SERVER) "journalctl -u $(APP_NAME) -f"
-
-# =========================================================
-# Show last 50 log lines
-# =========================================================
-logs-tail:
-	ssh $(SERVER) "journalctl -u $(APP_NAME) -n 50 --no-pager"
-
-# =========================================================
-# Show only errors in logs
-# =========================================================
-logs-errors:
-	ssh $(SERVER) "journalctl -u $(APP_NAME) -n 100 --no-pager | grep -i 'error\|failed\|panic'"
-
-# =========================================================
-# Upload compiled binary to remote home directory
-# =========================================================
-scp:
-	scp $(BUILD_DIR)/$(APP_NAME) $(SERVER):~/
-
-# =========================================================
-# Move uploaded binary into application directory
-# =========================================================
-install:
-	ssh $(SERVER) "\
-		mv ~/$(APP_NAME) $(APP_DIR)/$(APP_NAME) && \
-		chmod +x $(APP_DIR)/$(APP_NAME)"
-
-# =========================================================
-# Show remote .env (without secrets)
-# =========================================================
-env:
-	ssh $(SERVER) "grep -v 'PASSWORD\|SECRET\|KEY' $(APP_DIR)/.env"
-
-# =========================================================
-# Check if port 8080 is listening on remote
-# =========================================================
-check:
-	ssh $(SERVER) "ss -tlnp | grep 8080 && echo '✅ Port 8080 open' || echo '❌ Port 8080 not found'"
-
-# =========================================================
-# Full pipeline: lint → test → build → deploy
-# =========================================================
-ship: lint test deploy
 
 
 # ==========================================

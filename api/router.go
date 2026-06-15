@@ -15,6 +15,7 @@ import (
 	"sharpnr-engine/pkg/cookieManager"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
+	"sharpnr-engine/meta"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -66,6 +67,16 @@ func SetupRouter(
 
 	// ✅ ONE CORS middleware for everything
 	router.Use(middlewares.UnifiedCORSMiddleware(corsConfig))
+
+	// ========================
+	// 🩺 Health & version (public, no auth)
+	// ========================
+	router.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "ok", "version": meta.Version})
+	})
+	router.GET("/version", func(c *gin.Context) {
+		c.JSON(200, meta.Get())
+	})
 
 	// ========================
 	// 🌐 WEB API (cookies)
