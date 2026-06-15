@@ -65,13 +65,10 @@ func (c *orchestratorService) GetPropertyDetail(ctx context.Context, orgID, prop
 		Country:     propDetail.Country,
 	}
 
-	// Case 2: Hospitality Domain - enrich with sub-modules
-	// if propDetail.Domain == "HOSPITALITY" {
-	// 	err := c.enrichHospitalityData(ctx, orgID, propertyID, response)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// }
+	err = c.enrichHospitalityData(ctx, orgID, propertyID, response)
+	if err != nil {
+		return nil, err
+	}
 
 	return response, nil
 }

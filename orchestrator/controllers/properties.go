@@ -2,7 +2,6 @@ package orchestrator_controllers
 
 import (
 	"net/http"
-	property_constants "sharpnr-engine/core/org_property/constants"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	"sharpnr-engine/shared/utils"
 
@@ -22,7 +21,6 @@ func (c *OrchestratorController) ListAllOrgProperty(ctx *gin.Context) {
 	}
 
 	utils.Success(ctx, http.StatusOK, "Properties fetch successfully", res)
-
 }
 
 /* ----------------------------------- <> ----------------------------------- */
@@ -49,35 +47,6 @@ func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 
 	// 5. Success Response
 	utils.Success(ctx, http.StatusOK, "Property details fetch successfully", res)
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
-func (c *OrchestratorController) AddDomainInProperty(ctx *gin.Context) {
-
-	orgID, _, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return // Response already sent by helper
-	}
-	// 2. Param Parsing using your helper
-	pId, err := c.getPropertyFromParams(ctx)
-	if err != nil {
-		return // getPropertyFromParams already sent the 400 Failure response
-	}
-
-	var req *orchestrator_dtos.AddDomainToPropertyReq_DTO
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
-		return
-	}
-
-	if err := c.orchestService.ConfigurePropertyToDomain(ctx.Request.Context(), orgID, pId, req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeUnauthorized, err)
-		return
-	}
-
-	utils.Success(ctx, http.StatusOK, "Domain Added Successfully")
-
 }
 
 // ------------------------------------------------------------------------------//
@@ -169,43 +138,9 @@ func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 
 }
 
-func (c *OrchestratorController) PropertyDomainTypes(ctx *gin.Context) {
-	// 1. User Authentication Check
-	_, _, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return
-	}
-
-	utils.Success(ctx, http.StatusOK, "Property Domain Fetched successfully", gin.H{
-		"domains": property_constants.PropertyDomains,
-	})
-
-}
+/* ---------------------------------- <***> --------------------------------- */
 
 func (c *OrchestratorController) GetPropertyInfra(ctx *gin.Context) {
-	// 1. User Authentication Check
-	_, _, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return // Response already sent by helper
-	}
-
-	// 2. Param Parsing using your helper
-	_, err := c.getPropertyFromParams(ctx)
-	if err != nil {
-		return // getPropertyFromParams already sent the 400 Failure response
-	}
-
-	// res, err := c.orchestService.GetPropertyInfra(ctx.Request.Context(), orgID, pId)
-	// if err != nil {
-	// 	utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
-	// 	return
-	// }
-
-	utils.Success(ctx, http.StatusOK, "Property Infra fetched successfully")
-
-}
-
-func (c *OrchestratorController) GetPropertysInfra(ctx *gin.Context) {
 
 	orgID, _, ok := c.resolveRequestContexts(ctx)
 	if !ok {
