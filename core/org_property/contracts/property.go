@@ -12,6 +12,3 @@ type CreateOrgPropertyInput struct {
 	Country     string
 	Pincode     string
 }
-
-type PropertyGeoLocation struct {
-}

@@ -17,24 +17,27 @@ import (
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error) {
+func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error) {
+
+	// make sure to verify the organization status and its exists
+	// emplID can be checked user have the access for the fetching the data
 
 	res, err := s.orgPropertyService.GetPropertiesOfOrg(ctx, orgID)
 	if err != nil {
 		return nil, err
 	}
 
-	readers := make([]orchestrator_dtos.PropertiesReaderSlice, 0, len(res.Properties))
+	readers := make([]orchestrator_dtos.PropertiesReaderSlice, 0, len(res))
 
-	for _, p := range res.Properties {
+	for _, p := range res {
 		readers = append(readers, orchestrator_dtos.PropertiesReaderSlice{
-			ID:           p.ID,
-			Name:         p.Name,
-			City:         p.City,
-			State:        p.State,
-			Domain:       p.Domain,
-			Code:         p.Code,
-			IsConfigured: p.IsConfigured,
+			ID:          p.ID,
+			Name:        p.Name,
+			City:        p.City,
+			State:       p.State,
+			Code:        p.Code,
+			AddressLine: p.AddressLine,
+			Country:     p.Country,
 		})
 	}
 
@@ -60,20 +63,11 @@ func (c *orchestratorService) GetPropertyDetail(ctx context.Context, orgID, prop
 		AddressLine: propDetail.AddressLine,
 		State:       propDetail.State,
 		Country:     propDetail.Country,
-		Domain:      &propDetail.Domain,
 	}
 
-	// Case 1: Empty Domain - return the basic details immediately
-	if propDetail.Domain == "" {
-		return response, nil
-	}
-
-	// Case 2: Hospitality Domain - enrich with sub-modules
-	if propDetail.Domain == "HOSPITALITY" {
-		err := c.enrichHospitalityData(ctx, orgID, propertyID, response)
-		if err != nil {
-			return nil, err
-		}
+	err = c.enrichHospitalityData(ctx, orgID, propertyID, response)
+	if err != nil {
+		return nil, err
 	}
 
 	return response, nil
@@ -227,7 +221,7 @@ func (s *orchestratorService) ConfigurePropertyToDomain(
 		return errors.New("org invalid")
 	}
 
-	return s.orgPropertyService.AddDomain(ctx, orgID, propertyID, req.Domain)
+	return nil
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -256,9 +250,9 @@ func (s *orchestratorService) AddModulesInProperty(
 		}
 
 		var property *org_property_contracts.PropertiesReader
-		for i := range prt.Properties {
-			if prt.Properties[i].ID == propertyID {
-				property = &prt.Properties[i]
+		for i := range prt {
+			if prt[i].ID == propertyID {
+				property = &prt[i]
 				break
 			}
 		}
@@ -388,14 +382,14 @@ func (s *orchestratorService) AddModulesInProperty(
 		// ----------------------------------------------------
 		// 5. Update Property Configuration Status
 		// ----------------------------------------------------
-		if err := s.orgPropertyService.
-			UpdatePropertyConfigurationStatus(
-				txCtx,
-				propertyID,
-				true,
-			); err != nil {
-			return err
-		}
+		// if err := s.orgPropertyService.
+		// 	UpdatePropertyConfigurationStatus(
+		// 		txCtx,
+		// 		propertyID,
+		// 		true,
+		// 	); err != nil {
+		// 	return err
+		// }
 
 		// ----------------------------------------------------
 		// 6. Final Message

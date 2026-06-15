@@ -41,7 +41,7 @@ type HospitalityPropertyOrchestrationInterface interface {
 }
 
 type OrganizationOrchestartionInterface interface {
-	GetAllPropertiesOfOrg(ctx context.Context, orgID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
+	GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
 }
 
 /* ---------------------------------- <***> --------------------------------- */
