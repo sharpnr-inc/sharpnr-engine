@@ -144,10 +144,11 @@ pipeline {
                 // credentials. The app loads .env.production from its working
                 // dir when APP_ENV=production (see config/env.go).
                 withCredentials([file(credentialsId: 'sharpnr-engine-env-production', variable: 'ENV_FILE')]) {
-                    sh '''
+                   sh '''
                         echo "▶ Installing .env.production..."
                         cp "$ENV_FILE" ${APP_DIR}/.env.production
-                        chmod 600 ${APP_DIR}/.env.production
+                        sudo chown jenkins:sharpnrllp ${APP_DIR}/.env.production
+                        sudo chmod 640 ${APP_DIR}/.env.production
                         echo "✅ .env.production installed"
                     '''
                 }
