@@ -76,25 +76,6 @@ pipeline {
         }
 
         // ─────────────────────────────────────────
-        // Step 5.5 — Ensure APP_ENV=production in systemd
-        // The app loads .env.production only when APP_ENV=production
-        // (see config/env.go). This idempotent drop-in guarantees it,
-        // so the deployed .env.production is actually picked up.
-        // ─────────────────────────────────────────
-        stage('Configure Env') {
-            steps {
-                sh '''
-                    echo "▶ Ensuring APP_ENV=production for ${SERVICE_NAME}..."
-                    sudo mkdir -p /etc/systemd/system/${SERVICE_NAME}.service.d
-                    printf '[Service]\\nEnvironment=APP_ENV=production\\n' \
-                        | sudo tee /etc/systemd/system/${SERVICE_NAME}.service.d/10-app-env.conf > /dev/null
-                    sudo systemctl daemon-reload
-                    echo "✅ APP_ENV=production enforced"
-                '''
-            }
-        }
-
-        // ─────────────────────────────────────────
         // Step 6 — Stop the service
         // ─────────────────────────────────────────
         stage('Stop Service') {
