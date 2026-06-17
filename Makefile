@@ -23,6 +23,8 @@ LDFLAGS=-s -w \
 
 # =========================================================
 # Build Linux production binary into build/ folder
+# Usage: make build
+#        make build VERSION=v1.2.0          # override embedded version
 # =========================================================
 build:
 	mkdir -p $(BUILD_DIR)
@@ -31,6 +33,7 @@ build:
 
 # =========================================================
 # Print the version that a build would embed
+# Usage: make version
 # =========================================================
 version:
 	@echo "Version:    $(VERSION)"
@@ -39,6 +42,7 @@ version:
 
 # =========================================================
 # Run application locally in development mode
+# Usage: make run
 # =========================================================
 run:
 	go run .
@@ -46,18 +50,21 @@ run:
 # =========================================================
 # Run with hot reload (requires air)
 # Install: go install github.com/air-verse/air@latest
+# Usage: make watch
 # =========================================================
 watch:
 	air
 
 # =========================================================
 # Remove build directory and compiled binaries
+# Usage: make clean
 # =========================================================
 clean:
 	rm -rf $(BUILD_DIR)
 
 # =========================================================
 # Run tests
+# Usage: make test
 # =========================================================
 test:
 	go test ./... -v
@@ -65,6 +72,7 @@ test:
 # =========================================================
 # Run linter (requires golangci-lint)
 # Install: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+# Usage: make lint
 # =========================================================
 lint:
 	golangci-lint run ./...
@@ -96,24 +104,29 @@ MIGRATIONS_PATH = migrations
 # ==========================================
 
 ## Run all pending migrations
+## Usage: make migrate-up
+##        make migrate-up ENV=production
 migrate-up:
 	@echo "▶ Running migrations ($(ENV))..."
 	@migrate -path $(MIGRATIONS_PATH) -database "$(DB_URL)" up
 	@echo "✓ Migrations applied"
 
 ## Rollback last migration
+## Usage: make migrate-down
 migrate-down:
 	@echo "▼ Rolling back 1 migration ($(ENV))..."
 	@migrate -path $(MIGRATIONS_PATH) -database "$(DB_URL)" down 1
 	@echo "✓ Rolled back"
 
 ## Rollback ALL migrations
+## Usage: make migrate-down-all
 migrate-down-all:
 	@echo "▼ Rolling back ALL migrations ($(ENV))..."
 	@migrate -path $(MIGRATIONS_PATH) -database "$(DB_URL)" down -all
 	@echo "✓ All rolled back"
 
 ## Show current migration version
+## Usage: make migrate-version
 migrate-version:
 	@migrate -path $(MIGRATIONS_PATH) -database "$(DB_URL)" version
 
