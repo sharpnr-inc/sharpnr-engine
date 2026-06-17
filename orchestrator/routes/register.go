@@ -31,5 +31,6 @@ func RegisterOrchestratorRoutes(
 	paymentOrchestratorRoutes(org, orchestController)
 	registerOrgSupplierRoutes(org, orchestController)
 	registerInventoryRoutes(org, orchestController)
+	registerUtilsRoutes(org, orchestController)
 
 }

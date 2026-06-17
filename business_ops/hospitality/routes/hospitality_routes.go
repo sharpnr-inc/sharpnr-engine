@@ -8,7 +8,6 @@ import (
 	menu_routes "sharpnr-engine/business_ops/hospitality/menu/routes"
 	hospitality_orchestration_routes "sharpnr-engine/business_ops/hospitality/orchestration/routes"
 	restaurant_routes "sharpnr-engine/business_ops/hospitality/restaurant/routes"
-	hospitality_utilities "sharpnr-engine/business_ops/hospitality/utilities_api"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,7 +29,4 @@ func RegisterHotelModuleRoutes(
 	menu_routes.RegisterMenuRoutes(sharpHospitality, modules)
 	restaurant_routes.RestaurantRoutes(sharpHospitality, modules)
 	bar_routes.BarRoutes(sharpHospitality, modules)
-
-	// !! This need to take the SharpHospitality router group
-	hospitality_utilities.RegisterHospitalityUtilityRoutes(v1)
 }
