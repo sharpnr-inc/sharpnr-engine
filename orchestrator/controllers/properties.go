@@ -112,38 +112,3 @@ func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
-
-// GetPropertyInfra godoc
-// @Summary      Get property infrastructure
-// @Description  Fetches all infrastructure configured for a property within the current organization.
-// @Tags         Orchestrator.Properties
-// @Accept       json
-// @Produce      json
-// @Param        Cookie      header  string  true  "Session cookie containing org_id"
-// @Param        propertyID  path    string  true  "Property ID (UUID)"
-// @Success      200  {object}  utils.Response{data=orchestrator_dtos.ListAllInfraOfProperty_Res_dto}  "Property Infra fetched successfully"
-// @Failure      400  {object}  utils.Response  "Invalid property ID"
-// @Failure      401  {object}  utils.Response  "Unauthorized"
-// @Failure      500  {object}  utils.Response  "Internal Server Error"
-// @Router       /orchestrator/property/{propertyID}/infra [get]
-func (c *OrchestratorController) GetPropertyInfra(ctx *gin.Context) {
-
-	orgID, _, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return // Response already sent by helper
-	}
-
-	// 2. Param Parsing using your helper
-	pId, err := c.getPropertyFromParams(ctx)
-	if err != nil {
-		return // getPropertyFromParams already sent the 400 Failure response
-	}
-
-	res, err := c.orchestService.GetPropertyInfra(ctx.Request.Context(), orgID, pId, nil)
-	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
-		return
-	}
-
-	utils.Success(ctx, http.StatusOK, "Property Infra fetched successfully", res)
-}

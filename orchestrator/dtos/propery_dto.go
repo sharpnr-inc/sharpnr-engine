@@ -23,29 +23,12 @@ type PropertiesReaderSlice struct {
 // --------------------------------------------------------------------------------------//
 
 type PropertyDetails_res_dto struct {
-	Name        string                   `json:"name"`
-	Code        string                   `json:"code"`
-	City        string                   `json:"city"`
-	AddressLine string                   `json:"address_line"`
-	State       string                   `json:"state"`
-	Country     string                   `json:"country"`
-	Modules     *[]ModulesDetails_dto    `json:"__modules__data__,omitempty"`
-	Infra       *[]PropertyInfra_res_dto `json:"infra,omitempty"`
-}
-
-type ModulesDetails_dto struct {
-	ID           uuid.UUID `json:"id"`
-	Name         string    `json:"name"`
-	Status       bool      `json:"status"`
-	Module_Type  string    `json:"module_type"`
-	IsConfigured bool      `json:"is_configured"`
-}
-
-type PropertyInfra_res_dto struct {
-	ID         uuid.UUID `json:"id"`
-	Name       string    `json:"name"`
-	Status     bool      `json:"status"`
-	Infra_Type string    `json:"infra_type"`
+	Name        string `json:"name"`
+	Code        string `json:"code"`
+	City        string `json:"city"`
+	AddressLine string `json:"address_line"`
+	State       string `json:"state"`
+	Country     string `json:"country"`
 }
 
 // --------------------------------------------------------------------------------------//
@@ -61,8 +44,3 @@ type CreatePropertyReq_dto struct {
 }
 
 /* ------------------------------------ . ----------------------------------- */
-
-type ListAllInfraOfProperty_Res_dto struct {
-	PropertyID      uuid.UUID `json:"property_id"`
-	Infrastructures []*PropertyInfra_res_dto
-}

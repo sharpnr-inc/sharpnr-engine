@@ -18,7 +18,7 @@ func registerPropertyRoutes(r *gin.RouterGroup, c *orchestrator_controllers.Orch
 		pr.GET("/:propertyID", c.GetPropertyDetails)
 
 		// infra modules
-		pr.GET("/:propertyID/infra_modules", c.GetPropertyInfra)
+		pr.GET("/:propertyID/infra_modules")
 		pr.POST("/:propertyID/infra_modules")
 
 		// business modules
