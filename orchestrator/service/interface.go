@@ -28,9 +28,6 @@ type OrchestratorServiceInterface interface {
 }
 
 type OrganizationPropertyOrchestrationInterface interface {
-	ConfigurePropertyToDomain(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, req *orchestrator_dtos.AddDomainToPropertyReq_DTO) error
-	AddModulesInProperty(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, req *orchestrator_dtos.PropertyModuleConfigurationDTO) (*orchestrator_dtos.ModuleOperationResult, error)
-	AddInfraInProperty(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, req *orchestrator_dtos.PropertyInfraConfiguration) error
 	HospitalityPropertyOrchestrationInterface
 }
 

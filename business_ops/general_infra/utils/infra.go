@@ -15,7 +15,7 @@ var GeneralInfraModules = []GeneralInfraModule{
 		ModuleName:  "Front Desk / Reception",
 		Description: "Guest-facing desk for check-in, enquiries and walk-ins.",
 		IsAvailable: true,
-		Badge:       "Required",
+		Badge:       "Recommended",
 		Tags:        []string{"Reception", "Walk-ins"},
 	},
 	{

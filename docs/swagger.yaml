@@ -1,10 +1,12 @@
 basePath: /api/v1
 definitions:
-  orchestrator_dtos.SetupLegalEntityReqDTO:
+  orchestrator_dtos.CreatePropertyReq_dto:
     properties:
       address_line:
         type: string
       city:
+        type: string
+      code:
         type: string
       country:
         type: string
@@ -14,12 +16,61 @@ definitions:
         type: string
       state:
         type: string
-      step_id:
+    type: object
+  orchestrator_dtos.ListAllInfraOfProperty_Res_dto:
+    properties:
+      infrastructures:
+        items:
+          $ref: '#/definitions/orchestrator_dtos.PropertyInfra_res_dto'
+        type: array
+      property_id:
         type: string
-      type:
+    type: object
+  orchestrator_dtos.ModuleOperationResult:
+    properties:
+      created:
+        items:
+          type: string
+        type: array
+      message:
         type: string
-    required:
-    - step_id
+      skipped:
+        items:
+          type: string
+        type: array
+    type: object
+  orchestrator_dtos.PropertyInfra_res_dto:
+    properties:
+      id:
+        type: string
+      infra_type:
+        type: string
+      name:
+        type: string
+      status:
+        type: boolean
+    type: object
+  orchestrator_dtos.PropertyInfraConfiguration:
+    properties:
+      infra_name:
+        type: string
+      qty:
+        type: integer
+    type: object
+  orchestrator_dtos.PropertyModuleConfigurationDTO:
+    properties:
+      domain:
+        $ref: '#/definitions/property_constants.PropertyDomainTypes'
+      infrastructure:
+        items:
+          $ref: '#/definitions/orchestrator_dtos.PropertyInfraConfiguration'
+        type: array
+      modules:
+        items:
+          type: string
+        type: array
+      property_id:
+        type: string
     type: object
   orchestrator_dtos.SetupOrgPropertyReqDTO:
     properties:
@@ -34,44 +85,20 @@ definitions:
       latitude:
         type: number
       longitude:
+        description: Optional geolocation fields to capture the organization's location
+          for location-based services and analytics.
         type: number
       name:
         type: string
       pincode:
         type: string
-      state:
-        type: string
-      step_id:
-        type: string
-    required:
-    - step_id
-    type: object
-  orchestrator_dtos.SetupOrganizationHQAddressReqDTO:
-    properties:
-      accuracy_m:
-        type: integer
-      address_line:
-        type: string
-      city:
-        type: string
-      country:
-        type: string
-      latitude:
-        type: number
-      longitude:
-        type: number
-      pincode:
+      property_code:
         type: string
       state:
         type: string
       step_id:
         type: string
     required:
-    - address_line
-    - city
-    - country
-    - pincode
-    - state
     - step_id
     type: object
   org_customer_models.Customer:
@@ -104,6 +131,16 @@ definitions:
     - mobile
     - password
     type: object
+  property_constants.PropertyDomainTypes:
+    enum:
+    - HOSPITALITY
+    - EDUCATION
+    - MEDICAL_SCIENCE
+    type: string
+    x-enum-varnames:
+    - Hospitality
+    - Education
+    - MedicalScience
   utils.APIError:
     properties:
       code:
@@ -263,14 +300,14 @@ paths:
       summary: Search customers inside organization
       tags:
       - Orchestrator.Customers
-  /orchestrator/setup-status:
+  /orchestrator/property:
     get:
       consumes:
       - application/json
-      description: 'Detailed explanation of what happens. Note: This requires an ''org_id''
-        inside the session cookie.'
+      description: Fetches all properties belonging to the current organization, scoped
+        to the authenticated employee.
       parameters:
-      - description: Session cookie containing org_id
+      - description: Session cookie containing org_id and empl_id
         in: header
         name: Cookie
         required: true
@@ -279,43 +316,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Success
-          schema:
-            allOf:
-            - $ref: '#/definitions/utils.Response'
-            - properties:
-                data:
-                  type: boolean
-              type: object
-        "400":
-          description: Validation Error
-          schema:
-            $ref: '#/definitions/utils.Response'
-      summary: Short, punchy summary of the action
-      tags:
-      - Orchestrator
-  /orchestrator/setup-wiz/step3:
-    post:
-      consumes:
-      - application/json
-      description: Third step of the onboarding wizard to define the organization's
-        legal and physical presence.
-      parameters:
-      - description: Legal Entity Details
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/orchestrator_dtos.SetupLegalEntityReqDTO'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Legal entity configured successfully
-          schema:
-            $ref: '#/definitions/utils.Response'
-        "400":
-          description: Validation or binding error
+          description: Properties fetch successfully
           schema:
             $ref: '#/definitions/utils.Response'
         "401":
@@ -323,23 +324,204 @@ paths:
           schema:
             $ref: '#/definitions/utils.Response'
         "500":
-          description: Internal server error
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.Response'
-      summary: Setup Legal Entity
+      summary: List all properties of the organization
       tags:
-      - core-setup
-  /orchestrator/setup-wizard/progress:
+      - Orchestrator.Properties
+  /orchestrator/property/{propertyID}:
     get:
       consumes:
       - application/json
-      description: Detailed explanation of what happens (e.g., database changes, emails
-        sent).
+      description: Fetches the full details of a single property belonging to the
+        current organization.
+      parameters:
+      - description: Session cookie containing org_id
+        in: header
+        name: Cookie
+        required: true
+        type: string
+      - description: Property ID (UUID)
+        in: path
+        name: propertyID
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: Complete" "Success message
+          description: Property details fetch successfully
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Invalid property ID
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get property details
+      tags:
+      - Orchestrator.Properties
+  /orchestrator/property/{propertyID}/add-infra:
+    post:
+      consumes:
+      - application/json
+      description: Adds infrastructure (e.g. rooms, tables) of a given type and quantity
+        to a property.
+      parameters:
+      - description: Session cookie containing org_id
+        in: header
+        name: Cookie
+        required: true
+        type: string
+      - description: Property ID (UUID)
+        in: path
+        name: propertyID
+        required: true
+        type: string
+      - description: Infrastructure configuration
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/orchestrator_dtos.PropertyInfraConfiguration'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Result
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Validation Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Add infrastructure to a property
+      tags:
+      - Orchestrator.Properties
+  /orchestrator/property/{propertyID}/add-modules:
+    post:
+      consumes:
+      - application/json
+      description: Attaches one or more business modules (and optional infrastructure)
+        to a property. Returns the created and skipped modules.
+      parameters:
+      - description: Session cookie containing org_id
+        in: header
+        name: Cookie
+        required: true
+        type: string
+      - description: Property ID (UUID)
+        in: path
+        name: propertyID
+        required: true
+        type: string
+      - description: Module configuration
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/orchestrator_dtos.PropertyModuleConfigurationDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Result
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/orchestrator_dtos.ModuleOperationResult'
+              type: object
+        "400":
+          description: Validation Error / module constraint conflict
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Add modules to a property
+      tags:
+      - Orchestrator.Properties
+  /orchestrator/property/{propertyID}/infra:
+    get:
+      consumes:
+      - application/json
+      description: Fetches all infrastructure configured for a property within the
+        current organization.
+      parameters:
+      - description: Session cookie containing org_id
+        in: header
+        name: Cookie
+        required: true
+        type: string
+      - description: Property ID (UUID)
+        in: path
+        name: propertyID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Property Infra fetched successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/orchestrator_dtos.ListAllInfraOfProperty_Res_dto'
+              type: object
+        "400":
+          description: Invalid property ID
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get property infrastructure
+      tags:
+      - Orchestrator.Properties
+  /orchestrator/property/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new property under the current organization.
+      parameters:
+      - description: Session cookie containing org_id
+        in: header
+        name: Cookie
+        required: true
+        type: string
+      - description: Property details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/orchestrator_dtos.CreatePropertyReq_dto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Property Created Successfully
           schema:
             $ref: '#/definitions/utils.Response'
         "400":
@@ -354,28 +536,20 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.Response'
-      summary: Short, punchy summary of the action
+      summary: Create a property
       tags:
-      - CategoryName (e.g.
-      - accounting-ap)
-  /orchestrator/setup-wizard/step1:
-    post:
+      - Orchestrator.Properties
+  /orchestrator/setup-wizard/progress:
+    get:
       consumes:
       - application/json
       description: Detailed explanation of what happens (e.g., database changes, emails
         sent).
-      parameters:
-      - description: Input description
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/orchestrator_dtos.SetupOrganizationHQAddressReqDTO'
       produces:
       - application/json
       responses:
         "200":
-          description: Org HQ successfully" "Success message
+          description: Complete" "Success message
           schema:
             $ref: '#/definitions/utils.Response'
         "400":

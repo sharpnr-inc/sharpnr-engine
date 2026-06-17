@@ -8,6 +8,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ListAllOrgProperty godoc
+// @Summary      List all properties of the organization
+// @Description  Fetches all properties belonging to the current organization, scoped to the authenticated employee.
+// @Tags         Orchestrator.Properties
+// @Accept       json
+// @Produce      json
+// @Param        Cookie  header  string  true  "Session cookie containing org_id and empl_id"
+// @Success      200  {object}  utils.Response  "Properties fetch successfully"
+// @Failure      401  {object}  utils.Response  "Unauthorized"
+// @Failure      500  {object}  utils.Response  "Internal Server Error"
+// @Router       /orchestrator/property [get]
 func (c *OrchestratorController) ListAllOrgProperty(ctx *gin.Context) {
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
@@ -25,6 +36,19 @@ func (c *OrchestratorController) ListAllOrgProperty(ctx *gin.Context) {
 
 /* ----------------------------------- <> ----------------------------------- */
 
+// GetPropertyDetails godoc
+// @Summary      Get property details
+// @Description  Fetches the full details of a single property belonging to the current organization.
+// @Tags         Orchestrator.Properties
+// @Accept       json
+// @Produce      json
+// @Param        Cookie      header  string  true  "Session cookie containing org_id"
+// @Param        propertyID  path    string  true  "Property ID (UUID)"
+// @Success      200  {object}  utils.Response  "Property details fetch successfully"
+// @Failure      400  {object}  utils.Response  "Invalid property ID"
+// @Failure      401  {object}  utils.Response  "Unauthorized"
+// @Failure      500  {object}  utils.Response  "Internal Server Error"
+// @Router       /orchestrator/property/{propertyID} [get]
 func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 	// 1. User Authentication Check
 	orgID, _, ok := c.resolveRequestContexts(ctx)
@@ -51,70 +75,19 @@ func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 
 // ------------------------------------------------------------------------------//
 
-func (c *OrchestratorController) AddModulesInProperty(ctx *gin.Context) {
-
-	orgID, _, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return
-	}
-
-	pId, err := c.getPropertyFromParams(ctx)
-	if err != nil {
-		return
-	}
-
-	var req *orchestrator_dtos.PropertyModuleConfigurationDTO
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
-		return
-	}
-
-	// 1. Capture both the result and the error
-	result, err := c.orchestService.AddModulesInProperty(ctx.Request.Context(), orgID, pId, req)
-
-	if err != nil {
-		// Handle specific errors (like the "Only one module" constraint)
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
-		return
-	}
-
-	// 2. Pass the result object back in the success response
-	// This gives the frontend the 'Created', 'Skipped', and 'Message' fields
-	utils.Success(ctx, http.StatusOK, "Result", result)
-
-}
-
-/* --------------------------------- <****> --------------------------------- */
-
-func (c *OrchestratorController) AddInfraInProperty(ctx *gin.Context) {
-
-	orgID, _, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return
-	}
-
-	pId, err := c.getPropertyFromParams(ctx)
-	if err != nil {
-		return
-	}
-
-	var req *orchestrator_dtos.PropertyInfraConfiguration
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
-		return
-	}
-
-	if err := c.orchestService.AddInfraInProperty(ctx.Request.Context(), orgID, pId, req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
-		return
-	}
-
-	utils.Success(ctx, http.StatusOK, "Result", nil)
-
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
+// AddProperty godoc
+// @Summary      Create a property
+// @Description  Creates a new property under the current organization.
+// @Tags         Orchestrator.Properties
+// @Accept       json
+// @Produce      json
+// @Param        Cookie   header  string                                    true  "Session cookie containing org_id"
+// @Param        request  body    orchestrator_dtos.CreatePropertyReq_dto   true  "Property details"
+// @Success      200  {object}  utils.Response  "Property Created Successfully"
+// @Failure      400  {object}  utils.Response  "Validation Error"
+// @Failure      401  {object}  utils.Response  "Unauthorized"
+// @Failure      500  {object}  utils.Response  "Internal Server Error"
+// @Router       /orchestrator/property/create [post]
 func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 
 	// 1. User Authentication Check
@@ -140,6 +113,19 @@ func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 
 /* ---------------------------------- <***> --------------------------------- */
 
+// GetPropertyInfra godoc
+// @Summary      Get property infrastructure
+// @Description  Fetches all infrastructure configured for a property within the current organization.
+// @Tags         Orchestrator.Properties
+// @Accept       json
+// @Produce      json
+// @Param        Cookie      header  string  true  "Session cookie containing org_id"
+// @Param        propertyID  path    string  true  "Property ID (UUID)"
+// @Success      200  {object}  utils.Response{data=orchestrator_dtos.ListAllInfraOfProperty_Res_dto}  "Property Infra fetched successfully"
+// @Failure      400  {object}  utils.Response  "Invalid property ID"
+// @Failure      401  {object}  utils.Response  "Unauthorized"
+// @Failure      500  {object}  utils.Response  "Internal Server Error"
+// @Router       /orchestrator/property/{propertyID}/infra [get]
 func (c *OrchestratorController) GetPropertyInfra(ctx *gin.Context) {
 
 	orgID, _, ok := c.resolveRequestContexts(ctx)

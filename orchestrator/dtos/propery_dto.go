@@ -1,8 +1,6 @@
 package orchestrator_dtos
 
 import (
-	property_constants "sharpnr-engine/core/org_property/constants"
-
 	"github.com/google/uuid"
 )
 
@@ -52,26 +50,6 @@ type PropertyInfra_res_dto struct {
 
 // --------------------------------------------------------------------------------------//
 
-type AddDomainToPropertyReq_DTO struct {
-	Domain property_constants.PropertyDomainTypes `json:"domain" binding:"required"`
-}
-
-// --------------------------------------------------------------------------------------//
-
-type PropertyModuleConfigurationDTO struct {
-	PropertyID     uuid.UUID                              `json:"property_id"`
-	Domain         property_constants.PropertyDomainTypes `json:"domain"`
-	Modules        *[]string                              `json:"modules,omitempty"`
-	Infrastructure *[]PropertyInfraConfiguration          `json:"infrastructure,omitempty"`
-}
-
-type PropertyInfraConfiguration struct {
-	Infra_Name string `json:"infra_name"`
-	InfraQty   int    `json:"qty"`
-}
-
-// --------------------------------------------------------------------------------------//
-
 type CreatePropertyReq_dto struct {
 	Name        string `json:"name"`
 	Code        string `json:"code"`
@@ -80,14 +58,6 @@ type CreatePropertyReq_dto struct {
 	State       string `json:"state"`
 	Country     string `json:"country"`
 	Pincode     string `json:"pincode"`
-}
-
-/* ------------------------- ModuleOperationsResults ------------------------ */
-
-type ModuleOperationResult struct {
-	Created []string `json:"created"`
-	Skipped []string `json:"skipped"`
-	Message string   `json:"message"`
 }
 
 /* ------------------------------------ . ----------------------------------- */
