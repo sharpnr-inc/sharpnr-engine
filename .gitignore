@@ -3,6 +3,7 @@
 .env.docker
 /sharpnr-engine
 .vscode
+.claude
 
 __debug_bin*
 .debug/
