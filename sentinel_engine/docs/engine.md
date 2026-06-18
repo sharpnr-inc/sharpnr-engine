@@ -6,7 +6,7 @@
 
 ## Overview
 
-When a SharpNR service needs to check if a user can perform an action, it calls `sentinel.Evaluate()`. The engine then:
+When a Sharpnr service needs to check if a user can perform an action, it calls `sentinel.Evaluate()`. The engine then:
 
 1. Resolves all policies that apply to the given principal (via roles and groups)
 2. Builds a Cedar policy set from those policies at runtime

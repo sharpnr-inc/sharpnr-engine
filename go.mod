@@ -4,6 +4,7 @@ go 1.25.0
 
 require (
 	github.com/cashfree/cashfree-pg/v5 v5.1.9
+	github.com/cedar-policy/cedar-go v1.4.1
 	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-gonic/gin v1.11.0
 	github.com/go-openapi/testify/v2 v2.5.1
@@ -29,6 +30,7 @@ require (
 	github.com/quic-go/qpack v0.5.1 // indirect
 	github.com/quic-go/quic-go v0.54.0 // indirect
 	go.uber.org/mock v0.5.0 // indirect
+	golang.org/x/exp v0.0.0-20230315142452-642cacee5cc0 // indirect
 	golang.org/x/mod v0.29.0 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gorm.io/driver/mysql v1.5.6 // indirect
