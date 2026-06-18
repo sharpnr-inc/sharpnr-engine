@@ -1,11 +1,12 @@
 module sharpnr-engine
 
-go 1.24.4
+go 1.25.0
 
 require (
 	github.com/cashfree/cashfree-pg/v5 v5.1.9
 	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-gonic/gin v1.11.0
+	github.com/go-openapi/testify/v2 v2.5.1
 	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/golang-migrate/migrate/v4 v4.19.1
 	github.com/google/uuid v1.6.0
