@@ -2,6 +2,8 @@ package orchestrator_service
 
 import (
 	"context"
+	"fmt"
+	hospitality_utilities "sharpnr-engine/business_ops/hospitality/utilities"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	dbtx "sharpnr-engine/pkg/dbTx"
@@ -109,15 +111,97 @@ func (s *orchestratorService) AddBusinessOperationModulesInProperty(
 	req orchestrator_dtos.AddBusinessOpModulesRequestDto,
 ) error {
 
-	// in the request we have the hospitality and healthcare
-	// healthcare is on-hold and it will empty or will completey missing
+	// Request validation is done in the controller, so the module types and
+	// quantities here are already known-valid.
 
-	// s.hospitalityDomainSvc.HotelService().SetupDefaultHotel(ctx, orgID, propertyID)
-	// s.hospitalityDomainSvc.BarService().SetupDefaultBar()
-	// s.hospitalityDomainSvc.RestaurantService().SetupDefaultRestaurant()
+	// Healthcare is on hold for now — req.HealthcareModules is intentionally
+	// ignored until that domain is wired up.
+
+	for _, m := range req.HospitalityModules {
+		for i := 0; i < m.Quantity; i++ {
+			if err := s.setupHospitalityModule(ctx, orgID, propertyID, m.Module); err != nil {
+				return fmt.Errorf(
+					"setup hospitality module %q (instance %d of %d) for property %s: %w",
+					m.Module, i+1, m.Quantity, propertyID, err,
+				)
+			}
+		}
+	}
 
 	return nil
+}
 
+// setupHospitalityModule provisions a single default instance of the given
+// hospitality module for the property.
+func (s *orchestratorService) setupHospitalityModule(
+	ctx context.Context,
+	orgID, propertyID uuid.UUID,
+	module hospitality_utilities.HospitalityModulesType,
+) error {
+	switch module {
+	case hospitality_utilities.Hotel:
+		_, err := s.hospitalityDomainSvc.HotelService().SetupDefaultHotel(ctx, orgID, propertyID)
+		return err
+
+	case hospitality_utilities.Bar:
+		_, err := s.hospitalityDomainSvc.BarService().SetupDefaultBar(ctx, orgID, propertyID)
+		return err
+
+	case hospitality_utilities.Restaurant:
+		_, err := s.hospitalityDomainSvc.RestaurantService().SetupDefaultRestaurant(ctx, orgID, propertyID)
+		return err
+
+	case hospitality_utilities.NightClub,
+		hospitality_utilities.Resort,
+		hospitality_utilities.CloudKitchen_Takeaways:
+		// Declared module types that don't have a setup service yet.
+		return fmt.Errorf("hospitality module %q is not yet supported", module)
+
+	default:
+		return fmt.Errorf("unknown hospitality module %q", module)
+	}
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) AddInfraModulesInProperty(
+	ctx context.Context,
+	orgID, emplID, propertyID uuid.UUID,
+	request orchestrator_dtos.AddInfraModulesRequestDto,
+) error {
+
+	// Scope for now: only Hospitality infra is provisioned, and within it only
+	// the Kitchen module. General infra and Healthcare infra are intentionally
+	// ignored even if present in the request body, and any other hospitality
+	// infra types are skipped until their setup services exist.
+
+	for _, m := range request.HospitalityInfra {
+		if m.Module != hospitality_utilities.Kitchen {
+			// Not yet supported — skip rather than fail the whole request.
+			continue
+		}
+
+		for i := 0; i < m.Quantity; i++ {
+			err := s.hospitalityDomainSvc.KitchenService().
+				CreateDefaultKitchen(ctx, orgID, propertyID, string(m.Module))
+			if err != nil {
+				return fmt.Errorf(
+					"create default kitchen (instance %d of %d) for property %s: %w",
+					i+1, m.Quantity, propertyID, err,
+				)
+			}
+		}
+	}
+
+	return nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) ListAllBusinessOpsModules(ctx context.Context, orgID, emplID, propertyID uuid.UUID) error {
+	return nil
+}
+
+func (s *orchestratorService) ListAllInfraModulesOfProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID) error {
+	return nil
+}
