@@ -112,3 +112,27 @@ func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) AddBusinessOperationModulesInPropertyHandler(ctx *gin.Context) {
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) GetBusinessOperationModulesOfPropertyHandler(ctx *gin.Context) {
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) GetInfraModulesOfPropertyHandler(ctx *gin.Context) {
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) AddInfraModulesOfPropertyHandler(ctx *gin.Context) {
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */

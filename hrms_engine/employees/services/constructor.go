@@ -3,7 +3,7 @@ package employee_services
 import (
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
-	employee_repo "sharpnr-engine/sharp_hrms_engine/employees/repo"
+	employee_repo "sharpnr-engine/hrms_engine/employees/repo"
 	"sharpnr-engine/sharp_mailer_engine"
 )
 

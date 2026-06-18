@@ -2,7 +2,7 @@ package sharpnr_identity_auth_services
 
 import (
 	organization_services "sharpnr-engine/core/organization/services"
-	employee_services "sharpnr-engine/sharp_hrms_engine/employees/services"
+	employee_services "sharpnr-engine/hrms_engine/employees/services"
 )
 
 type sharpnrIdentityAuthService struct {

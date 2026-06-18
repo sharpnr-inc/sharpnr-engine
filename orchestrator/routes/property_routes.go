@@ -18,11 +18,11 @@ func registerPropertyRoutes(r *gin.RouterGroup, c *orchestrator_controllers.Orch
 		pr.GET("/:propertyID", c.GetPropertyDetails)
 
 		// infra modules
-		pr.GET("/:propertyID/infra_modules")
-		pr.POST("/:propertyID/infra_modules")
+		pr.GET("/:propertyID/infra_modules", c.GetInfraModulesOfPropertyHandler)
+		pr.POST("/:propertyID/infra_modules", c.AddInfraModulesOfPropertyHandler)
 
 		// business modules
-		pr.GET("/:propertyID/business_modules")
-		pr.POST("/:propertyID/business_modules")
+		pr.GET("/:propertyID/business_modules", c.GetBusinessOperationModulesOfPropertyHandler)
+		pr.POST("/:propertyID/business_modules", c.AddBusinessOperationModulesInPropertyHandler)
 	}
 }

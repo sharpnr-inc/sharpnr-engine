@@ -2,7 +2,7 @@
 package employee_models
 
 import (
-	hr_emp_constants "sharpnr-engine/sharp_hrms_engine/employees/constants"
+	hr_emp_constants "sharpnr-engine/hrms_engine/employees/constants"
 	"time"
 
 	"github.com/google/uuid"

@@ -2,7 +2,7 @@ package employee_repo
 
 import (
 	"context"
-	employee_models "sharpnr-engine/sharp_hrms_engine/employees/models"
+	employee_models "sharpnr-engine/hrms_engine/employees/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

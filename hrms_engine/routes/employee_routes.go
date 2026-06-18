@@ -2,7 +2,7 @@ package hr_routes
 
 import (
 	"sharpnr-engine/app"
-	employee_controllers "sharpnr-engine/sharp_hrms_engine/employees/controllers"
+	employee_controllers "sharpnr-engine/hrms_engine/employees/controllers"
 
 	"github.com/gin-gonic/gin"
 )

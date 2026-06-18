@@ -27,17 +27,26 @@ type OrchestratorServiceInterface interface {
 	OrchestratorSetupWizardInterface
 }
 
-type OrganizationPropertyOrchestrationInterface interface {
-	HospitalityPropertyOrchestrationInterface
+type OrganizationOrchestartionInterface interface {
 }
 
-type HospitalityPropertyOrchestrationInterface interface {
+/* ---------------------------------- <***> --------------------------------- */
+
+// Property Operations in Orchestraor services interface
+type OrganizationPropertyOrchestrationInterface interface {
+
+	// General Property service methods
+	GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
 	GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
 	CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error
-}
 
-type OrganizationOrchestartionInterface interface {
-	GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
+	// Business Modules
+	AddBusinessOperationModulesInProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID, req orchestrator_dtos.AddBusinessOpModulesRequestDto) error
+	ListAllBusinessOpsModules(ctx context.Context, orgID, emplID, propertyID uuid.UUID) error
+
+	// Infra Modules
+	AddInfraModulesInProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID, request orchestrator_dtos.AddInfraModulesRequestDto) error
+	ListAllInfraModulesOfProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID) error
 }
 
 /* ---------------------------------- <***> --------------------------------- */

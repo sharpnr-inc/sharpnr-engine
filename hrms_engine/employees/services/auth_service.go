@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"sharpnr-engine/shared/utils"
-	employee_contracts "sharpnr-engine/sharp_hrms_engine/employees/contracts"
+	employee_contracts "sharpnr-engine/hrms_engine/employees/contracts"
 )
 
 var (

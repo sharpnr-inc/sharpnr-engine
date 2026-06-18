@@ -4,7 +4,7 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	employee_services "sharpnr-engine/sharp_hrms_engine/employees/services"
+	employee_services "sharpnr-engine/hrms_engine/employees/services"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 )
 

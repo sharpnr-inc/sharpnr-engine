@@ -1,10 +1,10 @@
 package app
 
 import (
+	employee_repo "sharpnr-engine/hrms_engine/employees/repo"
+	employee_services "sharpnr-engine/hrms_engine/employees/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
-	employee_repo "sharpnr-engine/sharp_hrms_engine/employees/repo"
-	employee_services "sharpnr-engine/sharp_hrms_engine/employees/services"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
 	"gorm.io/gorm"

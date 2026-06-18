@@ -102,3 +102,22 @@ func (s *orchestratorService) CreateProperty(ctx context.Context, orgID uuid.UUI
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) AddBusinessOperationModulesInProperty(
+	ctx context.Context,
+	orgID, emplID, propertyID uuid.UUID,
+	req orchestrator_dtos.AddBusinessOpModulesRequestDto,
+) error {
+
+	// in the request we have the hospitality and healthcare
+	// healthcare is on-hold and it will empty or will completey missing
+
+	// s.hospitalityDomainSvc.HotelService().SetupDefaultHotel(ctx, orgID, propertyID)
+	// s.hospitalityDomainSvc.BarService().SetupDefaultBar()
+	// s.hospitalityDomainSvc.RestaurantService().SetupDefaultRestaurant()
+
+	return nil
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */

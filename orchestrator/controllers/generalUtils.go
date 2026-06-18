@@ -4,7 +4,7 @@ import (
 	"net/http"
 	general_infra_utils "sharpnr-engine/business_ops/general_infra/utils"
 	healthcare_utilities "sharpnr-engine/business_ops/healthcare/utility"
-	hospitality_utilities "sharpnr-engine/business_ops/hospitality/utilities_api"
+	hospitality_utilities "sharpnr-engine/business_ops/hospitality/utilities"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
