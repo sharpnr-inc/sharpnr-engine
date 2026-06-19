@@ -133,3 +133,51 @@ type AddInfraModulesRequestDto struct {
 }
 
 /* ------------------------------------ . ----------------------------------- */
+
+type HospitalityBusinessModule struct {
+	ID           uuid.UUID                                    `json:"id"`
+	Name         string                                       `json:"name"`
+	ModuleType   hospitality_utilities.HospitalityModulesType `json:"module_type"`
+	Status       bool                                         `json:"status"`
+	IsConfigured bool                                         `json:"is_configured"`
+}
+
+type HealthCareBusinessModule struct {
+	ID           uuid.UUID                                  `json:"id"`
+	Name         string                                     `json:"name"`
+	ModuleType   healthcare_utilities.HealthcareModulesType `json:"module_type"` // was hospitality type
+	Status       bool                                       `json:"status"`
+	IsConfigured bool                                       `json:"is_configured"`
+}
+
+// Response body for all the Business Operation Modules of a Property.
+type PropertyBusinessOperationModulesResponseDto struct {
+	HospitalityModules []HospitalityBusinessModule `json:"hospitality_business_operation_modules"`
+	HealthCareModules  []HealthCareBusinessModule  `json:"healthcare_business_operation_modules"`
+}
+
+type GeneralInfraModule struct {
+	ID        uuid.UUID                                   `json:"id"`
+	Name      string                                      `json:"name"`
+	InfraType general_infra_utils.GeneralInfraModulesType `json:"infra_type"`
+}
+
+type HospitalityInfraModule struct {
+	ID        uuid.UUID                                          `json:"id"`
+	Name      string                                             `json:"name"`
+	Status    bool                                               `json:"status"`
+	InfraType hospitality_utilities.HospitalityInfraModulesTypes `json:"infra_type"`
+	Meta      interface{}                                        `json:"meta,omitempty"` // shape TBD
+}
+
+type HealthCareInfraModule struct {
+	ID        uuid.UUID                                       `json:"id"`
+	Name      string                                          `json:"name"`
+	InfraType healthcare_utilities.HealthcareInfraModulesType `json:"infra_type"`
+}
+
+type PropertyInfraModulesResponseDto struct {
+	GeneralInfraModules     []GeneralInfraModule     `json:"general_infra_modules"`
+	HospitalityInfraModules []HospitalityInfraModule `json:"hospitality_infra_modules"`
+	HealthCareInfraModules  []HealthCareInfraModule  `json:"healthcare_infra_modules"`
+}

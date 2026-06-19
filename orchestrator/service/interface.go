@@ -42,11 +42,11 @@ type OrganizationPropertyOrchestrationInterface interface {
 
 	// Business Modules
 	AddBusinessOperationModulesInProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID, req orchestrator_dtos.AddBusinessOpModulesRequestDto) error
-	ListAllBusinessOpsModules(ctx context.Context, orgID, emplID, propertyID uuid.UUID) error
+	ListAllBusinessOpsModules(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (orchestrator_dtos.PropertyBusinessOperationModulesResponseDto, error)
 
 	// Infra Modules
 	AddInfraModulesInProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID, request orchestrator_dtos.AddInfraModulesRequestDto) error
-	ListAllInfraModulesOfProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID) error
+	ListAllInfraModulesOfProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (orchestrator_dtos.PropertyInfraModulesResponseDto, error)
 }
 
 /* ---------------------------------- <***> --------------------------------- */

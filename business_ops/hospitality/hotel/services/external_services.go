@@ -11,26 +11,26 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *hotelService) GetHotelDetails(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (*hotel_contracts.HotelsReader, error) {
-	hotel, err := r.hotelRepo.GetHotelsByPropertyID(ctx, propertyID)
-	if err != nil {
-		return nil, err
-	}
-	items := make([]hotel_contracts.HotelReader, len(hotel))
+// func (r *hotelService) GetHotelDetails(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID) (*hotel_contracts.HotelsReader, error) {
+// 	hotel, err := r.hotelRepo.GetHotelsByPropertyID(ctx, propertyID)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	items := make([]hotel_contracts.HotelReader, len(hotel))
 
-	for i, h := range hotel {
-		items[i] = hotel_contracts.HotelReader{
-			ID:           h.ID,
-			Name:         h.Name,
-			Status:       h.IsActive,
-			IsConfigured: h.IsConfigured,
-		}
-	}
+// 	for i, h := range hotel {
+// 		items[i] = hotel_contracts.HotelReader{
+// 			ID:           h.ID,
+// 			Name:         h.Name,
+// 			Status:       h.IsActive,
+// 			IsConfigured: h.IsConfigured,
+// 		}
+// 	}
 
-	return &hotel_contracts.HotelsReader{
-		Hotels: items,
-	}, nil
-}
+// 	return &hotel_contracts.HotelsReader{
+// 		Hotels: items,
+// 	}, nil
+// }
 
 func (c *hotelService) GetHotelLayout(ctx context.Context, hotelID uuid.UUID) (res *hoteldtos.HotelLayoutResponseDTO, err error) {
 	// 1. Fetch all floors for the hotel
@@ -91,7 +91,7 @@ func (h *hotelService) SetupDefaultHotel(ctx context.Context, orgID uuid.UUID, p
 	return defHotel.ID, nil
 }
 
-func (h *hotelService) GetHotelByPropertyID(ctx context.Context, propertyID uuid.UUID) (*hotel_contracts.HotelsReader, error) {
+func (h *hotelService) GetHotelByPropertyID(ctx context.Context, propertyID uuid.UUID) ([]hotel_contracts.HotelReader, error) {
 	hotels, err := h.hotelRepo.GetHotelsByPropertyID(ctx, propertyID)
 	if err != nil {
 		return nil, err
@@ -107,8 +107,5 @@ func (h *hotelService) GetHotelByPropertyID(ctx context.Context, propertyID uuid
 		}
 	}
 
-	return &hotel_contracts.HotelsReader{
-		Hotels: items,
-	}, nil
-
+	return items, nil
 }

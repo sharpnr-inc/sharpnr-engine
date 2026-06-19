@@ -114,6 +114,27 @@ func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 /* ---------------------------------- <***> --------------------------------- */
 
 func (c *OrchestratorController) AddBusinessOperationModulesInPropertyHandler(ctx *gin.Context) {
+	// 1. User Authentication Check
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return // Response already sent by helper
+	}
+
+	proprtyID, err := c.getPropertyFromParams(ctx)
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadGateway, "Important Data is missing", err)
+	}
+
+	req, ok := utils.BindJSON[orchestrator_dtos.AddBusinessOpModulesRequestDto](ctx)
+	if !ok {
+		return
+	}
+
+	if err := c.orchestService.AddBusinessOperationModulesInProperty(ctx.Request.Context(), orgID, emplID, proprtyID, *req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Somethign bad happen", err)
+	}
+
+	utils.Success(ctx, http.StatusCreated, "Modules Added Successfully")
 
 }
 
@@ -121,18 +142,79 @@ func (c *OrchestratorController) AddBusinessOperationModulesInPropertyHandler(ct
 
 func (c *OrchestratorController) GetBusinessOperationModulesOfPropertyHandler(ctx *gin.Context) {
 
+	// 1. User Authentication Check
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return // Response already sent by helper
+	}
+
+	propertyID, err := c.getPropertyFromParams(ctx)
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, "Important data is missing", err)
+		return
+	}
+
+	response, err := c.orchestService.ListAllBusinessOpsModules(ctx.Request.Context(), orgID, emplID, propertyID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Failed to fetch business operation modules", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Business operation modules fetched successfully", response)
 }
 
 /* ---------------------------------- <***> --------------------------------- */
 
 func (c *OrchestratorController) GetInfraModulesOfPropertyHandler(ctx *gin.Context) {
 
+	// 1. User Authentication Check
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return // Response already sent by helper
+	}
+
+	propertyID, err := c.getPropertyFromParams(ctx)
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, "Important data is missing", err)
+		return
+	}
+
+	response, err := c.orchestService.ListAllInfraModulesOfProperty(ctx.Request.Context(), orgID, emplID, propertyID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Failed to fetch infra modules", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Infra modules fetched successfully", response)
 }
 
 /* ---------------------------------- <***> --------------------------------- */
 
 func (c *OrchestratorController) AddInfraModulesOfPropertyHandler(ctx *gin.Context) {
 
+	// 1. User Authentication Check
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return // Response already sent by helper
+	}
+
+	propertyID, err := c.getPropertyFromParams(ctx)
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, "Important data is missing", err)
+		return
+	}
+
+	req, ok := utils.BindJSON[orchestrator_dtos.AddInfraModulesRequestDto](ctx)
+	if !ok {
+		return
+	}
+
+	if err := c.orchestService.AddInfraModulesInProperty(ctx.Request.Context(), orgID, emplID, propertyID, *req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Failed to add infra modules", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusCreated, "Infra modules added successfully")
 }
 
 /* ---------------------------------- <***> --------------------------------- */

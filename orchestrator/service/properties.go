@@ -3,6 +3,10 @@ package orchestrator_service
 import (
 	"context"
 	"fmt"
+	bar_contracts "sharpnr-engine/business_ops/hospitality/bar/contracts"
+	hotel_contracts "sharpnr-engine/business_ops/hospitality/hotel/contracts"
+	kitchen_contracts "sharpnr-engine/business_ops/hospitality/kitchen/contracts"
+	restaurant_contracts "sharpnr-engine/business_ops/hospitality/restaurant/contracts"
 	hospitality_utilities "sharpnr-engine/business_ops/hospitality/utilities"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
@@ -198,10 +202,143 @@ func (s *orchestratorService) AddInfraModulesInProperty(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) ListAllBusinessOpsModules(ctx context.Context, orgID, emplID, propertyID uuid.UUID) error {
-	return nil
+func (s *orchestratorService) ListAllBusinessOpsModules(
+	ctx context.Context,
+	orgID, emplID, propertyID uuid.UUID,
+) (orchestrator_dtos.PropertyBusinessOperationModulesResponseDto, error) {
+
+	// Initialised to empty (non-nil) slices so the JSON response is [] rather
+	// than null when a domain has no modules.
+	resp := orchestrator_dtos.PropertyBusinessOperationModulesResponseDto{
+		HospitalityModules: make([]orchestrator_dtos.HospitalityBusinessModule, 0),
+		HealthCareModules:  make([]orchestrator_dtos.HealthCareBusinessModule, 0),
+	}
+
+	// ---------------------------- Hospitality ----------------------------
+
+	bars, err := s.hospitalityDomainSvc.BarService().
+		GetBarDetailsOfProperty(ctx, orgID, propertyID)
+	if err != nil {
+		return orchestrator_dtos.PropertyBusinessOperationModulesResponseDto{},
+			fmt.Errorf("list bars for property %s: %w", propertyID, err)
+	}
+	for _, b := range bars {
+		if b == nil {
+			continue
+		}
+		resp.HospitalityModules = append(resp.HospitalityModules, mapBarToBusinessModule(b))
+	}
+
+	// Single hotel for now; comment in source says this becomes a slice later.
+	hotels, err := s.hospitalityDomainSvc.HotelService().
+		GetHotelByPropertyID(ctx, propertyID)
+	if err != nil {
+		return orchestrator_dtos.PropertyBusinessOperationModulesResponseDto{},
+			fmt.Errorf("list hotels for property %s: %w", propertyID, err)
+	}
+	for _, h := range hotels {
+		resp.HospitalityModules = append(resp.HospitalityModules, mapHotelToBusinessModule(h))
+	}
+
+	restaurants, err := s.hospitalityDomainSvc.RestaurantService().
+		GetAllRestaurantOfProperty(ctx, propertyID)
+	if err != nil {
+		return orchestrator_dtos.PropertyBusinessOperationModulesResponseDto{},
+			fmt.Errorf("list restaurants for property %s: %w", propertyID, err)
+	}
+	for _, r := range restaurants {
+		if r == nil {
+			continue
+		}
+		resp.HospitalityModules = append(resp.HospitalityModules, mapRestaurantToBusinessModule(r))
+	}
+
+	// ----------------------------- Healthcare -----------------------------
+	// Domain not ready yet — HealthCareModules intentionally left empty.
+
+	return resp, nil
 }
 
-func (s *orchestratorService) ListAllInfraModulesOfProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID) error {
-	return nil
+// --- mapping helpers ---
+// ModuleType is set from the originating service (known & correct).
+// Field accessors below are ASSUMPTIONS — adjust once the contract structs are known.
+
+func mapBarToBusinessModule(b *bar_contracts.BarDetailsReader) orchestrator_dtos.HospitalityBusinessModule {
+	return orchestrator_dtos.HospitalityBusinessModule{
+		ID:         b.ID,
+		Name:       b.Name,
+		ModuleType: hospitality_utilities.Bar,
+		// Status:       b.Status,
+		// IsConfigured: b.IsConfigured,
+	}
 }
+
+func mapHotelToBusinessModule(h hotel_contracts.HotelReader) orchestrator_dtos.HospitalityBusinessModule {
+	return orchestrator_dtos.HospitalityBusinessModule{
+		ID:           h.ID,
+		Name:         h.Name,
+		ModuleType:   hospitality_utilities.Hotel,
+		Status:       h.Status,
+		IsConfigured: h.IsConfigured,
+	}
+}
+
+func mapRestaurantToBusinessModule(r *restaurant_contracts.RestaurantDetails) orchestrator_dtos.HospitalityBusinessModule {
+	return orchestrator_dtos.HospitalityBusinessModule{
+		ID:           r.ID,
+		Name:         r.Name,
+		ModuleType:   hospitality_utilities.Restaurant,
+		Status:       r.Status,
+		IsConfigured: r.IsConfigured,
+	}
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *orchestratorService) ListAllInfraModulesOfProperty(
+	ctx context.Context,
+	orgID, emplID, propertyID uuid.UUID,
+) (orchestrator_dtos.PropertyInfraModulesResponseDto, error) {
+
+	// Empty (non-nil) slices so absent domains serialize as [] rather than null.
+	resp := orchestrator_dtos.PropertyInfraModulesResponseDto{
+		GeneralInfraModules:     make([]orchestrator_dtos.GeneralInfraModule, 0),
+		HospitalityInfraModules: make([]orchestrator_dtos.HospitalityInfraModule, 0),
+		HealthCareInfraModules:  make([]orchestrator_dtos.HealthCareInfraModule, 0),
+	}
+
+	// -------------------------- Hospitality infra --------------------------
+	// Only Kitchen is wired up today. NOTE: kitchen lives directly on the
+	// hospitality domain for now; later it folds into
+	// hospitalityDomainSvc.InfraModules().Kitchen().
+	kitchens, err := s.hospitalityDomainSvc.KitchenService().
+		GetKitchensByPropertyID(ctx, propertyID)
+	if err != nil {
+		return orchestrator_dtos.PropertyInfraModulesResponseDto{},
+			fmt.Errorf("list kitchens for property %s: %w", propertyID, err)
+	}
+	for _, k := range kitchens {
+		if k == nil {
+			continue
+		}
+		resp.HospitalityInfraModules = append(resp.HospitalityInfraModules, mapKitchenToInfraModule(k))
+	}
+
+	// General infra and Healthcare infra are intentionally skipped for now and
+	// returned as empty slices.
+
+	return resp, nil
+}
+
+// mapKitchenToInfraModule maps a kitchen read-model to the infra DTO.
+func mapKitchenToInfraModule(k *kitchen_contracts.Kitchen_Reader) orchestrator_dtos.HospitalityInfraModule {
+	return orchestrator_dtos.HospitalityInfraModule{
+		ID:        k.ID,
+		Name:      k.Name,
+		Status:    k.Status,
+		InfraType: hospitality_utilities.Kitchen,
+		Meta:      nil, // shape TBD
+	}
+}
+
+/* ---------------------------------- <***> --------------------------------- */
