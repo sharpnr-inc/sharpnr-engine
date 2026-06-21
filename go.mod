@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/cashfree/cashfree-pg/v5 v5.1.9
-	github.com/cedar-policy/cedar-go v1.4.1
+	github.com/cedar-policy/cedar-go v1.8.0
 	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-gonic/gin v1.11.0
 	github.com/go-openapi/testify/v2 v2.5.1

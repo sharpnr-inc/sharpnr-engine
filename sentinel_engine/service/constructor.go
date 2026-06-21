@@ -6,12 +6,12 @@ import (
 )
 
 type sentinelService struct {
-	repo      sentinel_repo.SentinelRepository
+	repo      sentinel_repo.SentinelRepositoryInterface
 	txManager dbtx.TxManager
 }
 
 func NewSentinelService(
-	repo sentinel_repo.SentinelRepository,
+	repo sentinel_repo.SentinelRepositoryInterface,
 	txManager dbtx.TxManager,
 ) *sentinelService {
 	return &sentinelService{
