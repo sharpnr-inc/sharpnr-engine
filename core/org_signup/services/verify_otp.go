@@ -30,9 +30,9 @@ func (r *orgSignUpService) VerifyOtp(
 
 	// Authorization: give the founding employee a full-access "Super Admin" role
 	// for this org (role + wildcard permission + assignment, in one transaction).
-	if _, err := r.sentinelService.ProvisionSuperAdmin(ctx, output.OrgID, empId); err != nil {
-		return uuid.Nil, uuid.Nil, err
-	}
+	// if _, err := r.sentinelService.ProvisionSuperAdmin(ctx, output.OrgID, empId); err != nil {
+	// 	return uuid.Nil, uuid.Nil, err
+	// }
 
 	// * This is Add Progress in Setup Wizard
 	// * and fetch the setup progress it will put in the org_setup_wizard table and then it will be show in the UI that the user is in the Super Admin Profile step
