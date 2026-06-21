@@ -36,7 +36,7 @@ func (h *employeeService) CreateDefaultSuperAdmin(
 		Email:         rootEmail,
 		Username:      rootEmail,
 		IsActive:      true,
-		IsProvisioned: false,
+		IsProvisioned: true,
 		PasswordHash:  hashPass,
 	}
 
