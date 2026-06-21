@@ -16,8 +16,9 @@ const (
 )
 
 // UID converts an action name to its Cedar EntityUID.
-func (n Name) UID() types.EntityUID {
-	return cedar.NewEntityUID("Action", types.String(n))
+// Helper so call sites don't hand-build the EntityUID each time.
+func Action(name string) types.EntityUID {
+	return cedar.NewEntityUID("Action", types.String(name))
 }
 
 // this is just for example not not the part system yet.
