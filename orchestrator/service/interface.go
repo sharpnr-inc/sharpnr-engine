@@ -25,9 +25,16 @@ type OrchestratorServiceInterface interface {
 	SuppliersAndVendorsOrchestratorServiceInterface
 	InventoryOrchestratorServiceInterface
 	OrchestratorSetupWizardInterface
+	EmployeeOrchestartionInterface
 }
 
 type OrganizationOrchestartionInterface interface {
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+type EmployeeOrchestartionInterface interface {
+	GetAllEmployeesOfOrg(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (string, error)
 }
 
 /* ---------------------------------- <***> --------------------------------- */

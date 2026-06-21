@@ -24,6 +24,7 @@ import (
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
+	employee_services "sharpnr-engine/hrms_engine/employees/services"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
@@ -71,6 +72,10 @@ type stubSupplierService struct {
 	suppliers_service.SupplierServiceInterface
 }
 
+type stubEmployeeService struct {
+	employee_services.EmployeesIdentityServiceInterface
+}
+
 /* ========================================================================== */
 /*                     NewSharpnrOrchestratorService                          */
 /* ========================================================================== */
@@ -90,6 +95,7 @@ func TestNewSharpnrOrchestratorService_WiresAllDependencies(t *testing.T) {
 		paymentsEngine      = &stubPaymentService{}
 		inventoryEngine     = &stubInventoryService{}
 		supplierService     = &stubSupplierService{}
+		employeeService     = &stubEmployeeService{}
 	)
 
 	// --- act ---
@@ -106,6 +112,7 @@ func TestNewSharpnrOrchestratorService_WiresAllDependencies(t *testing.T) {
 		paymentsEngine,
 		inventoryEngine,
 		supplierService,
+		employeeService,
 	)
 
 	// --- assert: non-nil, and every field wired to the exact value passed ---
@@ -123,4 +130,5 @@ func TestNewSharpnrOrchestratorService_WiresAllDependencies(t *testing.T) {
 	require.Same(t, paymentsEngine, svc.paymentsEngine)
 	require.Same(t, inventoryEngine, svc.inventoryEngine)
 	require.Same(t, supplierService, svc.supplierService)
+	require.Same(t, employeeService, svc.employeeService)
 }

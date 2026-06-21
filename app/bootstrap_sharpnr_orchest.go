@@ -9,6 +9,7 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	organization_services "sharpnr-engine/core/organization/services"
+	employee_services "sharpnr-engine/hrms_engine/employees/services"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
@@ -30,6 +31,7 @@ func bootstrapSharpnrOrchestrator(
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
 	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
+	employeeService employee_services.EmployeesIdentityServiceInterface,
 ) orchestrator_service.OrchestratorServiceInterface {
 	return orchestrator_service.NewSharpnrOrchestratorService(
 		organizationService,
@@ -44,6 +46,7 @@ func bootstrapSharpnrOrchestrator(
 		paymentsEngine,
 		inventoryEngine,
 		supplierService,
+		employeeService,
 	)
 }
 

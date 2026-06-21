@@ -109,6 +109,7 @@ func BootstrapModules(
 		paymentsEngine,
 		inventoryEngine,
 		orgSupplierService,
+		employeesIdentityService,
 	)
 
 	return &AppModules{
