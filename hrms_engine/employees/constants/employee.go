@@ -22,14 +22,6 @@ const (
 	EmployeeStatusExited   EmployeeStatus = "EXITED"
 )
 
-type EmployeeRoleType string
-
-const (
-	EmployeeRoleSuperAdmin EmployeeRoleType = "SUPER_ADMIN"
-	EmployeeRoleAdmin      EmployeeRoleType = "ADMIN"
-	EmployeeRoleManager    EmployeeRoleType = "MANAGER"
-)
-
 type EmployeeEmployementType string
 
 const (
