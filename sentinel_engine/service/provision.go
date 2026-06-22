@@ -27,6 +27,7 @@ func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firs
 		dbtx := dbtx.InjectTx(ctx, tx)
 
 		role := &sentinelengine_models.Role{
+			ID:             uuid.New(),
 			OrganizationID: orgID,
 			Slug:           sentinel_utils.OwnerRoleSlug,
 			Name:           "Owner",
@@ -37,6 +38,7 @@ func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firs
 		}
 
 		policy := &sentinelengine_models.SentinelPolicy{
+			ID:             uuid.New(),
 			OrganizationID: orgID,
 			Name:           "owner-full-access",
 			Description:    "Grants the owner role full access within the org.",

@@ -72,7 +72,7 @@ func (stubTxManager) WithTx(ctx context.Context, fn func(tx *gorm.DB) error) err
 func TestProvisionOrganization_Success(t *testing.T) {
 	orgID := uuid.New()
 	firstUserID := uuid.New()
-	// Simulates the DB-generated primary key written back onto the role on Create.
+	// The role's app-generated primary key, captured as the repo persists it.
 	generatedRoleID := uuid.New()
 
 	var gotRole *sentinelengine_models.Role
@@ -83,7 +83,7 @@ func TestProvisionOrganization_Success(t *testing.T) {
 
 	repo := &stubSentinelRepo{
 		createRole: func(_ context.Context, role *sentinelengine_models.Role) error {
-			role.ID = generatedRoleID // emulate Postgres gen_random_uuid() write-back
+			role.ID = generatedRoleID // pin the ID the repo persists for this role
 			gotRole = role
 			return nil
 		},

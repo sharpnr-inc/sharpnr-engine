@@ -11,7 +11,7 @@ import (
 // organization.
 // ID doubles as the cedar.PolicyID when building the PolicySet.
 type SentinelPolicy struct {
-	ID             uuid.UUID `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"` // tenant boundary
 	Name           string    `gorm:"type:text"`                // human label for admin UX (optional)
 	Description    string    `gorm:"type:text"`                // optional

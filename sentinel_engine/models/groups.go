@@ -9,7 +9,7 @@ import (
 
 // Group is a named entity users belong to; groups can nest via ParentGroupID.
 type Group struct {
-	ID             uuid.UUID  `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	ID             uuid.UUID  `gorm:"type:uuid;primaryKey"`
 	OrganizationID uuid.UUID  `gorm:"type:uuid;not null;uniqueIndex:idx_group_org_slug"`
 	Slug           string     `gorm:"type:text;not null;uniqueIndex:idx_group_org_slug"`
 	Name           string     `gorm:"type:text;not null"`
