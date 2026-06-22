@@ -78,7 +78,6 @@ func (s *employeeService) GetEmployeeDetails(
 		Email:     emp.Email,
 		FirstName: emp.FirstName,
 		LastName:  emp.LastName,
-		Role:      emp.Role,
 		ID:        emp.ID,
 	}, nil
 }

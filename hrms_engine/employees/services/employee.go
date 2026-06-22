@@ -21,7 +21,6 @@ func (h *employeeService) CreateDefaultSuperAdmin(
 		ID:             uuid.New(),
 		Email:          rootEmail,
 		OrganizationID: orgId,
-		Role:           "SUPER_ADMIN",
 		Status:         "ACTIVE",
 	}
 
@@ -84,7 +83,6 @@ func (s *employeeService) ListOrgAllEmployees(
 		result = append(result, &sharphr_dtos.OrgEmployeeList{
 			ID:           e.ID,
 			EmployeeName: buildEmployeeName(e.FirstName, e.LastName, e.NickName),
-			EmployeeRole: e.Role,
 			EmployeeID:   e.EmployeeCode,
 			Status:       e.Status,
 		})

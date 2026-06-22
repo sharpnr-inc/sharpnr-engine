@@ -46,7 +46,6 @@ func (r *employeeService) AuthenticateEmployee(
 		EmployeeID:     empl.ID,
 		Name:           empl.FirstName,
 		OrganizationID: empl.OrganizationID,
-		Role:           empl.Role,
 		// add other safe fields
 	}
 

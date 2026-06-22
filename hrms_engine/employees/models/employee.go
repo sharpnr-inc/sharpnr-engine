@@ -23,7 +23,6 @@ type Employee struct {
 	Email       string `gorm:"type:varchar(150);not null;index"`
 	PhoneNumber string `gorm:"type:varchar(20)"`
 
-	Role         string `gorm:"type:varchar(50);not null"`
 	Status       string `gorm:"type:varchar(20);default:'ACTIVE'"`
 	EmployeeCode string `gorm:"type:varchar(50)" json:"employee_code"`
 
