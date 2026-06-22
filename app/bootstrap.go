@@ -112,6 +112,8 @@ func BootstrapModules(
 		employeesIdentityService,
 	)
 
+	utilitiesApiService := bootstrapUtilitiesApiService(db)
+
 	return &AppModules{
 		organizationService:   organizationService,
 		orgSignupService:      orgSignupService,
@@ -129,6 +131,7 @@ func BootstrapModules(
 		orgSetupWizard:           orgSetupWizardService,
 		sseEngine:                sseEngine,
 		orgCustomerService:       orgCustomerService,
+		utilitiesApiService:      utilitiesApiService,
 	}
 
 }

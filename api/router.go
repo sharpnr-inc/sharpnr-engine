@@ -98,7 +98,7 @@ func SetupRouter(
 			v1.RegisterModuleRoutes(protected, modules)
 			orchestrator_routes.RegisterOrchestratorRoutes(protected, txManager, cookies, jwtmgr, modules)
 			sharpnrIdentity_routes.RegisterSharpnrIdentityProtectedWebRoutes(protected, cookies, jwtmgr, modules)
-			utilitiesApi_routes.UtilitesApiGeoRoutes(protected)
+			utilitiesApi_routes.UtilitesApiGeoRoutes(protected, modules)
 		}
 	}
 

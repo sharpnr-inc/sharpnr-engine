@@ -15,6 +15,7 @@ import (
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
+	utilitiesApi_service "sharpnr-engine/utilities_apis/service"
 
 	sse_engine "sharpnr-engine/sse_engine"
 )
@@ -43,6 +44,7 @@ type AppModules struct {
 	orgCustomerService   org_customer_service.OrgCustomerServiceInterface
 	sseEngine            *sse_engine.StreamManager
 	paymentEngineService payment_engine_service.PaymentServiceInterface
+	utilitiesApiService  utilitiesApi_service.UtilitiesAPIServiceInterface
 }
 
 func (m *AppModules) SharpnrOrchestrator() orchestrator_service.OrchestratorServiceInterface {
@@ -105,4 +107,8 @@ func (m *AppModules) CustomerEngineService() org_customer_service.OrgCustomerSer
 
 func (m *AppModules) PaymentEngineService() payment_engine_service.PaymentServiceInterface {
 	return m.paymentEngineService
+}
+
+func (m *AppModules) UtilitiesApiService() utilitiesApi_service.UtilitiesAPIServiceInterface {
+	return m.utilitiesApiService
 }
