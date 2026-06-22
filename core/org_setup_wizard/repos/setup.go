@@ -21,9 +21,12 @@ func (d *orgSetupWizardRepo) Create(
 		return errors.New("organization setup is nil")
 	}
 
-	db := d.db.WithContext(ctx)
+	conn := d.db
+	if tx, ok := dbtx.ExtractTx(ctx); ok {
+		conn = tx
+	}
 
-	if err := db.Create(step).Error; err != nil {
+	if err := conn.WithContext(ctx).Create(step).Error; err != nil {
 		return err
 	}
 

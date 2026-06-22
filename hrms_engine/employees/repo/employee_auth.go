@@ -17,7 +17,7 @@ func (r *employeeRepo) CreateEmployeeAuth(
 		auth.ID = uuid.New()
 	}
 
-	return r.db.WithContext(ctx).Create(auth).Error
+	return r.conn(ctx).WithContext(ctx).Create(auth).Error
 }
 
 /* ---------------------------------- <***> --------------------------------- */

@@ -19,7 +19,7 @@ func (r *employeeRepo) CreateEmployee(
 		emp.ID = uuid.New()
 	}
 
-	return r.db.WithContext(ctx).Create(emp).Error
+	return r.conn(ctx).WithContext(ctx).Create(emp).Error
 }
 
 /* ---------------------------------- <***> --------------------------------- */

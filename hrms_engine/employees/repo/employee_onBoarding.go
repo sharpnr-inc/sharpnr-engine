@@ -16,7 +16,7 @@ func (r *employeeRepo) CreateEmployeeOnBoarding(
 		onboarding.ID = uuid.New()
 	}
 
-	return r.db.WithContext(ctx).Create(onboarding).Error
+	return r.conn(ctx).WithContext(ctx).Create(onboarding).Error
 }
 
 /* ---------------------------------- <***> --------------------------------- */
