@@ -43,6 +43,9 @@ import (
 	organization_constants "sharpnr-engine/core/organization/constants"
 	organization_services "sharpnr-engine/core/organization/services"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
+	sentinelengine "sharpnr-engine/sentinel_engine/engine"
+	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
+	sentinel_utils "sharpnr-engine/sentinel_engine/utils"
 
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 
@@ -50,6 +53,34 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
+
+// allowAllSentinelRepo is a fake sentinelengine.Repository that makes every
+// principal an "owner": the default owner policy permits any action within the
+// principal's own org, so IsAuthorized returns Allowed. Used by service tests
+// that exercise logic past the authorization gate.
+type allowAllSentinelRepo struct{}
+
+func (allowAllSentinelRepo) ListEnabledPolicies(_ context.Context, orgID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error) {
+	return []*sentinelengine_models.SentinelPolicy{{
+		ID:             uuid.New(),
+		OrganizationID: orgID,
+		Policy:         sentinel_utils.OwnerPolicyText,
+		Enabled:        true,
+	}}, nil
+}
+
+func (allowAllSentinelRepo) UserRoleSlugs(_ context.Context, _, _ uuid.UUID) ([]string, error) {
+	return []string{sentinel_utils.OwnerRoleSlug}, nil
+}
+
+func (allowAllSentinelRepo) UserGroupClosure(_ context.Context, _, _ uuid.UUID) ([]sentinelengine.GroupMembership, error) {
+	return nil, nil
+}
+
+// allowAllEngine builds an engine wired to the permissive repo above.
+func allowAllEngine() *sentinelengine.Sentinel {
+	return sentinelengine.New(allowAllSentinelRepo{})
+}
 
 /* ========================================================================== */
 /*                                   STUBS                                    */
@@ -221,6 +252,7 @@ func TestGetAllPropertiesOfOrg_MapsAndReturnsProperties(t *testing.T) {
 
 	var gotOrgID uuid.UUID
 	svc := &orchestratorService{
+		sentinelEngine: allowAllEngine(),
 		orgPropertyService: &stubOrgPropertyService{
 			getPropertiesOfOrg: func(_ context.Context, orgID uuid.UUID) ([]org_property_contracts.PropertiesReader, error) {
 				gotOrgID = orgID // capture for the forwarding assertion
@@ -246,6 +278,7 @@ func TestGetAllPropertiesOfOrg_MapsAndReturnsProperties(t *testing.T) {
 // Edge case: no rows yields an empty (non-nil-deref) slice and no error.
 func TestGetAllPropertiesOfOrg_Empty(t *testing.T) {
 	svc := &orchestratorService{
+		sentinelEngine: allowAllEngine(),
 		orgPropertyService: &stubOrgPropertyService{
 			getPropertiesOfOrg: func(_ context.Context, _ uuid.UUID) ([]org_property_contracts.PropertiesReader, error) {
 				return nil, nil
@@ -263,6 +296,7 @@ func TestGetAllPropertiesOfOrg_Empty(t *testing.T) {
 func TestGetAllPropertiesOfOrg_PropagatesError(t *testing.T) {
 	wantErr := errors.New("db down")
 	svc := &orchestratorService{
+		sentinelEngine: allowAllEngine(),
 		orgPropertyService: &stubOrgPropertyService{
 			getPropertiesOfOrg: func(_ context.Context, _ uuid.UUID) ([]org_property_contracts.PropertiesReader, error) {
 				return nil, wantErr
@@ -341,6 +375,7 @@ func TestGetPropertyDetail_PropagatesError(t *testing.T) {
 // NOT_CONFIGURED org: request is mapped correctly and status is promoted.
 func TestCreateProperty_NotConfigured_PromotesToConfigured(t *testing.T) {
 	orgID := uuid.New()
+	emplID := uuid.New()
 	req := &orchestrator_dtos.CreatePropertyReq_dto{
 		Name: "Grand", Code: "GR1", AddressLine: "MG Road",
 		City: "Pune", State: "MH", Country: "IN", Pincode: "411001",
@@ -351,7 +386,8 @@ func TestCreateProperty_NotConfigured_PromotesToConfigured(t *testing.T) {
 	updateCalled := false
 
 	svc := &orchestratorService{
-		txManager: &stubTxManager{}, // runs the callback inline
+		sentinelEngine: allowAllEngine(),
+		txManager:      &stubTxManager{}, // runs the callback inline
 		orgPropertyService: &stubOrgPropertyService{
 			createPropertyDefault: func(_ context.Context, input org_property_contracts.CreateOrgPropertyInput) error {
 				gotInput = input
@@ -370,7 +406,7 @@ func TestCreateProperty_NotConfigured_PromotesToConfigured(t *testing.T) {
 		},
 	}
 
-	err := svc.CreateProperty(context.Background(), orgID, req)
+	err := svc.CreateProperty(context.Background(), orgID, emplID, req)
 
 	require.NoError(t, err)
 	// Request DTO -> contract input mapping (note OrgID is injected by the service).
@@ -386,7 +422,8 @@ func TestCreateProperty_NotConfigured_PromotesToConfigured(t *testing.T) {
 func TestCreateProperty_AlreadyConfigured_DoesNotUpdateStatus(t *testing.T) {
 	updateCalled := false
 	svc := &orchestratorService{
-		txManager: &stubTxManager{},
+		sentinelEngine: allowAllEngine(),
+		txManager:      &stubTxManager{},
 		orgPropertyService: &stubOrgPropertyService{
 			createPropertyDefault: func(_ context.Context, _ org_property_contracts.CreateOrgPropertyInput) error { return nil },
 		},
@@ -401,7 +438,7 @@ func TestCreateProperty_AlreadyConfigured_DoesNotUpdateStatus(t *testing.T) {
 		},
 	}
 
-	err := svc.CreateProperty(context.Background(), uuid.New(), &orchestrator_dtos.CreatePropertyReq_dto{})
+	err := svc.CreateProperty(context.Background(), uuid.New(), uuid.New(), &orchestrator_dtos.CreatePropertyReq_dto{})
 
 	require.NoError(t, err)
 	require.False(t, updateCalled, "status must NOT be updated when already CONFIGURED")
@@ -412,7 +449,8 @@ func TestCreateProperty_CreateFails_DoesNotCheckStatus(t *testing.T) {
 	wantErr := errors.New("insert failed")
 	statusChecked := false
 	svc := &orchestratorService{
-		txManager: &stubTxManager{},
+		sentinelEngine: allowAllEngine(),
+		txManager:      &stubTxManager{},
 		orgPropertyService: &stubOrgPropertyService{
 			createPropertyDefault: func(_ context.Context, _ org_property_contracts.CreateOrgPropertyInput) error { return wantErr },
 		},
@@ -424,7 +462,7 @@ func TestCreateProperty_CreateFails_DoesNotCheckStatus(t *testing.T) {
 		},
 	}
 
-	err := svc.CreateProperty(context.Background(), uuid.New(), &orchestrator_dtos.CreatePropertyReq_dto{})
+	err := svc.CreateProperty(context.Background(), uuid.New(), uuid.New(), &orchestrator_dtos.CreatePropertyReq_dto{})
 
 	require.ErrorIs(t, err, wantErr)
 	require.False(t, statusChecked, "status must not be read when create fails")
@@ -434,7 +472,8 @@ func TestCreateProperty_CreateFails_DoesNotCheckStatus(t *testing.T) {
 func TestCreateProperty_GetStatusFails_Propagates(t *testing.T) {
 	wantErr := errors.New("status lookup failed")
 	svc := &orchestratorService{
-		txManager: &stubTxManager{},
+		sentinelEngine: allowAllEngine(),
+		txManager:      &stubTxManager{},
 		orgPropertyService: &stubOrgPropertyService{
 			createPropertyDefault: func(_ context.Context, _ org_property_contracts.CreateOrgPropertyInput) error { return nil },
 		},
@@ -445,7 +484,7 @@ func TestCreateProperty_GetStatusFails_Propagates(t *testing.T) {
 		},
 	}
 
-	err := svc.CreateProperty(context.Background(), uuid.New(), &orchestrator_dtos.CreatePropertyReq_dto{})
+	err := svc.CreateProperty(context.Background(), uuid.New(), uuid.New(), &orchestrator_dtos.CreatePropertyReq_dto{})
 
 	require.ErrorIs(t, err, wantErr)
 }
@@ -454,7 +493,8 @@ func TestCreateProperty_GetStatusFails_Propagates(t *testing.T) {
 func TestCreateProperty_UpdateStatusFails_Propagates(t *testing.T) {
 	wantErr := errors.New("update failed")
 	svc := &orchestratorService{
-		txManager: &stubTxManager{},
+		sentinelEngine: allowAllEngine(),
+		txManager:      &stubTxManager{},
 		orgPropertyService: &stubOrgPropertyService{
 			createPropertyDefault: func(_ context.Context, _ org_property_contracts.CreateOrgPropertyInput) error { return nil },
 		},
@@ -468,7 +508,7 @@ func TestCreateProperty_UpdateStatusFails_Propagates(t *testing.T) {
 		},
 	}
 
-	err := svc.CreateProperty(context.Background(), uuid.New(), &orchestrator_dtos.CreatePropertyReq_dto{})
+	err := svc.CreateProperty(context.Background(), uuid.New(), uuid.New(), &orchestrator_dtos.CreatePropertyReq_dto{})
 
 	require.ErrorIs(t, err, wantErr)
 }

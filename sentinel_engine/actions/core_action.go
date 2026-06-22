@@ -13,6 +13,10 @@ const (
 	EditDocument   Name = "editDocument"
 	DeleteDocument Name = "deleteDocument"
 	ViewRepo       Name = "viewRepo"
+
+	// Property actions.
+	ViewProperty   Name = "viewProperty"
+	CreateProperty Name = "createProperty"
 )
 
 // UID converts an action name to its Cedar EntityUID.

@@ -91,7 +91,7 @@ func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 
 	// 1. User Authentication Check
-	orgID, _, ok := c.resolveRequestContexts(ctx)
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
 		return // Response already sent by helper
 	}
@@ -102,7 +102,7 @@ func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 		return
 	}
 
-	if err := c.orchestService.CreateProperty(ctx.Request.Context(), orgID, req); err != nil {
+	if err := c.orchestService.CreateProperty(ctx.Request.Context(), orgID, emplID, req); err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
 		return
 	}

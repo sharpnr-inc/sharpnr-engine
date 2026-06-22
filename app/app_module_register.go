@@ -14,6 +14,7 @@ import (
 	employee_services "sharpnr-engine/hrms_engine/employees/services"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
+	sentinelengine "sharpnr-engine/sentinel_engine/engine"
 	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
 	utilitiesApi_service "sharpnr-engine/utilities_apis/service"
 
@@ -45,6 +46,15 @@ type AppModules struct {
 	sseEngine            *sse_engine.StreamManager
 	paymentEngineService payment_engine_service.PaymentServiceInterface
 	utilitiesApiService  utilitiesApi_service.UtilitiesAPIServiceInterface
+
+	// sentinelEngine is the Cedar authorization engine. It is injected into
+	// services for s.sentinelEngine.IsAuthorized(...) calls and also handed to
+	// the RequirePermission middleware at the route layer.
+	sentinelEngine *sentinelengine.Sentinel
+}
+
+func (m *AppModules) Sentinel() *sentinelengine.Sentinel {
+	return m.sentinelEngine
 }
 
 func (m *AppModules) SharpnrOrchestrator() orchestrator_service.OrchestratorServiceInterface {

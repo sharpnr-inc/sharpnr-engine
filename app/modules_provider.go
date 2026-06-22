@@ -13,6 +13,7 @@ import (
 	employee_services "sharpnr-engine/hrms_engine/employees/services"
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
+	sentinelengine "sharpnr-engine/sentinel_engine/engine"
 	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
 	utilitiesApi_service "sharpnr-engine/utilities_apis/service"
 
@@ -40,4 +41,8 @@ type ModulesProvider interface {
 	CustomerEngineService() org_customer_service.OrgCustomerServiceInterface
 	PaymentEngineService() payment_engine_service.PaymentServiceInterface
 	UtilitiesApiService() utilitiesApi_service.UtilitiesAPIServiceInterface
+
+	// Sentinel returns the authorization engine, e.g. for the RequirePermission
+	// middleware at the route layer.
+	Sentinel() *sentinelengine.Sentinel
 }
