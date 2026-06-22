@@ -47,7 +47,7 @@ func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firs
 			return fmt.Errorf("create owner policy: %w", err)
 		}
 
-		if err := s.repo.AssignUserRole(dbtx, firstUserID, role.ID); err != nil {
+		if err := s.repo.AssignUserRole(dbtx, orgID, firstUserID, role.ID); err != nil {
 			return fmt.Errorf("assign first user as owner: %w", err)
 		}
 		return nil

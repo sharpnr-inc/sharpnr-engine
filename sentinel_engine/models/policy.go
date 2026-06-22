@@ -7,10 +7,11 @@ import (
 	"gorm.io/gorm"
 )
 
-// SentinelPolicy stores a single Cedar policy (JSON form) for one organization.
+// SentinelPolicy stores a single Cedar policy (human-readable text form) for one
+// organization.
 // ID doubles as the cedar.PolicyID when building the PolicySet.
 type SentinelPolicy struct {
-	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"` // tenant boundary
 	Name           string    `gorm:"type:text"`                // human label for admin UX (optional)
 	Description    string    `gorm:"type:text"`                // optional
