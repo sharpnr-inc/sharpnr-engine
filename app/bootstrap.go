@@ -23,7 +23,7 @@ func BootstrapModules(
 ) *AppModules {
 
 	// Sentinel Engine: authorization (roles, permissions, super-admin provisioning)
-	// sentinelService := bootstrapSentinel(db, txManager)
+	sentinelService := bootstrapSentinel(db, txManager)
 
 	organizationService := bootstrapOrganization(db, redis, mailerEngine, txManager)
 	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine)
@@ -58,7 +58,7 @@ func BootstrapModules(
 		employeesIdentityService,
 		organizationService,
 		orgSetupWizardService,
-		// sentinelService,
+		sentinelService,
 	)
 
 	paymentsEngine := bootstrapPaymentEngine(db, mailerEngine, txManager, seroEngine)
