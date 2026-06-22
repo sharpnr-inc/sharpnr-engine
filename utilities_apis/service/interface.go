@@ -1,5 +1,5 @@
 package utilitiesApi_service
 
-type UtilitiesAPIServiceInterface struct {
+type UtilitiesAPIServiceInterface interface {
 	// Methods goes here
 }
