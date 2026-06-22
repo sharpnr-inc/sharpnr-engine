@@ -15,8 +15,9 @@ const (
 	ViewRepo       Name = "viewRepo"
 
 	// Property actions.
-	ViewProperty   Name = "viewProperty"
-	CreateProperty Name = "createProperty"
+	ViewProperty                 Name = "viewProperty"
+	CreateProperty               Name = "createProperty"
+	AddBusinessModulesInProperty Name = ""
 )
 
 // UID converts an action name to its Cedar EntityUID.

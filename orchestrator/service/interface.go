@@ -34,7 +34,7 @@ type OrganizationOrchestartionInterface interface {
 /* ---------------------------------- <***> --------------------------------- */
 
 type EmployeeOrchestartionInterface interface {
-	GetAllEmployeesOfOrg(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (string, error)
+	GetAllEmployeesOfOrg(ctx context.Context, orgID, emplID, propertyID uuid.UUID) ([]orchestrator_dtos.EmployeeOfOrganization, error)
 }
 
 /* ---------------------------------- <***> --------------------------------- */

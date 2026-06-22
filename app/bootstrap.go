@@ -113,7 +113,7 @@ func BootstrapModules(
 		paymentsEngine,
 		inventoryEngine,
 		orgSupplierService,
-		employeesIdentityService,
+		employeesHRService,
 		sentinelEngine,
 	)
 

@@ -3,7 +3,7 @@ package employee_services
 import (
 	"context"
 	employee_contracts "sharpnr-engine/hrms_engine/employees/contracts"
-	sharphr_dtos "sharpnr-engine/hrms_engine/employees/dtos"
+	employees_dtos "sharpnr-engine/hrms_engine/employees/dtos"
 
 	"github.com/google/uuid"
 )
@@ -31,7 +31,7 @@ type EmployeesHRServiceInterface interface {
 	// General service which will used by the other module to interact with the employee module,
 	EmployeesGeneralServiceInterface
 	/* ---------------------------------- <***> --------------------------------- */
-	ListOrgAllEmployees(ctx context.Context, orgID, emplID uuid.UUID) ([]*sharphr_dtos.OrgEmployeeList, error)
+	ListOrgAllEmployees(ctx context.Context, orgID, emplID uuid.UUID) ([]*employees_dtos.OrgEmployeeList, error)
 }
 
 /* ---------------------------------- <***> --------------------------------- */

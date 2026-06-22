@@ -11,8 +11,8 @@ import (
 	employee_services "sharpnr-engine/hrms_engine/employees/services"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	"sharpnr-engine/sero"
 	sentinelengine "sharpnr-engine/sentinel_engine/engine"
+	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
 	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
 )
@@ -30,7 +30,7 @@ type orchestratorService struct {
 	paymentsEngine          payment_engine_service.PaymentServiceInterface
 	inventoryEngine         inventory_engine_services.InventoryEngineServicesInterface
 	supplierService         suppliers_service.SupplierServiceInterface
-	employeeService         employee_services.EmployeesIdentityServiceInterface
+	employeeHRService       employee_services.EmployeesHRServiceInterface
 	// sentinelEngine answers authorization questions: s.sentinelEngine.IsAuthorized(...)
 	sentinelEngine *sentinelengine.Sentinel
 }
@@ -48,7 +48,7 @@ func NewSharpnrOrchestratorService(
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
 	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
-	employeeService employee_services.EmployeesIdentityServiceInterface,
+	employeeHRService employee_services.EmployeesHRServiceInterface,
 	sentinelEngine *sentinelengine.Sentinel,
 ) *orchestratorService {
 	return &orchestratorService{
@@ -64,7 +64,7 @@ func NewSharpnrOrchestratorService(
 		paymentsEngine:          paymentsEngine,
 		inventoryEngine:         inventoryEngine,
 		supplierService:         supplierService,
-		employeeService:         employeeService,
+		employeeHRService:       employeeHRService,
 		sentinelEngine:          sentinelEngine,
 	}
 }

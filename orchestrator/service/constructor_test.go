@@ -26,8 +26,8 @@ import (
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	employee_services "sharpnr-engine/hrms_engine/employees/services"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
-	"sharpnr-engine/sero"
 	sentinelengine "sharpnr-engine/sentinel_engine/engine"
+	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
 	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
 
@@ -74,7 +74,7 @@ type stubSupplierService struct {
 }
 
 type stubEmployeeService struct {
-	employee_services.EmployeesIdentityServiceInterface
+	employee_services.EmployeesHRServiceInterface
 }
 
 /* ========================================================================== */
@@ -96,7 +96,7 @@ func TestNewSharpnrOrchestratorService_WiresAllDependencies(t *testing.T) {
 		paymentsEngine      = &stubPaymentService{}
 		inventoryEngine     = &stubInventoryService{}
 		supplierService     = &stubSupplierService{}
-		employeeService     = &stubEmployeeService{}
+		employeeHRService   = &stubEmployeeService{}
 		// nil repo is fine: this is a wiring test, no authorization call is made.
 		sentinelEngine = sentinelengine.New(nil)
 	)
@@ -115,7 +115,7 @@ func TestNewSharpnrOrchestratorService_WiresAllDependencies(t *testing.T) {
 		paymentsEngine,
 		inventoryEngine,
 		supplierService,
-		employeeService,
+		employeeHRService,
 		sentinelEngine,
 	)
 
@@ -134,6 +134,6 @@ func TestNewSharpnrOrchestratorService_WiresAllDependencies(t *testing.T) {
 	require.Same(t, paymentsEngine, svc.paymentsEngine)
 	require.Same(t, inventoryEngine, svc.inventoryEngine)
 	require.Same(t, supplierService, svc.supplierService)
-	require.Same(t, employeeService, svc.employeeService)
+	require.Same(t, employeeHRService, svc.employeeHRService)
 	require.Same(t, sentinelEngine, svc.sentinelEngine)
 }
