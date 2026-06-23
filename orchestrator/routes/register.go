@@ -33,5 +33,6 @@ func RegisterOrchestratorRoutes(
 	registerInventoryRoutes(org, orchestController)
 	registerUtilsRoutes(org, orchestController)
 	registerEmployeeRoutes(org, orchestController)
+	registerSentinelRoutes(org, orchestController)
 
 }

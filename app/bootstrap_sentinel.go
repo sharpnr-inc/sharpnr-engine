@@ -2,6 +2,7 @@ package app
 
 import (
 	dbtx "sharpnr-engine/pkg/dbTx"
+	sentinelengine "sharpnr-engine/sentinel_engine/engine"
 	sentinel_repo "sharpnr-engine/sentinel_engine/repo"
 	sentinelservice "sharpnr-engine/sentinel_engine/service"
 
@@ -9,12 +10,13 @@ import (
 )
 
 // bootstrapSentinel wires the authorization (Sentinel) service: repo over the
-// DB, service over the repo + transaction manager.
+// DB, service over the repo + transaction manager + engine (the engine is
+// needed so policy regeneration can invalidate the org's compiled cache).
 func bootstrapSentinel(
 	db *gorm.DB,
 	txManager dbtx.TxManager,
-
+	engine *sentinelengine.Sentinel,
 ) sentinelservice.SentinelService {
 	repo := sentinel_repo.NewSentinelRepo(db)
-	return sentinelservice.NewSentinelService(repo, txManager)
+	return sentinelservice.NewSentinelService(repo, txManager, engine)
 }

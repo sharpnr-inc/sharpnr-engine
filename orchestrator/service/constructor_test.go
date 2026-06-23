@@ -27,6 +27,7 @@ import (
 	employee_services "sharpnr-engine/hrms_engine/employees/services"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	sentinelengine "sharpnr-engine/sentinel_engine/engine"
+	sentinelservice "sharpnr-engine/sentinel_engine/service"
 	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
 	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
@@ -98,7 +99,8 @@ func TestNewSharpnrOrchestratorService_WiresAllDependencies(t *testing.T) {
 		supplierService     = &stubSupplierService{}
 		employeeHRService   = &stubEmployeeService{}
 		// nil repo is fine: this is a wiring test, no authorization call is made.
-		sentinelEngine = sentinelengine.New(nil)
+		sentinelEngine  = sentinelengine.New(nil)
+		sentinelService = sentinelservice.NewSentinelService(nil, nil, sentinelEngine)
 	)
 
 	// --- act ---
@@ -117,6 +119,7 @@ func TestNewSharpnrOrchestratorService_WiresAllDependencies(t *testing.T) {
 		supplierService,
 		employeeHRService,
 		sentinelEngine,
+		sentinelService,
 	)
 
 	// --- assert: non-nil, and every field wired to the exact value passed ---
@@ -136,4 +139,5 @@ func TestNewSharpnrOrchestratorService_WiresAllDependencies(t *testing.T) {
 	require.Same(t, supplierService, svc.supplierService)
 	require.Same(t, employeeHRService, svc.employeeHRService)
 	require.Same(t, sentinelEngine, svc.sentinelEngine)
+	require.Same(t, sentinelService, svc.sentinelService)
 }

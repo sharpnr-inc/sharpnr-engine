@@ -7,24 +7,22 @@ import (
 	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
 	sentinel_utils "sharpnr-engine/sentinel_engine/utils"
 
-	"github.com/cedar-policy/cedar-go"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-// ProvisionOrganization sets up the default owner role + policy and seeds the
-// first employee as owner. Runs in one transaction so an org never ends up
+// ProvisionOrganization sets up a new org's authorization defaults: it creates
+// the "Owner" role, attaches the shared system "Full Access" managed policy to
+// it, generates the owner's Cedar from that attachment, and seeds the first
+// employee as owner. Runs in one transaction so an org never ends up
 // half-provisioned (a role with no policy, or an owner with no role).
+//
+// The owner grant goes through the same managed-policy path as every other role
+// (attach -> generate), so it appears in the policy catalog and in the owner
+// role's privileges — no special-cased hand-authored policy row.
 func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firstUserID uuid.UUID) error {
-	// Validate the default policy compiles before we commit anything.
-	var p cedar.Policy
-	if err := p.UnmarshalCedar([]byte(sentinel_utils.OwnerPolicyText)); err != nil {
-		return fmt.Errorf("default owner policy invalid: %w", err)
-	}
-
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
-
-		dbtx := dbtx.InjectTx(ctx, tx)
+		txCtx := dbtx.InjectTx(ctx, tx)
 
 		role := &sentinelengine_models.Role{
 			ID:             uuid.New(),
@@ -33,23 +31,30 @@ func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firs
 			Name:           "Owner",
 			Description:    "Full access within the organization.",
 		}
-		if err := s.repo.CreateRole(dbtx, role); err != nil {
+		if err := s.repo.CreateRole(txCtx, role); err != nil {
 			return fmt.Errorf("create owner role: %w", err)
 		}
 
-		policy := &sentinelengine_models.SentinelPolicy{
-			ID:             uuid.New(),
-			OrganizationID: orgID,
-			Name:           "owner-full-access",
-			Description:    "Grants the owner role full access within the org.",
-			Policy:         sentinel_utils.OwnerPolicyText,
-			Enabled:        true,
+		// Attach the shared "Full Access" system managed policy (seeded in
+		// migration 000032) to the owner role.
+		edge := &sentinelengine_models.RolePolicy{
+			OrganizationID:  orgID,
+			RoleID:          role.ID,
+			ManagedPolicyID: sentinel_utils.SystemFullAccessPolicyID,
+			AttachedBy:      firstUserID,
 		}
-		if err := s.repo.CreatePolicy(dbtx, policy); err != nil {
-			return fmt.Errorf("create owner policy: %w", err)
+		if err := s.repo.AttachRolePolicy(txCtx, edge); err != nil {
+			return fmt.Errorf("attach full-access policy to owner role: %w", err)
 		}
 
-		if err := s.repo.AssignUserRole(dbtx, orgID, firstUserID, role.ID); err != nil {
+		// Generate the owner's Cedar from the attachment. Runs in this same tx
+		// (WithTx joins the ambient tx); InvalidateOrg is a no-op for a brand-new
+		// org that has nothing cached yet.
+		if err := s.RegenerateRolePolicies(txCtx, orgID, role.ID); err != nil {
+			return fmt.Errorf("generate owner policies: %w", err)
+		}
+
+		if err := s.repo.AssignUserRole(txCtx, orgID, firstUserID, role.ID); err != nil {
 			return fmt.Errorf("assign first user as owner: %w", err)
 		}
 		return nil

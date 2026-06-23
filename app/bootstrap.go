@@ -22,12 +22,13 @@ func BootstrapModules(
 	sseEngine *sse_engine.StreamManager,
 ) *AppModules {
 
-	// Sentinel Engine: authorization (roles, permissions, super-admin provisioning)
-	sentinelService := bootstrapSentinel(db, txManager)
-
 	// Sentinel authorization engine: shared, concurrency-safe; injected into
-	// services and the RequirePermission middleware.
+	// services (incl. the Sentinel service, for cache invalidation) and the
+	// RequirePermission middleware.
 	sentinelEngine := bootstrapSentinelEngine(db)
+
+	// Sentinel Engine: authorization (roles, permissions, super-admin provisioning)
+	sentinelService := bootstrapSentinel(db, txManager, sentinelEngine)
 
 	organizationService := bootstrapOrganization(db, redis, mailerEngine, txManager)
 	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine)
@@ -115,6 +116,7 @@ func BootstrapModules(
 		orgSupplierService,
 		employeesHRService,
 		sentinelEngine,
+		sentinelService,
 	)
 
 	utilitiesApiService := bootstrapUtilitiesApiService(db)

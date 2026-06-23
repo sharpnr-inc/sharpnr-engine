@@ -17,9 +17,17 @@ type SentinelPolicy struct {
 	Description    string    `gorm:"type:text"`                // optional
 	Policy         string    `gorm:"type:text;not null"`       // Cedar policy, human-readable text form
 	Enabled        bool      `gorm:"not null;default:true"`    // disable without deleting
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	DeletedAt      gorm.DeletedAt `gorm:"index"` // optional: soft delete
+
+	// Provenance of a GENERATED policy. Both set => this row was compiled by the
+	// generator from a (role, managed policy) attachment, and the generator owns
+	// it (delete-by-source on regeneration). Both nil => hand-authored; the
+	// generator must never touch it.
+	SourceRoleID          *uuid.UUID `gorm:"type:uuid;index"`
+	SourceManagedPolicyID *uuid.UUID `gorm:"type:uuid"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"` // optional: soft delete
 }
 
 func (SentinelPolicy) TableName() string {

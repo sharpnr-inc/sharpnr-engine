@@ -1,22 +1,20 @@
 // Tests for ProvisionOrganization.
 //
-// Conventions follow the project template (see orchestrator/service tests):
-//   - White-box (same package) so we can build sentinelService directly with
-//     only the fields the method touches — no real DB.
-//   - The repo is faked with an embedded-interface stub: it satisfies the full
-//     SentinelRepositoryInterface for free, and we override only the three
-//     methods this flow calls via function fields. Any unexpected call hits the
-//     nil embedded interface and panics — a deliberate tripwire.
-//   - stubTxManager runs the transactional callback inline.
-//   - Assert with testify require; errors are wrapped with %w so we use ErrorIs.
+// Provisioning now goes through the managed-policy path: create the owner role,
+// attach the shared "Full Access" system policy, generate the owner's Cedar from
+// that attachment, then assign the first user. These tests fake the data layer
+// with an embedded-interface stub (overriding only the methods the flow calls)
+// and use a real engine built on a nil repo — InvalidateOrg never touches it.
 package sentinelservice
 
 import (
 	"context"
 	"errors"
+	"strings"
 	"testing"
 
 	dbtx "sharpnr-engine/pkg/dbTx"
+	sentinelengine "sharpnr-engine/sentinel_engine/engine"
 	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
 	sentinel_repo "sharpnr-engine/sentinel_engine/repo"
 	sentinel_utils "sharpnr-engine/sentinel_engine/utils"
@@ -32,63 +30,99 @@ import (
 /* ========================================================================== */
 
 // stubSentinelRepo fakes the data layer. Each method delegates to a function
-// field so a test wires up only what its scenario should reach.
+// field so a test wires up only what its scenario should reach; any unset
+// method that gets called hits the nil embedded interface and panics.
 type stubSentinelRepo struct {
 	sentinel_repo.SentinelRepositoryInterface
 
-	createRole     func(ctx context.Context, role *sentinelengine_models.Role) error
-	createPolicy   func(ctx context.Context, policy *sentinelengine_models.SentinelPolicy) error
-	assignUserRole func(ctx context.Context, orgID, userID, roleID uuid.UUID) error
+	createRole                  func(ctx context.Context, role *sentinelengine_models.Role) error
+	attachRolePolicy            func(ctx context.Context, edge *sentinelengine_models.RolePolicy) error
+	getRoleByID                 func(ctx context.Context, id uuid.UUID) (sentinelengine_models.Role, error)
+	listAttachedManagedPolicies func(ctx context.Context, orgID, roleID uuid.UUID) ([]*sentinelengine_models.ManagedPolicy, error)
+	deleteGeneratedPolicies     func(ctx context.Context, orgID, roleID uuid.UUID) error
+	createPolicy                func(ctx context.Context, policy *sentinelengine_models.SentinelPolicy) error
+	assignUserRole              func(ctx context.Context, orgID, userID, roleID uuid.UUID) error
 }
 
 func (s *stubSentinelRepo) CreateRole(ctx context.Context, role *sentinelengine_models.Role) error {
 	return s.createRole(ctx, role)
 }
-
+func (s *stubSentinelRepo) AttachRolePolicy(ctx context.Context, edge *sentinelengine_models.RolePolicy) error {
+	return s.attachRolePolicy(ctx, edge)
+}
+func (s *stubSentinelRepo) GetRoleByID(ctx context.Context, id uuid.UUID) (sentinelengine_models.Role, error) {
+	return s.getRoleByID(ctx, id)
+}
+func (s *stubSentinelRepo) ListAttachedManagedPolicies(ctx context.Context, orgID, roleID uuid.UUID) ([]*sentinelengine_models.ManagedPolicy, error) {
+	return s.listAttachedManagedPolicies(ctx, orgID, roleID)
+}
+func (s *stubSentinelRepo) DeleteGeneratedPoliciesByRole(ctx context.Context, orgID, roleID uuid.UUID) error {
+	return s.deleteGeneratedPolicies(ctx, orgID, roleID)
+}
 func (s *stubSentinelRepo) CreatePolicy(ctx context.Context, policy *sentinelengine_models.SentinelPolicy) error {
 	return s.createPolicy(ctx, policy)
 }
-
 func (s *stubSentinelRepo) AssignUserRole(ctx context.Context, orgID, userID, roleID uuid.UUID) error {
 	return s.assignUserRole(ctx, orgID, userID, roleID)
 }
 
 // stubTxManager runs the callback inline with a nil *gorm.DB. The stub repo
-// never touches the tx, so nil is fine. Mirrors the production contract: the
-// callback's return value is propagated to the caller.
+// never touches the tx, so nil is fine; nested WithTx (the regenerate step) just
+// runs inline again.
 type stubTxManager struct{}
 
 func (stubTxManager) WithTx(ctx context.Context, fn func(tx *gorm.DB) error) error {
 	return fn(nil)
 }
 
+// fullAccessPolicy is the managed policy the owner role is attached to.
+func fullAccessPolicy() *sentinelengine_models.ManagedPolicy {
+	return &sentinelengine_models.ManagedPolicy{
+		ID:         sentinel_utils.SystemFullAccessPolicyID,
+		Name:       "Full Access",
+		Effect:     sentinelengine_models.EffectPermit,
+		AllActions: true,
+		System:     true,
+	}
+}
+
+func newEngine() *sentinelengine.Sentinel { return sentinelengine.New(nil) }
+
 /* ========================================================================== */
 /*                          ProvisionOrganization                             */
 /* ========================================================================== */
 
-// Happy path: the owner role and its full-access policy are created with the
-// expected fields, and the first user is assigned to the *created* role's ID
-// within the same tenant.
+// Happy path: owner role created, Full Access attached, a wildcard owner policy
+// generated and tagged with its source, and the first user assigned the role.
 func TestProvisionOrganization_Success(t *testing.T) {
 	orgID := uuid.New()
 	firstUserID := uuid.New()
-	// The role's app-generated primary key, captured as the repo persists it.
 	generatedRoleID := uuid.New()
 
 	var gotRole *sentinelengine_models.Role
+	var gotEdge *sentinelengine_models.RolePolicy
 	var gotPolicy *sentinelengine_models.SentinelPolicy
 	var assignOrg, assignUser, assignRole uuid.UUID
-	createPolicyCalled := false
 	assignCalled := false
 
 	repo := &stubSentinelRepo{
 		createRole: func(_ context.Context, role *sentinelengine_models.Role) error {
-			role.ID = generatedRoleID // pin the ID the repo persists for this role
+			role.ID = generatedRoleID
 			gotRole = role
 			return nil
 		},
+		attachRolePolicy: func(_ context.Context, edge *sentinelengine_models.RolePolicy) error {
+			gotEdge = edge
+			return nil
+		},
+		getRoleByID: func(_ context.Context, id uuid.UUID) (sentinelengine_models.Role, error) {
+			return sentinelengine_models.Role{ID: id, OrganizationID: orgID, Slug: sentinel_utils.OwnerRoleSlug}, nil
+		},
+		listAttachedManagedPolicies: func(_ context.Context, _, _ uuid.UUID) ([]*sentinelengine_models.ManagedPolicy, error) {
+			return []*sentinelengine_models.ManagedPolicy{fullAccessPolicy()}, nil
+		},
+		deleteGeneratedPolicies: func(_ context.Context, _, _ uuid.UUID) error { return nil },
 		createPolicy: func(_ context.Context, policy *sentinelengine_models.SentinelPolicy) error {
-			createPolicyCalled = true
 			gotPolicy = policy
 			return nil
 		},
@@ -99,7 +133,7 @@ func TestProvisionOrganization_Success(t *testing.T) {
 		},
 	}
 
-	svc := &sentinelService{repo: repo, txManager: stubTxManager{}}
+	svc := &sentinelService{repo: repo, txManager: stubTxManager{}, engine: newEngine()}
 
 	err := svc.ProvisionOrganization(context.Background(), orgID, firstUserID)
 	require.NoError(t, err)
@@ -110,89 +144,104 @@ func TestProvisionOrganization_Success(t *testing.T) {
 	require.Equal(t, sentinel_utils.OwnerRoleSlug, gotRole.Slug)
 	require.Equal(t, "Owner", gotRole.Name)
 
-	// --- policy ---
-	require.True(t, createPolicyCalled, "owner policy must be created")
-	require.NotNil(t, gotPolicy)
-	require.Equal(t, orgID, gotPolicy.OrganizationID)
-	require.Equal(t, sentinel_utils.OwnerPolicyText, gotPolicy.Policy)
-	require.True(t, gotPolicy.Enabled, "owner policy must be enabled")
+	// --- attachment: the shared Full Access system policy on the owner role ---
+	require.NotNil(t, gotEdge)
+	require.Equal(t, sentinel_utils.SystemFullAccessPolicyID, gotEdge.ManagedPolicyID)
+	require.Equal(t, generatedRoleID, gotEdge.RoleID)
 
-	// --- assignment: same org, first user, and the role's generated ID ---
-	require.True(t, assignCalled, "first user must be assigned the owner role")
+	// --- generated policy: wildcard, tenant-scoped, tagged with its source ---
+	require.NotNil(t, gotPolicy, "owner policy must be generated")
+	require.Equal(t, orgID, gotPolicy.OrganizationID)
+	require.True(t, gotPolicy.Enabled)
+	require.Contains(t, gotPolicy.Policy, `principal in Role::"owner"`)
+	require.Contains(t, gotPolicy.Policy, "action,", "Full Access must compile to a wildcard action")
+	require.Contains(t, gotPolicy.Policy, "resource.orgId == principal.orgId")
+	require.NotNil(t, gotPolicy.SourceRoleID)
+	require.Equal(t, generatedRoleID, *gotPolicy.SourceRoleID)
+	require.NotNil(t, gotPolicy.SourceManagedPolicyID)
+	require.Equal(t, sentinel_utils.SystemFullAccessPolicyID, *gotPolicy.SourceManagedPolicyID)
+
+	// the generated text must be valid Cedar
+	var p cedar.Policy
+	require.NoError(t, p.UnmarshalCedar([]byte(gotPolicy.Policy)))
+
+	// --- assignment: same org, first user, the created role's ID ---
+	require.True(t, assignCalled)
 	require.Equal(t, orgID, assignOrg)
 	require.Equal(t, firstUserID, assignUser)
-	require.Equal(t, generatedRoleID, assignRole, "assignment must use the created role's ID")
+	require.Equal(t, generatedRoleID, assignRole)
 }
 
-// The bundled default owner policy must be valid Cedar. This guards against a
-// future edit to OwnerPolicyText that would only fail at provisioning time.
-func TestProvisionOrganization_DefaultPolicyCompiles(t *testing.T) {
-	var p cedar.Policy
-	err := p.UnmarshalCedar([]byte(sentinel_utils.OwnerPolicyText))
-	require.NoError(t, err)
-}
-
-// CreateRole fails: error propagates and neither the policy nor the assignment
-// is attempted (transaction would roll back).
+// CreateRole fails: error propagates and nothing downstream is attempted.
 func TestProvisionOrganization_CreateRoleFails_Propagates(t *testing.T) {
 	wantErr := errors.New("insert role failed")
-	policyCalled, assignCalled := false, false
+	attachCalled, assignCalled := false, false
 
 	repo := &stubSentinelRepo{
-		createRole: func(_ context.Context, _ *sentinelengine_models.Role) error { return wantErr },
-		createPolicy: func(_ context.Context, _ *sentinelengine_models.SentinelPolicy) error {
-			policyCalled = true
-			return nil
-		},
-		assignUserRole: func(_ context.Context, _, _, _ uuid.UUID) error {
-			assignCalled = true
-			return nil
-		},
+		createRole:       func(_ context.Context, _ *sentinelengine_models.Role) error { return wantErr },
+		attachRolePolicy: func(_ context.Context, _ *sentinelengine_models.RolePolicy) error { attachCalled = true; return nil },
+		assignUserRole:   func(_ context.Context, _, _, _ uuid.UUID) error { assignCalled = true; return nil },
 	}
-	svc := &sentinelService{repo: repo, txManager: stubTxManager{}}
+	svc := &sentinelService{repo: repo, txManager: stubTxManager{}, engine: newEngine()}
 
 	err := svc.ProvisionOrganization(context.Background(), uuid.New(), uuid.New())
 
 	require.ErrorIs(t, err, wantErr)
-	require.False(t, policyCalled, "policy must not be created after role creation fails")
-	require.False(t, assignCalled, "user must not be assigned after role creation fails")
+	require.False(t, attachCalled)
+	require.False(t, assignCalled)
 }
 
-// CreatePolicy fails: error propagates and the assignment is not attempted.
-func TestProvisionOrganization_CreatePolicyFails_Propagates(t *testing.T) {
-	wantErr := errors.New("insert policy failed")
+// AttachRolePolicy fails: error propagates and the user is not assigned.
+func TestProvisionOrganization_AttachFails_Propagates(t *testing.T) {
+	wantErr := errors.New("attach failed")
 	assignCalled := false
 
 	repo := &stubSentinelRepo{
-		createRole:   func(_ context.Context, _ *sentinelengine_models.Role) error { return nil },
-		createPolicy: func(_ context.Context, _ *sentinelengine_models.SentinelPolicy) error { return wantErr },
-		assignUserRole: func(_ context.Context, _, _, _ uuid.UUID) error {
-			assignCalled = true
-			return nil
-		},
+		createRole:       func(_ context.Context, _ *sentinelengine_models.Role) error { return nil },
+		attachRolePolicy: func(_ context.Context, _ *sentinelengine_models.RolePolicy) error { return wantErr },
+		assignUserRole:   func(_ context.Context, _, _, _ uuid.UUID) error { assignCalled = true; return nil },
 	}
-	svc := &sentinelService{repo: repo, txManager: stubTxManager{}}
+	svc := &sentinelService{repo: repo, txManager: stubTxManager{}, engine: newEngine()}
 
 	err := svc.ProvisionOrganization(context.Background(), uuid.New(), uuid.New())
 
 	require.ErrorIs(t, err, wantErr)
-	require.False(t, assignCalled, "user must not be assigned after policy creation fails")
+	require.False(t, assignCalled)
 }
 
-// AssignUserRole fails: error propagates.
+// AssignUserRole fails: error propagates (generation already succeeded).
 func TestProvisionOrganization_AssignFails_Propagates(t *testing.T) {
 	wantErr := errors.New("assign failed")
+	orgID := uuid.New()
 
 	repo := &stubSentinelRepo{
-		createRole:     func(_ context.Context, _ *sentinelengine_models.Role) error { return nil },
-		createPolicy:   func(_ context.Context, _ *sentinelengine_models.SentinelPolicy) error { return nil },
-		assignUserRole: func(_ context.Context, _, _, _ uuid.UUID) error { return wantErr },
+		createRole:       func(_ context.Context, role *sentinelengine_models.Role) error { role.ID = uuid.New(); return nil },
+		attachRolePolicy: func(_ context.Context, _ *sentinelengine_models.RolePolicy) error { return nil },
+		getRoleByID: func(_ context.Context, id uuid.UUID) (sentinelengine_models.Role, error) {
+			return sentinelengine_models.Role{ID: id, OrganizationID: orgID, Slug: sentinel_utils.OwnerRoleSlug}, nil
+		},
+		listAttachedManagedPolicies: func(_ context.Context, _, _ uuid.UUID) ([]*sentinelengine_models.ManagedPolicy, error) {
+			return []*sentinelengine_models.ManagedPolicy{fullAccessPolicy()}, nil
+		},
+		deleteGeneratedPolicies: func(_ context.Context, _, _ uuid.UUID) error { return nil },
+		createPolicy:            func(_ context.Context, _ *sentinelengine_models.SentinelPolicy) error { return nil },
+		assignUserRole:          func(_ context.Context, _, _, _ uuid.UUID) error { return wantErr },
 	}
-	svc := &sentinelService{repo: repo, txManager: stubTxManager{}}
+	svc := &sentinelService{repo: repo, txManager: stubTxManager{}, engine: newEngine()}
 
-	err := svc.ProvisionOrganization(context.Background(), uuid.New(), uuid.New())
+	err := svc.ProvisionOrganization(context.Background(), orgID, uuid.New())
 
 	require.ErrorIs(t, err, wantErr)
+}
+
+// The generated Full Access policy must be valid Cedar — guards the wildcard
+// template independently of the provisioning wiring.
+func TestFullAccess_GeneratesValidCedar(t *testing.T) {
+	text, ok := buildCedarPolicy(sentinel_utils.OwnerRoleSlug, fullAccessPolicy())
+	require.True(t, ok)
+	require.True(t, strings.Contains(text, "action,"), "must be a wildcard action scope")
+	var p cedar.Policy
+	require.NoError(t, p.UnmarshalCedar([]byte(text)))
 }
 
 // Compile-time guard: stubTxManager must satisfy the real TxManager interface.

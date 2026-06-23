@@ -18,8 +18,6 @@ github.com/cashfree/cashfree-pg/v3 v3.2.14 h1:EM9ZyMYYlqb6j7TaneyQc2iRidkplq5deb
 github.com/cashfree/cashfree-pg/v3 v3.2.14/go.mod h1:Ask/lU8EQPv2NMOnZow8ln0E9IfFbfrwyQapPVAVPfA=
 github.com/cashfree/cashfree-pg/v5 v5.1.9 h1:Bv8uXpPFh+KZrVMouitAWGHgrNxLm7e6OZfwamCKSIk=
 github.com/cashfree/cashfree-pg/v5 v5.1.9/go.mod h1:eedq6/NWqlvuM6rBjPg7UalApLoYkCw1M43BF8Zffwg=
-github.com/cedar-policy/cedar-go v1.4.1 h1:5Llp0p/B8SBhMnctksmDlxW20U+VpZNwynXvlCLn4+E=
-github.com/cedar-policy/cedar-go v1.4.1/go.mod h1:h5+3CVW1oI5LXVskJG+my9TFCYI5yjh/+Ul3EJie6MI=
 github.com/cedar-policy/cedar-go v1.8.0 h1:9gcU7EHXwHC2RMdpph68yTAkdB3behTTssC+kt4GoS8=
 github.com/cedar-policy/cedar-go v1.8.0/go.mod h1:h5+3CVW1oI5LXVskJG+my9TFCYI5yjh/+Ul3EJie6MI=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
