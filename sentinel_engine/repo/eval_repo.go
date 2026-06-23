@@ -2,11 +2,14 @@ package sentinel_repo
 
 import (
 	"context"
+	"errors"
 
 	sentinelengine "sharpnr-engine/sentinel_engine/engine"
 	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
 
+	"github.com/cedar-policy/cedar-go/types"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // This file implements the read side the Sentinel engine needs to make a
@@ -68,4 +71,41 @@ GROUP BY c.slug, p.slug;`
 	var out []sentinelengine.GroupMembership
 	err := r.conn(ctx).Raw(q, orgID, userID).Scan(&out).Error
 	return out, err
+}
+
+// UserAttributes returns the principal's ABAC attributes for the engine to stamp
+// onto the User entity, so policies can use `principal.<attr>` in `when` clauses.
+// Sourced from the employee's organization profile (department, position,
+// managerId). A missing profile is not an error — it just means no extra
+// attributes. Queried by table name to avoid coupling the sentinel repo to the
+// employee model package.
+func (r *sentinelRepo) UserAttributes(ctx context.Context, orgID, userID uuid.UUID) (map[string]types.Value, error) {
+	var row struct {
+		Department string
+		Position   string
+		ManagerID  string
+	}
+	err := r.conn(ctx).
+		Table("employee.employee_organization_profile").
+		Select("department, position, manager_id").
+		Where("organization_id = ? AND employee_id = ?", orgID, userID).
+		Take(&row).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return map[string]types.Value{}, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	attrs := map[string]types.Value{}
+	if row.Department != "" {
+		attrs["department"] = types.String(row.Department)
+	}
+	if row.Position != "" {
+		attrs["position"] = types.String(row.Position)
+	}
+	if row.ManagerID != "" {
+		attrs["managerId"] = types.String(row.ManagerID)
+	}
+	return attrs, nil
 }

@@ -49,6 +49,7 @@ import (
 
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 
+	"github.com/cedar-policy/cedar-go/types"
 	"github.com/go-openapi/testify/v2/require"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -75,6 +76,10 @@ func (allowAllSentinelRepo) UserRoleSlugs(_ context.Context, _, _ uuid.UUID) ([]
 
 func (allowAllSentinelRepo) UserGroupClosure(_ context.Context, _, _ uuid.UUID) ([]sentinelengine.GroupMembership, error) {
 	return nil, nil
+}
+
+func (allowAllSentinelRepo) UserAttributes(_ context.Context, _, _ uuid.UUID) (map[string]types.Value, error) {
+	return map[string]types.Value{}, nil
 }
 
 // allowAllEngine builds an engine wired to the permissive repo above.

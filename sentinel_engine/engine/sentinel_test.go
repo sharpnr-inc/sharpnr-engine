@@ -37,6 +37,7 @@ type fakeRepo struct {
 	listPolicies func(ctx context.Context, orgID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error)
 	userRoles    func(ctx context.Context, orgID, userID uuid.UUID) ([]string, error)
 	userGroups   func(ctx context.Context, orgID, userID uuid.UUID) ([]GroupMembership, error)
+	userAttrs    func(ctx context.Context, orgID, userID uuid.UUID) (map[string]types.Value, error)
 }
 
 func (f *fakeRepo) ListEnabledPolicies(ctx context.Context, orgID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error) {
@@ -58,6 +59,13 @@ func (f *fakeRepo) UserGroupClosure(ctx context.Context, orgID, userID uuid.UUID
 		return nil, nil
 	}
 	return f.userGroups(ctx, orgID, userID)
+}
+
+func (f *fakeRepo) UserAttributes(ctx context.Context, orgID, userID uuid.UUID) (map[string]types.Value, error) {
+	if f.userAttrs == nil {
+		return map[string]types.Value{}, nil
+	}
+	return f.userAttrs(ctx, orgID, userID)
 }
 
 // Compile-time guard: fakeRepo must satisfy the engine's Repository interface.
@@ -171,6 +179,56 @@ func TestIsAuthorized_BundledOwnerDefaultsGrantFullAccess(t *testing.T) {
 	res, err := New(denyRepo).IsAuthorized(context.Background(), docInput(orgID, userID, sentinel_actions.ViewDocument))
 	require.NoError(t, err)
 	require.False(t, res.Allowed, "non-owner must not get owner access")
+}
+
+// ABAC: a policy that reads a principal attribute is honored only when the
+// engine has stamped that attribute onto the User entity from UserAttributes.
+// Same policy + role; the decision flips purely on the loaded attribute, and a
+// guard with `has` keeps a missing attribute from erroring.
+func TestIsAuthorized_PrincipalAttributeCondition(t *testing.T) {
+	orgID, userID := uuid.New(), uuid.New()
+
+	const deptPolicy = `permit (
+  principal in Role::"staff",
+  action == Action::"editDocument",
+  resource
+) when {
+  resource.orgId == principal.orgId &&
+  principal has department && principal.department == "engineering"
+};`
+
+	build := func(dept string) *fakeRepo {
+		return &fakeRepo{
+			listPolicies: func(context.Context, uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error) {
+				return []*sentinelengine_models.SentinelPolicy{policy(orgID, deptPolicy)}, nil
+			},
+			userRoles: rolesReturning("staff"),
+			userAttrs: func(context.Context, uuid.UUID, uuid.UUID) (map[string]types.Value, error) {
+				if dept == "" {
+					return map[string]types.Value{}, nil
+				}
+				return map[string]types.Value{"department": types.String(dept)}, nil
+			},
+		}
+	}
+
+	// Attribute matches -> allowed, no eval errors.
+	res, err := New(build("engineering")).IsAuthorized(context.Background(), docInput(orgID, userID, sentinel_actions.EditDocument))
+	require.NoError(t, err)
+	require.True(t, res.Allowed, "matching department must be allowed")
+	require.Empty(t, res.Errors)
+
+	// Attribute present but different -> denied.
+	res, err = New(build("sales")).IsAuthorized(context.Background(), docInput(orgID, userID, sentinel_actions.EditDocument))
+	require.NoError(t, err)
+	require.False(t, res.Allowed, "non-matching department must be denied")
+
+	// Attribute absent -> the `has` guard short-circuits to false (no error),
+	// and the request is denied rather than erroring.
+	res, err = New(build("")).IsAuthorized(context.Background(), docInput(orgID, userID, sentinel_actions.EditDocument))
+	require.NoError(t, err)
+	require.False(t, res.Allowed, "missing department must be denied")
+	require.Empty(t, res.Errors, "the has-guard must prevent a missing-attribute error")
 }
 
 // Default deny: with no policies (and no roles), every request is refused.
