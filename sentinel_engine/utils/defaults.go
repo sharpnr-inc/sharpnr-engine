@@ -9,6 +9,12 @@ import "github.com/google/uuid"
 // Default slugs created for every new organization.
 const (
 	OwnerRoleSlug = "owner" // full access within the org; NOT platform-level
+
+	// StakeholdersGroupSlug is the default top-level group seeded for every org
+	// at provisioning. Stable, since it's the Cedar entity id (Group::"<slug>").
+	StakeholdersGroupSlug = "stakeholders"
+	StakeholdersGroupName = "Stakeholders"
+	StakeholdersGroupDesc = "Default group for the organization's stakeholders."
 )
 
 // SystemFullAccessPolicyID is the well-known id of the shared "Full Access"

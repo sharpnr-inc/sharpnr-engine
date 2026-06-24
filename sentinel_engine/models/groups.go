@@ -13,6 +13,7 @@ type Group struct {
 	OrganizationID uuid.UUID  `gorm:"type:uuid;not null;uniqueIndex:idx_group_org_slug"`
 	Slug           string     `gorm:"type:text;not null;uniqueIndex:idx_group_org_slug"`
 	Name           string     `gorm:"type:text;not null"`
+	Description    string     `gorm:"type:text"`       // optional human-facing description
 	ParentGroupID  *uuid.UUID `gorm:"type:uuid;index"` // nullable: top-level groups have no parent
 	CreatedAt      time.Time
 	UpdatedAt      time.Time

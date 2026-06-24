@@ -57,6 +57,18 @@ func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firs
 		if err := s.repo.AssignUserRole(txCtx, orgID, firstUserID, role.ID); err != nil {
 			return fmt.Errorf("assign first user as owner: %w", err)
 		}
+
+		// Seed the default top-level "Stakeholders" group every org starts with.
+		group := &sentinelengine_models.Group{
+			ID:             uuid.New(),
+			OrganizationID: orgID,
+			Slug:           sentinel_utils.StakeholdersGroupSlug,
+			Name:           sentinel_utils.StakeholdersGroupName,
+			Description:    sentinel_utils.StakeholdersGroupDesc,
+		}
+		if err := s.repo.CreateGroup(txCtx, group); err != nil {
+			return fmt.Errorf("create default stakeholders group: %w", err)
+		}
 		return nil
 	})
 }

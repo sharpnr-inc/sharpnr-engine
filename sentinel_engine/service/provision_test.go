@@ -42,6 +42,7 @@ type stubSentinelRepo struct {
 	deleteGeneratedPolicies     func(ctx context.Context, orgID, roleID uuid.UUID) error
 	createPolicy                func(ctx context.Context, policy *sentinelengine_models.SentinelPolicy) error
 	assignUserRole              func(ctx context.Context, orgID, userID, roleID uuid.UUID) error
+	createGroup                 func(ctx context.Context, group *sentinelengine_models.Group) error
 }
 
 func (s *stubSentinelRepo) CreateRole(ctx context.Context, role *sentinelengine_models.Role) error {
@@ -64,6 +65,9 @@ func (s *stubSentinelRepo) CreatePolicy(ctx context.Context, policy *sentineleng
 }
 func (s *stubSentinelRepo) AssignUserRole(ctx context.Context, orgID, userID, roleID uuid.UUID) error {
 	return s.assignUserRole(ctx, orgID, userID, roleID)
+}
+func (s *stubSentinelRepo) CreateGroup(ctx context.Context, group *sentinelengine_models.Group) error {
+	return s.createGroup(ctx, group)
 }
 
 // stubTxManager runs the callback inline with a nil *gorm.DB. The stub repo
@@ -102,6 +106,7 @@ func TestProvisionOrganization_Success(t *testing.T) {
 	var gotRole *sentinelengine_models.Role
 	var gotEdge *sentinelengine_models.RolePolicy
 	var gotPolicy *sentinelengine_models.SentinelPolicy
+	var gotGroup *sentinelengine_models.Group
 	var assignOrg, assignUser, assignRole uuid.UUID
 	assignCalled := false
 
@@ -129,6 +134,10 @@ func TestProvisionOrganization_Success(t *testing.T) {
 		assignUserRole: func(_ context.Context, orgID, userID, roleID uuid.UUID) error {
 			assignCalled = true
 			assignOrg, assignUser, assignRole = orgID, userID, roleID
+			return nil
+		},
+		createGroup: func(_ context.Context, group *sentinelengine_models.Group) error {
+			gotGroup = group
 			return nil
 		},
 	}
@@ -170,6 +179,13 @@ func TestProvisionOrganization_Success(t *testing.T) {
 	require.Equal(t, orgID, assignOrg)
 	require.Equal(t, firstUserID, assignUser)
 	require.Equal(t, generatedRoleID, assignRole)
+
+	// --- default group: the tenant-scoped "Stakeholders" group is seeded ---
+	require.NotNil(t, gotGroup, "default stakeholders group must be created")
+	require.Equal(t, orgID, gotGroup.OrganizationID)
+	require.Equal(t, sentinel_utils.StakeholdersGroupSlug, gotGroup.Slug)
+	require.Equal(t, sentinel_utils.StakeholdersGroupName, gotGroup.Name)
+	require.Nil(t, gotGroup.ParentGroupID, "default group is top-level")
 }
 
 // CreateRole fails: error propagates and nothing downstream is attempted.
