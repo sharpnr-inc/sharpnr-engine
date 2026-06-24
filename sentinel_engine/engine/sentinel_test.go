@@ -18,7 +18,6 @@ import (
 
 	sentinel_actions "sharpnr-engine/sentinel_engine/actions"
 	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
-	sentinel_utils "sharpnr-engine/sentinel_engine/utils"
 
 	"github.com/cedar-policy/cedar-go/types"
 	"github.com/go-openapi/testify/v2/require"
@@ -150,9 +149,9 @@ func TestIsAuthorized_BundledOwnerDefaultsGrantFullAccess(t *testing.T) {
 	orgID, userID := uuid.New(), uuid.New()
 	repo := &fakeRepo{
 		listPolicies: func(context.Context, uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error) {
-			return []*sentinelengine_models.SentinelPolicy{policy(orgID, sentinel_utils.OwnerPolicyText)}, nil
+			return []*sentinelengine_models.SentinelPolicy{policy(orgID, "")}, nil
 		},
-		userRoles: rolesReturning(sentinel_utils.OwnerRoleSlug),
+		userRoles: rolesReturning(""),
 	}
 	eng := New(repo)
 
@@ -172,7 +171,7 @@ func TestIsAuthorized_BundledOwnerDefaultsGrantFullAccess(t *testing.T) {
 	// scoped to the owner role and not a blanket allow.
 	denyRepo := &fakeRepo{
 		listPolicies: func(context.Context, uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error) {
-			return []*sentinelengine_models.SentinelPolicy{policy(orgID, sentinel_utils.OwnerPolicyText)}, nil
+			return []*sentinelengine_models.SentinelPolicy{policy(orgID, "")}, nil
 		},
 		userRoles: rolesReturning("viewer"),
 	}

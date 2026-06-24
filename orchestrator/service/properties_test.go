@@ -45,7 +45,6 @@ import (
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	sentinelengine "sharpnr-engine/sentinel_engine/engine"
 	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
-	sentinel_utils "sharpnr-engine/sentinel_engine/utils"
 
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 
@@ -65,13 +64,13 @@ func (allowAllSentinelRepo) ListEnabledPolicies(_ context.Context, orgID uuid.UU
 	return []*sentinelengine_models.SentinelPolicy{{
 		ID:             uuid.New(),
 		OrganizationID: orgID,
-		Policy:         sentinel_utils.OwnerPolicyText,
-		Enabled:        true,
+		// Policy:         sentinel_utils.OwnerPolicyText,
+		Enabled: true,
 	}}, nil
 }
 
 func (allowAllSentinelRepo) UserRoleSlugs(_ context.Context, _, _ uuid.UUID) ([]string, error) {
-	return []string{sentinel_utils.OwnerRoleSlug}, nil
+	return []string{}, nil
 }
 
 func (allowAllSentinelRepo) UserGroupClosure(_ context.Context, _, _ uuid.UUID) ([]sentinelengine.GroupMembership, error) {

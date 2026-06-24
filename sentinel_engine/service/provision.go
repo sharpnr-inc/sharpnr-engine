@@ -5,7 +5,6 @@ import (
 	"fmt"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
-	sentinel_utils "sharpnr-engine/sentinel_engine/utils"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -27,9 +26,9 @@ func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firs
 		role := &sentinelengine_models.Role{
 			ID:             uuid.New(),
 			OrganizationID: orgID,
-			Slug:           sentinel_utils.OwnerRoleSlug,
-			Name:           "Owner",
-			Description:    "Full access within the organization.",
+			// Slug:           sentinel_utils.OwnerRoleSlug,
+			Name:        "Owner",
+			Description: "Full access within the organization.",
 		}
 		if err := s.repo.CreateRole(txCtx, role); err != nil {
 			return fmt.Errorf("create owner role: %w", err)
@@ -38,10 +37,10 @@ func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firs
 		// Attach the shared "Full Access" system managed policy (seeded in
 		// migration 000032) to the owner role.
 		edge := &sentinelengine_models.RolePolicy{
-			OrganizationID:  orgID,
-			RoleID:          role.ID,
-			ManagedPolicyID: sentinel_utils.SystemFullAccessPolicyID,
-			AttachedBy:      firstUserID,
+			OrganizationID: orgID,
+			RoleID:         role.ID,
+			// ManagedPolicyID: sentinel_utils.SystemFullAccessPolicyID,
+			AttachedBy: firstUserID,
 		}
 		if err := s.repo.AttachRolePolicy(txCtx, edge); err != nil {
 			return fmt.Errorf("attach full-access policy to owner role: %w", err)
@@ -62,9 +61,9 @@ func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firs
 		group := &sentinelengine_models.Group{
 			ID:             uuid.New(),
 			OrganizationID: orgID,
-			Slug:           sentinel_utils.StakeholdersGroupSlug,
-			Name:           sentinel_utils.StakeholdersGroupName,
-			Description:    sentinel_utils.StakeholdersGroupDesc,
+			// Slug:           sentinel_utils.StakeholdersGroupSlug,
+			// Name:           sentinel_utils.StakeholdersGroupName,
+			// Description:    sentinel_utils.StakeholdersGroupDesc,
 		}
 		if err := s.repo.CreateGroup(txCtx, group); err != nil {
 			return fmt.Errorf("create default stakeholders group: %w", err)

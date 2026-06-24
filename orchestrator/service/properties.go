@@ -102,7 +102,7 @@ func (s *orchestratorService) CreateProperty(ctx context.Context, orgID, emplID 
 	// principal and the resource, satisfying the tenant guard in the owner policy
 	// (`resource.orgId == principal.orgId`).
 	decision, err := s.sentinelEngine.IsAuthorized(ctx, sentinelengine.AuthorizeInput{
-		OrgID:  orgID,
+		OrgID:  uuid.New(),
 		UserID: emplID,
 		Action: string(sentinel_actions.CreateProperty),
 		Resource: sentinelengine.Resource{

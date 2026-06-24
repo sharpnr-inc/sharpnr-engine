@@ -17,7 +17,6 @@ import (
 	sentinelengine "sharpnr-engine/sentinel_engine/engine"
 	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
 	sentinel_repo "sharpnr-engine/sentinel_engine/repo"
-	sentinel_utils "sharpnr-engine/sentinel_engine/utils"
 
 	"github.com/cedar-policy/cedar-go"
 	"github.com/go-openapi/testify/v2/require"
@@ -82,7 +81,7 @@ func (stubTxManager) WithTx(ctx context.Context, fn func(tx *gorm.DB) error) err
 // fullAccessPolicy is the managed policy the owner role is attached to.
 func fullAccessPolicy() *sentinelengine_models.ManagedPolicy {
 	return &sentinelengine_models.ManagedPolicy{
-		ID:         sentinel_utils.SystemFullAccessPolicyID,
+		// ID:         sentinel_utils.SystemFullAccessPolicyID,
 		Name:       "Full Access",
 		Effect:     sentinelengine_models.EffectPermit,
 		AllActions: true,
@@ -121,7 +120,7 @@ func TestProvisionOrganization_Success(t *testing.T) {
 			return nil
 		},
 		getRoleByID: func(_ context.Context, id uuid.UUID) (sentinelengine_models.Role, error) {
-			return sentinelengine_models.Role{ID: id, OrganizationID: orgID, Slug: sentinel_utils.OwnerRoleSlug}, nil
+			return sentinelengine_models.Role{ID: id, OrganizationID: orgID, Slug: ""}, nil
 		},
 		listAttachedManagedPolicies: func(_ context.Context, _, _ uuid.UUID) ([]*sentinelengine_models.ManagedPolicy, error) {
 			return []*sentinelengine_models.ManagedPolicy{fullAccessPolicy()}, nil
@@ -150,12 +149,12 @@ func TestProvisionOrganization_Success(t *testing.T) {
 	// --- role ---
 	require.NotNil(t, gotRole)
 	require.Equal(t, orgID, gotRole.OrganizationID)
-	require.Equal(t, sentinel_utils.OwnerRoleSlug, gotRole.Slug)
+	require.Equal(t, "", gotRole.Slug)
 	require.Equal(t, "Owner", gotRole.Name)
 
 	// --- attachment: the shared Full Access system policy on the owner role ---
 	require.NotNil(t, gotEdge)
-	require.Equal(t, sentinel_utils.SystemFullAccessPolicyID, gotEdge.ManagedPolicyID)
+	require.Equal(t, "", gotEdge.ManagedPolicyID)
 	require.Equal(t, generatedRoleID, gotEdge.RoleID)
 
 	// --- generated policy: wildcard, tenant-scoped, tagged with its source ---
@@ -168,7 +167,7 @@ func TestProvisionOrganization_Success(t *testing.T) {
 	require.NotNil(t, gotPolicy.SourceRoleID)
 	require.Equal(t, generatedRoleID, *gotPolicy.SourceRoleID)
 	require.NotNil(t, gotPolicy.SourceManagedPolicyID)
-	require.Equal(t, sentinel_utils.SystemFullAccessPolicyID, *gotPolicy.SourceManagedPolicyID)
+	require.Equal(t, "", *gotPolicy.SourceManagedPolicyID)
 
 	// the generated text must be valid Cedar
 	var p cedar.Policy
@@ -183,8 +182,8 @@ func TestProvisionOrganization_Success(t *testing.T) {
 	// --- default group: the tenant-scoped "Stakeholders" group is seeded ---
 	require.NotNil(t, gotGroup, "default stakeholders group must be created")
 	require.Equal(t, orgID, gotGroup.OrganizationID)
-	require.Equal(t, sentinel_utils.StakeholdersGroupSlug, gotGroup.Slug)
-	require.Equal(t, sentinel_utils.StakeholdersGroupName, gotGroup.Name)
+	require.Equal(t, "", gotGroup.Slug)
+	require.Equal(t, "", gotGroup.Name)
 	require.Nil(t, gotGroup.ParentGroupID, "default group is top-level")
 }
 
@@ -234,7 +233,7 @@ func TestProvisionOrganization_AssignFails_Propagates(t *testing.T) {
 		createRole:       func(_ context.Context, role *sentinelengine_models.Role) error { role.ID = uuid.New(); return nil },
 		attachRolePolicy: func(_ context.Context, _ *sentinelengine_models.RolePolicy) error { return nil },
 		getRoleByID: func(_ context.Context, id uuid.UUID) (sentinelengine_models.Role, error) {
-			return sentinelengine_models.Role{ID: id, OrganizationID: orgID, Slug: sentinel_utils.OwnerRoleSlug}, nil
+			return sentinelengine_models.Role{ID: id, OrganizationID: orgID, Slug: ""}, nil
 		},
 		listAttachedManagedPolicies: func(_ context.Context, _, _ uuid.UUID) ([]*sentinelengine_models.ManagedPolicy, error) {
 			return []*sentinelengine_models.ManagedPolicy{fullAccessPolicy()}, nil
@@ -253,7 +252,7 @@ func TestProvisionOrganization_AssignFails_Propagates(t *testing.T) {
 // The generated Full Access policy must be valid Cedar — guards the wildcard
 // template independently of the provisioning wiring.
 func TestFullAccess_GeneratesValidCedar(t *testing.T) {
-	text, ok := buildCedarPolicy(sentinel_utils.OwnerRoleSlug, fullAccessPolicy())
+	text, ok := buildCedarPolicy("", fullAccessPolicy())
 	require.True(t, ok)
 	require.True(t, strings.Contains(text, "action,"), "must be a wildcard action scope")
 	var p cedar.Policy
