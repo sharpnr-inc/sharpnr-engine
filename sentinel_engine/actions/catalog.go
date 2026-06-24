@@ -1,5 +1,7 @@
 package sentinel_actions
 
+import "sync"
+
 // Permission catalog.
 //
 // This is the human-meaningful layer the UI renders. Each Permission wraps one
@@ -7,10 +9,11 @@ package sentinel_actions
 // checkbox list when an admin builds a managed policy, and so we can label the
 // privileges a role/employee effectively holds.
 //
-// The catalog is the source of truth for "what capabilities exist". A managed
-// policy stores a subset of these action Keys; we both render them (via this
-// catalog) and compile them into Cedar (via the generator). Keep this list in
-// sync with the action constants in core_action.go.
+// The catalog is a registry: it ships with a built-in seed (the example domains
+// below) and each feature module contributes its own actions via Register at
+// startup (the composition root). That keeps action ownership with the module
+// that enforces them, while the engine still validates and the FE still renders
+// against one aggregated list.
 
 // Category groups related permissions for display (the section headers in the
 // permission picker). Add new categories here as new domains gain actions.
@@ -29,7 +32,14 @@ type Permission struct {
 	Category    Category `json:"category"`    // grouping for the UI
 }
 
+// registryMu guards catalog and byKey. Registration happens at startup; reads
+// (Catalog/Lookup/IsValid) happen on the request path, so reads take RLock.
+var registryMu sync.RWMutex
+
 // catalog is the ordered registry. Order is the display order within a category.
+// Property actions live here as a transitional seed; they are owned by the
+// org_property module's actions package and will move there once registration is
+// wired in the composition root.
 var catalog = []Permission{
 	// Properties
 	{Key: ViewProperty, Label: "View properties", Description: "View the organization's properties.", Category: CategoryProperties},
@@ -43,17 +53,44 @@ var catalog = []Permission{
 }
 
 // byKey indexes the catalog for O(1) lookup when expanding stored action keys
-// into display metadata.
-var byKey = func() map[Name]Permission {
-	m := make(map[Name]Permission, len(catalog))
-	for _, p := range catalog {
+// into display metadata. Rebuilt by Register on every contribution.
+var byKey = buildIndex(catalog)
+
+func buildIndex(perms []Permission) map[Name]Permission {
+	m := make(map[Name]Permission, len(perms))
+	for _, p := range perms {
 		m[p.Key] = p
 	}
 	return m
-}()
+}
+
+// Register contributes module-owned permissions to the catalog. It is idempotent
+// per Key: re-registering a Key overwrites its metadata in place (keeping display
+// order) rather than duplicating it, so a module and the transitional seed can
+// declare the same action without producing two picker rows. Call at startup,
+// before the catalog is served.
+func Register(perms ...Permission) {
+	registryMu.Lock()
+	defer registryMu.Unlock()
+	for _, p := range perms {
+		if _, exists := byKey[p.Key]; exists {
+			for i := range catalog {
+				if catalog[i].Key == p.Key {
+					catalog[i] = p
+					break
+				}
+			}
+		} else {
+			catalog = append(catalog, p)
+		}
+		byKey[p.Key] = p
+	}
+}
 
 // Catalog returns the full permission catalog (the picker's data source).
 func Catalog() []Permission {
+	registryMu.RLock()
+	defer registryMu.RUnlock()
 	out := make([]Permission, len(catalog))
 	copy(out, catalog)
 	return out
@@ -63,6 +100,8 @@ func Catalog() []Permission {
 // unknown key (e.g. an action removed from the catalog but still referenced by
 // a stored managed policy) so callers can decide how to surface it.
 func Lookup(key Name) (Permission, bool) {
+	registryMu.RLock()
+	defer registryMu.RUnlock()
 	p, ok := byKey[key]
 	return p, ok
 }
@@ -71,6 +110,8 @@ func Lookup(key Name) (Permission, bool) {
 // managed policy's action list on write, so we never generate Cedar that
 // references an action id that doesn't exist.
 func IsValid(key Name) bool {
+	registryMu.RLock()
+	defer registryMu.RUnlock()
 	_, ok := byKey[key]
 	return ok
 }
