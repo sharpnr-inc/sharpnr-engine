@@ -21,7 +21,6 @@ type Category string
 
 const (
 	CategoryProperties Category = "Properties"
-	CategoryDocuments  Category = "Documents" // example domain; not wired into the app yet
 )
 
 // Permission is one catalog entry: a Cedar action plus how to present it.
@@ -40,17 +39,7 @@ var registryMu sync.RWMutex
 // Property actions live here as a transitional seed; they are owned by the
 // org_property module's actions package and will move there once registration is
 // wired in the composition root.
-var catalog = []Permission{
-	// Properties
-	{Key: ViewProperty, Label: "View properties", Description: "View the organization's properties.", Category: CategoryProperties},
-	{Key: CreateProperty, Label: "Create property", Description: "Add a new property to the organization.", Category: CategoryProperties},
-	{Key: AddBusinessModulesInProperty, Label: "Add business modules", Description: "Add business-operation modules (hotel, bar, restaurant…) to a property.", Category: CategoryProperties},
-
-	// Documents (example domain — actions exist but are not yet enforced anywhere)
-	{Key: ViewDocument, Label: "View documents", Description: "View documents.", Category: CategoryDocuments},
-	{Key: EditDocument, Label: "Edit documents", Description: "Edit documents.", Category: CategoryDocuments},
-	{Key: DeleteDocument, Label: "Delete documents", Description: "Delete documents.", Category: CategoryDocuments},
-}
+var catalog = []Permission{}
 
 // byKey indexes the catalog for O(1) lookup when expanding stored action keys
 // into display metadata. Rebuilt by Register on every contribution.

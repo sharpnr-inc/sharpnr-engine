@@ -7,22 +7,22 @@ import (
 )
 
 // registerSentinelRoutes mounts the authorization (Sentinel) endpoints used by
-// the frontend to author managed policies, manage roles, and inspect the
+// the frontend to author Cedar policies, manage roles, and inspect the
 // privileges a role grants.
 //
 //	/sentinel
 //	├── GET  /permissions                          the permission catalog (picker source)
 //	├── /policies
-//	│   ├── GET                                     list managed policies (org + system)
-//	│   └── POST                                    create a managed policy
+//	│   ├── GET                                     list the org's policies
+//	│   └── POST                                    create a policy (raw Cedar text)
 //	└── /roles
 //	    ├── GET                                     list roles
 //	    ├── POST                                    create a role (+ optional initial policies)
 //	    └── /:roleID
 //	        ├── GET                                 role + its privileges
 //	        └── /policies
-//	            ├── POST                            attach managed policies
-//	            └── DELETE /:policyID               detach a managed policy
+//	            ├── POST                            attach policies
+//	            └── DELETE /:policyID               detach a policy
 func registerSentinelRoutes(rg *gin.RouterGroup, c *orchestrator_controllers.OrchestratorController) {
 	s := rg.Group("/sentinel")
 	{
@@ -30,8 +30,8 @@ func registerSentinelRoutes(rg *gin.RouterGroup, c *orchestrator_controllers.Orc
 
 		policies := s.Group("/policies")
 		{
-			policies.GET("", c.ListManagedPoliciesHandler)
-			policies.POST("", c.CreateManagedPolicyHandler)
+			policies.GET("", c.ListPoliciesHandler)
+			policies.POST("", c.CreatePolicyHandler)
 		}
 
 		roles := s.Group("/roles")

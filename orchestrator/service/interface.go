@@ -10,7 +10,7 @@ import (
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 	sentinel_actions "sharpnr-engine/sentinel_engine/actions"
-	sentinelservice "sharpnr-engine/sentinel_engine/service"
+	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
 	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
@@ -34,21 +34,21 @@ type OrchestratorServiceInterface interface {
 /* ---------------------------------- <***> --------------------------------- */
 
 // SentinelOrchestrationInterface exposes the authorization authoring + display
-// surface (managed policies, roles, privileges) to the frontend. Everything
+// surface (Cedar policies, roles, privileges) to the frontend. Everything
 // delegates to the Sentinel service; the orchestrator is just the HTTP facade.
 type SentinelOrchestrationInterface interface {
 	// ListPermissionCatalog returns the full catalog of permissions the UI
-	// renders when building a managed policy. Static; no org scoping needed.
+	// renders when building a policy. Static; no org scoping needed.
 	ListPermissionCatalog(ctx context.Context) []sentinel_actions.Permission
 
-	ListManagedPolicies(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelservice.ManagedPolicyView, error)
-	CreateManagedPolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelservice.CreateManagedPolicyInput) (uuid.UUID, error)
+	ListPolicies(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.PolicyView, error)
+	CreatePolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error)
 
-	ListRoles(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelservice.RoleView, error)
-	CreateRole(ctx context.Context, orgID, emplID uuid.UUID, in sentinelservice.CreateRoleInput) (uuid.UUID, error)
-	GetRolePrivileges(ctx context.Context, orgID, emplID, roleID uuid.UUID) (sentinelservice.RolePrivilegesView, error)
+	ListRoles(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.RoleView, error)
+	CreateRole(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.CreateRoleInput) (uuid.UUID, error)
+	GetRolePrivileges(ctx context.Context, orgID, emplID, roleID uuid.UUID) (sentinelDtos.RolePrivilegesView, error)
 
-	AttachPoliciesToRole(ctx context.Context, orgID, emplID, roleID uuid.UUID, in sentinelservice.AttachPoliciesInput) error
+	AttachPoliciesToRole(ctx context.Context, orgID, emplID, roleID uuid.UUID, in sentinelDtos.AttachPoliciesInput) error
 	DetachPolicyFromRole(ctx context.Context, orgID, emplID, roleID, policyID uuid.UUID) error
 }
 

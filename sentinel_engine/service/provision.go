@@ -4,70 +4,83 @@ import (
 	"context"
 	"fmt"
 	dbtx "sharpnr-engine/pkg/dbTx"
+	sentinelDefaultpolicies "sharpnr-engine/sentinel_engine/default_policies"
 	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-// ProvisionOrganization sets up a new org's authorization defaults: it creates
-// the "Owner" role, attaches the shared system "Full Access" managed policy to
-// it, generates the owner's Cedar from that attachment, and seeds the first
-// employee as owner. Runs in one transaction so an org never ends up
-// half-provisioned (a role with no policy, or an owner with no role).
+// ProvisionOrganization sets up a new org's authorization defaults in one
+// transaction so an org is never left half-provisioned:
 //
-// The owner grant goes through the same managed-policy path as every other role
-// (attach -> generate), so it appears in the policy catalog and in the owner
-// role's privileges — no special-cased hand-authored policy row.
+//  1. Create the "Owner" role (slug "owner", which the default policy targets).
+//  2. Create the owner's full-access policy from the default Cedar text.
+//  3. Attach that policy to the owner role (role_policies bookkeeping).
+//  4. Assign the founding employee to the owner role.
+//  5. Seed the default top-level "Stakeholders" group (empty; no policies yet).
+//
+// After commit it invalidates the org's compiled policy-set cache so the new
+// owner policy takes effect on the next authorization call.
 func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firstUserID uuid.UUID) error {
-	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
 		role := &sentinelengine_models.Role{
 			ID:             uuid.New(),
 			OrganizationID: orgID,
-			// Slug:           sentinel_utils.OwnerRoleSlug,
-			Name:        "Owner",
-			Description: "Full access within the organization.",
+			Slug:           ownerRoleSlug,
+			Name:           ownerRoleName,
+			Description:    ownerRoleDesc,
 		}
 		if err := s.repo.CreateRole(txCtx, role); err != nil {
 			return fmt.Errorf("create owner role: %w", err)
 		}
 
-		// Attach the shared "Full Access" system managed policy (seeded in
-		// migration 000032) to the owner role.
-		edge := &sentinelengine_models.RolePolicy{
+		policy := &sentinelengine_models.SentinelPolicy{
+			ID:             uuid.New(),
 			OrganizationID: orgID,
-			RoleID:         role.ID,
-			// ManagedPolicyID: sentinel_utils.SystemFullAccessPolicyID,
-			AttachedBy: firstUserID,
+			Name:           ownerPolicyName,
+			Description:    ownerPolicyDesc,
+			Policy:         string(sentinelDefaultpolicies.OwnerPolcy),
+			Enabled:        true,
 		}
-		if err := s.repo.AttachRolePolicy(txCtx, edge); err != nil {
-			return fmt.Errorf("attach full-access policy to owner role: %w", err)
+		if err := s.repo.CreatePolicy(txCtx, policy); err != nil {
+			return fmt.Errorf("create owner policy: %w", err)
 		}
 
-		// Generate the owner's Cedar from the attachment. Runs in this same tx
-		// (WithTx joins the ambient tx); InvalidateOrg is a no-op for a brand-new
-		// org that has nothing cached yet.
-		if err := s.RegenerateRolePolicies(txCtx, orgID, role.ID); err != nil {
-			return fmt.Errorf("generate owner policies: %w", err)
+		rp := &sentinelengine_models.RolePolicies{
+			ID:               uuid.New(),
+			OrganizationID:   orgID,
+			RoleID:           role.ID,
+			SentinelPolicyID: policy.ID,
+		}
+		if err := s.repo.CreateRolePolicy(txCtx, rp); err != nil {
+			return fmt.Errorf("attach owner policy to owner role: %w", err)
 		}
 
 		if err := s.repo.AssignUserRole(txCtx, orgID, firstUserID, role.ID); err != nil {
 			return fmt.Errorf("assign first user as owner: %w", err)
 		}
 
-		// Seed the default top-level "Stakeholders" group every org starts with.
 		group := &sentinelengine_models.Group{
 			ID:             uuid.New(),
 			OrganizationID: orgID,
-			// Slug:           sentinel_utils.StakeholdersGroupSlug,
-			// Name:           sentinel_utils.StakeholdersGroupName,
-			// Description:    sentinel_utils.StakeholdersGroupDesc,
+			Slug:           stakeholdersGroupSlug,
+			Name:           stakeholdersGroupName,
+			Description:    stakeholdersGroupDesc,
 		}
 		if err := s.repo.CreateGroup(txCtx, group); err != nil {
 			return fmt.Errorf("create default stakeholders group: %w", err)
 		}
 		return nil
 	})
+	if err != nil {
+		return err
+	}
+
+	// The owner policy was added; drop the org's cached policy set so the next
+	// authorization recompiles it from the (now committed) rows.
+	s.engine.InvalidateOrg(orgID)
+	return nil
 }

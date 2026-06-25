@@ -16,3 +16,14 @@ func (r *sentinelRepo) CreateGroup(ctx context.Context, group *sentinelengine_mo
 	}
 	return r.conn(ctx).Create(group).Error
 }
+
+// ListGroupsByOrgID returns every group defined for an org, parents before
+// children where creation order allows, used to render the group tree.
+func (r *sentinelRepo) ListGroupsByOrgID(ctx context.Context, orgID uuid.UUID) ([]*sentinelengine_models.Group, error) {
+	var groups []*sentinelengine_models.Group
+	err := r.conn(ctx).
+		Where("organization_id = ?", orgID).
+		Order("created_at ASC").
+		Find(&groups).Error
+	return groups, err
+}

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 
-	sentinelservice "sharpnr-engine/sentinel_engine/service"
+	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
@@ -31,48 +31,49 @@ func (c *OrchestratorController) ListPermissionCatalogHandler(ctx *gin.Context) 
 	utils.Success(ctx, http.StatusOK, "Permission catalog fetched", catalog)
 }
 
-// ListManagedPoliciesHandler godoc
-// @Summary      List managed policies
-// @Description  Returns the managed policies an org can attach to roles (its own + system), with permissions expanded.
+// ListPoliciesHandler godoc
+// @Summary      List policies
+// @Description  Returns the org's Cedar policies (raw policy text + metadata).
 // @Tags         Orchestrator.Sentinel
 // @Produce      json
-// @Success      200 {object} utils.Response "Managed policies"
+// @Success      200 {object} utils.Response "Policies"
 // @Router       /orchestrator/sentinel/policies [get]
-func (c *OrchestratorController) ListManagedPoliciesHandler(ctx *gin.Context) {
+func (c *OrchestratorController) ListPoliciesHandler(ctx *gin.Context) {
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
 		return
 	}
-	policies, err := c.orchestService.ListManagedPolicies(ctx.Request.Context(), orgID, emplID)
+	policies, err := c.orchestService.ListPolicies(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
 		return
 	}
-	utils.Success(ctx, http.StatusOK, "Managed policies fetched", policies)
+	utils.Success(ctx, http.StatusOK, "Policies fetched", policies)
 }
 
-// CreateManagedPolicyHandler godoc
-// @Summary      Create a managed policy
+// CreatePolicyHandler godoc
+// @Summary      Create a policy
+// @Description  Persists a raw Cedar policy authored in the frontend (revalidated server-side).
 // @Tags         Orchestrator.Sentinel
 // @Accept       json
 // @Produce      json
 // @Success      201 {object} utils.Response "Created"
 // @Router       /orchestrator/sentinel/policies [post]
-func (c *OrchestratorController) CreateManagedPolicyHandler(ctx *gin.Context) {
+func (c *OrchestratorController) CreatePolicyHandler(ctx *gin.Context) {
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
 		return
 	}
-	req, ok := utils.BindJSON[sentinelservice.CreateManagedPolicyInput](ctx)
+	req, ok := utils.BindJSON[sentinelDtos.AddPolicyRequestDto](ctx)
 	if !ok {
 		return
 	}
-	id, err := c.orchestService.CreateManagedPolicy(ctx.Request.Context(), orgID, emplID, *req)
+	id, err := c.orchestService.CreatePolicy(ctx.Request.Context(), orgID, emplID, *req)
 	if err != nil {
 		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
 		return
 	}
-	utils.Success(ctx, http.StatusCreated, "Managed policy created", gin.H{"id": id})
+	utils.Success(ctx, http.StatusCreated, "Policy created", gin.H{"id": id})
 }
 
 // ListRolesHandler godoc
@@ -108,7 +109,7 @@ func (c *OrchestratorController) CreateRoleHandler(ctx *gin.Context) {
 	if !ok {
 		return
 	}
-	req, ok := utils.BindJSON[sentinelservice.CreateRoleInput](ctx)
+	req, ok := utils.BindJSON[sentinelDtos.CreateRoleInput](ctx)
 	if !ok {
 		return
 	}
@@ -160,7 +161,7 @@ func (c *OrchestratorController) AttachPoliciesToRoleHandler(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	req, ok := utils.BindJSON[sentinelservice.AttachPoliciesInput](ctx)
+	req, ok := utils.BindJSON[sentinelDtos.AttachPoliciesInput](ctx)
 	if !ok {
 		return
 	}

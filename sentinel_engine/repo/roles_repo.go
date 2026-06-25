@@ -46,3 +46,14 @@ func (r *sentinelRepo) GetUserRole(ctx context.Context, orgID, emplID uuid.UUID)
 		First(&ur).Error
 	return ur, err
 }
+
+// ListRolesByOrgID returns every role defined for an org, newest first. Used to
+// populate role dropdowns / management lists in the UI.
+func (r *sentinelRepo) ListRolesByOrgID(ctx context.Context, orgID uuid.UUID) ([]*sentinelengine_models.Role, error) {
+	var roles []*sentinelengine_models.Role
+	err := r.conn(ctx).
+		Where("organization_id = ?", orgID).
+		Order("created_at DESC").
+		Find(&roles).Error
+	return roles, err
+}

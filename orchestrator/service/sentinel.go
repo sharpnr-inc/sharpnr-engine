@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sentinel_actions "sharpnr-engine/sentinel_engine/actions"
-	sentinelservice "sharpnr-engine/sentinel_engine/service"
+	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
 
 	"github.com/google/uuid"
 )
@@ -19,28 +19,28 @@ func (s *orchestratorService) ListPermissionCatalog(ctx context.Context) []senti
 	return s.sentinelService.Catalog()
 }
 
-func (s *orchestratorService) ListManagedPolicies(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelservice.ManagedPolicyView, error) {
-	return s.sentinelService.ListManagedPolicies(ctx, orgID)
+func (s *orchestratorService) ListPolicies(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.PolicyView, error) {
+	return s.sentinelService.ListPolicies(ctx, orgID)
 }
 
-func (s *orchestratorService) CreateManagedPolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelservice.CreateManagedPolicyInput) (uuid.UUID, error) {
-	return s.sentinelService.CreateManagedPolicy(ctx, orgID, in)
+func (s *orchestratorService) CreatePolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error) {
+	return s.sentinelService.CreatePolicy(ctx, orgID, in)
 }
 
-func (s *orchestratorService) ListRoles(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelservice.RoleView, error) {
+func (s *orchestratorService) ListRoles(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.RoleView, error) {
 	return s.sentinelService.ListRoles(ctx, orgID)
 }
 
-func (s *orchestratorService) CreateRole(ctx context.Context, orgID, emplID uuid.UUID, in sentinelservice.CreateRoleInput) (uuid.UUID, error) {
+func (s *orchestratorService) CreateRole(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.CreateRoleInput) (uuid.UUID, error) {
 	return s.sentinelService.CreateRole(ctx, orgID, emplID, in)
 }
 
-func (s *orchestratorService) GetRolePrivileges(ctx context.Context, orgID, emplID, roleID uuid.UUID) (sentinelservice.RolePrivilegesView, error) {
+func (s *orchestratorService) GetRolePrivileges(ctx context.Context, orgID, emplID, roleID uuid.UUID) (sentinelDtos.RolePrivilegesView, error) {
 	return s.sentinelService.GetRolePrivileges(ctx, orgID, roleID)
 }
 
-func (s *orchestratorService) AttachPoliciesToRole(ctx context.Context, orgID, emplID, roleID uuid.UUID, in sentinelservice.AttachPoliciesInput) error {
-	return s.sentinelService.AttachPolicies(ctx, orgID, emplID, roleID, in.ManagedPolicyIDs)
+func (s *orchestratorService) AttachPoliciesToRole(ctx context.Context, orgID, emplID, roleID uuid.UUID, in sentinelDtos.AttachPoliciesInput) error {
+	return s.sentinelService.AttachPolicies(ctx, orgID, emplID, roleID, in.PolicyIDs)
 }
 
 func (s *orchestratorService) DetachPolicyFromRole(ctx context.Context, orgID, emplID, roleID, policyID uuid.UUID) error {

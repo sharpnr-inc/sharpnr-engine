@@ -21,3 +21,21 @@ type Role struct {
 }
 
 func (Role) TableName() string { return "sentinel_engine.roles" }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// A role Can have Multiple Policies
+
+type RolePolicies struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+
+	// Relation:--> Role can Have Multiple Policies
+	RoleID           uuid.UUID
+	SentinelPolicyID uuid.UUID
+
+	CreatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+}
+
+func (RolePolicies) TableName() string { return "sentinel_engine.role_policies" }

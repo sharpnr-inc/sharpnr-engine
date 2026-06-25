@@ -11,29 +11,45 @@ import (
 // Each method participates in an ambient transaction when one is present in the
 // context (see dbtx), so a service can run several writes atomically.
 type SentinelRepositoryInterface interface {
-	CreatePolicy(ctx context.Context, policy *sentinelengine_models.SentinelPolicy) error
-	CreateRole(ctx context.Context, role *sentinelengine_models.Role) error
-	// CreateGroup persists a group (e.g. the default "Stakeholders" group seeded
-	// at provisioning). The ID is application-generated.
-	CreateGroup(ctx context.Context, group *sentinelengine_models.Group) error
-	GetRoleByID(ctx context.Context, id uuid.UUID) (sentinelengine_models.Role, error) // this will return the Role Details
-	// AssignUserRole inserts the (org, user, role) membership edge. orgID is the
-	// tenant scope and must equal the role's OrganizationID.
+	RolesRepository
+	PolicyRepository
+	GroupRepository
+	RolePoliciesRepository
+
 	AssignUserRole(ctx context.Context, orgID, userID, roleID uuid.UUID) error
+	GetUserRole(ctx context.Context, orgID, emplID uuid.UUID) (sentinelengine_models.UserRole, error) // role-assignment edge for an employee
+}
 
-	// this will give us the roleID and then We can Get the Role Details based on roleID
-	GetUserRole(ctx context.Context, orgID, emplID uuid.UUID) (sentinelengine_models.UserRole, error) // this is will return the role details of the employee
+/* ---------------------------------- <***> --------------------------------- */
 
-	// --- Managed policies (authoring layer) + generator support ---
+type RolesRepository interface {
+	CreateRole(ctx context.Context, role *sentinelengine_models.Role) error
+	GetRoleByID(ctx context.Context, id uuid.UUID) (sentinelengine_models.Role, error)
+	ListRolesByOrgID(ctx context.Context, orgID uuid.UUID) ([]*sentinelengine_models.Role, error)
+}
 
-	CreateManagedPolicy(ctx context.Context, mp *sentinelengine_models.ManagedPolicy) error
-	AttachRolePolicy(ctx context.Context, edge *sentinelengine_models.RolePolicy) error
-	DetachRolePolicy(ctx context.Context, orgID, roleID, managedPolicyID uuid.UUID) error
-	ListManagedPolicies(ctx context.Context, orgID uuid.UUID) ([]*sentinelengine_models.ManagedPolicy, error)
-	GetManagedPolicy(ctx context.Context, orgID, id uuid.UUID) (*sentinelengine_models.ManagedPolicy, error)
-	ListRoles(ctx context.Context, orgID uuid.UUID) ([]*sentinelengine_models.Role, error)
-	ListAttachedManagedPolicies(ctx context.Context, orgID, roleID uuid.UUID) ([]*sentinelengine_models.ManagedPolicy, error)
-	// DeleteGeneratedPoliciesByRole removes only the generated rows the generator
-	// owns for a role (tagged with source_role_id); hand-authored policies survive.
-	DeleteGeneratedPoliciesByRole(ctx context.Context, orgID, roleID uuid.UUID) error
+/* ---------------------------------- <***> --------------------------------- */
+
+type PolicyRepository interface {
+	CreatePolicy(ctx context.Context, policy *sentinelengine_models.SentinelPolicy) error
+	GetPolicyByID(ctx context.Context, id uuid.UUID) (sentinelengine_models.SentinelPolicy, error)
+	ListPoliciesByOrgID(ctx context.Context, orgID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error)
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+type GroupRepository interface {
+	CreateGroup(ctx context.Context, group *sentinelengine_models.Group) error
+	ListGroupsByOrgID(ctx context.Context, orgID uuid.UUID) ([]*sentinelengine_models.Group, error)
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// RolePoliciesRepository manages the role<->policy attachment edges. The engine
+// compiles every enabled org policy regardless of attachment; this join is the
+// organizational/UI record of which policies an admin grouped under a role.
+type RolePoliciesRepository interface {
+	CreateRolePolicy(ctx context.Context, rp *sentinelengine_models.RolePolicies) error
+	ListPoliciesByRoleID(ctx context.Context, orgID, roleID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error)
+	DeleteRolePolicy(ctx context.Context, orgID, roleID, policyID uuid.UUID) error
 }

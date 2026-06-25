@@ -15,15 +15,8 @@ type SentinelPolicy struct {
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"` // tenant boundary
 	Name           string    `gorm:"type:text"`                // human label for admin UX (optional)
 	Description    string    `gorm:"type:text"`                // optional
-	Policy         string    `gorm:"type:text;not null"`       // Cedar policy, human-readable text form
+	Policy         string    `gorm:"type:text;not null"`       // Cedar policy,
 	Enabled        bool      `gorm:"not null;default:true"`    // disable without deleting
-
-	// Provenance of a GENERATED policy. Both set => this row was compiled by the
-	// generator from a (role, managed policy) attachment, and the generator owns
-	// it (delete-by-source on regeneration). Both nil => hand-authored; the
-	// generator must never touch it.
-	SourceRoleID          *uuid.UUID `gorm:"type:uuid;index"`
-	SourceManagedPolicyID *uuid.UUID `gorm:"type:uuid"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

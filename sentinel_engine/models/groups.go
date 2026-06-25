@@ -22,12 +22,11 @@ type Group struct {
 
 func (Group) TableName() string { return "sentinel_engine.groups" }
 
-// UserRole is the membership edge: a user (employee) is in a role.
+/* ---------------------------------- <***> --------------------------------- */
+
+// A User(employee) can have multiple Roles
 //
-// Hard-deleted on un-assignment. If you need an audit trail of who was
-// granted/revoked what, write a separate audit log row — do NOT soft-delete
-// this junction, because a soft-deleted (user_id, role_id) pair would block
-// ever re-assigning that same role to that user.
+// Note: UserID is EmployeeID or emplID
 type UserRole struct {
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`   // tenant scope; must equal roles.org_id
 	UserID         uuid.UUID `gorm:"type:uuid;primaryKey"`       // = employee.id
@@ -37,6 +36,28 @@ type UserRole struct {
 }
 
 func (UserRole) TableName() string { return "sentinel_engine.user_roles" }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// this UserPolicy Table here in this table
+//
+// A User or Employee can be in a Group, have Roles multiple Roles, But Some times they need only one Policy
+// So organization Can give user a Policy or Multiple Policy,
+// lets just Say organizaion only wants to give some permission/policy they dont want to give Roles and Add in the Group
+// So thats when this Table Comes in
+// A User Can have multiple Policy
+type UserPolicy struct {
+	ID               uuid.UUID
+	OrganizationID   uuid.UUID
+	EmployeeID       uuid.UUID // User, but i chose to call Employee this time.
+	SentinelPolicyID uuid.UUID
+	CreatedAt        time.Time
+	DeletedAt        gorm.DeletedAt `gorm:"index"`
+}
+
+func (UserPolicy) TableName() string { return "sentinel_engine.user_policies" }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 // UserGroup is the membership edge: a user (employee) is in a group.
 type UserGroup struct {
