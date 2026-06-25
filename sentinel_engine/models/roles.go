@@ -27,15 +27,16 @@ func (Role) TableName() string { return "sentinel_engine.roles" }
 // A role Can have Multiple Policies
 
 type RolePolicies struct {
-	ID             uuid.UUID
-	OrganizationID uuid.UUID
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`
 
-	// Relation:--> Role can Have Multiple Policies
-	RoleID           uuid.UUID
-	SentinelPolicyID uuid.UUID
+	RoleID           uuid.UUID `gorm:"type:uuid;not null;index"`
+	SentinelPolicyID uuid.UUID `gorm:"type:uuid;not null;index"`
 
 	CreatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
-func (RolePolicies) TableName() string { return "sentinel_engine.role_policies" }
+func (RolePolicies) TableName() string {
+	return "sentinel_engine.role_policies"
+}

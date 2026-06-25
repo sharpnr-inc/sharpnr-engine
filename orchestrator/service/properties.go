@@ -24,26 +24,6 @@ const resourceTypeProperty = "Property"
 
 func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error) {
 
-	// Authorization: can this employee view properties in this org? This is an
-	// org-wide listing (no single property instance), so the org id doubles as
-	// the resource handle; the engine stamps orgId on both principal and
-	// resource, so the tenant guard in the policy holds.
-	// decision, err := s.sentinelEngine.IsAuthorized(ctx, sentinelengine.AuthorizeInput{
-	// 	OrgID:  orgID,
-	// 	UserID: emplID,
-	// 	Action: string(sentinel_actions.ViewProperty),
-	// 	Resource: sentinelengine.Resource{
-	// 		Type: resourceTypeProperty,
-	// 		ID:   orgID.String(),
-	// 	},
-	// })
-	// if err != nil {
-	// 	return nil, fmt.Errorf("authorize view properties: %w", err)
-	// }
-	// if !decision.Allowed {
-	// 	return nil, fmt.Errorf("forbidden: not allowed to view properties")
-	// }
-
 	res, err := s.orgPropertyService.GetPropertiesOfOrg(ctx, orgID)
 	if err != nil {
 		return nil, err
@@ -93,53 +73,6 @@ func (c *orchestratorService) GetPropertyDetail(ctx context.Context, orgID, prop
 /* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) CreateProperty(ctx context.Context, orgID, emplID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error {
-	// Authorize BEFORE opening a transaction — there's no point starting a write
-	// the caller may not be allowed to make. The property doesn't exist yet, so
-	// the org id is the resource handle; the engine stamps orgId on both the
-	// principal and the resource, satisfying the tenant guard in the owner policy
-	// (`resource.orgId == principal.orgId`).
-	// decision, err := s.sentinelEngine.IsAuthorized(ctx, sentinelengine.AuthorizeInput{
-	// 	OrgID:  uuid.New(),
-	// 	UserID: emplID,
-	// 	Action: string(sentinel_actions.CreateProperty),
-	// 	Resource: sentinelengine.Resource{
-	// 		Type: resourceTypeProperty,
-	// 		ID:   orgID.String(),
-	// 	},
-	// })
-	// if err != nil {
-	// 	// Infrastructure error (couldn't load policies/membership). Fail closed.
-	// 	slog.Error("sentinel: authorization check errored",
-	// 		"action", sentinel_actions.CreateProperty,
-	// 		"org_id", orgID,
-	// 		"user_id", emplID,
-	// 		"error", err.Error(),
-	// 	)
-	// 	return fmt.Errorf("authorize create property: %w", err)
-	// }
-
-	// // Log the full decision so the engine can be seen working end to end:
-	// // allowed/denied, which policy ids drove it (Reasons), and any per-policy
-	// // evaluation errors (Errors) that did not change the authoritative outcome.
-	// slog.Info("sentinel: authorization decision",
-	// 	"action", sentinel_actions.CreateProperty,
-	// 	"org_id", uuid.New(),
-	// 	"user_id", emplID,
-	// 	"resource_type", resourceTypeProperty,
-	// 	"resource_id", orgID.String(),
-	// 	"allowed", decision.Allowed,
-	// 	"reasons", decision.Reasons,
-	// 	"eval_errors", decision.Errors,
-	// )
-
-	// if !decision.Allowed {
-	// 	slog.Warn("sentinel: create property denied",
-	// 		"action", sentinel_actions.CreateProperty,
-	// 		"org_id", orgID,
-	// 		"user_id", emplID,
-	// 	)
-	// 	return fmt.Errorf("forbidden: not allowed to create a property in this organization")
-	// }
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)

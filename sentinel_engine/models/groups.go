@@ -47,15 +47,18 @@ func (UserRole) TableName() string { return "sentinel_engine.user_roles" }
 // So thats when this Table Comes in
 // A User Can have multiple Policy
 type UserPolicy struct {
-	ID               uuid.UUID
-	OrganizationID   uuid.UUID
-	EmployeeID       uuid.UUID // User, but i chose to call Employee this time.
-	SentinelPolicyID uuid.UUID
-	CreatedAt        time.Time
-	DeletedAt        gorm.DeletedAt `gorm:"index"`
+	ID               uuid.UUID `gorm:"type:uuid;primaryKey"`
+	OrganizationID   uuid.UUID `gorm:"type:uuid;not null;index"`
+	EmployeeID       uuid.UUID `gorm:"type:uuid;not null;index"`
+	SentinelPolicyID uuid.UUID `gorm:"type:uuid;not null;index"`
+
+	CreatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
-func (UserPolicy) TableName() string { return "sentinel_engine.user_policies" }
+func (UserPolicy) TableName() string {
+	return "sentinel_engine.user_policies"
+}
 
 /* ---------------------------------- <***> --------------------------------- */
 
