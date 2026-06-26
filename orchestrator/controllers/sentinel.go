@@ -11,24 +11,108 @@ import (
 	"github.com/google/uuid"
 )
 
-// Sentinel (authorization) endpoints: the managed-policy authoring + role/
-// privilege surface the frontend uses to build roles and show what they grant.
-// All handlers resolve the tenant context the same way as the rest of the
-// orchestrator and delegate to the service.
+// Sentinel (authorization) endpoints: the policy authoring + role/privilege
+// surface, and the resource-centric policy builder. All handlers resolve the
+// tenant context the same way as the rest of the orchestrator and delegate to
+// the service.
 
-// ListPermissionCatalogHandler godoc
-// @Summary      List the permission catalog
-// @Description  Returns every permission the UI can put into a managed policy, grouped by category.
+// ListPrincipalsHandler godoc
+// @Summary      List the principal palette
+// @Description  Returns the principal entity types (User/Role/Group) plus the org's roles and groups the policy builder can scope a principal to.
 // @Tags         Orchestrator.Sentinel
 // @Produce      json
-// @Success      200 {object} utils.Response "Catalog"
-// @Router       /orchestrator/sentinel/permissions [get]
-func (c *OrchestratorController) ListPermissionCatalogHandler(ctx *gin.Context) {
-	if _, _, ok := c.resolveRequestContexts(ctx); !ok {
+// @Success      200 {object} utils.Response "Principals"
+// @Router       /orchestrator/sentinel/principals [get]
+func (c *OrchestratorController) ListPrincipalsHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
 		return
 	}
-	catalog := c.orchestService.ListPermissionCatalog(ctx.Request.Context())
-	utils.Success(ctx, http.StatusOK, "Permission catalog fetched", catalog)
+	principals, err := c.orchestService.ListPrincipals(ctx.Request.Context(), orgID, emplID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		return
+	}
+	utils.Success(ctx, http.StatusOK, "Principals fetched", principals)
+}
+
+// ListResourcesHandler godoc
+// @Summary      List resource types
+// @Description  Returns the resource types a policy can be scoped to, each with its actions and attributes (the policy builder's resource picker).
+// @Tags         Orchestrator.Sentinel
+// @Produce      json
+// @Success      200 {object} utils.Response "Resources"
+// @Router       /orchestrator/sentinel/resources [get]
+func (c *OrchestratorController) ListResourcesHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+	resources := c.orchestService.ListResources(ctx.Request.Context(), orgID, emplID)
+	utils.Success(ctx, http.StatusOK, "Resources fetched", resources)
+}
+
+// GetResourceActionsHandler godoc
+// @Summary      List a resource type's actions
+// @Description  Returns the actions applicable to the given resource type.
+// @Tags         Orchestrator.Sentinel
+// @Produce      json
+// @Param        type path string true "resource entity type, e.g. Property"
+// @Success      200 {object} utils.Response "Actions"
+// @Router       /orchestrator/sentinel/resources/{type}/actions [get]
+func (c *OrchestratorController) GetResourceActionsHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+	actions, err := c.orchestService.GetResourceActions(ctx.Request.Context(), orgID, emplID, ctx.Param("type"))
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
+		return
+	}
+	utils.Success(ctx, http.StatusOK, "Resource actions fetched", actions)
+}
+
+// GetResourceAttributesHandler godoc
+// @Summary      List a resource type's attributes
+// @Description  Returns the ABAC attributes of the given resource type (for `when { resource.<attr> ... }`).
+// @Tags         Orchestrator.Sentinel
+// @Produce      json
+// @Param        type path string true "resource entity type, e.g. Property"
+// @Success      200 {object} utils.Response "Attributes"
+// @Router       /orchestrator/sentinel/resources/{type}/attributes [get]
+func (c *OrchestratorController) GetResourceAttributesHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+	attrs, err := c.orchestService.GetResourceAttributes(ctx.Request.Context(), orgID, emplID, ctx.Param("type"))
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
+		return
+	}
+	utils.Success(ctx, http.StatusOK, "Resource attributes fetched", attrs)
+}
+
+// ListResourceInstancesHandler godoc
+// @Summary      List a resource type's live instances
+// @Description  Returns the org's live instances of the given resource type (e.g. its properties), for `resource in <Type>::"<id>"`.
+// @Tags         Orchestrator.Sentinel
+// @Produce      json
+// @Param        type path string true "resource entity type, e.g. Property"
+// @Success      200 {object} utils.Response "Instances"
+// @Router       /orchestrator/sentinel/resources/{type}/instances [get]
+func (c *OrchestratorController) ListResourceInstancesHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+	instances, err := c.orchestService.ListResourceInstances(ctx.Request.Context(), orgID, emplID, ctx.Param("type"))
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
+		return
+	}
+	utils.Success(ctx, http.StatusOK, "Resource instances fetched", instances)
 }
 
 // ListPoliciesHandler godoc

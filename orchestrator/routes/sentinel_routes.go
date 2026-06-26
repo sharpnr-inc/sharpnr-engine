@@ -11,7 +11,13 @@ import (
 // privileges a role grants.
 //
 //	/sentinel
-//	├── GET  /permissions                          the permission catalog (picker source)
+//	├── GET  /principals                            principal palette: types + roles + groups
+//	├── /resources
+//	│   ├── GET                                     resource types (each with actions + attributes)
+//	│   └── /:type
+//	│       ├── GET /actions                        the type's actions
+//	│       ├── GET /attributes                     the type's ABAC attributes
+//	│       └── GET /instances                      the org's live instances of the type
 //	├── /policies
 //	│   ├── GET                                     list the org's policies
 //	│   └── POST                                    create a policy (raw Cedar text)
@@ -26,7 +32,19 @@ import (
 func registerSentinelRoutes(rg *gin.RouterGroup, c *orchestrator_controllers.OrchestratorController) {
 	s := rg.Group("/sentinel")
 	{
-		s.GET("/permissions", c.ListPermissionCatalogHandler)
+		s.GET("/principals", c.ListPrincipalsHandler) // principal palette: types + roles + groups
+
+		resources := s.Group("/resources")
+		{
+			resources.GET("", c.ListResourcesHandler) // resource types + their actions/attributes
+
+			rt := resources.Group("/:type")
+			{
+				rt.GET("/actions", c.GetResourceActionsHandler)
+				rt.GET("/attributes", c.GetResourceAttributesHandler)
+				rt.GET("/instances", c.ListResourceInstancesHandler)
+			}
+		}
 
 		policies := s.Group("/policies")
 		{

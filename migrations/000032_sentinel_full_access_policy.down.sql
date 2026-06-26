@@ -1,5 +1,3 @@
-DELETE FROM sentinel_engine.managed_policies
-    WHERE id = 'f0000000-0000-4000-8000-000000000001';
-
-ALTER TABLE sentinel_engine.managed_policies
-    DROP COLUMN IF EXISTS all_actions;
+-- (no-op) See 000032_sentinel_full_access_policy.up.sql — the full-access grant
+-- is seeded in application code at provisioning; this migration creates nothing
+-- to reverse.

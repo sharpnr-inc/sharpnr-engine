@@ -34,6 +34,10 @@ func BootstrapModules(
 	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
 
+	// Register each module's resource (descriptor + instance provider) into the
+	// sentinel policy builder. Must run after the owning services exist.
+	registerSentinelCatalog(orgPropertyService)
+
 	/* ---------------------------- inventory engine ---------------------------- */
 	inventoryEngine := bootstrapInventoryEngine(db, txManager, seroEngine)
 	inventory_engine_sero_handlers.RegisterSeroHandler(seroEngine, inventoryEngine)

@@ -3,8 +3,8 @@ package orchestrator_service
 import (
 	"context"
 
-	sentinel_actions "sharpnr-engine/sentinel_engine/actions"
 	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
+	sentinel_resources "sharpnr-engine/sentinel_engine/resources"
 
 	"github.com/google/uuid"
 )
@@ -15,8 +15,24 @@ import (
 // are carried for tenant scope and future per-call authorization, even where a
 // delegate doesn't need them yet.
 
-func (s *orchestratorService) ListPermissionCatalog(ctx context.Context) []sentinel_actions.Permission {
-	return s.sentinelService.Catalog()
+func (s *orchestratorService) ListPrincipals(ctx context.Context, orgID, emplID uuid.UUID) (sentinelDtos.PrincipalsView, error) {
+	return s.sentinelService.GetPrincipals(ctx, orgID)
+}
+
+func (s *orchestratorService) ListResources(ctx context.Context, orgID, emplID uuid.UUID) []sentinel_resources.Descriptor {
+	return s.sentinelService.ListResources()
+}
+
+func (s *orchestratorService) GetResourceActions(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinel_resources.Action, error) {
+	return s.sentinelService.GetResourceActions(resourceType)
+}
+
+func (s *orchestratorService) GetResourceAttributes(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinel_resources.Attribute, error) {
+	return s.sentinelService.GetResourceAttributes(resourceType)
+}
+
+func (s *orchestratorService) ListResourceInstances(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinel_resources.Ref, error) {
+	return s.sentinelService.ListResourceInstances(ctx, orgID, resourceType)
 }
 
 func (s *orchestratorService) ListPolicies(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.PolicyView, error) {

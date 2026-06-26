@@ -26,7 +26,7 @@ func (s *Sentinel) IsAuthorized(ctx context.Context, in AuthorizeInput) (Result,
 	}
 
 	req := cedar.Request{
-		Principal: cedar.NewEntityUID(entityUser, types.String(in.UserID.String())),
+		Principal: cedar.NewEntityUID(EntityUser, types.String(in.UserID.String())),
 		Action:    sentinel_actions.Action(in.Action),
 		Resource:  cedar.NewEntityUID(types.EntityType(in.Resource.Type), types.String(in.Resource.ID)),
 		Context:   cedar.NewRecord(toRecordMap(in.Context)),

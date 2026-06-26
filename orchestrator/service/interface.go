@@ -9,8 +9,8 @@ import (
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
-	sentinel_actions "sharpnr-engine/sentinel_engine/actions"
 	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
+	sentinel_resources "sharpnr-engine/sentinel_engine/resources"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
 	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
@@ -37,9 +37,14 @@ type OrchestratorServiceInterface interface {
 // surface (Cedar policies, roles, privileges) to the frontend. Everything
 // delegates to the Sentinel service; the orchestrator is just the HTTP facade.
 type SentinelOrchestrationInterface interface {
-	// ListPermissionCatalog returns the full catalog of permissions the UI
-	// renders when building a policy. Static; no org scoping needed.
-	ListPermissionCatalog(ctx context.Context) []sentinel_actions.Permission
+	// Policy-builder palettes. Principals: types + roles + groups. Resources are
+	// resource-centric: list the resource types, then drill into a type's
+	// actions, attributes, and live instances.
+	ListPrincipals(ctx context.Context, orgID, emplID uuid.UUID) (sentinelDtos.PrincipalsView, error)
+	ListResources(ctx context.Context, orgID, emplID uuid.UUID) []sentinel_resources.Descriptor
+	GetResourceActions(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinel_resources.Action, error)
+	GetResourceAttributes(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinel_resources.Attribute, error)
+	ListResourceInstances(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinel_resources.Ref, error)
 
 	ListPolicies(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.PolicyView, error)
 	CreatePolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error)

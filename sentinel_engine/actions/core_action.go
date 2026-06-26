@@ -13,5 +13,3 @@ type Name string
 func Action(name string) types.EntityUID {
 	return cedar.NewEntityUID("Action", types.String(name))
 }
-
-// this is just for example not not the part system yet.

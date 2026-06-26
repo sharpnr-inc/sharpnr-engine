@@ -3,16 +3,17 @@ package sentinelservice
 import (
 	"context"
 
-	sentinel_actions "sharpnr-engine/sentinel_engine/actions"
 	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
+	sentinel_resources "sharpnr-engine/sentinel_engine/resources"
 
 	"github.com/google/uuid"
 )
 
 // SentinelService is the authorization authoring service injected into other
 // modules (and exposed to the frontend through the orchestrator). It owns
-// provisioning, the permission catalog, and CRUD over policies, roles, groups,
-// and their attachments. The engine (evaluation) lives separately.
+// provisioning, the policy builder's palettes (principals + resources), and CRUD
+// over policies, roles, groups, and their attachments. The engine (evaluation)
+// lives separately.
 type SentinelService interface {
 	// ProvisionOrganization sets up a new org's authorization defaults: the
 	// full-access "Owner" role + its policy, the founding employee's owner
@@ -23,8 +24,18 @@ type SentinelService interface {
 	// GetEmployeeRole resolves the role assigned to an employee within an org.
 	GetEmployeeRole(ctx context.Context, orgID, emplID uuid.UUID) (sentinelDtos.RoleView, error)
 
-	// Catalog returns the full permission catalog (the policy builder's picker).
-	Catalog() []sentinel_actions.Permission
+	// GetPrincipals returns the policy builder's principal palette: the static
+	// Cedar entity types (User/Role/Group) plus the org's live roles and groups.
+	GetPrincipals(ctx context.Context, orgID uuid.UUID) (sentinelDtos.PrincipalsView, error)
+
+	/* ------------------------------- resources -------------------------------- */
+	// The resource-centric policy builder: list resource types, then drill into a
+	// type's actions, attributes, and live instances.
+
+	ListResources() []sentinel_resources.Descriptor
+	GetResourceActions(resourceType string) ([]sentinel_resources.Action, error)
+	GetResourceAttributes(resourceType string) ([]sentinel_resources.Attribute, error)
+	ListResourceInstances(ctx context.Context, orgID uuid.UUID, resourceType string) ([]sentinel_resources.Ref, error)
 
 	/* -------------------------------- policies -------------------------------- */
 

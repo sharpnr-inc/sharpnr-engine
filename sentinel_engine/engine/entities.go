@@ -18,7 +18,7 @@ func (s *Sentinel) buildEntities(ctx context.Context, in AuthorizeInput) (types.
 	em := types.EntityMap{}
 
 	orgID := in.OrgID.String()
-	orgUID := cedar.NewEntityUID(entityOrganization, types.String(orgID))
+	orgUID := cedar.NewEntityUID(EntityOrganization, types.String(orgID))
 	em[orgUID] = types.Entity{UID: orgUID}
 
 	roleSlugs, err := s.repo.UserRoleSlugs(ctx, in.OrgID, in.UserID)
@@ -37,16 +37,16 @@ func (s *Sentinel) buildEntities(ctx context.Context, in AuthorizeInput) (types.
 	userParents := []types.EntityUID{orgUID}
 
 	for _, slug := range roleSlugs {
-		ruid := cedar.NewEntityUID(entityRole, types.String(slug))
+		ruid := cedar.NewEntityUID(EntityRole, types.String(slug))
 		em[ruid] = types.Entity{UID: ruid, Parents: cedar.NewEntityUIDSet(orgUID)}
 		userParents = append(userParents, ruid)
 	}
 
 	for _, g := range groups {
-		guid := cedar.NewEntityUID(entityGroup, types.String(g.Slug))
+		guid := cedar.NewEntityUID(EntityGroup, types.String(g.Slug))
 		parents := []types.EntityUID{orgUID}
 		if g.ParentSlug != "" {
-			parents = append(parents, cedar.NewEntityUID(entityGroup, types.String(g.ParentSlug)))
+			parents = append(parents, cedar.NewEntityUID(EntityGroup, types.String(g.ParentSlug)))
 		}
 		em[guid] = types.Entity{UID: guid, Parents: cedar.NewEntityUIDSet(parents...)}
 		if g.Direct {
@@ -64,7 +64,7 @@ func (s *Sentinel) buildEntities(ctx context.Context, in AuthorizeInput) (types.
 		}
 		principalAttrs[types.String(k)] = v
 	}
-	userUID := cedar.NewEntityUID(entityUser, types.String(in.UserID.String()))
+	userUID := cedar.NewEntityUID(EntityUser, types.String(in.UserID.String()))
 	em[userUID] = types.Entity{
 		UID:        userUID,
 		Parents:    cedar.NewEntityUIDSet(userParents...),

@@ -25,12 +25,14 @@ import (
 )
 
 // Cedar entity type names. These must match the types referenced in stored
-// policies (e.g. `principal in Role::"owner"`).
+// policies (e.g. `principal in Role::"owner"`). Exported so the policy-builder
+// surface (principals palette) advertises exactly the types the evaluator
+// resolves — the two can never drift.
 const (
-	entityOrganization = "Organization"
-	entityUser         = "User"
-	entityRole         = "Role"
-	entityGroup        = "Group"
+	EntityOrganization = "Organization"
+	EntityUser         = "User"
+	EntityRole         = "Role"
+	EntityGroup        = "Group"
 )
 
 // Sentinel is the engine. Safe for concurrent use.
