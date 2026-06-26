@@ -41,7 +41,7 @@ type SentinelOrchestrationInterface interface {
 	// resource-centric: list the resource types, then drill into a type's
 	// actions, attributes, and live instances.
 	ListPrincipals(ctx context.Context, orgID, emplID uuid.UUID) (sentinelDtos.PrincipalsView, error)
-	ListResources(ctx context.Context, orgID, emplID uuid.UUID) []sentinel_resources.Descriptor
+	ListResources(ctx context.Context, orgID, emplID uuid.UUID) []sentinel_resources.Summary
 	GetResourceActions(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinel_resources.Action, error)
 	GetResourceAttributes(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinel_resources.Attribute, error)
 	ListResourceInstances(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinel_resources.Ref, error)

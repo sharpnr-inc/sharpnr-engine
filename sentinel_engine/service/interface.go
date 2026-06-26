@@ -32,7 +32,7 @@ type SentinelService interface {
 	// The resource-centric policy builder: list resource types, then drill into a
 	// type's actions, attributes, and live instances.
 
-	ListResources() []sentinel_resources.Descriptor
+	ListResources() []sentinel_resources.Summary
 	GetResourceActions(resourceType string) ([]sentinel_resources.Action, error)
 	GetResourceAttributes(resourceType string) ([]sentinel_resources.Attribute, error)
 	ListResourceInstances(ctx context.Context, orgID uuid.UUID, resourceType string) ([]sentinel_resources.Ref, error)

@@ -19,7 +19,7 @@ func (s *orchestratorService) ListPrincipals(ctx context.Context, orgID, emplID 
 	return s.sentinelService.GetPrincipals(ctx, orgID)
 }
 
-func (s *orchestratorService) ListResources(ctx context.Context, orgID, emplID uuid.UUID) []sentinel_resources.Descriptor {
+func (s *orchestratorService) ListResources(ctx context.Context, orgID, emplID uuid.UUID) []sentinel_resources.Summary {
 	return s.sentinelService.ListResources()
 }
 

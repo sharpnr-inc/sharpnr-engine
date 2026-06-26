@@ -52,10 +52,11 @@ func (s *sentinelService) GetPrincipals(ctx context.Context, orgID uuid.UUID) (s
 	}, nil
 }
 
-// ListResources returns every registered resource descriptor — the resource
-// types a policy can be scoped to, with their actions and attributes.
-func (s *sentinelService) ListResources() []sentinel_resources.Descriptor {
-	return sentinel_resources.Descriptors()
+// ListResources returns the registered resource types as lightweight summaries.
+// A type's actions, attributes, and instances are fetched separately so this
+// list stays small as more modules register resources.
+func (s *sentinelService) ListResources() []sentinel_resources.Summary {
+	return sentinel_resources.Summaries()
 }
 
 // GetResourceActions returns the actions declared for one resource type. Errors

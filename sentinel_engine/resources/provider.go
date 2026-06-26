@@ -50,6 +50,16 @@ type Descriptor struct {
 	Attributes  []Attribute `json:"attributes"`
 }
 
+// Summary is the lightweight entry the resource-type list returns — identity
+// only, no actions/attributes. The FE lists these, then fetches a chosen type's
+// actions/attributes/instances on demand, so the list stays small as the project
+// grows.
+type Summary struct {
+	Type        string `json:"type"`
+	Label       string `json:"label"`
+	Description string `json:"description"`
+}
+
 // Ref is one selectable resource instance for the builder's `resource in
 // <Type>::"<id>"` picker. Type is the Cedar entity type, ID the entity id, Label
 // the human name.
@@ -98,14 +108,15 @@ func RegisterProvider(p Provider) {
 	providers[p.Type()] = p
 }
 
-// Descriptors returns every registered resource descriptor, sorted by Type. The
-// FE lists these as the resource picker's options.
-func Descriptors() []Descriptor {
+// Summaries returns every registered resource type as a lightweight summary,
+// sorted by Type — the resource picker's options. Actions/attributes/instances
+// are fetched per type so this payload stays small.
+func Summaries() []Summary {
 	mu.RLock()
 	defer mu.RUnlock()
-	out := make([]Descriptor, 0, len(descriptors))
+	out := make([]Summary, 0, len(descriptors))
 	for _, d := range descriptors {
-		out = append(out, d)
+		out = append(out, Summary{Type: d.Type, Label: d.Label, Description: d.Description})
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Type < out[j].Type })
 	return out
