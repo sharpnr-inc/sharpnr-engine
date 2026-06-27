@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	dbtx "sharpnr-engine/pkg/dbTx"
-	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
-	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
+	sentinelDtos "sharpnr-engine/sentinel/dtos"
+	sentinelengine_models "sharpnr-engine/sentinel/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

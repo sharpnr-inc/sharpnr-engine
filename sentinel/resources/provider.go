@@ -16,7 +16,7 @@ import (
 	"sort"
 	"sync"
 
-	sentinel_actions "sharpnr-engine/sentinel_engine/actions"
+	sentinel_actions "sharpnr-engine/sentinel/actions"
 
 	"github.com/google/uuid"
 )

@@ -9,7 +9,7 @@ import (
 	"context"
 
 	org_property_services "sharpnr-engine/core/org_property/services"
-	sentinel_resources "sharpnr-engine/sentinel_engine/resources"
+	sentinel_resources "sharpnr-engine/sentinel/resources"
 
 	"github.com/google/uuid"
 )

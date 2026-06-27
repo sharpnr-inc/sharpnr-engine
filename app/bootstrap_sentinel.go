@@ -2,8 +2,8 @@ package app
 
 import (
 	dbtx "sharpnr-engine/pkg/dbTx"
-	sentinel_repo "sharpnr-engine/sentinel_engine/repo"
-	sentinelservice "sharpnr-engine/sentinel_engine/service"
+	sentinel_repo "sharpnr-engine/sentinel/repo"
+	sentinelservice "sharpnr-engine/sentinel/service"
 
 	"gorm.io/gorm"
 )

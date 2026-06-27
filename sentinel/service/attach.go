@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	dbtx "sharpnr-engine/pkg/dbTx"
-	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
+	sentinelengine_models "sharpnr-engine/sentinel/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

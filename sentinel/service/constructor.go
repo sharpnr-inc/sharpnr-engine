@@ -2,7 +2,7 @@ package sentinelservice
 
 import (
 	dbtx "sharpnr-engine/pkg/dbTx"
-	sentinel_repo "sharpnr-engine/sentinel_engine/repo"
+	sentinel_repo "sharpnr-engine/sentinel/repo"
 )
 
 type sentinelService struct {

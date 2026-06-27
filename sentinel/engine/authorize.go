@@ -7,7 +7,7 @@ import (
 	"github.com/cedar-policy/cedar-go"
 	"github.com/cedar-policy/cedar-go/types"
 
-	sentinel_actions "sharpnr-engine/sentinel_engine/actions"
+	sentinel_actions "sharpnr-engine/sentinel/actions"
 )
 
 // IsAuthorized answers a single request: can this user perform this action on

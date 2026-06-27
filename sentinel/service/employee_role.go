@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
+	sentinelDtos "sharpnr-engine/sentinel/dtos"
 
 	"github.com/google/uuid"
 )

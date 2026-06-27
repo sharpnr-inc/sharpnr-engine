@@ -6,7 +6,7 @@ import (
 	organization_services "sharpnr-engine/core/organization/services"
 	employee_services "sharpnr-engine/hrms_engine/employees/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	sentinelservice "sharpnr-engine/sentinel_engine/service"
+	sentinelservice "sharpnr-engine/sentinel/service"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 )
 

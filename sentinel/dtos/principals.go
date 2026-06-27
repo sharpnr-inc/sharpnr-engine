@@ -1,7 +1,7 @@
 package sentinelDtos
 
 import (
-	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
+	sentinelengine_models "sharpnr-engine/sentinel/models"
 )
 
 // These DTOs feed the frontend's Cedar policy builder — the "principal" palette.

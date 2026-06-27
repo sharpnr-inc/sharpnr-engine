@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
-	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
+	sentinelDtos "sharpnr-engine/sentinel/dtos"
+	sentinelengine_models "sharpnr-engine/sentinel/models"
 
 	"github.com/cedar-policy/cedar-go"
 	"github.com/google/uuid"

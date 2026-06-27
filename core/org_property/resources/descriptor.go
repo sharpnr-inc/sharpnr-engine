@@ -2,7 +2,7 @@ package orgPropertyresources
 
 import (
 	orgPropertySentinalActions "sharpnr-engine/core/org_property/actions"
-	sentinel_resources "sharpnr-engine/sentinel_engine/resources"
+	sentinel_resources "sharpnr-engine/sentinel/resources"
 )
 
 // Descriptor is the Property resource's policy-builder metadata: its actions

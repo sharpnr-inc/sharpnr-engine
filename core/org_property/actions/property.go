@@ -8,8 +8,8 @@
 package orgPropertySentinalActions
 
 import (
-	sentinel_actions "sharpnr-engine/sentinel_engine/actions"
-	sentinel_resources "sharpnr-engine/sentinel_engine/resources"
+	sentinel_actions "sharpnr-engine/sentinel/actions"
+	sentinel_resources "sharpnr-engine/sentinel/resources"
 )
 
 const (

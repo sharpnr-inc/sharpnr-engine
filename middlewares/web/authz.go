@@ -3,8 +3,8 @@ package webMiddleware
 import (
 	"net/http"
 
-	sentinel_actions "sharpnr-engine/sentinel_engine/actions"
-	sentinelengine "sharpnr-engine/sentinel_engine/engine"
+	sentinel_actions "sharpnr-engine/sentinel/actions"
+	sentinelengine "sharpnr-engine/sentinel/engine"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"

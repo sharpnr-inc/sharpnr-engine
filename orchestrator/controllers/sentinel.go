@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
-	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
+	sentinelDtos "sharpnr-engine/sentinel/dtos"
+	sentinelengine_models "sharpnr-engine/sentinel/models"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"

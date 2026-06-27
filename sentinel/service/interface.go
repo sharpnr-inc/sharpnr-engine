@@ -3,9 +3,9 @@ package sentinelservice
 import (
 	"context"
 
-	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
-	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
-	sentinel_resources "sharpnr-engine/sentinel_engine/resources"
+	sentinelDtos "sharpnr-engine/sentinel/dtos"
+	sentinelengine_models "sharpnr-engine/sentinel/models"
+	sentinel_resources "sharpnr-engine/sentinel/resources"
 
 	"github.com/google/uuid"
 )

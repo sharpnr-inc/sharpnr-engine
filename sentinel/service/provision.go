@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	sentinelDefaultpolicies "sharpnr-engine/sentinel_engine/default_policies"
-	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
+	sentinelDefaultpolicies "sharpnr-engine/sentinel/default_policies"
+	sentinelengine_models "sharpnr-engine/sentinel/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

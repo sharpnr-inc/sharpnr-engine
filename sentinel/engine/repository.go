@@ -6,7 +6,7 @@ import (
 	"github.com/cedar-policy/cedar-go/types"
 	"github.com/google/uuid"
 
-	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
+	sentinelengine_models "sharpnr-engine/sentinel/models"
 )
 
 // GroupMembership is one node in a user's group closure: the group, its parent

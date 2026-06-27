@@ -3,7 +3,7 @@ package app
 import (
 	orgPropertyresources "sharpnr-engine/core/org_property/resources"
 	org_property_services "sharpnr-engine/core/org_property/services"
-	sentinel_resources "sharpnr-engine/sentinel_engine/resources"
+	sentinel_resources "sharpnr-engine/sentinel/resources"
 )
 
 // registerSentinelCatalog wires every module's resource into the sentinel policy
