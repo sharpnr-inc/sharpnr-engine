@@ -100,7 +100,7 @@ func TestNewSharpnrOrchestratorService_WiresAllDependencies(t *testing.T) {
 		employeeHRService   = &stubEmployeeService{}
 		// nil repo is fine: this is a wiring test, no authorization call is made.
 		sentinelEngine  = sentinelengine.New(nil)
-		sentinelService = sentinelservice.NewSentinelService(nil, nil, sentinelEngine)
+		sentinelService = sentinelservice.NewSentinelService(nil, nil)
 	)
 
 	// --- act ---

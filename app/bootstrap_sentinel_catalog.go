@@ -3,7 +3,6 @@ package app
 import (
 	orgPropertyresources "sharpnr-engine/core/org_property/resources"
 	org_property_services "sharpnr-engine/core/org_property/services"
-	organizationResources "sharpnr-engine/core/organization/resources"
 	sentinel_resources "sharpnr-engine/sentinel_engine/resources"
 )
 
@@ -15,10 +14,6 @@ import (
 func registerSentinelCatalog(
 	orgPropertyService org_property_services.OrganizationPropertyServicesInterfaces,
 ) {
-	// Organization — admin actions (authorization management). Descriptor only;
-	// there is one org per tenant, so no instance provider.
-	sentinel_resources.RegisterDescriptor(organizationResources.Descriptor)
-
 	// Property
 	sentinel_resources.RegisterDescriptor(orgPropertyresources.Descriptor)
 	sentinel_resources.RegisterProvider(orgPropertyresources.NewOrgPropertyResources(orgPropertyService))

@@ -5,21 +5,29 @@ import (
 	"fmt"
 
 	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
-	sentinelengine "sharpnr-engine/sentinel_engine/engine"
 	sentinel_resources "sharpnr-engine/sentinel_engine/resources"
 
 	"github.com/google/uuid"
 )
 
+// Cedar entity type names for principals. Kept as literals here (not imported
+// from the engine) so the policy-authoring service carries no dependency on the
+// evaluation engine. They must match the engine's entity types
+// (sentinel_engine/engine: EntityUser/Role/Group) once authorization is wired.
+const (
+	principalTypeUser  = "User"
+	principalTypeRole  = "Role"
+	principalTypeGroup = "Group"
+)
+
 // principalTypes is the static set of Cedar entity types the policy builder can
-// scope a principal to. The type strings come from the engine's exported entity
-// names so the builder advertises exactly what the evaluator resolves. Selecting
-// a specific user (== User::"<uuid>") is deferred, so User exposes only "is".
+// scope a principal to. Selecting a specific user (== User::"<uuid>") is
+// deferred, so User exposes only "is".
 func principalTypes() []sentinelDtos.PrincipalType {
 	return []sentinelDtos.PrincipalType{
-		{Type: sentinelengine.EntityUser, Label: "User", Operators: []string{"is"}},
-		{Type: sentinelengine.EntityRole, Label: "Role", Operators: []string{"in"}},
-		{Type: sentinelengine.EntityGroup, Label: "Group", Operators: []string{"in"}},
+		{Type: principalTypeUser, Label: "User", Operators: []string{"is"}},
+		{Type: principalTypeRole, Label: "Role", Operators: []string{"in"}},
+		{Type: principalTypeGroup, Label: "Group", Operators: []string{"in"}},
 	}
 }
 

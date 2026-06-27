@@ -19,11 +19,8 @@ import (
 //  3. Attach that policy to the owner role (role_policies bookkeeping).
 //  4. Assign the founding employee to the owner role.
 //  5. Seed the default top-level "Stakeholders" group (empty; no policies yet).
-//
-// After commit it invalidates the org's compiled policy-set cache so the new
-// owner policy takes effect on the next authorization call.
 func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firstUserID uuid.UUID) error {
-	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
 		role := &sentinelengine_models.Role{
@@ -76,12 +73,4 @@ func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firs
 		}
 		return nil
 	})
-	if err != nil {
-		return err
-	}
-
-	// The owner policy was added; drop the org's cached policy set so the next
-	// authorization recompiles it from the (now committed) rows.
-	s.engine.InvalidateOrg(orgID)
-	return nil
 }

@@ -13,9 +13,8 @@ import (
 )
 
 // CreatePolicy persists a single raw Cedar policy authored in the frontend. The
-// FE validates with cedar-wasm, but we revalidate here so a malformed policy can
-// never reach the engine (which fails closed on a parse error). On success the
-// org's compiled policy-set cache is dropped so the policy takes effect.
+// FE validates with cedar-wasm, but we revalidate here so a malformed policy is
+// never stored.
 func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error) {
 	text := strings.TrimSpace(in.Policy)
 	if text == "" {
@@ -44,7 +43,6 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 		return uuid.Nil, fmt.Errorf("create policy: %w", err)
 	}
 
-	s.engine.InvalidateOrg(orgID)
 	return policy.ID, nil
 }
 
