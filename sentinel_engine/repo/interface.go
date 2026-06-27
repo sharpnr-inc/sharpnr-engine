@@ -33,7 +33,9 @@ type RolesRepository interface {
 type PolicyRepository interface {
 	CreatePolicy(ctx context.Context, policy *sentinelengine_models.SentinelPolicy) error
 	GetPolicyByID(ctx context.Context, id uuid.UUID) (sentinelengine_models.SentinelPolicy, error)
-	ListPoliciesByOrgID(ctx context.Context, orgID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error)
+	// ListPoliciesByOrgID returns an org's policies; an empty scope means all
+	// scopes, otherwise only policies in that bucket.
+	ListPoliciesByOrgID(ctx context.Context, orgID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]*sentinelengine_models.SentinelPolicy, error)
 }
 
 /* ---------------------------------- <***> --------------------------------- */

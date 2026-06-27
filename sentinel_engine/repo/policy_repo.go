@@ -25,14 +25,17 @@ func (r *sentinelRepo) GetPolicyByID(ctx context.Context, id uuid.UUID) (sentine
 	return policy, err
 }
 
-// ListPoliciesByOrgID returns every policy row for an org (enabled or not),
-// newest first. The authoring UI lists them all; the engine reads only the
-// enabled subset via ListEnabledPolicies.
-func (r *sentinelRepo) ListPoliciesByOrgID(ctx context.Context, orgID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error) {
+// ListPoliciesByOrgID returns an org's policy rows (enabled or not), newest
+// first. An empty scope returns every bucket; a non-empty scope filters to that
+// bucket (organization|role|group|user). The authoring UI lists them; the engine
+// reads only the enabled subset via ListEnabledPolicies.
+func (r *sentinelRepo) ListPoliciesByOrgID(ctx context.Context, orgID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]*sentinelengine_models.SentinelPolicy, error) {
+	q := r.conn(ctx).Where("organization_id = ?", orgID)
+	if scope != "" {
+		q = q.Where("scope = ?", scope)
+	}
+
 	var rows []*sentinelengine_models.SentinelPolicy
-	err := r.conn(ctx).
-		Where("organization_id = ?", orgID).
-		Order("created_at DESC").
-		Find(&rows).Error
+	err := q.Order("created_at DESC").Find(&rows).Error
 	return rows, err
 }

@@ -10,6 +10,7 @@ import (
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
+	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
 	sentinel_resources "sharpnr-engine/sentinel_engine/resources"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
@@ -46,7 +47,7 @@ type SentinelOrchestrationInterface interface {
 	GetResourceAttributes(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinel_resources.Attribute, error)
 	ListResourceInstances(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinel_resources.Ref, error)
 
-	ListPolicies(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.PolicyView, error)
+	ListPolicies(ctx context.Context, orgID, emplID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error)
 	CreatePolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error)
 
 	ListRoles(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.RoleView, error)

@@ -15,6 +15,7 @@ import (
 // policies, builds the principal+resource entity graph from current membership,
 // and evaluates. On any infrastructure error it returns (deny, err) — fail closed.
 func (s *Sentinel) IsAuthorized(ctx context.Context, in AuthorizeInput) (Result, error) {
+	
 	ps, err := s.policySetFor(ctx, in.OrgID)
 	if err != nil {
 		return Result{Allowed: false}, fmt.Errorf("load policies: %w", err)

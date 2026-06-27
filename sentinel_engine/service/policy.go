@@ -21,6 +21,9 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 	if text == "" {
 		return uuid.Nil, fmt.Errorf("policy text is required")
 	}
+	if !in.Scope.Valid() {
+		return uuid.Nil, fmt.Errorf("invalid policy scope %q (want organization|role|group|user)", in.Scope)
+	}
 
 	var p cedar.Policy
 	if err := p.UnmarshalCedar([]byte(text)); err != nil {
@@ -34,6 +37,7 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 		Description:    in.Description,
 		Policy:         text,
 		Enabled:        in.IsEnabled,
+		Scope:          in.Scope,
 	}
 	if err := s.repo.CreatePolicy(ctx, policy); err != nil {
 		return uuid.Nil, fmt.Errorf("create policy: %w", err)
@@ -43,9 +47,14 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 	return policy.ID, nil
 }
 
-// ListPolicies returns every policy authored for an org (enabled or not).
-func (s *sentinelService) ListPolicies(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.PolicyView, error) {
-	rows, err := s.repo.ListPoliciesByOrgID(ctx, orgID)
+// ListPolicies returns the policies authored for an org (enabled or not). An
+// empty scope returns all buckets; a non-empty scope filters to that bucket and
+// must be a valid PolicyScope.
+func (s *sentinelService) ListPolicies(ctx context.Context, orgID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error) {
+	if scope != "" && !scope.Valid() {
+		return nil, fmt.Errorf("invalid policy scope %q (want organization|role|group|user)", scope)
+	}
+	rows, err := s.repo.ListPoliciesByOrgID(ctx, orgID, scope)
 	if err != nil {
 		return nil, fmt.Errorf("list policies: %w", err)
 	}

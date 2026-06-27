@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
+	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
 	sentinel_resources "sharpnr-engine/sentinel_engine/resources"
 
 	"github.com/google/uuid"
@@ -42,7 +43,9 @@ type SentinelService interface {
 	// CreatePolicy persists a raw Cedar policy (authored/validated in the FE),
 	// revalidating that it compiles, and invalidates the org's engine cache.
 	CreatePolicy(ctx context.Context, orgID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error)
-	ListPolicies(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.PolicyView, error)
+	// ListPolicies returns an org's policies; an empty scope means all buckets,
+	// otherwise only that bucket (organization|role|group|user).
+	ListPolicies(ctx context.Context, orgID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error)
 	GetPolicy(ctx context.Context, orgID, policyID uuid.UUID) (sentinelDtos.PolicyView, error)
 
 	/* ---------------------------------- roles --------------------------------- */

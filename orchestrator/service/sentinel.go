@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
+	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
 	sentinel_resources "sharpnr-engine/sentinel_engine/resources"
 
 	"github.com/google/uuid"
@@ -35,8 +36,8 @@ func (s *orchestratorService) ListResourceInstances(ctx context.Context, orgID, 
 	return s.sentinelService.ListResourceInstances(ctx, orgID, resourceType)
 }
 
-func (s *orchestratorService) ListPolicies(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.PolicyView, error) {
-	return s.sentinelService.ListPolicies(ctx, orgID)
+func (s *orchestratorService) ListPolicies(ctx context.Context, orgID, emplID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error) {
+	return s.sentinelService.ListPolicies(ctx, orgID, scope)
 }
 
 func (s *orchestratorService) CreatePolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error) {

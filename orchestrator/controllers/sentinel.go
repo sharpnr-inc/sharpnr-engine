@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	sentinelDtos "sharpnr-engine/sentinel_engine/dtos"
+	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
@@ -117,9 +118,10 @@ func (c *OrchestratorController) ListResourceInstancesHandler(ctx *gin.Context) 
 
 // ListPoliciesHandler godoc
 // @Summary      List policies
-// @Description  Returns the org's Cedar policies (raw policy text + metadata).
+// @Description  Returns the org's Cedar policies (raw policy text + metadata). Optional ?scope= filters by bucket (organization|role|group|user).
 // @Tags         Orchestrator.Sentinel
 // @Produce      json
+// @Param        scope query string false "filter by bucket: organization | role | group | user"
 // @Success      200 {object} utils.Response "Policies"
 // @Router       /orchestrator/sentinel/policies [get]
 func (c *OrchestratorController) ListPoliciesHandler(ctx *gin.Context) {
@@ -127,9 +129,10 @@ func (c *OrchestratorController) ListPoliciesHandler(ctx *gin.Context) {
 	if !ok {
 		return
 	}
-	policies, err := c.orchestService.ListPolicies(ctx.Request.Context(), orgID, emplID)
+	scope := sentinelengine_models.PolicyScope(ctx.Query("scope"))
+	policies, err := c.orchestService.ListPolicies(ctx.Request.Context(), orgID, emplID, scope)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "Policies fetched", policies)
