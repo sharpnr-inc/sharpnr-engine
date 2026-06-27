@@ -1,7 +1,6 @@
 package webMiddleware
 
 import (
-	"log/slog"
 	"net/http"
 
 	sentinel_actions "sharpnr-engine/sentinel_engine/actions"
@@ -56,24 +55,10 @@ func RequirePermission(
 			},
 		})
 		if err != nil {
-			slog.Error("authorization check failed",
-				"error", err.Error(),
-				"action", action,
-				"resource_type", resourceType,
-				"path", ctx.Request.URL.Path,
-			)
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"message": "Forbidden"})
 			return
 		}
 		if !decision.Allowed {
-			slog.Warn("authorization denied",
-				"user_id", userID,
-				"org_id", orgID,
-				"action", action,
-				"resource_type", resourceType,
-				"resource_id", resourceID,
-				"path", ctx.Request.URL.Path,
-			)
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"message": "Forbidden"})
 			return
 		}

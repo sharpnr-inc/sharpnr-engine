@@ -1,7 +1,11 @@
 package orchestrator_routes
 
 import (
+	organizationSentinalActions "sharpnr-engine/core/organization/actions"
+	webMiddleware "sharpnr-engine/middlewares/web"
 	orchestrator_controllers "sharpnr-engine/orchestrator/controllers"
+	sentinel_actions "sharpnr-engine/sentinel_engine/actions"
+	sentinelengine "sharpnr-engine/sentinel_engine/engine"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,39 +33,47 @@ import (
 //	        └── /policies
 //	            ├── POST                            attach policies
 //	            └── DELETE /:policyID               detach a policy
-func registerSentinelRoutes(rg *gin.RouterGroup, c *orchestrator_controllers.OrchestratorController) {
+func registerSentinelRoutes(rg *gin.RouterGroup, c *orchestrator_controllers.OrchestratorController, engine *sentinelengine.Sentinel) {
+	// needs gates a route on a Sentinel-admin action against the Organization
+	// resource (resource id = the caller's org). The owner passes via the
+	// full-access policy seeded at provisioning; everyone else is denied unless
+	// the owner granted them the action.
+	needs := func(action sentinel_actions.Name) gin.HandlerFunc {
+		return webMiddleware.RequirePermission(engine, action, sentinelengine.EntityOrganization, "")
+	}
+
 	s := rg.Group("/sentinel")
 	{
-		s.GET("/principals", c.ListPrincipalsHandler) // principal palette: types + roles + groups
+		s.GET("/principals", needs(organizationSentinalActions.ViewSentinel), c.ListPrincipalsHandler)
 
 		resources := s.Group("/resources")
 		{
-			resources.GET("", c.ListResourcesHandler) // resource types + their actions/attributes
+			resources.GET("", needs(organizationSentinalActions.ViewSentinel), c.ListResourcesHandler)
 
 			rt := resources.Group("/:type")
 			{
-				rt.GET("/actions", c.GetResourceActionsHandler)
-				rt.GET("/attributes", c.GetResourceAttributesHandler)
-				rt.GET("/instances", c.ListResourceInstancesHandler)
+				rt.GET("/actions", needs(organizationSentinalActions.ViewSentinel), c.GetResourceActionsHandler)
+				rt.GET("/attributes", needs(organizationSentinalActions.ViewSentinel), c.GetResourceAttributesHandler)
+				rt.GET("/instances", needs(organizationSentinalActions.ViewSentinel), c.ListResourceInstancesHandler)
 			}
 		}
 
 		policies := s.Group("/policies")
 		{
-			policies.GET("", c.ListPoliciesHandler)
-			policies.POST("", c.CreatePolicyHandler)
+			policies.GET("", needs(organizationSentinalActions.ViewSentinel), c.ListPoliciesHandler)
+			policies.POST("", needs(organizationSentinalActions.CreatePolicy), c.CreatePolicyHandler)
 		}
 
 		roles := s.Group("/roles")
 		{
-			roles.GET("", c.ListRolesHandler)
-			roles.POST("", c.CreateRoleHandler)
+			roles.GET("", needs(organizationSentinalActions.ViewSentinel), c.ListRolesHandler)
+			roles.POST("", needs(organizationSentinalActions.CreateRole), c.CreateRoleHandler)
 
 			role := roles.Group("/:roleID")
 			{
-				role.GET("", c.GetRolePrivilegesHandler)
-				role.POST("/policies", c.AttachPoliciesToRoleHandler)
-				role.DELETE("/policies/:policyID", c.DetachPolicyFromRoleHandler)
+				role.GET("", needs(organizationSentinalActions.ViewSentinel), c.GetRolePrivilegesHandler)
+				role.POST("/policies", needs(organizationSentinalActions.AttachPolicy), c.AttachPoliciesToRoleHandler)
+				role.DELETE("/policies/:policyID", needs(organizationSentinalActions.DetachPolicy), c.DetachPolicyFromRoleHandler)
 			}
 		}
 	}
