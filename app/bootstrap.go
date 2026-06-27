@@ -25,7 +25,7 @@ func BootstrapModules(
 	// Sentinel authorization engine: shared, concurrency-safe. Currently held
 	// only as a dormant placeholder for the orchestrator; it is NOT wired into
 	// the Sentinel service or its routes yet (authorization comes later).
-	sentinelEngine := bootstrapSentinelEngine(db)
+	// sentinelEngine := bootstrapSentinelEngine(db)
 
 	// Sentinel authoring service: policy/role/group CRUD + attach/detach. No
 	// engine dependency.
@@ -120,21 +120,18 @@ func BootstrapModules(
 		inventoryEngine,
 		orgSupplierService,
 		employeesHRService,
-		sentinelEngine,
 		sentinelService,
 	)
 
 	utilitiesApiService := bootstrapUtilitiesApiService(db)
 
 	return &AppModules{
-		organizationService:   organizationService,
-		orgSignupService:      orgSignupService,
-		orgPropertyService:    orgPropertyService,
-		orgLegalEntityService: orgLegalEntityService,
-
+		organizationService:      organizationService,
+		orgSignupService:         orgSignupService,
+		orgPropertyService:       orgPropertyService,
+		orgLegalEntityService:    orgLegalEntityService,
 		employeesIdentityService: employeesIdentityService,
 		employeesHRService:       employeesHRService,
-
 		accountingService:        accountingService,
 		sharpAuthService:         identityService,
 		hospitality:              hospitality,
@@ -144,7 +141,6 @@ func BootstrapModules(
 		sseEngine:                sseEngine,
 		orgCustomerService:       orgCustomerService,
 		utilitiesApiService:      utilitiesApiService,
-		sentinelEngine:           sentinelEngine,
 	}
 
 }

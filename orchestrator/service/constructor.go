@@ -53,7 +53,7 @@ func NewSharpnrOrchestratorService(
 	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	employeeHRService employee_services.EmployeesHRServiceInterface,
-	sentinelEngine *sentinelengine.Sentinel,
+
 	sentinelService sentinelservice.SentinelService,
 ) *orchestratorService {
 	return &orchestratorService{
@@ -70,7 +70,6 @@ func NewSharpnrOrchestratorService(
 		inventoryEngine:         inventoryEngine,
 		supplierService:         supplierService,
 		employeeHRService:       employeeHRService,
-		sentinelEngine:          sentinelEngine,
 		sentinelService:         sentinelService,
 	}
 }
