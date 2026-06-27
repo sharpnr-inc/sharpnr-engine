@@ -36,6 +36,7 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 		Name:           in.Name,
 		Description:    in.Description,
 		Policy:         text,
+		PolicyJson:     in.PolicyJson,
 		Enabled:        in.IsEnabled,
 		Scope:          in.Scope,
 	}

@@ -15,6 +15,7 @@ import (
 // Rebuilt on every authorization call (unlike the policy set, which is cached),
 // because membership and principal attributes change constantly.
 func (s *Sentinel) buildEntities(ctx context.Context, in AuthorizeInput) (types.EntityMap, error) {
+
 	em := types.EntityMap{}
 
 	orgID := in.OrgID.String()
@@ -25,6 +26,7 @@ func (s *Sentinel) buildEntities(ctx context.Context, in AuthorizeInput) (types.
 	if err != nil {
 		return nil, fmt.Errorf("load roles: %w", err)
 	}
+
 	groups, err := s.repo.UserGroupClosure(ctx, in.OrgID, in.UserID)
 	if err != nil {
 		return nil, fmt.Errorf("load groups: %w", err)

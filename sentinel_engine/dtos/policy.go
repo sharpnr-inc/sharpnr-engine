@@ -1,6 +1,7 @@
 package sentinelDtos
 
 import (
+	"encoding/json"
 	sentinelengine_models "sharpnr-engine/sentinel_engine/models"
 
 	"github.com/google/uuid"
@@ -12,9 +13,10 @@ import (
 type AddPolicyRequestDto struct {
 	Name        string                            `json:"name"`
 	Description string                            `json:"description"`
-	Policy      string                            `json:"policy"`  // raw Cedar policy text from the frontend
-	IsEnabled   bool                              `json:"enabled"` // whether the policy is active in the engine
-	Scope       sentinelengine_models.PolicyScope `json:"scope"`   // organization | role | group | user
+	Policy      string                            `json:"policy"`     // raw Cedar policy text from the frontend
+	PolicyJson  json.RawMessage                   `json:"policyJson"` // optional Cedar JSON form (FE storage)
+	IsEnabled   bool                              `json:"enabled"`    // whether the policy is active in the engine
+	Scope       sentinelengine_models.PolicyScope `json:"scope"`      // organization | role | group | user
 }
 
 // PolicyView is the read shape for a stored policy. It exposes the raw Cedar text
@@ -25,6 +27,7 @@ type PolicyView struct {
 	Name        string                            `json:"name"`
 	Description string                            `json:"description"`
 	Policy      string                            `json:"policy"`
+	PolicyJson  json.RawMessage                   `json:"policyJson"`
 	Enabled     bool                              `json:"enabled"`
 	Scope       sentinelengine_models.PolicyScope `json:"scope"`
 }
@@ -36,6 +39,7 @@ func ToPolicyView(p *sentinelengine_models.SentinelPolicy) PolicyView {
 		Name:        p.Name,
 		Description: p.Description,
 		Policy:      p.Policy,
+		PolicyJson:  p.PolicyJson,
 		Enabled:     p.Enabled,
 		Scope:       p.Scope,
 	}
