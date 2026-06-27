@@ -11,7 +11,6 @@ import (
 	employee_services "sharpnr-engine/hrms_engine/employees/services"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	sentinelengine "sharpnr-engine/sentinel/engine"
 	sentinelservice "sharpnr-engine/sentinel/service"
 	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
@@ -32,11 +31,7 @@ type orchestratorService struct {
 	inventoryEngine         inventory_engine_services.InventoryEngineServicesInterface
 	supplierService         suppliers_service.SupplierServiceInterface
 	employeeHRService       employee_services.EmployeesHRServiceInterface
-	// sentinelEngine answers authorization questions: s.sentinelEngine.IsAuthorized(...)
-	sentinelEngine *sentinelengine.Sentinel
-	// sentinelService is the managed-policy authoring + role/privilege surface
-	// the orchestrator exposes to the frontend.
-	sentinelService sentinelservice.SentinelService
+	sentinelService         sentinelservice.SentinelService
 }
 
 func NewSharpnrOrchestratorService(
