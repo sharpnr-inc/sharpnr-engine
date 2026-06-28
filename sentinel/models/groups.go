@@ -28,6 +28,7 @@ func (Group) TableName() string { return "sentinel_engine.groups" }
 //
 // Note: UserID is EmployeeID or emplID
 type UserRole struct {
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`   // tenant scope; must equal roles.org_id
 	UserID         uuid.UUID `gorm:"type:uuid;primaryKey"`       // = employee.id
 	RoleID         uuid.UUID `gorm:"type:uuid;primaryKey;index"` // -> sentinel_engine.roles.id
@@ -64,6 +65,7 @@ func (UserPolicy) TableName() string {
 
 // UserGroup is the membership edge: a user (employee) is in a group.
 type UserGroup struct {
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
 	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`   // tenant scope; must equal groups.org_id
 	UserID         uuid.UUID `gorm:"type:uuid;primaryKey"`       // = employee.id
 	GroupID        uuid.UUID `gorm:"type:uuid;primaryKey;index"` // -> sentinel_engine.groups.id

@@ -48,3 +48,8 @@ func ToRoleViews(rs []*sentinelengine_models.Role) []RoleView {
 	}
 	return out
 }
+
+type UpdateRoleDetailsRequestDto struct {
+	Name        *string
+	Description *string
+}
