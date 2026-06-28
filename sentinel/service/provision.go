@@ -13,7 +13,7 @@ import (
 // ProvisionOrganization sets up a new org's authorization defaults in one
 // transaction so an org is never left half-provisioned:
 //
-//  1. Create the "Owner" role (slug "owner", which the default policy targets).
+//  1. Create the "Owner" role.
 //  2. Create the owner's full-access policy from the default Cedar text.
 //  3. Attach that policy to the owner role (role_policies bookkeeping).
 //  4. Assign the founding employee to the owner role.
@@ -25,7 +25,6 @@ func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firs
 		role := &sentinelengine_models.Role{
 			ID:             uuid.New(),
 			OrganizationID: orgID,
-			Slug:           ownerRoleSlug,
 			Name:           ownerRoleName,
 			Description:    ownerRoleDesc,
 		}

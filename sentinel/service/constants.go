@@ -1,10 +1,7 @@
 package sentinelservice
 
-// Well-known slugs and labels seeded at provisioning. The owner role's slug must
-// stay "owner" because the default owner policy (default_policies.OwnerPolcy)
-// references Role::"owner" by text, and the engine resolves roles by slug.
+// Well-known labels seeded at provisioning.
 const (
-	ownerRoleSlug   = "owner"
 	ownerRoleName   = "Owner"
 	ownerRoleDesc   = "Full access within the organization."
 	ownerPolicyName = "Owner — Full Access"

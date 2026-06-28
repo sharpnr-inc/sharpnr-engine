@@ -23,9 +23,13 @@ type SentinelRepositoryInterface interface {
 /* ---------------------------------- <***> --------------------------------- */
 
 type RolesRepository interface {
+
+	// Create the Roles in The DB.
 	CreateRole(ctx context.Context, role *sentinelengine_models.Role) error
+	// Get Role By Role.ID returns the Role 
 	GetRoleByID(ctx context.Context, id uuid.UUID) (sentinelengine_models.Role, error)
 	ListRolesByOrgID(ctx context.Context, orgID uuid.UUID) ([]*sentinelengine_models.Role, error)
+	
 }
 
 /* ---------------------------------- <***> --------------------------------- */

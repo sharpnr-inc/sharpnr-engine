@@ -14,24 +14,17 @@ import (
 )
 
 // CreateRole creates a role and, optionally, attaches an initial set of existing
-// policies to it — all in one transaction. The slug is the role's stable Cedar
-// entity id; policies reference it as Role::"<slug>", so it is derived from the
-// name when the caller doesn't supply one.
+// policies to it — all in one transaction. The role's name is its stable Cedar
+// entity id (policies reference it as Role::"<name>"), unique per org.
 func (s *sentinelService) CreateRole(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.CreateRoleInput) (uuid.UUID, error) {
 	name := strings.TrimSpace(in.Name)
 	if name == "" {
 		return uuid.Nil, fmt.Errorf("role name is required")
 	}
 
-	slug := strings.TrimSpace(in.Slug)
-	if slug == "" {
-		slug = slugify(name)
-	}
-
 	role := &sentinelengine_models.Role{
 		ID:             uuid.New(),
 		OrganizationID: orgID,
-		Slug:           slug,
 		Name:           name,
 		Description:    in.Description,
 	}

@@ -39,9 +39,10 @@ type PrincipalsView struct {
 	Groups []PrincipalRef  `json:"groups"`
 }
 
-// RoleRef projects a role to the Cedar-slug-keyed ref the builder embeds.
+// RoleRef projects a role to the ref the builder embeds. Roles are keyed by name
+// (the Cedar entity id), which is unique per org.
 func RoleRef(r *sentinelengine_models.Role) PrincipalRef {
-	return PrincipalRef{Value: r.Slug, Label: r.Name}
+	return PrincipalRef{Value: r.Name, Label: r.Name}
 }
 
 // GroupRef projects a group to the Cedar-slug-keyed ref the builder embeds.

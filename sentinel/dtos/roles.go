@@ -12,7 +12,6 @@ import (
 // existing policies to attach to the role at creation time.
 type CreateRoleInput struct {
 	Name        string      `json:"name"`
-	Slug        string      `json:"slug"` // stable Cedar entity id; derived from name if empty
 	Description string      `json:"description"`
 	PolicyIDs   []uuid.UUID `json:"policyIds"`
 }
@@ -20,7 +19,6 @@ type CreateRoleInput struct {
 // RoleView is the lightweight role shape for dropdowns / lists.
 type RoleView struct {
 	ID          uuid.UUID `json:"id"`
-	Slug        string    `json:"slug"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 }
@@ -39,7 +37,7 @@ type AttachPoliciesInput struct {
 
 // ToRoleView projects a role model to its list shape.
 func ToRoleView(r *sentinelengine_models.Role) RoleView {
-	return RoleView{ID: r.ID, Slug: r.Slug, Name: r.Name, Description: r.Description}
+	return RoleView{ID: r.ID, Name: r.Name, Description: r.Description}
 }
 
 // ToRoleViews projects a slice of role models to list shapes.
