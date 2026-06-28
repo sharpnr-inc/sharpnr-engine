@@ -47,5 +47,5 @@ func RoleRef(r *sentinelengine_models.Role) PrincipalRef {
 
 // GroupRef projects a group to the Cedar-slug-keyed ref the builder embeds.
 func GroupRef(g *sentinelengine_models.Group) PrincipalRef {
-	return PrincipalRef{Value: g.Slug, Label: g.Name}
+	return PrincipalRef{Label: g.Name}
 }

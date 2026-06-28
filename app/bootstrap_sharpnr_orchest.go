@@ -33,7 +33,7 @@ func bootstrapSharpnrOrchestrator(
 	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	employeeHRService employee_services.EmployeesHRServiceInterface,
-	sentinelService sentinelservice.SentinelService,
+	sentinelService sentinelservice.SentinelServiceInterface,
 ) orchestrator_service.OrchestratorServiceInterface {
 	return orchestrator_service.NewSharpnrOrchestratorService(
 		organizationService,

@@ -8,10 +8,10 @@ import (
 )
 
 // Group is a named entity users belong to; groups can nest via ParentGroupID.
+// Identified by name within an org (slug was removed in migration 000039).
 type Group struct {
 	ID             uuid.UUID  `gorm:"type:uuid;primaryKey"`
-	OrganizationID uuid.UUID  `gorm:"type:uuid;not null;uniqueIndex:idx_group_org_slug"`
-	Slug           string     `gorm:"type:text;not null;uniqueIndex:idx_group_org_slug"`
+	OrganizationID uuid.UUID  `gorm:"type:uuid;not null;index"`
 	Name           string     `gorm:"type:text;not null"`
 	Description    string     `gorm:"type:text"`       // optional human-facing description
 	ParentGroupID  *uuid.UUID `gorm:"type:uuid;index"` // nullable: top-level groups have no parent
@@ -29,10 +29,10 @@ func (Group) TableName() string { return "sentinel_engine.groups" }
 // Note: UserID is EmployeeID or emplID
 type UserRole struct {
 	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
-	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`   // tenant scope; must equal roles.org_id
-	UserID         uuid.UUID `gorm:"type:uuid;primaryKey"`       // = employee.id
-	RoleID         uuid.UUID `gorm:"type:uuid;primaryKey;index"` // -> sentinel_engine.roles.id
-	AssignedBy     uuid.UUID `gorm:"type:uuid"`                  // employee who made the assignment (audit; optional)
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"` // tenant scope; must equal roles.org_id
+	UserID         uuid.UUID `gorm:"type:uuid;not null;index"` // = employee.id
+	RoleID         uuid.UUID `gorm:"type:uuid;not null;index"` // -> sentinel_engine.roles.id
+	AssignedBy     uuid.UUID `gorm:"type:uuid"`                // employee who made the assignment (audit; optional)
 	CreatedAt      time.Time
 }
 
@@ -66,10 +66,10 @@ func (UserPolicy) TableName() string {
 // UserGroup is the membership edge: a user (employee) is in a group.
 type UserGroup struct {
 	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
-	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"`   // tenant scope; must equal groups.org_id
-	UserID         uuid.UUID `gorm:"type:uuid;primaryKey"`       // = employee.id
-	GroupID        uuid.UUID `gorm:"type:uuid;primaryKey;index"` // -> sentinel_engine.groups.id
-	AssignedBy     uuid.UUID `gorm:"type:uuid"`                  // employee who added the membership (audit; optional)
+	OrganizationID uuid.UUID `gorm:"type:uuid;not null;index"` // tenant scope; must equal groups.org_id
+	UserID         uuid.UUID `gorm:"type:uuid;not null;index"` // = employee.id
+	GroupID        uuid.UUID `gorm:"type:uuid;not null;index"` // -> sentinel_engine.groups.id
+	AssignedBy     uuid.UUID `gorm:"type:uuid"`                // employee who added the membership (audit; optional)
 	CreatedAt      time.Time
 }
 

@@ -26,7 +26,6 @@ type GroupView struct {
 func ToGroupView(g *sentinelengine_models.Group) GroupView {
 	return GroupView{
 		ID:            g.ID,
-		Slug:          g.Slug,
 		Name:          g.Name,
 		Description:   g.Description,
 		ParentGroupID: g.ParentGroupID,

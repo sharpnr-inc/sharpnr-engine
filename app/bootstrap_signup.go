@@ -16,7 +16,7 @@ func bootstrapOrgSignup(
 	employeeSvc employee_services.EmployeesIdentityServiceInterface,
 	organizationService organization_services.OrganizationServiceInterface,
 	setUpWizService org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface,
-	sentinelService sentinelservice.SentinelService,
+	sentinelService sentinelservice.SentinelServiceInterface,
 ) org_signup_services.OrganizationSignUpServiceInterfaces {
 
 	return org_signup_services.NewOrgSignUpService(

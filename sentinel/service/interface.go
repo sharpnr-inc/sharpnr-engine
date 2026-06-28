@@ -15,7 +15,7 @@ import (
 // provisioning, the policy builder's palettes (principals + resources), and CRUD
 // over policies, roles, groups, and their attachments. The engine (evaluation)
 // lives separately.
-type SentinelService interface {
+type SentinelServiceInterface interface {
 	// ProvisionOrganization sets up a new org's authorization defaults: the
 	// full-access "Owner" role + its policy, the founding employee's owner
 	// assignment, and the default "Stakeholders" group. Runs in one transaction
@@ -38,7 +38,30 @@ type SentinelService interface {
 	GetResourceAttributes(resourceType string) ([]sentinel_resources.Attribute, error)
 	ListResourceInstances(ctx context.Context, orgID uuid.UUID, resourceType string) ([]sentinel_resources.Ref, error)
 
-	/* -------------------------------- policies -------------------------------- */
+	SentinelPolicyService
+	GroupsService
+	RolesService
+}
+
+// Compile-time guard: the concrete service must satisfy the interface.
+var _ SentinelServiceInterface = (*sentinelService)(nil)
+
+/* -------------------------------------------------------------------------- */
+/*                              All the services                              */
+/* -------------------------------------------------------------------------- */
+
+type SentinelPolicyService interface {
+	// this where create all the Policy related service
+
+	// AttachPolicies groups existing policies under a role; DetachPolicy removes
+	// one grouping. Both leave the policy rows themselves untouched.
+	AttachPolicies(ctx context.Context, orgID, emplID, roleID uuid.UUID, policyIDs []uuid.UUID) error
+	DetachPolicy(ctx context.Context, orgID, roleID, policyID uuid.UUID) error
+}
+
+type GroupsService interface {
+	CreateGroup(ctx context.Context, orgID uuid.UUID, in sentinelDtos.CreateGroupsRequestDto) (uuid.UUID, error)
+	ListGroups(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.GroupView, error)
 
 	// CreatePolicy persists a raw Cedar policy (authored/validated in the FE),
 	// revalidating that it compiles, and invalidates the org's engine cache.
@@ -47,23 +70,13 @@ type SentinelService interface {
 	// otherwise only that bucket (organization|role|group|user).
 	ListPolicies(ctx context.Context, orgID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error)
 	GetPolicy(ctx context.Context, orgID, policyID uuid.UUID) (sentinelDtos.PolicyView, error)
+}
 
-	/* ---------------------------------- roles --------------------------------- */
-
+type RolesService interface {
 	CreateRole(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.CreateRoleInput) (uuid.UUID, error)
 	ListRoles(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.RoleView, error)
 	GetRolePrivileges(ctx context.Context, orgID, roleID uuid.UUID) (sentinelDtos.RolePrivilegesView, error)
-
-	// AttachPolicies groups existing policies under a role; DetachPolicy removes
-	// one grouping. Both leave the policy rows themselves untouched.
-	AttachPolicies(ctx context.Context, orgID, emplID, roleID uuid.UUID, policyIDs []uuid.UUID) error
-	DetachPolicy(ctx context.Context, orgID, roleID, policyID uuid.UUID) error
-
-	/* --------------------------------- groups --------------------------------- */
-
-	CreateGroup(ctx context.Context, orgID uuid.UUID, in sentinelDtos.CreateGroupsRequestDto) (uuid.UUID, error)
-	ListGroups(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.GroupView, error)
 }
 
-// Compile-time guard: the concrete service must satisfy the interface.
-var _ SentinelService = (*sentinelService)(nil)
+type ActionService interface {
+}

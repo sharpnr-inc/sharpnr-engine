@@ -31,7 +31,7 @@ type orchestratorService struct {
 	inventoryEngine         inventory_engine_services.InventoryEngineServicesInterface
 	supplierService         suppliers_service.SupplierServiceInterface
 	employeeHRService       employee_services.EmployeesHRServiceInterface
-	sentinelService         sentinelservice.SentinelService
+	sentinelService         sentinelservice.SentinelServiceInterface
 }
 
 func NewSharpnrOrchestratorService(
@@ -49,7 +49,7 @@ func NewSharpnrOrchestratorService(
 	supplierService suppliers_service.SupplierServiceInterface,
 	employeeHRService employee_services.EmployeesHRServiceInterface,
 
-	sentinelService sentinelservice.SentinelService,
+	sentinelService sentinelservice.SentinelServiceInterface,
 ) *orchestratorService {
 	return &orchestratorService{
 		organizationService:     organizationService,

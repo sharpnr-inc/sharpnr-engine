@@ -14,7 +14,7 @@ import (
 func bootstrapSentinel(
 	db *gorm.DB,
 	txManager dbtx.TxManager,
-) sentinelservice.SentinelService {
+) sentinelservice.SentinelServiceInterface {
 	repo := sentinel_repo.NewSentinelRepo(db)
 	return sentinelservice.NewSentinelService(repo, txManager)
 }

@@ -4,25 +4,15 @@ import (
 	"context"
 
 	dbtx "sharpnr-engine/pkg/dbTx"
-	sentinelDtos "sharpnr-engine/sentinel/dtos"
-	sentinelengine_models "sharpnr-engine/sentinel/models"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
+// Compile-time guard: the concrete repo must satisfy the full interface.
+var _ SentinelRepositoryInterface = (*sentinelRepo)(nil)
+
 type sentinelRepo struct {
 	db *gorm.DB
-}
-
-// CreateUserRole implements [SentinelRepositoryInterface].
-func (r *sentinelRepo) CreateUserRole(ctx context.Context, userRole *sentinelengine_models.UserRole) error {
-	panic("unimplemented")
-}
-
-// UpdateRoleDetails implements [SentinelRepositoryInterface].
-func (r *sentinelRepo) UpdateRoleDetails(ctx context.Context, roleID uuid.UUID, updates *sentinelDtos.UpdateRoleDetailsRequestDto) error {
-	panic("unimplemented")
 }
 
 func NewSentinelRepo(db *gorm.DB) *sentinelRepo {

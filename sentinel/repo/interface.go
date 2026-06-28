@@ -2,15 +2,15 @@ package sentinel_repo
 
 import (
 	"context"
-	sentinelDtos "sharpnr-engine/sentinel/dtos"
-	sentinelengine_models "sharpnr-engine/sentinel/models"
 
 	"github.com/google/uuid"
+
+	sentinelDtos "sharpnr-engine/sentinel/dtos"
+	sentinelengine_models "sharpnr-engine/sentinel/models"
 )
 
-// SentinelRepository is the data-access layer for the authorization tables.
-// Each method participates in an ambient transaction when one is present in the
-// context (see dbtx), so a service can run several writes atomically.
+// SentinelRepositoryInterface is the aggregate repository for the Sentinel
+// authorization subsystem.
 type SentinelRepositoryInterface interface {
 	RolesRepository
 	PolicyRepository
@@ -21,64 +21,160 @@ type SentinelRepositoryInterface interface {
 	UserPolicyRepository
 }
 
-/* ---------------------------------- <***> --------------------------------- */
+/* -------------------------------------------------------------------------- */
+/*                                    Roles                                   */
+/* -------------------------------------------------------------------------- */
 
 type RolesRepository interface {
-
-	// Create the Roles in The DB.
+	// Create
 	CreateRole(ctx context.Context, role *sentinelengine_models.Role) error
-	// Get Role By Role.ID returns the Role
-	GetRoleByID(ctx context.Context, id uuid.UUID) (sentinelengine_models.Role, error)
-	// this will list all the Roles in the organization
-	ListRolesByOrgID(ctx context.Context, orgID uuid.UUID) ([]*sentinelengine_models.Role, error)
-	// this will update the Role General Details
-	UpdateRoleDetails(ctx context.Context, roleID uuid.UUID, updates *sentinelDtos.UpdateRoleDetailsRequestDto) error
+
+	// Read
+	GetRoleByID(ctx context.Context, roleID uuid.UUID) (sentinelengine_models.Role, error)
+	GetRoleByName(ctx context.Context, organizationID uuid.UUID, roleName string) (sentinelengine_models.Role, error)
+	ListRolesByOrganizationID(ctx context.Context, organizationID uuid.UUID) ([]*sentinelengine_models.Role, error)
+
+	// Update
+	UpdateRoleDetails(
+		ctx context.Context,
+		roleID uuid.UUID,
+		updates *sentinelDtos.UpdateRoleDetailsRequestDto,
+	) error
+
+	// Delete
+	DeleteRole(ctx context.Context, roleID uuid.UUID) error
+
+	// Helpers
+	RoleExists(ctx context.Context, organizationID uuid.UUID, roleName string) (bool, error)
 }
 
-/* ---------------------------------- <***> --------------------------------- */
-
-// RolePoliciesRepository manages the role<->policy attachment edges. The engine
-// compiles every enabled org policy regardless of attachment; this join is the
-// organizational/UI record of which policies an admin grouped under a role.
-type RolePoliciesRepository interface {
-	CreateRolePolicy(ctx context.Context, rp *sentinelengine_models.RolePolicies) error
-	ListPoliciesByRoleID(ctx context.Context, orgID, roleID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error)
-	DeleteRolePolicy(ctx context.Context, orgID, roleID, policyID uuid.UUID) error
-}
-
-/* ---------------------------------- <***> --------------------------------- */
+/* -------------------------------------------------------------------------- */
+/*                                   Policies                                 */
+/* -------------------------------------------------------------------------- */
 
 type PolicyRepository interface {
-	// this will create Policy it create one Policy
+	// Create
 	CreatePolicy(ctx context.Context, policy *sentinelengine_models.SentinelPolicy) error
-	// This will return a Policy by the Policy.ID
-	GetPolicyByID(ctx context.Context, id uuid.UUID) (sentinelengine_models.SentinelPolicy, error)
-	// ListPoliciesByOrgID returns an org's policies; an empty scope means all
-	// scopes, otherwise only policies in that bucket.
-	ListPoliciesByOrgID(ctx context.Context, orgID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]*sentinelengine_models.SentinelPolicy, error)
+
+	// Read
+	GetPolicyByID(ctx context.Context, policyID uuid.UUID) (sentinelengine_models.SentinelPolicy, error)
+	GetPolicyByName(ctx context.Context, organizationID uuid.UUID, policyName string) (sentinelengine_models.SentinelPolicy, error)
+
+	ListPoliciesByOrganizationID(
+		ctx context.Context,
+		organizationID uuid.UUID,
+		scope sentinelengine_models.PolicyScope,
+	) ([]*sentinelengine_models.SentinelPolicy, error)
+
+	// Update
+	UpdatePolicy(ctx context.Context, policy *sentinelengine_models.SentinelPolicy) error
+	EnablePolicy(ctx context.Context, policyID uuid.UUID) error
+	DisablePolicy(ctx context.Context, policyID uuid.UUID) error
+
+	// Delete
+	DeletePolicy(ctx context.Context, policyID uuid.UUID) error
+
+	// Helpers
+	PolicyExists(ctx context.Context, organizationID uuid.UUID, policyName string) (bool, error)
 }
 
-/* ---------------------------------- <***> --------------------------------- */
+/* -------------------------------------------------------------------------- */
+/*                              Role ↔ Policies                               */
+/* -------------------------------------------------------------------------- */
+
+type RolePoliciesRepository interface {
+	// Assignment
+	AssignPolicyToRole(ctx context.Context, rolePolicy *sentinelengine_models.RolePolicies) error
+	RemovePolicyFromRole(ctx context.Context, organizationID, roleID, policyID uuid.UUID) error
+
+	// Queries
+	ListPoliciesAssignedToRole(ctx context.Context, organizationID, roleID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error)
+	ListRolesAssignedToPolicy(ctx context.Context, organizationID, policyID uuid.UUID) ([]*sentinelengine_models.Role, error)
+
+	IsPolicyAssignedToRole(ctx context.Context, roleID, policyID uuid.UUID) (bool, error)
+
+	// Bulk
+	ReplacePoliciesAssignedToRole(ctx context.Context, organizationID, roleID uuid.UUID, policyIDs []uuid.UUID) error
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   Groups                                   */
+/* -------------------------------------------------------------------------- */
 
 type GroupRepository interface {
-	// This create a Group in the Organzitaion
+	// Create
 	CreateGroup(ctx context.Context, group *sentinelengine_models.Group) error
-	// List all Groups of the organization by the orgID
-	ListGroupsByOrgID(ctx context.Context, orgID uuid.UUID) ([]*sentinelengine_models.Group, error)
+
+	// Read
+	GetGroupByID(ctx context.Context, groupID uuid.UUID) (sentinelengine_models.Group, error)
+	GetGroupByName(ctx context.Context, organizationID uuid.UUID, name string) (sentinelengine_models.Group, error)
+
+	ListGroupsByOrganizationID(ctx context.Context, organizationID uuid.UUID) ([]*sentinelengine_models.Group, error)
+	ListChildGroups(ctx context.Context, parentGroupID uuid.UUID) ([]*sentinelengine_models.Group, error)
+
+	// Update
+	UpdateGroup(ctx context.Context, group *sentinelengine_models.Group) error
+
+	// Delete
+	DeleteGroup(ctx context.Context, groupID uuid.UUID) error
+
+	// Helpers
+	GroupExists(ctx context.Context, organizationID uuid.UUID, name string) (bool, error)
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                 User ↔ Roles                               */
+/* -------------------------------------------------------------------------- */
 
 type UserRoleRepository interface {
-	// this will assign the Role to the Employee
-	AssignUserRole(ctx context.Context, orgID, emplID, roleID uuid.UUID) error
-	GetUserRole(ctx context.Context, orgID, emplID uuid.UUID) (sentinelengine_models.UserRole, error) // role-assignment edge for an employee
+	// Assignment
+	AssignRoleToUser(ctx context.Context, organizationID, userID, roleID uuid.UUID) error
+	RemoveRoleFromUser(ctx context.Context, organizationID, userID, roleID uuid.UUID) error
 
-	CreateUserRole(ctx context.Context, userRole *sentinelengine_models.UserRole) error
+	// Queries
+	GetRolesAssignedToUser(ctx context.Context, userID uuid.UUID) ([]sentinelengine_models.UserRole, error)
+	GetUsersAssignedToRole(ctx context.Context, organizationID, roleID uuid.UUID) ([]sentinelengine_models.UserRole, error)
+
+	IsRoleAssignedToUser(ctx context.Context, userID, roleID uuid.UUID) (bool, error)
+
+	// Bulk
+	ReplaceRolesAssignedToUser(ctx context.Context, organizationID, userID uuid.UUID, roleIDs []uuid.UUID) error
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                User ↔ Groups                               */
+/* -------------------------------------------------------------------------- */
 
 type UserGroupRepository interface {
+	// Assignment
+	AssignUserToGroup(ctx context.Context, organizationID, userID, groupID uuid.UUID) error
+	RemoveUserFromGroup(ctx context.Context, organizationID, userID, groupID uuid.UUID) error
+
+	// Queries
+	GetGroupsAssignedToUser(ctx context.Context, userID uuid.UUID) ([]sentinelengine_models.UserGroup, error)
+	GetUsersAssignedToGroup(ctx context.Context, organizationID, groupID uuid.UUID) ([]sentinelengine_models.UserGroup, error)
+
+	IsUserAssignedToGroup(ctx context.Context, userID, groupID uuid.UUID) (bool, error)
+
+	// Bulk
+	ReplaceGroupsAssignedToUser(ctx context.Context, organizationID, userID uuid.UUID, groupIDs []uuid.UUID) error
 }
+
+/* -------------------------------------------------------------------------- */
+/*                               User ↔ Policies                              */
+/* -------------------------------------------------------------------------- */
 
 type UserPolicyRepository interface {
-}
+	// Assignment
+	AssignPolicyToUser(ctx context.Context, organizationID, userID, policyID uuid.UUID) error
+	RemovePolicyFromUser(ctx context.Context, organizationID, userID, policyID uuid.UUID) error
 
-/* ---------------------------------- <***> --------------------------------- */
+	// Queries
+	GetPoliciesAssignedToUser(ctx context.Context, userID uuid.UUID) ([]*sentinelengine_models.UserPolicy, error)
+	GetUsersAssignedToPolicy(ctx context.Context, organizationID, policyID uuid.UUID) ([]*sentinelengine_models.UserPolicy, error)
+
+	IsPolicyAssignedToUser(ctx context.Context, userID, policyID uuid.UUID) (bool, error)
+
+	// Bulk
+	ReplacePoliciesAssignedToUser(ctx context.Context, organizationID, userID uuid.UUID, policyIDs []uuid.UUID) error
+}

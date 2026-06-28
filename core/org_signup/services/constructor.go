@@ -15,7 +15,7 @@ type orgSignUpService struct {
 	employeeSvc         employee_services.EmployeesIdentityServiceInterface
 	organizationService organization_services.OrganizationServiceInterface
 	setUpWizService     org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface
-	sentinelService     sentinelservice.SentinelService
+	sentinelService     sentinelservice.SentinelServiceInterface
 }
 
 func NewOrgSignUpService(
@@ -24,7 +24,7 @@ func NewOrgSignUpService(
 	employeeSvc employee_services.EmployeesIdentityServiceInterface,
 	organizationService organization_services.OrganizationServiceInterface,
 	setUpWizService org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface,
-	sentinelService sentinelservice.SentinelService,
+	sentinelService sentinelservice.SentinelServiceInterface,
 ) *orgSignUpService {
 	return &orgSignUpService{
 		txManager:           txManager,
