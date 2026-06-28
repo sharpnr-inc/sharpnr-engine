@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	sentinelDefaultpolicies "sharpnr-engine/sentinel/default_policies"
 	sentinelengine_models "sharpnr-engine/sentinel/models"
 
 	"github.com/google/uuid"
@@ -39,7 +38,7 @@ func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firs
 			OrganizationID: orgID,
 			Name:           ownerPolicyName,
 			Description:    ownerPolicyDesc,
-			Policy:         string(sentinelDefaultpolicies.OwnerPolcy),
+			Policy:         "",
 			Enabled:        true,
 			Scope:          sentinelengine_models.PolicyScopeRole, // attached to the owner role
 		}
