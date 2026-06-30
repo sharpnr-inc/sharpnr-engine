@@ -11,7 +11,6 @@ import (
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
 	sentinelengine_models "sharpnr-engine/sentinel/models"
-	sentinel_resources "sharpnr-engine/sentinel/resources"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
 	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
@@ -38,14 +37,8 @@ type OrchestratorServiceInterface interface {
 // surface (Cedar policies, roles, privileges) to the frontend. Everything
 // delegates to the Sentinel service; the orchestrator is just the HTTP facade.
 type SentinelOrchestrationInterface interface {
-	// Policy-builder palettes. Principals: types + roles + groups. Resources are
-	// resource-centric: list the resource types, then drill into a type's
-	// actions, attributes, and live instances.
+	// Policy-builder palettes. Principals: types + roles + groups.
 	ListPrincipals(ctx context.Context, orgID, emplID uuid.UUID) (sentinelDtos.PrincipalsView, error)
-	ListResources(ctx context.Context, orgID, emplID uuid.UUID) []sentinel_resources.Summary
-	GetResourceActions(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinel_resources.Action, error)
-	GetResourceAttributes(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinel_resources.Attribute, error)
-	ListResourceInstances(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinel_resources.Ref, error)
 
 	ListPolicies(ctx context.Context, orgID, emplID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error)
 	CreatePolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error)

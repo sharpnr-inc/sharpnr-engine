@@ -26,54 +26,6 @@ func (c *OrchestratorController) ListPrincipalsHandler(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusOK, "Principals fetched", principals)
 }
 
-func (c *OrchestratorController) ListResourcesHandler(ctx *gin.Context) {
-	orgID, emplID, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return
-	}
-	resources := c.orchestService.ListResources(ctx.Request.Context(), orgID, emplID)
-	utils.Success(ctx, http.StatusOK, "Resources fetched", resources)
-}
-
-func (c *OrchestratorController) GetResourceActionsHandler(ctx *gin.Context) {
-	orgID, emplID, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return
-	}
-	actions, err := c.orchestService.GetResourceActions(ctx.Request.Context(), orgID, emplID, ctx.Param("type"))
-	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
-		return
-	}
-	utils.Success(ctx, http.StatusOK, "Resource actions fetched", actions)
-}
-
-func (c *OrchestratorController) GetResourceAttributesHandler(ctx *gin.Context) {
-	orgID, emplID, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return
-	}
-	attrs, err := c.orchestService.GetResourceAttributes(ctx.Request.Context(), orgID, emplID, ctx.Param("type"))
-	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
-		return
-	}
-	utils.Success(ctx, http.StatusOK, "Resource attributes fetched", attrs)
-}
-
-func (c *OrchestratorController) ListResourceInstancesHandler(ctx *gin.Context) {
-	orgID, emplID, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return
-	}
-	instances, err := c.orchestService.ListResourceInstances(ctx.Request.Context(), orgID, emplID, ctx.Param("type"))
-	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
-		return
-	}
-	utils.Success(ctx, http.StatusOK, "Resource instances fetched", instances)
-}
-
 func (c *OrchestratorController) ListPoliciesHandler(ctx *gin.Context) {
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {

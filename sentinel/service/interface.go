@@ -5,7 +5,6 @@ import (
 
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
 	sentinelengine_models "sharpnr-engine/sentinel/models"
-	sentinel_resources "sharpnr-engine/sentinel/resources"
 
 	"github.com/google/uuid"
 )
@@ -28,15 +27,6 @@ type SentinelServiceInterface interface {
 	// GetPrincipals returns the policy builder's principal palette: the static
 	// Cedar entity types (User/Role/Group) plus the org's live roles and groups.
 	GetPrincipals(ctx context.Context, orgID uuid.UUID) (sentinelDtos.PrincipalsView, error)
-
-	/* ------------------------------- resources -------------------------------- */
-	// The resource-centric policy builder: list resource types, then drill into a
-	// type's actions, attributes, and live instances.
-
-	ListResources() []sentinel_resources.Summary
-	GetResourceActions(resourceType string) ([]sentinel_resources.Action, error)
-	GetResourceAttributes(resourceType string) ([]sentinel_resources.Attribute, error)
-	ListResourceInstances(ctx context.Context, orgID uuid.UUID, resourceType string) ([]sentinel_resources.Ref, error)
 
 	SentinelPolicyService
 	GroupsService
@@ -76,7 +66,4 @@ type RolesService interface {
 	CreateRole(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.CreateRoleInput) (uuid.UUID, error)
 	ListRoles(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.RoleView, error)
 	GetRolePrivileges(ctx context.Context, orgID, roleID uuid.UUID) (sentinelDtos.RolePrivilegesView, error)
-}
-
-type ActionService interface {
 }

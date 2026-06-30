@@ -12,12 +12,6 @@ import (
 //
 //	/sentinel
 //	├── GET  /principals                            principal palette: types + roles + groups
-//	├── /resources
-//	│   ├── GET                                     resource types (each with actions + attributes)
-//	│   └── /:type
-//	│       ├── GET /actions                        the type's actions
-//	│       ├── GET /attributes                     the type's ABAC attributes
-//	│       └── GET /instances                      the org's live instances of the type
 //	├── /policies
 //	│   ├── GET                                     list the org's policies
 //	│   └── POST                                    create a policy (raw Cedar text)
@@ -33,18 +27,6 @@ func registerSentinelRoutes(rg *gin.RouterGroup, c *orchestrator_controllers.Orc
 	s := rg.Group("/sentinel")
 	{
 		s.GET("/principals", c.ListPrincipalsHandler)
-
-		resources := s.Group("/resources")
-		{
-			resources.GET("", c.ListResourcesHandler)
-
-			rt := resources.Group("/:type")
-			{
-				rt.GET("/actions", c.GetResourceActionsHandler)
-				rt.GET("/attributes", c.GetResourceAttributesHandler)
-				rt.GET("/instances", c.ListResourceInstancesHandler)
-			}
-		}
 
 		policies := s.Group("/policies")
 		{

@@ -7,7 +7,6 @@ import (
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
 	sentinelengine_models "sharpnr-engine/sentinel/models"
 	sentinel_repo "sharpnr-engine/sentinel/repo"
-	sentinel_resources "sharpnr-engine/sentinel/resources"
 )
 
 type sentinelService struct {
@@ -55,16 +54,6 @@ func (s *sentinelService) GetPrincipals(ctx context.Context, orgID uuid.UUID) (s
 	panic("unimplemented")
 }
 
-// GetResourceActions implements [SentinelService].
-func (s *sentinelService) GetResourceActions(resourceType string) ([]sentinel_resources.Action, error) {
-	panic("unimplemented")
-}
-
-// GetResourceAttributes implements [SentinelService].
-func (s *sentinelService) GetResourceAttributes(resourceType string) ([]sentinel_resources.Attribute, error) {
-	panic("unimplemented")
-}
-
 // GetRolePrivileges implements [SentinelService].
 func (s *sentinelService) GetRolePrivileges(ctx context.Context, orgID uuid.UUID, roleID uuid.UUID) (sentinelDtos.RolePrivilegesView, error) {
 	panic("unimplemented")
@@ -77,16 +66,6 @@ func (s *sentinelService) ListGroups(ctx context.Context, orgID uuid.UUID) ([]se
 
 // ListPolicies implements [SentinelService].
 func (s *sentinelService) ListPolicies(ctx context.Context, orgID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error) {
-	panic("unimplemented")
-}
-
-// ListResourceInstances implements [SentinelService].
-func (s *sentinelService) ListResourceInstances(ctx context.Context, orgID uuid.UUID, resourceType string) ([]sentinel_resources.Ref, error) {
-	panic("unimplemented")
-}
-
-// ListResources implements [SentinelService].
-func (s *sentinelService) ListResources() []sentinel_resources.Summary {
 	panic("unimplemented")
 }
 
