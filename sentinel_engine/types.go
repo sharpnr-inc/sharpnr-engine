@@ -10,6 +10,14 @@ import "github.com/google/uuid"
 type Resource struct {
 	Type string
 	ID   string
+
+	// OrgID is the organization that OWNS this resource instance, set when the
+	// caller has loaded the row and knows it. The engine denies any request
+	// whose resource belongs to a different org than the request's org — the
+	// multi-tenant boundary is enforced structurally, before any policy runs,
+	// so no policy text (and no forgotten `when` clause) can cross it. Callers
+	// that resolve instances by user-supplied ids should set this.
+	OrgID uuid.UUID
 }
 
 // AccessRequest is one authorization question: may UserID perform Action on
@@ -18,6 +26,12 @@ type Resource struct {
 // ResourceAttributes become the resource entity's Cedar attributes so policies
 // can condition on them (e.g. resource.city == "Mumbai"); Context becomes the
 // request context (`context.<key>` in policy text). Both are optional.
+//
+// The engine stamps tenancy attributes itself: principal.orgId is always the
+// request's org, and resource.orgId is Resource.OrgID when set (the request's
+// org otherwise). Authored policies may therefore condition on
+// `resource.orgId == principal.orgId`, though the engine already enforces that
+// boundary structurally.
 type AccessRequest struct {
 	OrgID  uuid.UUID
 	UserID uuid.UUID // employee id — the Cedar principal User::"<id>"

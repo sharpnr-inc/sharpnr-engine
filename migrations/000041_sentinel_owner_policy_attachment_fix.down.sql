@@ -1,0 +1,3 @@
+-- Data-repair migration: the legacy owner policy text was unusable under
+-- attachment-driven evaluation, so there is nothing meaningful to restore.
+-- Intentionally a no-op.

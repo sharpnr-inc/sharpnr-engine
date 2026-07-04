@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"maps"
 	"sync"
 	"time"
 
@@ -70,6 +71,13 @@ func (e *SentinelEngine) IsAuthorized(ctx context.Context, req AccessRequest) (b
 		return false, errors.New("sentinel: request is missing action or resource type")
 	}
 
+	// Multi-tenant boundary: a resource known to belong to another org is
+	// denied before any policy runs. Policies can only ever widen access
+	// WITHIN the request's org — never across it.
+	if req.Resource.OrgID != uuid.Nil && req.Resource.OrgID != req.OrgID {
+		return false, nil
+	}
+
 	policies, err := e.policiesForUser(ctx, req.OrgID, req.UserID)
 	if err != nil {
 		return false, err
@@ -85,7 +93,7 @@ func (e *SentinelEngine) IsAuthorized(ctx context.Context, req AccessRequest) (b
 
 	decision, _ := cedar.Authorize(
 		policies.set,
-		buildEntities(principal, resource, req.ResourceAttributes),
+		buildEntities(principal, resource, req),
 		cedar.Request{
 			Principal: principal,
 			Action:    action,
@@ -169,10 +177,27 @@ func compilePolicySet(records []PolicyRecord) (*cedar.PolicySet, error) {
 
 // buildEntities assembles the entity graph for one evaluation: the principal
 // and the resource with its attributes.
-func buildEntities(principal, resource cedar.EntityUID, resourceAttrs map[string]any) cedar.EntityMap {
+//
+// The engine stamps the tenancy attributes itself so they are never missing or
+// caller-forgeable: principal.orgId is the request's org, resource.orgId is the
+// resource's owning org (falling back to the request's org when the caller
+// didn't resolve it — the structural check above already handled the known-
+// foreign case). Authored `when { resource.orgId == principal.orgId }` guards
+// therefore evaluate correctly instead of erroring on a missing attribute.
+func buildEntities(principal, resource cedar.EntityUID, req AccessRequest) cedar.EntityMap {
+	resourceOrg := req.Resource.OrgID
+	if resourceOrg == uuid.Nil {
+		resourceOrg = req.OrgID
+	}
+
+	resourceAttrs := make(map[string]any, len(req.ResourceAttributes)+1)
+	maps.Copy(resourceAttrs, req.ResourceAttributes)
+	resourceAttrs["orgId"] = resourceOrg // engine-authoritative; overrides any caller value
+
 	return cedar.EntityMap{
 		principal: cedar.Entity{
-			UID: principal,
+			UID:        principal,
+			Attributes: toCedarRecord(map[string]any{"orgId": req.OrgID}),
 		},
 		resource: cedar.Entity{
 			UID:        resource,

@@ -77,6 +77,72 @@ func TestEngineDecisions(t *testing.T) {
 	})
 }
 
+func TestTenantBoundary(t *testing.T) {
+	orgA := uuid.New()
+	orgB := uuid.New()
+	ownerOfA := uuid.New()
+	propertyOfB := uuid.New().String()
+
+	// The owner of org A holds a full-access permit — the widest grant possible.
+	store := &fakeStore{byUser: map[uuid.UUID][]PolicyRecord{
+		ownerOfA: {{ID: uuid.New(), Text: "permit (principal, action, resource);"}},
+	}}
+	engine := NewSentinelEngine(store)
+	ctx := context.Background()
+
+	t.Run("resource owned by another org is denied structurally", func(t *testing.T) {
+		got, err := engine.IsAuthorized(ctx, AccessRequest{
+			OrgID:  orgA,
+			UserID: ownerOfA,
+			Action: "canViewProperty",
+			// The call site resolved the instance and found it belongs to org B.
+			Resource: Resource{Type: "Property", ID: propertyOfB, OrgID: orgB},
+		})
+		require.NoError(t, err)
+		assert.False(t, got, "no policy may cross the tenant boundary")
+	})
+
+	t.Run("resource owned by the request's own org is allowed", func(t *testing.T) {
+		got, err := engine.IsAuthorized(ctx, AccessRequest{
+			OrgID:    orgA,
+			UserID:   ownerOfA,
+			Action:   "canViewProperty",
+			Resource: Resource{Type: "Property", ID: uuid.New().String(), OrgID: orgA},
+		})
+		require.NoError(t, err)
+		assert.True(t, got)
+	})
+
+	t.Run("authored orgId guard evaluates via auto-stamped attributes", func(t *testing.T) {
+		// A policy written with the explicit tenant guard: the engine stamps
+		// principal.orgId and resource.orgId itself, so the condition evaluates
+		// instead of erroring on a missing attribute.
+		guarded := uuid.New()
+		store.byUser[guarded] = []PolicyRecord{{
+			ID:   uuid.New(),
+			Text: "permit (principal, action, resource) when { resource.orgId == principal.orgId };",
+		}}
+
+		got, err := engine.IsAuthorized(ctx, AccessRequest{
+			OrgID:    orgA,
+			UserID:   guarded,
+			Action:   "canViewProperty",
+			Resource: Resource{Type: "Property", ID: uuid.New().String(), OrgID: orgA},
+		})
+		require.NoError(t, err)
+		assert.True(t, got, "same-org request must satisfy the guard")
+
+		got, err = engine.IsAuthorized(ctx, AccessRequest{
+			OrgID:    orgA,
+			UserID:   guarded,
+			Action:   "canViewProperty",
+			Resource: Resource{Type: "Property", ID: propertyOfB, OrgID: orgB},
+		})
+		require.NoError(t, err)
+		assert.False(t, got, "cross-org request must be denied")
+	})
+}
+
 func TestEngineFailsClosedOnBadPolicy(t *testing.T) {
 	userID := uuid.New()
 	store := &fakeStore{byUser: map[uuid.UUID][]PolicyRecord{
