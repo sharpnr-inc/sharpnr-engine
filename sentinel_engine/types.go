@@ -35,11 +35,3 @@ type PolicyRecord struct {
 	ID   uuid.UUID
 	Text string
 }
-
-// PrincipalParents are the Cedar parent entities of a user: the names of the
-// roles and groups the user belongs to. Role/Group names are the Cedar entity
-// ids embedded in policy text (`principal in Role::"<name>"`).
-type PrincipalParents struct {
-	Roles  []string
-	Groups []string
-}

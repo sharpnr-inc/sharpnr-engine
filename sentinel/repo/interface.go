@@ -16,6 +16,7 @@ type SentinelRepositoryInterface interface {
 	PolicyRepository
 	RolePoliciesRepository
 	GroupRepository
+	GroupPoliciesRepository
 	UserRoleRepository
 	UserGroupRepository
 	UserPolicyRepository
@@ -58,6 +59,10 @@ type PolicyRepository interface {
 
 	// Read
 	GetPolicyByID(ctx context.Context, policyID uuid.UUID) (sentinelengine_models.SentinelPolicy, error)
+
+	// will fetch the all policies that are scoped to the organization,
+	GetPolciesScopedToOrganization(ctx context.Context, organizationID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error)
+
 	GetPolicyByName(ctx context.Context, organizationID uuid.UUID, policyName string) (sentinelengine_models.SentinelPolicy, error)
 
 	ListPoliciesByOrganizationID(
@@ -107,6 +112,7 @@ type GroupRepository interface {
 
 	// Read
 	GetGroupByID(ctx context.Context, groupID uuid.UUID) (sentinelengine_models.Group, error)
+
 	GetGroupByName(ctx context.Context, organizationID uuid.UUID, name string) (sentinelengine_models.Group, error)
 
 	ListGroupsByOrganizationID(ctx context.Context, organizationID uuid.UUID) ([]*sentinelengine_models.Group, error)
@@ -120,6 +126,25 @@ type GroupRepository interface {
 
 	// Helpers
 	GroupExists(ctx context.Context, organizationID uuid.UUID, name string) (bool, error)
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Group ↔ Policies                              */
+/* -------------------------------------------------------------------------- */
+
+type GroupPoliciesRepository interface {
+	// Assignment
+	AssignPolicyToGroup(ctx context.Context, groupPolicy *sentinelengine_models.GroupsSentinelPolicies) error
+	RemovePolicyFromGroup(ctx context.Context, organizationID, groupID, policyID uuid.UUID) error
+
+	// Queries
+	ListPoliciesAssignedToGroup(ctx context.Context, organizationID, groupID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error)
+	ListGroupsAssignedToPolicy(ctx context.Context, organizationID, policyID uuid.UUID) ([]*sentinelengine_models.Group, error)
+
+	IsPolicyAssignedToGroup(ctx context.Context, groupID, policyID uuid.UUID) (bool, error)
+
+	// Bulk
+	ReplacePoliciesAssignedToGroup(ctx context.Context, organizationID, groupID uuid.UUID, policyIDs []uuid.UUID) error
 }
 
 /* -------------------------------------------------------------------------- */

@@ -3,7 +3,6 @@ package sentinel_repo
 import (
 	"context"
 
-	sentinelengine_models "sharpnr-engine/sentinel/models"
 	sentinelEngine "sharpnr-engine/sentinel_engine"
 
 	"github.com/google/uuid"
@@ -13,13 +12,54 @@ import (
 // only on sentinelEngine.PolicyStore, and this file satisfies it.
 var _ sentinelEngine.PolicyStore = (*sentinelRepo)(nil)
 
-// ListEnabledPolicies implements [sentinelEngine.PolicyStore]: every enabled,
-// live policy of an org, in the text form the engine compiles.
-func (r *sentinelRepo) ListEnabledPolicies(ctx context.Context, orgID uuid.UUID) ([]sentinelEngine.PolicyRecord, error) {
-	var rows []*sentinelengine_models.SentinelPolicy
+// GetAllPoliciesOfUser implements [sentinelEngine.PolicyStore]: every enabled,
+// live policy that applies to the user, collected from all four sources —
+//
+//  1. policies scoped to the organization (scope = 'organization'; the only
+//     scope with engine meaning — role/group/user scopes are FE grouping labels)
+//  2. policies attached to the user's roles  (user_roles -> role_policies)
+//  3. policies attached to the user's groups (user_groups -> groups_sentinel_policies)
+//  4. policies attached directly to the user (user_policies)
+//
+// One SELECT with OR-EXISTS branches instead of four queries: the DB does the
+// combining, and a policy reachable through several attachments (e.g. two of
+// the user's roles) still comes back exactly once.
+func (r *sentinelRepo) GetAllPoliciesOfUser(ctx context.Context, orgID, userID uuid.UUID) ([]sentinelEngine.PolicyRecord, error) {
+	var rows []struct {
+		ID     uuid.UUID
+		Policy string
+	}
+
 	err := r.conn(ctx).
-		Select("id", "policy").
-		Where("organization_id = ? AND enabled = ?", orgID, true).
+		Table("sentinel_engine.sentinel_policies AS p").
+		Select("p.id", "p.policy").
+		Where("p.organization_id = ? AND p.enabled = TRUE AND p.deleted_at IS NULL", orgID).
+		Where(`(
+			p.scope = 'organization'
+			OR EXISTS (
+				SELECT 1 FROM sentinel_engine.role_policies rp
+				JOIN sentinel_engine.user_roles ur ON ur.role_id = rp.role_id
+				WHERE rp.sentinel_policy_id = p.id
+				  AND rp.deleted_at IS NULL
+				  AND ur.organization_id = p.organization_id
+				  AND ur.user_id = ?
+			)
+			OR EXISTS (
+				SELECT 1 FROM sentinel_engine.groups_sentinel_policies gp
+				JOIN sentinel_engine.user_groups ug ON ug.group_id = gp.group_id
+				WHERE gp.sentinel_policy_id = p.id
+				  AND gp.deleted_at IS NULL
+				  AND ug.organization_id = p.organization_id
+				  AND ug.user_id = ?
+			)
+			OR EXISTS (
+				SELECT 1 FROM sentinel_engine.user_policies up
+				WHERE up.sentinel_policy_id = p.id
+				  AND up.deleted_at IS NULL
+				  AND up.organization_id = p.organization_id
+				  AND up.employee_id = ?
+			)
+		)`, userID, userID, userID).
 		Find(&rows).Error
 	if err != nil {
 		return nil, err
@@ -30,26 +70,4 @@ func (r *sentinelRepo) ListEnabledPolicies(ctx context.Context, orgID uuid.UUID)
 		records = append(records, sentinelEngine.PolicyRecord{ID: row.ID, Text: row.Policy})
 	}
 	return records, nil
-}
-
-// GetPrincipalParents implements [sentinelEngine.PolicyStore]: the role and
-// group names a user belongs to within an org (the Cedar parent edges).
-func (r *sentinelRepo) GetPrincipalParents(ctx context.Context, orgID, userID uuid.UUID) (sentinelEngine.PrincipalParents, error) {
-	var parents sentinelEngine.PrincipalParents
-
-	err := r.conn(ctx).
-		Table("sentinel_engine.roles AS ro").
-		Joins("JOIN sentinel_engine.user_roles AS ur ON ur.role_id = ro.id").
-		Where("ur.organization_id = ? AND ur.user_id = ? AND ro.deleted_at IS NULL", orgID, userID).
-		Pluck("ro.name", &parents.Roles).Error
-	if err != nil {
-		return parents, err
-	}
-
-	err = r.conn(ctx).
-		Table("sentinel_engine.groups AS g").
-		Joins("JOIN sentinel_engine.user_groups AS ug ON ug.group_id = g.id").
-		Where("ug.organization_id = ? AND ug.user_id = ? AND g.deleted_at IS NULL", orgID, userID).
-		Pluck("g.name", &parents.Groups).Error
-	return parents, err
 }

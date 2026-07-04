@@ -3,9 +3,11 @@ package org_property_services
 import (
 	"context"
 	"errors"
+	property_constants "sharpnr-engine/core/org_property/constants"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	org_property_models "sharpnr-engine/core/org_property/models"
 	dbtx "sharpnr-engine/pkg/dbTx"
+	sentinelEngine "sharpnr-engine/sentinel_engine"
 	"time"
 
 	"github.com/google/uuid"
@@ -13,6 +15,24 @@ import (
 )
 
 func (c *organizationPropertyService) CreatePropertyDefault(ctx context.Context, input org_property_contracts.CreateOrgPropertyInput) error {
+
+	// Sentinel guard: may this employee create a property in this org? A
+	// type-level check (no instance yet), so Resource.ID stays empty. Runs
+	// before the transaction — no point opening one for a denied request.
+	if c.sentinelEngine == nil {
+		// Fail closed: a missing engine must never mean "everything allowed".
+		return errors.New("sentinel engine is not wired into the property service")
+	}
+	if err := c.sentinelEngine.Authorize(ctx, sentinelEngine.AccessRequest{
+		OrgID:  input.OrgID,
+		UserID: input.UserID,
+		Action: property_constants.ActionCanCreateNewProperty,
+		Resource: sentinelEngine.Resource{
+			Type: property_constants.ResourceTypeProperty,
+		},
+	}); err != nil {
+		return err
+	}
 
 	return c.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 

@@ -84,15 +84,15 @@ func (c *orchestratorService) GetPropertyDetail(ctx context.Context, orgID, empl
 
 func (s *orchestratorService) CreateProperty(ctx context.Context, orgID, emplID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error {
 
-	if err := s.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanCreateNewProperty, orgPropertyResources.ResourceTypeProperty, ""); err != nil {
-		return err
-	}
-
+	// No orchestrator-level guard here: CreatePropertyDefault authorizes
+	// canCreateNewProperty itself, so every caller (orchestrator, setup wizard)
+	// is covered by the one check in the property service.
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
 		prInp := org_property_contracts.CreateOrgPropertyInput{
 			OrgID:       orgID,
+			UserID:      emplID,
 			Name:        req.Name,
 			Code:        req.Code,
 			AddressLine: req.AddressLine,

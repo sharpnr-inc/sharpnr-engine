@@ -80,3 +80,13 @@ func (r *sentinelRepo) PolicyExists(ctx context.Context, organizationID uuid.UUI
 		Count(&count).Error
 	return count > 0, err
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (r *sentinelRepo) GetPolciesScopedToOrganization(ctx context.Context, organizationID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error) {
+	var rows []*sentinelengine_models.SentinelPolicy
+	err := r.conn(ctx).
+		Where("organization_id = ? AND scope = ?", organizationID, sentinelengine_models.PolicyScopeOrganization).
+		Find(&rows).Error
+	return rows, err
+}

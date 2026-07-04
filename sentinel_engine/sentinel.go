@@ -16,8 +16,8 @@ var ErrAccessDenied = errors.New("sentinel: access denied")
 // services (and, later, route middleware). It is safe for concurrent use; one
 // instance is shared across the app.
 type SentinelEngineInterface interface {
-	// IsAuthorized evaluates the request against the org's enabled policies and
-	// reports the decision. It errs only on infrastructure problems (store
+	// IsAuthorized evaluates the request against the user's effective policies
+	// and reports the decision. It errs only on infrastructure problems (store
 	// failure, uncompilable stored policy) — a plain "no" is (false, nil).
 	IsAuthorized(ctx context.Context, req AccessRequest) (bool, error)
 
@@ -25,9 +25,10 @@ type SentinelEngineInterface interface {
 	// on deny, the underlying error otherwise.
 	Authorize(ctx context.Context, req AccessRequest) error
 
-	// InvalidateOrganization drops the org's compiled policy cache. The Sentinel
-	// authoring service calls it after any policy write so changes take effect
-	// immediately instead of after the cache TTL.
+	// InvalidateOrganization drops the org's compiled policy caches (every user
+	// of that org). The Sentinel authoring service calls it after any policy or
+	// attachment write so changes take effect immediately instead of after the
+	// cache TTL.
 	InvalidateOrganization(orgID uuid.UUID)
 }
 
@@ -36,12 +37,14 @@ type SentinelEngineInterface interface {
 // engine deliberately depends on this narrow interface rather than the full
 // authoring repository.
 type PolicyStore interface {
-	// ListEnabledPolicies returns every enabled, live policy of an org — the
-	// engine compiles them all; attachment tables only classify policies for
-	// the UI (a role-scoped policy already names its role in the Cedar text).
-	ListEnabledPolicies(ctx context.Context, orgID uuid.UUID) ([]PolicyRecord, error)
-
-	// GetPrincipalParents returns the role and group names a user belongs to
-	// within an org — the parent edges of the Cedar principal.
-	GetPrincipalParents(ctx context.Context, orgID, userID uuid.UUID) (PrincipalParents, error)
+	// GetAllPoliciesOfUser collects every enabled policy that applies to a user,
+	// from all four sources:
+	//   1. policies scoped to the organization (apply to everyone in the org)
+	//   2. policies attached to the user's roles      (role_policies)
+	//   3. policies attached to the user's groups     (groups_sentinel_policies)
+	//   4. policies attached directly to the user     (user_policies)
+	// The result is deduplicated (the same policy may arrive via several
+	// attachments) and each record carries the row id so the engine can trace a
+	// decision or compile failure back to the stored policy.
+	GetAllPoliciesOfUser(ctx context.Context, orgID, userID uuid.UUID) ([]PolicyRecord, error)
 }

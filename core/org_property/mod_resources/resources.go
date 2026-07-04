@@ -1,10 +1,14 @@
 package orgPropertyResources
 
-import sentinelAggregatorContracts "sharpnr-engine/sentinel_aggregators/contracts"
+import (
+	property_constants "sharpnr-engine/core/org_property/constants"
+	sentinelAggregatorContracts "sharpnr-engine/sentinel_aggregators/contracts"
+)
 
 // ResourceTypeProperty is the Cedar entity type of an organization property.
 // Engine callers build Resource{Type: ResourceTypeProperty, ID: <property id>}.
-const ResourceTypeProperty = "Property"
+// Defined in property_constants; re-exported here for the aggregator side.
+const ResourceTypeProperty = property_constants.ResourceTypeProperty
 
 // Resources implements [sentinelAggregatorContracts.ResourceProvider].
 func (s *orgPropertyResources) Resources() []sentinelAggregatorContracts.ResourceDescriptor {

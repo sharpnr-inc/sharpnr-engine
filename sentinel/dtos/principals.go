@@ -5,16 +5,14 @@ import (
 )
 
 // These DTOs feed the frontend's Cedar policy builder — the "principal" palette.
-// A policy's principal scope is written one of four ways, and each draws on a
-// different part of this view:
 //
-//	principal is User                    -> a PrincipalType with operator "is"
-//	principal == User::"<employee-uuid>" -> (deferred) a specific user
-//	principal in Role::"<name>"          -> a PrincipalRef from Roles
-//	principal in Group::"<name>"         -> a PrincipalRef from Groups
-//
-// Role/Group are embedded in the Cedar text by NAME (Value), while the UI shows
-// the human Label.
+// Policy applicability is ATTACHMENT-driven: the engine evaluates, for each
+// user, the union of org-scoped policies and the policies attached to them
+// (directly, via roles, via groups). Selecting a Role/Group in the builder
+// therefore picks the ATTACHMENT TARGET for the policy — it does not write a
+// `principal in Role::"..."` condition into the Cedar text (the engine builds
+// no Role/Group entities, so such text would never match). Policy text targets
+// the generic `principal`.
 
 // PrincipalType is one selectable Cedar entity type the builder can scope a
 // principal to, plus the operators valid for it.
@@ -39,14 +37,14 @@ type PrincipalsView struct {
 	Groups []PrincipalRef  `json:"groups"`
 }
 
-// RoleRef projects a role to the ref the builder embeds. Roles are keyed by name
-// (the Cedar entity id), which is unique per org.
+// RoleRef projects a role to the ref the builder shows as an attachment target.
+// Name is unique per org.
 func RoleRef(r *sentinelengine_models.Role) PrincipalRef {
 	return PrincipalRef{Value: r.Name, Label: r.Name}
 }
 
-// GroupRef projects a group to the ref the builder embeds. Groups are keyed by
-// name (the Cedar entity id), which identifies a group within an org.
+// GroupRef projects a group to the ref the builder shows as an attachment
+// target. Name identifies a group within an org.
 func GroupRef(g *sentinelengine_models.Group) PrincipalRef {
 	return PrincipalRef{Value: g.Name, Label: g.Name}
 }

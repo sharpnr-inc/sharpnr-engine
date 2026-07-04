@@ -31,7 +31,7 @@ func BootstrapModules(
 	sentinelService := bootstrapSentinel(db, txManager, sentinelAuthzEngine)
 
 	organizationService := bootstrapOrganization(db, redis, mailerEngine, txManager)
-	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine)
+	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine, sentinelAuthzEngine)
 
 	// Resources aggregator: every module's mod_resources, for the FE policy builder.
 	sentinelAggregator := bootstrapSentinelAggregator(orgPropertyService, sentinelService)

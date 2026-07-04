@@ -24,6 +24,21 @@ func (Group) TableName() string { return "sentinel_engine.groups" }
 
 /* ---------------------------------- <***> --------------------------------- */
 
+type GroupsSentinelPolicies struct {
+	ID               uuid.UUID `gorm:"type:uuid;primaryKey"`
+	OrganizationID   uuid.UUID `gorm:"type:uuid;not null;index"`
+	GroupID          uuid.UUID `gorm:"type:uuid;not null;index"`
+	SentinelPolicyID uuid.UUID `gorm:"type:uuid;not null;index"`
+	CreatedAt        time.Time
+	DeletedAt        gorm.DeletedAt `gorm:"index"`
+}
+
+func (GroupsSentinelPolicies) TableName() string {
+	return "sentinel_engine.groups_sentinel_policies"
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
 // A User(employee) can have multiple Roles
 //
 // Note: UserID is EmployeeID or emplID
