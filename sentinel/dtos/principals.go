@@ -10,10 +10,10 @@ import (
 //
 //	principal is User                    -> a PrincipalType with operator "is"
 //	principal == User::"<employee-uuid>" -> (deferred) a specific user
-//	principal in Role::"<slug>"          -> a PrincipalRef from Roles
-//	principal in Group::"<slug>"         -> a PrincipalRef from Groups
+//	principal in Role::"<name>"          -> a PrincipalRef from Roles
+//	principal in Group::"<name>"         -> a PrincipalRef from Groups
 //
-// Role/Group are embedded in the Cedar text by SLUG (Value), while the UI shows
+// Role/Group are embedded in the Cedar text by NAME (Value), while the UI shows
 // the human Label.
 
 // PrincipalType is one selectable Cedar entity type the builder can scope a
@@ -45,7 +45,8 @@ func RoleRef(r *sentinelengine_models.Role) PrincipalRef {
 	return PrincipalRef{Value: r.Name, Label: r.Name}
 }
 
-// GroupRef projects a group to the Cedar-slug-keyed ref the builder embeds.
+// GroupRef projects a group to the ref the builder embeds. Groups are keyed by
+// name (the Cedar entity id), which identifies a group within an org.
 func GroupRef(g *sentinelengine_models.Group) PrincipalRef {
-	return PrincipalRef{Label: g.Name}
+	return PrincipalRef{Value: g.Name, Label: g.Name}
 }

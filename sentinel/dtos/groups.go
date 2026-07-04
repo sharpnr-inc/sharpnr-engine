@@ -9,14 +9,12 @@ import (
 type CreateGroupsRequestDto struct {
 	Name          string     `json:"name"`
 	Description   string     `json:"description"`
-	Slug          string     `json:"slug"`
 	ParentGroupID *uuid.UUID `json:"parentGroupId"` // nullable: top-level groups have no parent
 }
 
 // GroupView is the read shape for a group in the group tree.
 type GroupView struct {
 	ID            uuid.UUID  `json:"id"`
-	Slug          string     `json:"slug"`
 	Name          string     `json:"name"`
 	Description   string     `json:"description"`
 	ParentGroupID *uuid.UUID `json:"parentGroupId"`

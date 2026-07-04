@@ -17,13 +17,44 @@ func (c *OrchestratorController) ListPrincipalsHandler(ctx *gin.Context) {
 	if !ok {
 		return
 	}
-	
+
 	principals, err := c.orchestService.ListPrincipals(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "Principals fetched", principals)
+}
+
+// ListAuthzResourcesHandler serves the policy builder's resource picker: every
+// resource type registered with the sentinel aggregator.
+func (c *OrchestratorController) ListAuthzResourcesHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+	resources, err := c.orchestService.ListAuthzResources(ctx.Request.Context(), orgID, emplID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		return
+	}
+	utils.Success(ctx, http.StatusOK, "Resources fetched", resources)
+}
+
+// GetAuthzResourceDetailsHandler serves one resource's full palette: actions,
+// attributes and the org's live instances.
+func (c *OrchestratorController) GetAuthzResourceDetailsHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+	resourceType := ctx.Param("resourceType")
+	details, err := c.orchestService.GetAuthzResourceDetails(ctx.Request.Context(), orgID, emplID, resourceType)
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
+		return
+	}
+	utils.Success(ctx, http.StatusOK, "Resource details fetched", details)
 }
 
 func (c *OrchestratorController) ListPoliciesHandler(ctx *gin.Context) {

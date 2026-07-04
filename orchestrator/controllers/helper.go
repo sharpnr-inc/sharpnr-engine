@@ -5,11 +5,23 @@ import (
 	"fmt"
 	"net/http"
 	webMiddleware "sharpnr-engine/middlewares/web"
+	sentinelEngine "sharpnr-engine/sentinel_engine"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
+
+// failFromServiceError maps a service-layer error to the right HTTP failure:
+// a Sentinel deny becomes 403, anything else stays 500. Handlers whose service
+// path is guarded by the authorization engine respond through this helper.
+func failFromServiceError(ctx *gin.Context, err error) {
+	if errors.Is(err, sentinelEngine.ErrAccessDenied) {
+		utils.Failure(ctx, http.StatusForbidden, utils.CodeForbidden, err)
+		return
+	}
+	utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+}
 
 func (c *OrchestratorController) resolveRequestContexts(ctx *gin.Context) (uuid.UUID, uuid.UUID, bool) {
 	// 1. Extract and Parse Employee ID

@@ -12,6 +12,8 @@ import (
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	sentinelservice "sharpnr-engine/sentinel/service"
+	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
+	sentinelEngine "sharpnr-engine/sentinel_engine"
 	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
 	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
@@ -32,6 +34,8 @@ type orchestratorService struct {
 	supplierService         suppliers_service.SupplierServiceInterface
 	employeeHRService       employee_services.EmployeesHRServiceInterface
 	sentinelService         sentinelservice.SentinelServiceInterface
+	sentinelAggregator      sentinelAggregatorService.SentinelAggregatorServiceInterface
+	sentinelEngine          sentinelEngine.SentinelEngineInterface
 }
 
 func NewSharpnrOrchestratorService(
@@ -50,6 +54,8 @@ func NewSharpnrOrchestratorService(
 	employeeHRService employee_services.EmployeesHRServiceInterface,
 
 	sentinelService sentinelservice.SentinelServiceInterface,
+	sentinelAggregator sentinelAggregatorService.SentinelAggregatorServiceInterface,
+	sentinelAuthzEngine sentinelEngine.SentinelEngineInterface,
 ) *orchestratorService {
 	return &orchestratorService{
 		organizationService:     organizationService,
@@ -66,5 +72,7 @@ func NewSharpnrOrchestratorService(
 		supplierService:         supplierService,
 		employeeHRService:       employeeHRService,
 		sentinelService:         sentinelService,
+		sentinelAggregator:      sentinelAggregator,
+		sentinelEngine:          sentinelAuthzEngine,
 	}
 }

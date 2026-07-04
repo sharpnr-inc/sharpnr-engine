@@ -12,6 +12,9 @@ import (
 //
 //	/sentinel
 //	├── GET  /principals                            principal palette: types + roles + groups
+//	├── /resources
+//	│   ├── GET                                     resource palette: every registered resource type
+//	│   └── GET  /:resourceType                     one resource's actions, attributes + live instances
 //	├── /policies
 //	│   ├── GET                                     list the org's policies
 //	│   └── POST                                    create a policy (raw Cedar text)
@@ -27,6 +30,12 @@ func registerSentinelRoutes(rg *gin.RouterGroup, c *orchestrator_controllers.Orc
 	s := rg.Group("/sentinel")
 	{
 		s.GET("/principals", c.ListPrincipalsHandler)
+
+		resources := s.Group("/resources")
+		{
+			resources.GET("", c.ListAuthzResourcesHandler)
+			resources.GET("/:resourceType", c.GetAuthzResourceDetailsHandler)
+		}
 
 		policies := s.Group("/policies")
 		{

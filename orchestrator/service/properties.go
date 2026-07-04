@@ -10,6 +10,7 @@ import (
 	restaurant_contracts "sharpnr-engine/business_ops/hospitality/restaurant/contracts"
 	hospitality_utilities "sharpnr-engine/business_ops/hospitality/utilities"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
+	orgPropertyResources "sharpnr-engine/core/org_property/mod_resources"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	dbtx "sharpnr-engine/pkg/dbTx"
 
@@ -17,12 +18,17 @@ import (
 	"gorm.io/gorm"
 )
 
-// resourceTypeProperty is the Cedar entity type for a property resource.
-const resourceTypeProperty = "Property"
+// Property flows are guarded by the Sentinel engine. Action and resource-type
+// ids come from the org-property module's mod_resources so checks and the
+// policy-builder palette can never drift apart.
 
 /* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error) {
+
+	if err := s.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, ""); err != nil {
+		return nil, err
+	}
 
 	res, err := s.orgPropertyService.GetPropertiesOfOrg(ctx, orgID)
 	if err != nil {
@@ -50,7 +56,11 @@ func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID, 
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (c *orchestratorService) GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error) {
+func (c *orchestratorService) GetPropertyDetail(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error) {
+
+	if err := c.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+		return nil, err
+	}
 
 	propDetail, err := c.orgPropertyService.GetPropertyDetailsByID(ctx, orgID, propertyID)
 	if err != nil {
@@ -73,6 +83,10 @@ func (c *orchestratorService) GetPropertyDetail(ctx context.Context, orgID, prop
 /* ---------------------------------- <***> --------------------------------- */
 
 func (s *orchestratorService) CreateProperty(ctx context.Context, orgID, emplID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error {
+
+	if err := s.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanCreateNewProperty, orgPropertyResources.ResourceTypeProperty, ""); err != nil {
+		return err
+	}
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
@@ -116,6 +130,10 @@ func (s *orchestratorService) AddBusinessOperationModulesInProperty(
 	orgID, emplID, propertyID uuid.UUID,
 	req orchestrator_dtos.AddBusinessOpModulesRequestDto,
 ) error {
+
+	if err := s.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanAddBusinessModules, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+		return err
+	}
 
 	// Request validation is done in the controller, so the module types and
 	// quantities here are already known-valid.
@@ -176,6 +194,10 @@ func (s *orchestratorService) AddInfraModulesInProperty(
 	request orchestrator_dtos.AddInfraModulesRequestDto,
 ) error {
 
+	if err := s.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanAddInfraModules, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+		return err
+	}
+
 	// Scope for now: only Hospitality infra is provisioned, and within it only
 	// the Kitchen module. General infra and Healthcare infra are intentionally
 	// ignored even if present in the request body, and any other hospitality
@@ -208,6 +230,10 @@ func (s *orchestratorService) ListAllBusinessOpsModules(
 	ctx context.Context,
 	orgID, emplID, propertyID uuid.UUID,
 ) (orchestrator_dtos.PropertyBusinessOperationModulesResponseDto, error) {
+
+	if err := s.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+		return orchestrator_dtos.PropertyBusinessOperationModulesResponseDto{}, err
+	}
 
 	// Initialised to empty (non-nil) slices so the JSON response is [] rather
 	// than null when a domain has no modules.
@@ -301,6 +327,10 @@ func (s *orchestratorService) ListAllInfraModulesOfProperty(
 	ctx context.Context,
 	orgID, emplID, propertyID uuid.UUID,
 ) (orchestrator_dtos.PropertyInfraModulesResponseDto, error) {
+
+	if err := s.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+		return orchestrator_dtos.PropertyInfraModulesResponseDto{}, err
+	}
 
 	// Empty (non-nil) slices so absent domains serialize as [] rather than null.
 	resp := orchestrator_dtos.PropertyInfraModulesResponseDto{

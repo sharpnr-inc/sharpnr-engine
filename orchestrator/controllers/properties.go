@@ -27,7 +27,7 @@ func (c *OrchestratorController) ListAllOrgProperty(ctx *gin.Context) {
 
 	res, err := c.orchestService.GetAllPropertiesOfOrg(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		failFromServiceError(ctx, err)
 		return
 	}
 
@@ -51,7 +51,7 @@ func (c *OrchestratorController) ListAllOrgProperty(ctx *gin.Context) {
 // @Router       /orchestrator/property/{propertyID} [get]
 func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 	// 1. User Authentication Check
-	orgID, _, ok := c.resolveRequestContexts(ctx)
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
 		return // Response already sent by helper
 	}
@@ -63,9 +63,9 @@ func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 	}
 
 	// 4. Service Call
-	res, err := c.orchestService.GetPropertyDetail(ctx.Request.Context(), orgID, pId)
+	res, err := c.orchestService.GetPropertyDetail(ctx.Request.Context(), orgID, emplID, pId)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		failFromServiceError(ctx, err)
 		return
 	}
 
@@ -103,7 +103,7 @@ func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 	}
 
 	if err := c.orchestService.CreateProperty(ctx.Request.Context(), orgID, emplID, req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		failFromServiceError(ctx, err)
 		return
 	}
 
@@ -131,7 +131,8 @@ func (c *OrchestratorController) AddBusinessOperationModulesInPropertyHandler(ct
 	}
 
 	if err := c.orchestService.AddBusinessOperationModulesInProperty(ctx.Request.Context(), orgID, emplID, proprtyID, *req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Somethign bad happen", err)
+		failFromServiceError(ctx, err)
+		return
 	}
 
 	utils.Success(ctx, http.StatusCreated, "Modules Added Successfully")
@@ -156,7 +157,7 @@ func (c *OrchestratorController) GetBusinessOperationModulesOfPropertyHandler(ct
 
 	response, err := c.orchestService.ListAllBusinessOpsModules(ctx.Request.Context(), orgID, emplID, propertyID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Failed to fetch business operation modules", err)
+		failFromServiceError(ctx, err)
 		return
 	}
 
@@ -181,7 +182,7 @@ func (c *OrchestratorController) GetInfraModulesOfPropertyHandler(ctx *gin.Conte
 
 	response, err := c.orchestService.ListAllInfraModulesOfProperty(ctx.Request.Context(), orgID, emplID, propertyID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Failed to fetch infra modules", err)
+		failFromServiceError(ctx, err)
 		return
 	}
 
@@ -210,7 +211,7 @@ func (c *OrchestratorController) AddInfraModulesOfPropertyHandler(ctx *gin.Conte
 	}
 
 	if err := c.orchestService.AddInfraModulesInProperty(ctx.Request.Context(), orgID, emplID, propertyID, *req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Failed to add infra modules", err)
+		failFromServiceError(ctx, err)
 		return
 	}
 

@@ -22,17 +22,19 @@ func BootstrapModules(
 	sseEngine *sse_engine.StreamManager,
 ) *AppModules {
 
-	// Sentinel authorization engine: shared, concurrency-safe. Currently held
-	// only as a dormant placeholder for the orchestrator; it is NOT wired into
-	// the Sentinel service or its routes yet (authorization comes later).
-	// sentinelEngine := bootstrapSentinelEngine(db)
+	// Sentinel authorization engine: shared, concurrency-safe Cedar evaluator.
+	// Injected into the orchestrator for authorization decisions and into the
+	// authoring service as its cache invalidator.
+	sentinelAuthzEngine := bootstrapSentinelEngine(db)
 
-	// Sentinel authoring service: policy/role/group CRUD + attach/detach. No
-	// engine dependency.
-	sentinelService := bootstrapSentinel(db, txManager)
+	// Sentinel authoring service: policy/role/group CRUD + attach/detach.
+	sentinelService := bootstrapSentinel(db, txManager, sentinelAuthzEngine)
 
 	organizationService := bootstrapOrganization(db, redis, mailerEngine, txManager)
 	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine)
+
+	// Resources aggregator: every module's mod_resources, for the FE policy builder.
+	sentinelAggregator := bootstrapSentinelAggregator(orgPropertyService, sentinelService)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
 
 	/* ---------------------------- inventory engine ---------------------------- */
@@ -117,6 +119,8 @@ func BootstrapModules(
 		orgSupplierService,
 		employeesHRService,
 		sentinelService,
+		sentinelAggregator,
+		sentinelAuthzEngine,
 	)
 
 	utilitiesApiService := bootstrapUtilitiesApiService(db)

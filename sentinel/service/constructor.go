@@ -2,89 +2,52 @@ package sentinelservice
 
 import (
 	"context"
-	"github.com/google/uuid"
+
 	dbtx "sharpnr-engine/pkg/dbTx"
-	sentinelDtos "sharpnr-engine/sentinel/dtos"
-	sentinelengine_models "sharpnr-engine/sentinel/models"
 	sentinel_repo "sharpnr-engine/sentinel/repo"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
+// EngineCacheInvalidator is the one engine capability the authoring service
+// needs: dropping an org's compiled policy cache after a write. Declared here
+// (instead of importing the engine package) so the service stays decoupled from
+// evaluation; *sentinelEngine.SentinelEngine satisfies it.
+type EngineCacheInvalidator interface {
+	InvalidateOrganization(orgID uuid.UUID)
+}
+
 type sentinelService struct {
-	repo      sentinel_repo.SentinelRepositoryInterface
-	txManager dbtx.TxManager
-}
-
-// AttachPolicies implements [SentinelService].
-func (s *sentinelService) AttachPolicies(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, roleID uuid.UUID, policyIDs []uuid.UUID) error {
-	panic("unimplemented")
-}
-
-// CreateGroup implements [SentinelService].
-func (s *sentinelService) CreateGroup(ctx context.Context, orgID uuid.UUID, in sentinelDtos.CreateGroupsRequestDto) (uuid.UUID, error) {
-	panic("unimplemented")
-}
-
-// CreatePolicy implements [SentinelService].
-func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error) {
-	panic("unimplemented")
-}
-
-// CreateRole implements [SentinelService].
-func (s *sentinelService) CreateRole(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, in sentinelDtos.CreateRoleInput) (uuid.UUID, error) {
-	panic("unimplemented")
-}
-
-// DetachPolicy implements [SentinelService].
-func (s *sentinelService) DetachPolicy(ctx context.Context, orgID uuid.UUID, roleID uuid.UUID, policyID uuid.UUID) error {
-	panic("unimplemented")
-}
-
-// GetEmployeeRole implements [SentinelService].
-func (s *sentinelService) GetEmployeeRole(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) (sentinelDtos.RoleView, error) {
-	panic("unimplemented")
-}
-
-// GetPolicy implements [SentinelService].
-func (s *sentinelService) GetPolicy(ctx context.Context, orgID uuid.UUID, policyID uuid.UUID) (sentinelDtos.PolicyView, error) {
-	panic("unimplemented")
-}
-
-// GetPrincipals implements [SentinelService].
-func (s *sentinelService) GetPrincipals(ctx context.Context, orgID uuid.UUID) (sentinelDtos.PrincipalsView, error) {
-	panic("unimplemented")
-}
-
-// GetRolePrivileges implements [SentinelService].
-func (s *sentinelService) GetRolePrivileges(ctx context.Context, orgID uuid.UUID, roleID uuid.UUID) (sentinelDtos.RolePrivilegesView, error) {
-	panic("unimplemented")
-}
-
-// ListGroups implements [SentinelService].
-func (s *sentinelService) ListGroups(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.GroupView, error) {
-	panic("unimplemented")
-}
-
-// ListPolicies implements [SentinelService].
-func (s *sentinelService) ListPolicies(ctx context.Context, orgID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error) {
-	panic("unimplemented")
-}
-
-// ListRoles implements [SentinelService].
-func (s *sentinelService) ListRoles(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.RoleView, error) {
-	panic("unimplemented")
-}
-
-// ProvisionOrganization implements [SentinelService].
-func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID uuid.UUID, firstUserID uuid.UUID) error {
-	panic("unimplemented")
+	repo        sentinel_repo.SentinelRepositoryInterface
+	txManager   dbtx.TxManager
+	engineCache EngineCacheInvalidator
 }
 
 func NewSentinelService(
 	repo sentinel_repo.SentinelRepositoryInterface,
 	txManager dbtx.TxManager,
+	engineCache EngineCacheInvalidator,
 ) *sentinelService {
 	return &sentinelService{
-		repo:      repo,
-		txManager: txManager,
+		repo:        repo,
+		txManager:   txManager,
+		engineCache: engineCache,
+	}
+}
+
+// withTx runs fn inside one DB transaction, with the tx injected into the
+// context so every repo call joins it (the codebase-wide dbtx pattern).
+func (s *sentinelService) withTx(ctx context.Context, fn func(txCtx context.Context) error) error {
+	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
+		return fn(dbtx.InjectTx(ctx, tx))
+	})
+}
+
+// invalidateEngine drops the org's compiled policies after a policy write. Nil
+// engineCache (engine not wired, e.g. in tests) is a no-op.
+func (s *sentinelService) invalidateEngine(orgID uuid.UUID) {
+	if s.engineCache != nil {
+		s.engineCache.InvalidateOrganization(orgID)
 	}
 }

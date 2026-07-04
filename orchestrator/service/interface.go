@@ -11,6 +11,7 @@ import (
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
 	sentinelengine_models "sharpnr-engine/sentinel/models"
+	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
 	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
@@ -40,6 +41,11 @@ type SentinelOrchestrationInterface interface {
 	// Policy-builder palettes. Principals: types + roles + groups.
 	ListPrincipals(ctx context.Context, orgID, emplID uuid.UUID) (sentinelDtos.PrincipalsView, error)
 
+	// Resources palette, served by the sentinel aggregator: which resource
+	// types exist, and per type its actions, attributes and live instances.
+	ListAuthzResources(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelAggregatorService.ResourceSummaryView, error)
+	GetAuthzResourceDetails(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) (sentinelAggregatorService.ResourceDetailsView, error)
+
 	ListPolicies(ctx context.Context, orgID, emplID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error)
 	CreatePolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error)
 
@@ -67,7 +73,7 @@ type OrganizationPropertyOrchestrationInterface interface {
 
 	// General Property service methods
 	GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
-	GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
+	GetPropertyDetail(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
 	CreateProperty(ctx context.Context, orgID, emplID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error
 
 	// Business Modules
