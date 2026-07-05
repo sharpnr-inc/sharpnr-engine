@@ -4,7 +4,7 @@ import (
 	"html/template"
 	"log"
 	"sharpnr-engine/config"
-	mailer "sharpnr-engine/sharp_mailer"
+	mailerEngineTypes "sharpnr-engine/sharp_mailer_engine/types"
 	"sync"
 )
 
@@ -87,4 +87,4 @@ func NewWelcomeJob(to, subject string, data WelcomeData) internalEmailJob {
 }
 
 // keep compiler happy if mailer import is only used for the alias
-var _ mailer.Type
+var _ mailerEngineTypes.Type

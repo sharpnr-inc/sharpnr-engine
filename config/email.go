@@ -1,24 +1,24 @@
 package config
 
-import mailer "sharpnr-engine/sharp_mailer"
+import mailerEngineTypes "sharpnr-engine/sharp_mailer_engine/types"
 
 type EmailConfig struct {
-	Identities map[mailer.Type]mailer.Identity
+	Identities map[mailerEngineTypes.Type]mailerEngineTypes.Identity
 }
 
 func loadEmail() EmailConfig {
 	return EmailConfig{
-		Identities: map[mailer.Type]mailer.Identity{
-			mailer.OTP: {
+		Identities: map[mailerEngineTypes.Type]mailerEngineTypes.Identity{
+			mailerEngineTypes.OTP: {
 				FromAddress: mustGet("EMAIL_FROM_OTP"),
 			},
-			mailer.Support: {
+			mailerEngineTypes.Support: {
 				FromAddress: mustGet("EMAIL_FROM_SUPPORT"),
 			},
-			mailer.Billing: {
+			mailerEngineTypes.Billing: {
 				FromAddress: mustGet("EMAIL_FROM_BILLING"),
 			},
-			mailer.Notification: {
+			mailerEngineTypes.Notification: {
 				FromAddress: mustGet("EMAIL_FROM_NOTIFICATION"),
 			},
 		},

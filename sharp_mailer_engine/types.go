@@ -2,17 +2,17 @@ package sharp_mailer_engine
 
 import (
 	"context"
-	mailer "sharpnr-engine/sharp_mailer"
+	mailerEngineTypes "sharpnr-engine/sharp_mailer_engine/types"
 )
 
 // Re-export mailer types so callers only import sharp_mailer_engine
-type MailType = mailer.Type // alias, not a new type — no conversion needed
+type MailType = mailerEngineTypes.Type // alias, not a new type — no conversion needed
 
 const (
-	MailTypeOTP          = mailer.OTP
-	MailTypeSupport      = mailer.Support
-	MailTypeBilling      = mailer.Billing
-	MailTypeNotification = mailer.Notification
+	MailTypeOTP          = mailerEngineTypes.OTP
+	MailTypeSupport      = mailerEngineTypes.Support
+	MailTypeBilling      = mailerEngineTypes.Billing
+	MailTypeNotification = mailerEngineTypes.Notification
 )
 
 // TemplateKey is the filename of the Go HTML template

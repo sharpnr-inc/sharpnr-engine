@@ -1,4 +1,4 @@
-package mailer
+package mailerEngineTypes
 
 type Identity struct {
 	FromAddress string // "Sharpnr
