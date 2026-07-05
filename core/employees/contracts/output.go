@@ -11,6 +11,13 @@ type EmployeeProfileOutput struct {
 	Gender    string `json:"gender"`
 }
 
+type OrgEmployeeList struct {
+	ID           uuid.UUID `json:"id"`
+	EmployeeName string    `json:"employeeName"`
+	EmployeeID   string    `json:"employeeID"`
+	Status       string    `json:"status"`
+}
+
 type EmployeeDetailsOutput struct {
 	Email     string    `json:"email"`
 	FirstName string    `json:"firstName"`

@@ -45,6 +45,10 @@ func BootstrapModules(
 	employeesIdentityService := bootstrapEmployeeIdentity(db, seroEngine, txManager, mailerEngine)
 	employeesHRService := bootstrapEmployeeHR(db, seroEngine, txManager, mailerEngine)
 
+	/* ------------------------------ HRMS engine ------------------------------ */
+	hrmsEngine := bootstrapHRMSEngine(db, seroEngine, txManager, mailerEngine, employeesHRService)
+	/* ------------------------------ HRMS engine ------------------------------ */
+
 	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
 	orgSupplierService := bootstrapSupplier(db, txManager, mailerEngine, seroEngine)
 
@@ -132,6 +136,7 @@ func BootstrapModules(
 		orgLegalEntityService:    orgLegalEntityService,
 		employeesIdentityService: employeesIdentityService,
 		employeesHRService:       employeesHRService,
+		hrmsEngine:               hrmsEngine,
 		accountingService:        accountingService,
 		sharpAuthService:         identityService,
 		hospitality:              hospitality,

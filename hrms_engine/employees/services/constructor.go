@@ -20,7 +20,7 @@ func NewHRMSEmployeeService(
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-) *hrmsemployeeService {
+) HRMSEmployeeServiceInterface {
 
 	return &hrmsemployeeService{
 		employeeService: employeeService,

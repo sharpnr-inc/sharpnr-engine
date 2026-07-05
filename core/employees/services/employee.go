@@ -2,8 +2,8 @@ package employee_services
 
 import (
 	"context"
+	employee_contracts "sharpnr-engine/core/employees/contracts"
 	employee_models "sharpnr-engine/core/employees/models"
-	sharphr_dtos "sharpnr-engine/hrms_engine/employees/dtos"
 
 	"time"
 
@@ -71,17 +71,17 @@ func (h *employeeService) IsUserExists(
 func (s *employeeService) ListOrgAllEmployees(
 	ctx context.Context,
 	orgID, emplID uuid.UUID,
-) ([]*sharphr_dtos.OrgEmployeeList, error) {
+) ([]*employee_contracts.OrgEmployeeList, error) {
 
 	empls, err := s.employeeRepo.ListEmployeesByOrg(ctx, orgID)
 	if err != nil {
 		return nil, err
 	}
 
-	var result []*sharphr_dtos.OrgEmployeeList
+	var result []*employee_contracts.OrgEmployeeList
 
 	for _, e := range empls {
-		result = append(result, &sharphr_dtos.OrgEmployeeList{
+		result = append(result, &employee_contracts.OrgEmployeeList{
 			ID:           e.ID,
 			EmployeeName: buildEmployeeName(e.FirstName, e.LastName, e.NickName),
 			EmployeeID:   e.EmployeeCode,

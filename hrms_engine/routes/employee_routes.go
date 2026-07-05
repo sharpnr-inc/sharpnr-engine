@@ -9,8 +9,8 @@ import (
 
 func registerEmployeeRoutes(hr *gin.RouterGroup, modules app.ModulesProvider) {
 
-	employeeService := modules.EmployeesHRService()
-	newEmpController := employee_controllers.NewEmployeeController(employeeService)
+	hrmsEmployeeService := modules.HRMS().EmployeeService()
+	newEmpController := employee_controllers.NewEmployeeController(hrmsEmployeeService)
 
 	employees := hr.Group("/employees")
 	{

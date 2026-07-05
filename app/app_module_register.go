@@ -12,6 +12,7 @@ import (
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
+	hrmsengine "sharpnr-engine/hrms_engine/engine"
 
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
@@ -40,6 +41,10 @@ type AppModules struct {
 
 	employeesIdentityService employee_services.EmployeesIdentityServiceInterface
 	employeesHRService       employee_services.EmployeesHRServiceInterface
+
+	// hrmsEngine aggregates all HRMS module services (employees, attendance,
+	// payroll, recruitment, ...) behind a single entry point for the HR routes.
+	hrmsEngine *hrmsengine.HRMSEngine
 
 	accountingService    accounting_service.AccountingServiceInterface
 	orgCustomerService   org_customer_service.OrgCustomerServiceInterface
@@ -85,6 +90,10 @@ func (m *AppModules) EmployeesIdentityService() employee_services.EmployeesIdent
 
 func (m *AppModules) EmployeesHRService() employee_services.EmployeesHRServiceInterface {
 	return m.employeesHRService
+}
+
+func (m *AppModules) HRMS() *hrmsengine.HRMSEngine {
+	return m.hrmsEngine
 }
 
 func (m *AppModules) OrgSignUpService() org_signup_services.OrganizationSignUpServiceInterfaces {
