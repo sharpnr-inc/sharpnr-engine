@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	sentinelAggregatorContracts "sharpnr-engine/sentinel_aggregators/contracts"
+	sentinelContexts "sharpnr-engine/sentinel_contexts"
 
 	"github.com/google/uuid"
 )
@@ -20,6 +21,11 @@ type SentinelAggregatorServiceInterface interface {
 	// GetResourceDetails returns one resource's full builder palette: its
 	// actions, attributes and the org's live instances.
 	GetResourceDetails(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) (ResourceDetailsView, error)
+
+	// GetContextPalette returns the context vocabulary the builder can author
+	// conditions against: the canonical `context.*` request keys and the
+	// `principal.*` user keys the engine stamps on every evaluation.
+	GetContextPalette(ctx context.Context, orgID, emplID uuid.UUID) (sentinelContexts.Palette, error)
 }
 
 type sentinelAggregatorService struct {

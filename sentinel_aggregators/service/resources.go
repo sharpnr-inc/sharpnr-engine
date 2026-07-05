@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	sentinelAggregatorContracts "sharpnr-engine/sentinel_aggregators/contracts"
+	sentinelContexts "sharpnr-engine/sentinel_contexts"
 
 	"github.com/google/uuid"
 )
@@ -22,6 +23,14 @@ type ResourceSummaryView struct {
 type ResourceDetailsView struct {
 	sentinelAggregatorContracts.ResourceDescriptor
 	Instances []sentinelAggregatorContracts.ResourceInstance `json:"instances"`
+}
+
+// GetContextPalette implements [SentinelAggregatorServiceInterface]. The
+// palette is static app vocabulary (defined next to the keys the engine
+// stamps, in sentinel_contexts); orgID/emplID are carried for signature
+// consistency and future per-org keys.
+func (s *sentinelAggregatorService) GetContextPalette(ctx context.Context, orgID, emplID uuid.UUID) (sentinelContexts.Palette, error) {
+	return sentinelContexts.BuilderPalette(), nil
 }
 
 // ListResources implements [SentinelAggregatorServiceInterface].

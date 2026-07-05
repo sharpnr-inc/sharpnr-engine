@@ -12,6 +12,7 @@ import (
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
 	sentinelengine_models "sharpnr-engine/sentinel/models"
 	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
+	sentinelContexts "sharpnr-engine/sentinel_contexts"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
 	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
@@ -45,6 +46,10 @@ type SentinelOrchestrationInterface interface {
 	// types exist, and per type its actions, attributes and live instances.
 	ListAuthzResources(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelAggregatorService.ResourceSummaryView, error)
 	GetAuthzResourceDetails(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) (sentinelAggregatorService.ResourceDetailsView, error)
+
+	// Context palette: the canonical context.*/principal.* keys the engine
+	// stamps on every evaluation, for the builder's condition editor.
+	GetAuthzContextPalette(ctx context.Context, orgID, emplID uuid.UUID) (sentinelContexts.Palette, error)
 
 	ListPolicies(ctx context.Context, orgID, emplID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error)
 	CreatePolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error)

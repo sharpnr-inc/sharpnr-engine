@@ -3,9 +3,11 @@ package webMiddleware
 import (
 	"log/slog"
 	"net/http"
+	"time"
 
 	"sharpnr-engine/pkg/cookieManager"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
+	sentinelContexts "sharpnr-engine/sentinel_contexts"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -70,6 +72,23 @@ func WebAuthMiddleware(
 		// 3️⃣ Populate legacy context keys
 		ctx.Set(UserIDContextKey, claims.UserID)
 		ctx.Set(OrgUUIDContextKey, claims.OrgID)
+
+		// 4️⃣ Stamp the Sentinel authorization context onto the request so the
+		// engine can expose it to policies (context.channel, context.ip, ...).
+		// Handlers pass ctx.Request.Context() down, so this travels for free.
+		ctx.Request = ctx.Request.WithContext(sentinelContexts.Inject(
+			ctx.Request.Context(),
+			sentinelContexts.AuthzContext{
+				Request: sentinelContexts.RequestContext{
+					Channel:     sentinelContexts.ChannelWeb,
+					IPAddress:   ctx.ClientIP(),
+					RequestedAt: time.Now(),
+				},
+				// UserContext (department, designation, ...) stays zero until
+				// the session claims carry those facts.
+			},
+		))
+
 		ctx.Next()
 	}
 }

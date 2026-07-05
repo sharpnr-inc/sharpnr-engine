@@ -5,8 +5,10 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
+	"time"
 
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
+	sentinelContexts "sharpnr-engine/sentinel_contexts"
 
 	"github.com/gin-gonic/gin"
 )
@@ -81,6 +83,19 @@ func MobileMiddleware(jwtMgr jwt_manager.Manager) gin.HandlerFunc {
 		// 3️⃣ Populate context — available to all downstream handlers
 		ctx.Set(UserIDContextKey, claims.UserID)
 		ctx.Set(OrgUUIDContextKey, claims.OrgID)
+
+		// 4️⃣ Stamp the Sentinel authorization context onto the request so the
+		// engine can expose it to policies (context.channel, context.ip, ...).
+		ctx.Request = ctx.Request.WithContext(sentinelContexts.Inject(
+			ctx.Request.Context(),
+			sentinelContexts.AuthzContext{
+				Request: sentinelContexts.RequestContext{
+					Channel:     sentinelContexts.ChannelMobile,
+					IPAddress:   ctx.ClientIP(),
+					RequestedAt: time.Now(),
+				},
+			},
+		))
 
 		ctx.Next()
 	}

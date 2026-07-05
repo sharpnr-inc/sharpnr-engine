@@ -12,6 +12,7 @@ import (
 //
 //	/sentinel
 //	├── GET  /principals                            principal palette: types + roles + groups
+//	├── GET  /contexts                              context palette: authorable context.*/principal.* keys
 //	├── /resources
 //	│   ├── GET                                     resource palette: every registered resource type
 //	│   └── GET  /:resourceType                     one resource's actions, attributes + live instances
@@ -30,6 +31,7 @@ func registerSentinelRoutes(rg *gin.RouterGroup, c *orchestrator_controllers.Orc
 	s := rg.Group("/sentinel")
 	{
 		s.GET("/principals", c.ListPrincipalsHandler)
+		s.GET("/contexts", c.GetAuthzContextPaletteHandler)
 
 		resources := s.Group("/resources")
 		{

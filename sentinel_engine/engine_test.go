@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	sentinelContexts "sharpnr-engine/sentinel_contexts"
+
 	"github.com/go-openapi/testify/v2/assert"
 	"github.com/go-openapi/testify/v2/require"
 	"github.com/google/uuid"
@@ -140,6 +142,103 @@ func TestTenantBoundary(t *testing.T) {
 		})
 		require.NoError(t, err)
 		assert.False(t, got, "cross-org request must be denied")
+	})
+}
+
+func TestContextStamping(t *testing.T) {
+	orgID := uuid.New()
+	ctxBase := context.Background()
+
+	newEngineWithPolicy := func(userID uuid.UUID, text string) *SentinelEngine {
+		return NewSentinelEngine(&fakeStore{byUser: map[uuid.UUID][]PolicyRecord{
+			userID: {{ID: uuid.New(), Text: text}},
+		}})
+	}
+	baseReq := func(userID uuid.UUID) AccessRequest {
+		return AccessRequest{OrgID: orgID, UserID: userID, Action: "canViewProperty", Resource: Resource{Type: "Property"}}
+	}
+
+	t.Run("context.channel gates by injected channel", func(t *testing.T) {
+		userID := uuid.New()
+		engine := newEngineWithPolicy(userID, `permit (principal, action, resource) when { context.channel == "mobile" };`)
+
+		mobileCtx := sentinelContexts.Inject(ctxBase, sentinelContexts.AuthzContext{
+			Request: sentinelContexts.RequestContext{Channel: sentinelContexts.ChannelMobile},
+		})
+		got, err := engine.IsAuthorized(mobileCtx, baseReq(userID))
+		require.NoError(t, err)
+		assert.True(t, got, "mobile request must satisfy the channel condition")
+
+		webCtx := sentinelContexts.Inject(ctxBase, sentinelContexts.AuthzContext{
+			Request: sentinelContexts.RequestContext{Channel: sentinelContexts.ChannelWeb},
+		})
+		got, err = engine.IsAuthorized(webCtx, baseReq(userID))
+		require.NoError(t, err)
+		assert.False(t, got, "web request must not satisfy the channel condition")
+
+		// No injection at all: canonical keys are still stamped (zero values),
+		// so the condition evaluates to false instead of erroring the policy.
+		got, err = engine.IsAuthorized(ctxBase, baseReq(userID))
+		require.NoError(t, err)
+		assert.False(t, got)
+	})
+
+	t.Run("context.mfaVerified gates by injected MFA state", func(t *testing.T) {
+		userID := uuid.New()
+		engine := newEngineWithPolicy(userID, `permit (principal, action, resource) when { context.mfaVerified };`)
+
+		got, err := engine.IsAuthorized(ctxBase, baseReq(userID))
+		require.NoError(t, err)
+		assert.False(t, got, "MFA not verified -> deny")
+
+		mfaCtx := sentinelContexts.Inject(ctxBase, sentinelContexts.AuthzContext{
+			Request: sentinelContexts.RequestContext{MFAVerified: true},
+		})
+		got, err = engine.IsAuthorized(mfaCtx, baseReq(userID))
+		require.NoError(t, err)
+		assert.True(t, got)
+	})
+
+	t.Run("principal.department gates by injected user context", func(t *testing.T) {
+		userID := uuid.New()
+		engine := newEngineWithPolicy(userID, `permit (principal, action, resource) when { principal.department == "Finance" };`)
+
+		financeCtx := sentinelContexts.Inject(ctxBase, sentinelContexts.AuthzContext{
+			User: sentinelContexts.UserContext{Department: "Finance"},
+		})
+		got, err := engine.IsAuthorized(financeCtx, baseReq(userID))
+		require.NoError(t, err)
+		assert.True(t, got)
+
+		hrCtx := sentinelContexts.Inject(ctxBase, sentinelContexts.AuthzContext{
+			User: sentinelContexts.UserContext{Department: "HR"},
+		})
+		got, err = engine.IsAuthorized(hrCtx, baseReq(userID))
+		require.NoError(t, err)
+		assert.False(t, got)
+	})
+
+	t.Run("caller extras pass through; canonical keys win on collision", func(t *testing.T) {
+		userID := uuid.New()
+		engine := newEngineWithPolicy(userID, `permit (principal, action, resource) when { context.amount > 1000 && context.channel == "web" };`)
+
+		webCtx := sentinelContexts.Inject(ctxBase, sentinelContexts.AuthzContext{
+			Request: sentinelContexts.RequestContext{Channel: sentinelContexts.ChannelWeb},
+		})
+
+		req := baseReq(userID)
+		req.Context = map[string]any{
+			"amount":  5000,
+			"channel": "mobile", // spoof attempt — the injected (engine-stamped) channel must win
+		}
+		got, err := engine.IsAuthorized(webCtx, req)
+		require.NoError(t, err)
+		assert.True(t, got, "extras merge in, but the canonical channel stays web")
+
+		req.Context["amount"] = 100
+		got, err = engine.IsAuthorized(webCtx, req)
+		require.NoError(t, err)
+		assert.False(t, got)
 	})
 }
 

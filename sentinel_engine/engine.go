@@ -8,6 +8,8 @@ import (
 	"sync"
 	"time"
 
+	sentinelContexts "sharpnr-engine/sentinel_contexts"
+
 	cedar "github.com/cedar-policy/cedar-go"
 	"github.com/google/uuid"
 )
@@ -83,6 +85,14 @@ func (e *SentinelEngine) IsAuthorized(ctx context.Context, req AccessRequest) (b
 		return false, err
 	}
 
+	// The rigid context vocabulary: whatever the auth middleware injected (or
+	// all-zero facts when nothing was), with the request time defaulting to
+	// the evaluation time so `context.requestedAt` conditions always work.
+	authz, _ := sentinelContexts.Extract(ctx)
+	if authz.Request.RequestedAt.IsZero() {
+		authz.Request.RequestedAt = time.Now()
+	}
+
 	principal := cedar.NewEntityUID(EntityTypeUser, cedar.String(req.UserID.String()))
 	action := cedar.NewEntityUID(entityTypeAction, cedar.String(req.Action))
 	resourceID := req.Resource.ID
@@ -93,16 +103,18 @@ func (e *SentinelEngine) IsAuthorized(ctx context.Context, req AccessRequest) (b
 
 	decision, _ := cedar.Authorize(
 		policies.set,
-		buildEntities(principal, resource, req),
+		buildEntities(principal, resource, req, authz.User),
 		cedar.Request{
 			Principal: principal,
 			Action:    action,
 			Resource:  resource,
-			Context:   toCedarRecord(req.Context),
+			Context:   buildCedarContext(req.Context, authz.Request),
 		},
 	)
 	return decision == cedar.Allow, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 // Authorize implements [SentinelEngineInterface].
 func (e *SentinelEngine) Authorize(ctx context.Context, req AccessRequest) error {
@@ -115,6 +127,8 @@ func (e *SentinelEngine) Authorize(ctx context.Context, req AccessRequest) error
 	}
 	return nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 // InvalidateOrganization implements [SentinelEngineInterface].
 func (e *SentinelEngine) InvalidateOrganization(orgID uuid.UUID) {
@@ -155,6 +169,8 @@ func (e *SentinelEngine) policiesForUser(ctx context.Context, orgID, userID uuid
 	return compiled, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 // compilePolicySet parses every stored policy text into one PolicySet. A policy
 // that fails to parse fails the whole compile: silently skipping it could drop a
 // forbid rule and grant more access than intended, so the engine fails closed.
@@ -175,8 +191,22 @@ func compilePolicySet(records []PolicyRecord) (*cedar.PolicySet, error) {
 	return set, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
+// buildCedarContext merges the caller's action-specific extras with the
+// canonical request-environment keys (channel, ip, requestedAt, mfaVerified).
+// The canonical keys are engine-authoritative — a caller extra cannot shadow
+// them — and are always present, so authored `context.<key>` conditions never
+// error on a missing attribute.
+func buildCedarContext(extras map[string]any, rc sentinelContexts.RequestContext) cedar.Record {
+	merged := make(map[string]any, len(extras)+4)
+	maps.Copy(merged, extras)
+	maps.Copy(merged, rc.CedarKeys())
+	return toCedarRecord(merged)
+}
+
 // buildEntities assembles the entity graph for one evaluation: the principal
-// and the resource with its attributes.
+// with its user-context attributes and the resource with its attributes.
 //
 // The engine stamps the tenancy attributes itself so they are never missing or
 // caller-forgeable: principal.orgId is the request's org, resource.orgId is the
@@ -184,7 +214,7 @@ func compilePolicySet(records []PolicyRecord) (*cedar.PolicySet, error) {
 // didn't resolve it — the structural check above already handled the known-
 // foreign case). Authored `when { resource.orgId == principal.orgId }` guards
 // therefore evaluate correctly instead of erroring on a missing attribute.
-func buildEntities(principal, resource cedar.EntityUID, req AccessRequest) cedar.EntityMap {
+func buildEntities(principal, resource cedar.EntityUID, req AccessRequest, user sentinelContexts.UserContext) cedar.EntityMap {
 	resourceOrg := req.Resource.OrgID
 	if resourceOrg == uuid.Nil {
 		resourceOrg = req.OrgID
@@ -194,10 +224,13 @@ func buildEntities(principal, resource cedar.EntityUID, req AccessRequest) cedar
 	maps.Copy(resourceAttrs, req.ResourceAttributes)
 	resourceAttrs["orgId"] = resourceOrg // engine-authoritative; overrides any caller value
 
+	principalAttrs := user.CedarKeys()
+	principalAttrs["orgId"] = req.OrgID // engine-owned tenancy attribute
+
 	return cedar.EntityMap{
 		principal: cedar.Entity{
 			UID:        principal,
-			Attributes: toCedarRecord(map[string]any{"orgId": req.OrgID}),
+			Attributes: toCedarRecord(principalAttrs),
 		},
 		resource: cedar.Entity{
 			UID:        resource,
@@ -205,6 +238,8 @@ func buildEntities(principal, resource cedar.EntityUID, req AccessRequest) cedar
 		},
 	}
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 // toCedarRecord converts a plain Go map into a Cedar record, dropping values
 // that have no sensible Cedar representation.
@@ -263,3 +298,5 @@ func toCedarValue(v any) (cedar.Value, bool) {
 		return nil, false
 	}
 }
+
+/* ---------------------------------- <***> --------------------------------- */

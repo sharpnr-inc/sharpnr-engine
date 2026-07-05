@@ -6,6 +6,7 @@ import (
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
 	sentinelengine_models "sharpnr-engine/sentinel/models"
 	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
+	sentinelContexts "sharpnr-engine/sentinel_contexts"
 
 	"github.com/google/uuid"
 )
@@ -26,6 +27,10 @@ func (s *orchestratorService) ListAuthzResources(ctx context.Context, orgID, emp
 
 func (s *orchestratorService) GetAuthzResourceDetails(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) (sentinelAggregatorService.ResourceDetailsView, error) {
 	return s.sentinelAggregator.GetResourceDetails(ctx, orgID, emplID, resourceType)
+}
+
+func (s *orchestratorService) GetAuthzContextPalette(ctx context.Context, orgID, emplID uuid.UUID) (sentinelContexts.Palette, error) {
+	return s.sentinelAggregator.GetContextPalette(ctx, orgID, emplID)
 }
 
 func (s *orchestratorService) ListPolicies(ctx context.Context, orgID, emplID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error) {

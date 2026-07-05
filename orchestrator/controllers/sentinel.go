@@ -26,6 +26,22 @@ func (c *OrchestratorController) ListPrincipalsHandler(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusOK, "Principals fetched", principals)
 }
 
+// GetAuthzContextPaletteHandler serves the policy builder's context vocabulary:
+// the canonical context.* and principal.* keys conditions can be authored
+// against, with types and closed value sets for rendering pickers.
+func (c *OrchestratorController) GetAuthzContextPaletteHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+	palette, err := c.orchestService.GetAuthzContextPalette(ctx.Request.Context(), orgID, emplID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		return
+	}
+	utils.Success(ctx, http.StatusOK, "Context palette fetched", palette)
+}
+
 // ListAuthzResourcesHandler serves the policy builder's resource picker: every
 // resource type registered with the sentinel aggregator.
 func (c *OrchestratorController) ListAuthzResourcesHandler(ctx *gin.Context) {
