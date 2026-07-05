@@ -52,7 +52,6 @@ func (s *sharpnrIdentityAuthService) GetAuthenticatedUserDetails(
 		FirstName: empl.FirstName,
 		LastName:  empl.LastName,
 		ID:        empl.ID,
-		Role:      empl.Role,
 		Org: sharpnr_identity_auth_dtos.OrgData{
 			Name:    orgDetails.Name,
 			SharpID: orgDetails.SharpID,

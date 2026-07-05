@@ -23,5 +23,4 @@ type EmployeeDetailsOutput struct {
 	FirstName string    `json:"firstName"`
 	LastName  string    `json:"lastName"`
 	ID        uuid.UUID `json:"id"`
-	Role      string    `json:"role"`
 }
