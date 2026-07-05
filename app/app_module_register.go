@@ -3,6 +3,7 @@ package app
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	org_customer_service "sharpnr-engine/core/customer/service"
+	employee_services "sharpnr-engine/core/employees/services"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
@@ -11,7 +12,7 @@ import (
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
-	employee_services "sharpnr-engine/hrms_engine/employees/services"
+
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"

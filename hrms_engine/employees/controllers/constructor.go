@@ -1,6 +1,6 @@
 package employee_controllers
 
-import employee_services "sharpnr-engine/hrms_engine/employees/services"
+import employee_services "sharpnr-engine/core/employees/services"
 
 type employeeController struct {
 	hrEmpSvc employee_services.EmployeesHRServiceInterface

@@ -2,7 +2,7 @@
 package employee_models
 
 import (
-	hr_emp_constants "sharpnr-engine/hrms_engine/employees/constants"
+	employee_constants "sharpnr-engine/core/employees/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,7 +15,7 @@ type EmployeeOnboarding struct {
 	EmployeeID uuid.UUID `gorm:"type:uuid;uniqueIndex;not null"`
 
 	// Status: e.g., PENDING_DOCUMENTS, TRAINING, READY_FOR_SHIFT, COMPLETED
-	Status hr_emp_constants.EmployeeOnboardingStatus `gorm:"type:varchar(50);not null;index"`
+	Status employee_constants.EmployeeOnboardingStatus `gorm:"type:varchar(50);not null;index"`
 
 	// Audit trail: Who pushed the status forward?
 	LastUpdatedBy *uuid.UUID `gorm:"type:uuid"`

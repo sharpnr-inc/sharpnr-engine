@@ -1,8 +1,9 @@
 package sharpnr_identity_auth_services
 
 import (
+	employee_services "sharpnr-engine/core/employees/services"
 	organization_services "sharpnr-engine/core/organization/services"
-	employee_services "sharpnr-engine/hrms_engine/employees/services"
+
 	sentinelservice "sharpnr-engine/sentinel/service"
 )
 

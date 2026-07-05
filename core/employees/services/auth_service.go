@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
+	employee_contracts "sharpnr-engine/core/employees/contracts"
 	"sharpnr-engine/shared/utils"
-	employee_contracts "sharpnr-engine/hrms_engine/employees/contracts"
 )
 
 var (

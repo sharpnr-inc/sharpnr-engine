@@ -2,7 +2,8 @@ package employee_repo
 
 import (
 	"context"
-	employee_models "sharpnr-engine/hrms_engine/employees/models"
+	employee_models "sharpnr-engine/core/employees/models"
+
 	"time"
 
 	"github.com/google/uuid"

@@ -1,9 +1,10 @@
 package org_signup_services
 
 import (
+	employee_services "sharpnr-engine/core/employees/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	organization_services "sharpnr-engine/core/organization/services"
-	employee_services "sharpnr-engine/hrms_engine/employees/services"
+
 	dbtx "sharpnr-engine/pkg/dbTx"
 	sentinelservice "sharpnr-engine/sentinel/service"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"

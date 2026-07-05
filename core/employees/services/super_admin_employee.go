@@ -2,7 +2,7 @@ package employee_services
 
 import (
 	"context"
-	employee_contracts "sharpnr-engine/hrms_engine/employees/contracts"
+	employee_contracts "sharpnr-engine/core/employees/contracts"
 
 	"github.com/google/uuid"
 )
