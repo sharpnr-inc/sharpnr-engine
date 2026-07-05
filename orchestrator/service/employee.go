@@ -7,16 +7,13 @@ import (
 	"github.com/google/uuid"
 )
 
-// Fetches all the employee of the organization
 // Fetches all the employees of the organization
 func (s *orchestratorService) GetAllEmployeesOfOrg(
 	ctx context.Context,
 	orgID, emplID uuid.UUID,
 ) ([]orchestrator_dtos.EmployeeOfOrganization, error) {
 
-	// this will return all the employees in the organization
-	// NOTE: we have to wire the sentinal engine here for the authorization which we will do it later
-
+	// Fetch all the employees in the organization
 	empList, err := s.employeeHRService.ListOrgAllEmployees(ctx, orgID, emplID)
 	if err != nil {
 		return nil, err
@@ -31,15 +28,22 @@ func (s *orchestratorService) GetAllEmployeesOfOrg(
 			continue
 		}
 
-		// Map the fields from OrgEmployeeList to EmployeeOfOrganization
+		// Fetch the role view for this specific employee
+		roleView, err := s.sentinelService.GetEmployeeRole(ctx, orgID, emp.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		// Map the fields from OrgEmployeeList and RoleView to EmployeeOfOrganization
 		mappedEmp := orchestrator_dtos.EmployeeOfOrganization{
-			ID:   emp.ID,
-			Name: emp.EmployeeName,
-			// Nickname is omitted as it doesn't exist in OrgEmployeeList (defaults to "")
-			Role: orchestrator_dtos.EmployeeRole{
-				Role: emp.EmployeeRole,
-			},
+			ID:     emp.ID,
+			Name:   emp.EmployeeName,
 			Status: emp.Status,
+			Role: orchestrator_dtos.EmployeeRole{
+				ID:          roleView.ID,
+				Role:        roleView.Name, // Maps the Name from RoleView to the Role field
+				Description: roleView.Description,
+			},
 		}
 
 		result = append(result, mappedEmp)
