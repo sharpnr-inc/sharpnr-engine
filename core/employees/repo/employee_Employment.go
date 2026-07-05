@@ -1,15 +1,15 @@
-package employee_repo
+package coreEmployeeRepo
 
 import (
 	"context"
-	employee_models "sharpnr-engine/core/employees/models"
+	coreEmployeeModels "sharpnr-engine/core/employees/models"
 
 	"github.com/google/uuid"
 )
 
 func (r *employeeRepo) CreateEmployement(
 	ctx context.Context,
-	emp *employee_models.EmployeeEmployment,
+	emp *coreEmployeeModels.EmployeeEmployment,
 ) error {
 
 	if emp.ID == uuid.Nil {
@@ -22,9 +22,9 @@ func (r *employeeRepo) CreateEmployement(
 func (r *employeeRepo) GetByEmployeeID(
 	ctx context.Context,
 	empID uuid.UUID,
-) (*employee_models.EmployeeEmployment, error) {
+) (*coreEmployeeModels.EmployeeEmployment, error) {
 
-	var employment employee_models.EmployeeEmployment
+	var employment coreEmployeeModels.EmployeeEmployment
 
 	err := r.db.
 		WithContext(ctx).

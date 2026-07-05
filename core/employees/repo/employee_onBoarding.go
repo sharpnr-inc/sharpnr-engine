@@ -1,15 +1,15 @@
-package employee_repo
+package coreEmployeeRepo
 
 import (
 	"context"
-	employee_models "sharpnr-engine/core/employees/models"
+	coreEmployeeModels "sharpnr-engine/core/employees/models"
 
 	"github.com/google/uuid"
 )
 
 func (r *employeeRepo) CreateEmployeeOnBoarding(
 	ctx context.Context,
-	onboarding *employee_models.EmployeeOnboarding,
+	onboarding *coreEmployeeModels.EmployeeOnboarding,
 ) error {
 
 	if onboarding.ID == uuid.Nil {
@@ -24,9 +24,9 @@ func (r *employeeRepo) CreateEmployeeOnBoarding(
 func (r *employeeRepo) GetEmplOnBoardingByEmployeeID(
 	ctx context.Context,
 	empID uuid.UUID,
-) (*employee_models.EmployeeOnboarding, error) {
+) (*coreEmployeeModels.EmployeeOnboarding, error) {
 
-	var onboarding employee_models.EmployeeOnboarding
+	var onboarding coreEmployeeModels.EmployeeOnboarding
 
 	err := r.db.
 		WithContext(ctx).
@@ -51,7 +51,7 @@ func (r *employeeRepo) UpdateStatus(
 
 	return r.db.
 		WithContext(ctx).
-		Model(&employee_models.EmployeeOnboarding{}).
+		Model(&coreEmployeeModels.EmployeeOnboarding{}).
 		Where("employee_id = ?", empID).
 		Update("status", status).
 		Error

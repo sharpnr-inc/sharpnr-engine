@@ -1,8 +1,8 @@
-package employee_repo
+package coreEmployeeRepo
 
 import (
 	"context"
-	employee_models "sharpnr-engine/core/employees/models"
+	coreEmployeeModels "sharpnr-engine/core/employees/models"
 
 	"time"
 
@@ -11,7 +11,7 @@ import (
 
 func (r *employeeRepo) CreateEmplVerification(
 	ctx context.Context,
-	v *employee_models.EmployeeVerification,
+	v *coreEmployeeModels.EmployeeVerification,
 ) error {
 
 	if v.ID == uuid.Nil {
@@ -24,9 +24,9 @@ func (r *employeeRepo) CreateEmplVerification(
 func (r *employeeRepo) GetByTokenHash(
 	ctx context.Context,
 	hash string,
-) (*employee_models.EmployeeVerification, error) {
+) (*coreEmployeeModels.EmployeeVerification, error) {
 
-	var verification employee_models.EmployeeVerification
+	var verification coreEmployeeModels.EmployeeVerification
 
 	err := r.db.
 		WithContext(ctx).
@@ -49,7 +49,7 @@ func (r *employeeRepo) MarkVerified(
 
 	return r.db.
 		WithContext(ctx).
-		Model(&employee_models.EmployeeVerification{}).
+		Model(&coreEmployeeModels.EmployeeVerification{}).
 		Where("id = ?", id).
 		Updates(map[string]interface{}{
 			"verified_at": at,

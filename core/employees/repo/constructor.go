@@ -1,4 +1,4 @@
-package employee_repo
+package coreEmployeeRepo
 
 import (
 	"context"

@@ -1,7 +1,7 @@
 package hrmsEmployeeServices
 
 import (
-	employee_services "sharpnr-engine/core/employees/services"
+	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 
@@ -9,14 +9,14 @@ import (
 )
 
 type hrmsemployeeService struct {
-	employeeService employee_services.EmployeesHRServiceInterface
+	employeeService coreEmployeeServices.EmployeesHRServiceInterface
 	seroEngine      *sero.SEROEngine
 	txManager       dbtx.TxManager
 	mailerEngine    *sharp_mailer_engine.SharpMailerEngine
 }
 
 func NewHRMSEmployeeService(
-	employeeService employee_services.EmployeesHRServiceInterface,
+	employeeService coreEmployeeServices.EmployeesHRServiceInterface,
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,

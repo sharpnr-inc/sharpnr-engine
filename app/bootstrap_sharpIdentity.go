@@ -1,7 +1,7 @@
 package app
 
 import (
-	employee_services "sharpnr-engine/core/employees/services"
+	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
 
@@ -9,7 +9,7 @@ import (
 )
 
 func bootstrapIdentity(
-	employeeService employee_services.EmployeesIdentityServiceInterface,
+	employeeService coreEmployeeServices.EmployeesIdentityServiceInterface,
 	orgService organization_services.OrganizationServiceInterface,
 	sentinelService sentinelservice.SentinelServiceInterface,
 ) sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface {

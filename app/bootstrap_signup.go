@@ -1,7 +1,7 @@
 package app
 
 import (
-	employee_services "sharpnr-engine/core/employees/services"
+	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
@@ -14,7 +14,7 @@ import (
 func bootstrapOrgSignup(
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-	employeeSvc employee_services.EmployeesIdentityServiceInterface,
+	employeeSvc coreEmployeeServices.EmployeesIdentityServiceInterface,
 	organizationService organization_services.OrganizationServiceInterface,
 	setUpWizService org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface,
 	sentinelService sentinelservice.SentinelServiceInterface,

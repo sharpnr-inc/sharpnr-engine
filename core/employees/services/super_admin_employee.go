@@ -1,8 +1,8 @@
-package employee_services
+package coreEmployeeServices
 
 import (
 	"context"
-	employee_contracts "sharpnr-engine/core/employees/contracts"
+	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
 
 	"github.com/google/uuid"
 )
@@ -10,7 +10,7 @@ import (
 func (s *employeeService) UpdateSuperAdminEmployee(
 	ctx context.Context,
 	orgID uuid.UUID, emplID uuid.UUID,
-	updates *employee_contracts.UpdateSuperAdminEmployeeInput) error {
+	updates *coreEmployeeContracts.UpdateSuperAdminEmployeeInput) error {
 	// 1. Convert struct pointers to a map
 	updateMap := make(map[string]interface{})
 

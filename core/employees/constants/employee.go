@@ -1,4 +1,4 @@
-package employee_constants
+package coreEmployeeConstants
 
 type EmployeeOnboardingStatus string
 

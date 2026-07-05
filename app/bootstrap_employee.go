@@ -1,8 +1,8 @@
 package app
 
 import (
-	employee_repo "sharpnr-engine/core/employees/repo"
-	employee_services "sharpnr-engine/core/employees/services"
+	coreEmployeeRepo "sharpnr-engine/core/employees/repo"
+	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
@@ -15,9 +15,9 @@ func bootstrapEmployeeIdentity(
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-) employee_services.EmployeesIdentityServiceInterface {
-	employeeRepo := employee_repo.NewEmployeeRepository(db)
-	return employee_services.NewEmployeeService(
+) coreEmployeeServices.EmployeesIdentityServiceInterface {
+	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
+	return coreEmployeeServices.NewEmployeeService(
 		employeeRepo,
 		seroEngine,
 		txManager,
@@ -30,9 +30,9 @@ func bootstrapEmployeeHR(
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-) employee_services.EmployeesHRServiceInterface {
-	employeeRepo := employee_repo.NewEmployeeRepository(db)
-	return employee_services.NewEmployeeService(
+) coreEmployeeServices.EmployeesHRServiceInterface {
+	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
+	return coreEmployeeServices.NewEmployeeService(
 		employeeRepo,
 		seroEngine,
 		txManager,

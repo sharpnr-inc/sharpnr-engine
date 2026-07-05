@@ -1,5 +1,5 @@
 // models/employee_employement.go
-package employee_models
+package coreEmployeeModels
 
 import (
 	"time"

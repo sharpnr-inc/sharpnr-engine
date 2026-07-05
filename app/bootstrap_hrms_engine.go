@@ -1,7 +1,7 @@
 package app
 
 import (
-	employee_services "sharpnr-engine/core/employees/services"
+	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	hrmsEmployeeServices "sharpnr-engine/hrms_engine/employees/services"
 	hrmsengine "sharpnr-engine/hrms_engine/engine"
 	dbtx "sharpnr-engine/pkg/dbTx"
@@ -19,7 +19,7 @@ func bootstrapHRMSEngine(
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-	employeesHRService employee_services.EmployeesHRServiceInterface,
+	employeesHRService coreEmployeeServices.EmployeesHRServiceInterface,
 ) *hrmsengine.HRMSEngine {
 
 	hrmsEmployeeService := hrmsEmployeeServices.NewHRMSEmployeeService(

@@ -1,19 +1,19 @@
-package employee_repo
+package coreEmployeeRepo
 
 import (
 	"context"
-	employee_models "sharpnr-engine/core/employees/models"
+	coreEmployeeModels "sharpnr-engine/core/employees/models"
 
 	"github.com/google/uuid"
 )
 
 // CreateEmployeeSystemAccess implements [EmployeeProfileRepositoryInterface].
-func (r *employeeRepo) CreateEmployeeSystemAccess(ctx context.Context, access *employee_models.EmployeeSystemAccess) (*employee_models.EmployeeSystemAccess, error) {
+func (r *employeeRepo) CreateEmployeeSystemAccess(ctx context.Context, access *coreEmployeeModels.EmployeeSystemAccess) (*coreEmployeeModels.EmployeeSystemAccess, error) {
 	panic("unimplemented")
 }
 
 // GetEmployeeSystemAccessByEmployeeID implements [EmployeeProfileRepositoryInterface].
-func (r *employeeRepo) GetEmployeeSystemAccessByEmployeeID(ctx context.Context, empID uuid.UUID) ([]*employee_models.EmployeeSystemAccess, error) {
+func (r *employeeRepo) GetEmployeeSystemAccessByEmployeeID(ctx context.Context, empID uuid.UUID) ([]*coreEmployeeModels.EmployeeSystemAccess, error) {
 	panic("unimplemented")
 }
 
@@ -24,7 +24,7 @@ func (r *employeeRepo) IsEmployeeHaveOnlineAccess(ctx context.Context, empID uui
 
 func (r *employeeRepo) CreateEmployeeProfile(
 	ctx context.Context,
-	profile *employee_models.EmployeeProfile,
+	profile *coreEmployeeModels.EmployeeProfile,
 ) error {
 
 	if profile.ID == uuid.Nil {
@@ -37,9 +37,9 @@ func (r *employeeRepo) CreateEmployeeProfile(
 func (r *employeeRepo) GetProfileByEmployeeID(
 	ctx context.Context,
 	empID uuid.UUID,
-) (*employee_models.EmployeeProfile, error) {
+) (*coreEmployeeModels.EmployeeProfile, error) {
 
-	var profile employee_models.EmployeeProfile
+	var profile coreEmployeeModels.EmployeeProfile
 
 	err := r.db.
 		WithContext(ctx).
@@ -56,7 +56,7 @@ func (r *employeeRepo) GetProfileByEmployeeID(
 
 func (r *employeeRepo) UpdateEmployeeProfile(
 	ctx context.Context,
-	profile *employee_models.EmployeeProfile,
+	profile *coreEmployeeModels.EmployeeProfile,
 ) error {
 
 	return r.db.

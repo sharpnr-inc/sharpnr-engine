@@ -1,8 +1,8 @@
 // models/employee_onboarding.go
-package employee_models
+package coreEmployeeModels
 
 import (
-	employee_constants "sharpnr-engine/core/employees/constants"
+	coreEmployeeConstants "sharpnr-engine/core/employees/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,7 +15,7 @@ type EmployeeOnboarding struct {
 	EmployeeID uuid.UUID `gorm:"type:uuid;uniqueIndex;not null"`
 
 	// Status: e.g., PENDING_DOCUMENTS, TRAINING, READY_FOR_SHIFT, COMPLETED
-	Status employee_constants.EmployeeOnboardingStatus `gorm:"type:varchar(50);not null;index"`
+	Status coreEmployeeConstants.EmployeeOnboardingStatus `gorm:"type:varchar(50);not null;index"`
 
 	// Audit trail: Who pushed the status forward?
 	LastUpdatedBy *uuid.UUID `gorm:"type:uuid"`

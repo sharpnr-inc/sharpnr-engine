@@ -1,9 +1,9 @@
-package employee_services
+package coreEmployeeServices
 
 import (
 	"context"
-	employee_contracts "sharpnr-engine/core/employees/contracts"
-	employee_models "sharpnr-engine/core/employees/models"
+	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
+	coreEmployeeModels "sharpnr-engine/core/employees/models"
 
 	"time"
 
@@ -18,7 +18,7 @@ func (h *employeeService) CreateDefaultSuperAdmin(
 	hashPass string,
 ) (uuid.UUID, error) {
 
-	employee := &employee_models.Employee{
+	employee := &coreEmployeeModels.Employee{
 		ID:             uuid.New(),
 		Email:          rootEmail,
 		OrganizationID: orgId,
@@ -30,7 +30,7 @@ func (h *employeeService) CreateDefaultSuperAdmin(
 	}
 
 	// 2️⃣ Create Auth (password provisioning can be deferred)
-	auth := &employee_models.EmployeeAuth{
+	auth := &coreEmployeeModels.EmployeeAuth{
 		ID:            uuid.New(),
 		EmployeeID:    employee.ID,
 		Email:         rootEmail,
@@ -44,7 +44,7 @@ func (h *employeeService) CreateDefaultSuperAdmin(
 		return uuid.Nil, err
 	}
 
-	onboarding := &employee_models.EmployeeOnboarding{
+	onboarding := &coreEmployeeModels.EmployeeOnboarding{
 		ID:         uuid.New(),
 		EmployeeID: employee.ID,
 		Status:     "COMPLETED",
@@ -71,17 +71,17 @@ func (h *employeeService) IsUserExists(
 func (s *employeeService) ListOrgAllEmployees(
 	ctx context.Context,
 	orgID, emplID uuid.UUID,
-) ([]*employee_contracts.OrgEmployeeList, error) {
+) ([]*coreEmployeeContracts.OrgEmployeeList, error) {
 
 	empls, err := s.employeeRepo.ListEmployeesByOrg(ctx, orgID)
 	if err != nil {
 		return nil, err
 	}
 
-	var result []*employee_contracts.OrgEmployeeList
+	var result []*coreEmployeeContracts.OrgEmployeeList
 
 	for _, e := range empls {
-		result = append(result, &employee_contracts.OrgEmployeeList{
+		result = append(result, &coreEmployeeContracts.OrgEmployeeList{
 			ID:           e.ID,
 			EmployeeName: buildEmployeeName(e.FirstName, e.LastName, e.NickName),
 			EmployeeID:   e.EmployeeCode,

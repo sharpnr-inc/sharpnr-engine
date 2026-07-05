@@ -1,5 +1,5 @@
 // models/employee_org_profile.go
-package employee_models
+package coreEmployeeModels
 
 type EmployeeOrganizationProfile struct {
 	ID         string `gorm:"type:uuid;primaryKey"`

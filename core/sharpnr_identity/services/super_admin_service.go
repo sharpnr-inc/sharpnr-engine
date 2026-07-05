@@ -2,7 +2,7 @@ package sharpnr_identity_auth_services
 
 import (
 	"context"
-	employee_contracts "sharpnr-engine/core/employees/contracts"
+	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
 	sharpnr_identity_auth_dtos "sharpnr-engine/core/sharpnr_identity/dtos"
 
 	"github.com/google/uuid"
@@ -16,7 +16,7 @@ func (s *sharpnrIdentityAuthService) UpdateSuperAdminDetails(ctx context.Context
 		return err
 	}
 
-	if err := s.employeeService.UpdateSuperAdminEmployee(ctx, orgID, empID, &employee_contracts.UpdateSuperAdminEmployeeInput{
+	if err := s.employeeService.UpdateSuperAdminEmployee(ctx, orgID, empID, &coreEmployeeContracts.UpdateSuperAdminEmployeeInput{
 		OrganizationID: input.OrgID,
 		EmployeeID:     &input.EmployeeID,
 		FirstName:      &input.FirstName,

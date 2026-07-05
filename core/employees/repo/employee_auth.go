@@ -1,8 +1,8 @@
-package employee_repo
+package coreEmployeeRepo
 
 import (
 	"context"
-	employee_models "sharpnr-engine/core/employees/models"
+	coreEmployeeModels "sharpnr-engine/core/employees/models"
 
 	"time"
 
@@ -11,7 +11,7 @@ import (
 
 func (r *employeeRepo) CreateEmployeeAuth(
 	ctx context.Context,
-	auth *employee_models.EmployeeAuth,
+	auth *coreEmployeeModels.EmployeeAuth,
 ) error {
 
 	if auth.ID == uuid.Nil {
@@ -26,9 +26,9 @@ func (r *employeeRepo) CreateEmployeeAuth(
 func (r *employeeRepo) GetAuthByEmployeeID(
 	ctx context.Context,
 	empID uuid.UUID,
-) (*employee_models.EmployeeAuth, error) {
+) (*coreEmployeeModels.EmployeeAuth, error) {
 
-	var auth employee_models.EmployeeAuth
+	var auth coreEmployeeModels.EmployeeAuth
 	if err := r.db.WithContext(ctx).
 		Where("employee_id = ?", empID).
 		First(&auth).Error; err != nil {
@@ -43,9 +43,9 @@ func (r *employeeRepo) GetAuthByEmployeeID(
 func (r *employeeRepo) GetByUsername(
 	ctx context.Context,
 	username string,
-) (*employee_models.EmployeeAuth, error) {
+) (*coreEmployeeModels.EmployeeAuth, error) {
 
-	var auth employee_models.EmployeeAuth
+	var auth coreEmployeeModels.EmployeeAuth
 	if err := r.db.WithContext(ctx).
 		Where("username = ?", username).
 		First(&auth).Error; err != nil {
@@ -64,7 +64,7 @@ func (r *employeeRepo) UpdateLastLogin(
 ) error {
 
 	return r.db.WithContext(ctx).
-		Model(&employee_models.EmployeeAuth{}).
+		Model(&coreEmployeeModels.EmployeeAuth{}).
 		Where("employee_id = ?", empID).
 		Update("last_login_at", at).
 		Error

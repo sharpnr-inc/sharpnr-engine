@@ -3,7 +3,7 @@ package app
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	org_customer_service "sharpnr-engine/core/customer/service"
-	employee_services "sharpnr-engine/core/employees/services"
+	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
@@ -39,8 +39,8 @@ type AppModules struct {
 	hospitality              *hospitalitydomain.HospitalityDomain
 	hospitalityOrchestration hospitality_orchestration_service.OrchestrationServiceInterface
 
-	employeesIdentityService employee_services.EmployeesIdentityServiceInterface
-	employeesHRService       employee_services.EmployeesHRServiceInterface
+	employeesIdentityService coreEmployeeServices.EmployeesIdentityServiceInterface
+	employeesHRService       coreEmployeeServices.EmployeesHRServiceInterface
 
 	// hrmsEngine aggregates all HRMS module services (employees, attendance,
 	// payroll, recruitment, ...) behind a single entry point for the HR routes.
@@ -84,11 +84,11 @@ func (m *AppModules) SharpAuthService() sharpnr_identity_auth_services.SharpnrId
 	return m.sharpAuthService
 }
 
-func (m *AppModules) EmployeesIdentityService() employee_services.EmployeesIdentityServiceInterface {
+func (m *AppModules) EmployeesIdentityService() coreEmployeeServices.EmployeesIdentityServiceInterface {
 	return m.employeesIdentityService
 }
 
-func (m *AppModules) EmployeesHRService() employee_services.EmployeesHRServiceInterface {
+func (m *AppModules) EmployeesHRService() coreEmployeeServices.EmployeesHRServiceInterface {
 	return m.employeesHRService
 }
 

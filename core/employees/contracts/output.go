@@ -1,4 +1,4 @@
-package employee_contracts
+package coreEmployeeContracts
 
 import "github.com/google/uuid"
 

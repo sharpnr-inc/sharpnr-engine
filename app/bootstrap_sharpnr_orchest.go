@@ -4,7 +4,7 @@ import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	hospitality_orchestration_service "sharpnr-engine/business_ops/hospitality/orchestration/service"
 	org_customer_service "sharpnr-engine/core/customer/service"
-	employee_services "sharpnr-engine/core/employees/services"
+	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
@@ -35,7 +35,7 @@ func bootstrapSharpnrOrchestrator(
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
 	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
-	employeeHRService employee_services.EmployeesHRServiceInterface,
+	employeeHRService coreEmployeeServices.EmployeesHRServiceInterface,
 	sentinelService sentinelservice.SentinelServiceInterface,
 	sentinelAggregator sentinelAggregatorService.SentinelAggregatorServiceInterface,
 	sentinelAuthzEngine sentinelEngine.SentinelEngineInterface,

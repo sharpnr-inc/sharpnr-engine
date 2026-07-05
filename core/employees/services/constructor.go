@@ -1,7 +1,7 @@
-package employee_services
+package coreEmployeeServices
 
 import (
-	employee_repo "sharpnr-engine/core/employees/repo"
+	coreEmployeeRepo "sharpnr-engine/core/employees/repo"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 
@@ -9,14 +9,14 @@ import (
 )
 
 type employeeService struct {
-	employeeRepo employee_repo.EmployeeRepositoryInterface
+	employeeRepo coreEmployeeRepo.EmployeeRepositoryInterface
 	seroEngine   *sero.SEROEngine
 	txManager    dbtx.TxManager
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine
 }
 
 func NewEmployeeService(
-	employeeRepo employee_repo.EmployeeRepositoryInterface,
+	employeeRepo coreEmployeeRepo.EmployeeRepositoryInterface,
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,

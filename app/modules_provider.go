@@ -4,7 +4,7 @@ import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	hospitality_orchestration_service "sharpnr-engine/business_ops/hospitality/orchestration/service"
 	org_customer_service "sharpnr-engine/core/customer/service"
-	employee_services "sharpnr-engine/core/employees/services"
+	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
@@ -34,8 +34,8 @@ type ModulesProvider interface {
 	OrgSignUpService() org_signup_services.OrganizationSignUpServiceInterfaces
 	SharpAuthService() sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
 
-	EmployeesIdentityService() employee_services.EmployeesIdentityServiceInterface
-	EmployeesHRService() employee_services.EmployeesHRServiceInterface
+	EmployeesIdentityService() coreEmployeeServices.EmployeesIdentityServiceInterface
+	EmployeesHRService() coreEmployeeServices.EmployeesHRServiceInterface
 	HRMS() *hrmsengine.HRMSEngine
 	AccountingService() accounting_service.AccountingServiceInterface
 	SseEngine() *sse_engine.StreamManager

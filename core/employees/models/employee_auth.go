@@ -1,5 +1,4 @@
-// models/employee_auth.go
-package employee_models
+package coreEmployeeModels
 
 import (
 	"time"

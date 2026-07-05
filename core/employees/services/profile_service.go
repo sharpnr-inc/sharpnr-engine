@@ -1,15 +1,15 @@
-package employee_services
+package coreEmployeeServices
 
 import (
 	"context"
-	employee_contracts "sharpnr-engine/core/employees/contracts"
+	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 // GetEmployeeProfile retrieves the employee's profile information, including identity and profile details.
-func (s *employeeService) GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*employee_contracts.EmployeeProfileOutput, error) {
+func (s *employeeService) GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*coreEmployeeContracts.EmployeeProfileOutput, error) {
 
 	emp, err := s.employeeRepo.GetEmployeeByID(ctx, orgID, empID)
 	if err != nil {
@@ -22,7 +22,7 @@ func (s *employeeService) GetEmployeeProfile(ctx context.Context, orgID uuid.UUI
 	}
 
 	// 3. Map Identity (Guaranteed to have data)
-	output := &employee_contracts.EmployeeProfileOutput{
+	output := &coreEmployeeContracts.EmployeeProfileOutput{
 		FirstName: emp.FirstName,
 		LastName:  emp.LastName,
 		Email:     emp.Email,
@@ -59,7 +59,7 @@ func (s *employeeService) GetEmployeeProfile(ctx context.Context, orgID uuid.UUI
 func (s *employeeService) GetEmployeeDetails(
 	ctx context.Context,
 	orgID, emplID uuid.UUID,
-) (*employee_contracts.EmployeeDetailsOutput, error) {
+) (*coreEmployeeContracts.EmployeeDetailsOutput, error) {
 
 	emp, err := s.employeeRepo.GetEmployeeByID(ctx, orgID, emplID)
 	if err != nil {
@@ -74,7 +74,7 @@ func (s *employeeService) GetEmployeeDetails(
 		return nil, ErrInvalidCredentials
 	}
 
-	return &employee_contracts.EmployeeDetailsOutput{
+	return &coreEmployeeContracts.EmployeeDetailsOutput{
 		Email:     emp.Email,
 		FirstName: emp.FirstName,
 		LastName:  emp.LastName,

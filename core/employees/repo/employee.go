@@ -1,8 +1,8 @@
-package employee_repo
+package coreEmployeeRepo
 
 import (
 	"context"
-	employee_models "sharpnr-engine/core/employees/models"
+	coreEmployeeModels "sharpnr-engine/core/employees/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -12,7 +12,7 @@ import (
 
 func (r *employeeRepo) CreateEmployee(
 	ctx context.Context,
-	emp *employee_models.Employee,
+	emp *coreEmployeeModels.Employee,
 ) error {
 
 	if emp.ID == uuid.Nil {
@@ -27,9 +27,9 @@ func (r *employeeRepo) CreateEmployee(
 func (r *employeeRepo) GetEmployeeByID(
 	ctx context.Context,
 	orgID uuid.UUID, empID uuid.UUID,
-) (*employee_models.Employee, error) {
+) (*coreEmployeeModels.Employee, error) {
 
-	var emp employee_models.Employee
+	var emp coreEmployeeModels.Employee
 
 	err := r.db.
 		WithContext(ctx).
@@ -49,9 +49,9 @@ func (r *employeeRepo) GetEmployeeByID(
 func (r *employeeRepo) GetEmployeeByEmail(
 	ctx context.Context,
 	email string,
-) (*employee_models.Employee, error) {
+) (*coreEmployeeModels.Employee, error) {
 
-	var emp employee_models.Employee
+	var emp coreEmployeeModels.Employee
 
 	err := r.db.
 		WithContext(ctx).
@@ -76,7 +76,7 @@ func (r *employeeRepo) EmployeeExistsByEmail(
 	var count int64
 
 	err := r.db.WithContext(ctx).
-		Model(&employee_models.Employee{}).
+		Model(&coreEmployeeModels.Employee{}).
 		Where("email = ?", email).
 		Count(&count).
 		Error
@@ -89,9 +89,9 @@ func (r *employeeRepo) EmployeeExistsByEmail(
 func (r *employeeRepo) ListEmployeesByOrg(
 	ctx context.Context,
 	orgID uuid.UUID,
-) ([]*employee_models.Employee, error) {
+) ([]*coreEmployeeModels.Employee, error) {
 
-	var employees []*employee_models.Employee
+	var employees []*coreEmployeeModels.Employee
 
 	err := r.db.
 		WithContext(ctx).
@@ -111,7 +111,7 @@ func (r *employeeRepo) ListEmployeesByOrg(
 func (r *employeeRepo) UpdateEmployee(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, updates map[string]interface{}) error {
 	// 1. Ensure we are scoped to the correct Organization and Employee
 	result := r.db.WithContext(ctx).
-		Model(&employee_models.Employee{}).
+		Model(&coreEmployeeModels.Employee{}).
 		Where("id = ? AND organization_id = ?", emplID, orgID).
 		Updates(updates)
 
