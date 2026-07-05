@@ -1,31 +1,31 @@
 package hrmsEmployeeServices
 
 import (
-	employee_repo "sharpnr-engine/core/employees/repo"
+	employee_services "sharpnr-engine/core/employees/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 
 	"sharpnr-engine/sharp_mailer_engine"
 )
 
-type employeeService struct {
-	employeeRepo employee_repo.EmployeeRepositoryInterface
-	seroEngine   *sero.SEROEngine
-	txManager    dbtx.TxManager
-	mailerEngine *sharp_mailer_engine.SharpMailerEngine
+type hrmsemployeeService struct {
+	employeeService employee_services.EmployeesHRServiceInterface
+	seroEngine      *sero.SEROEngine
+	txManager       dbtx.TxManager
+	mailerEngine    *sharp_mailer_engine.SharpMailerEngine
 }
 
-func NewEmployeeService(
-	employeeRepo employee_repo.EmployeeRepositoryInterface,
+func NewHRMSEmployeeService(
+	employeeService employee_services.EmployeesHRServiceInterface,
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-) *employeeService {
+) *hrmsemployeeService {
 
-	return &employeeService{
-		employeeRepo: employeeRepo,
-		seroEngine:   seroEngine,
-		txManager:    txManager,
-		mailerEngine: mailerEngine,
+	return &hrmsemployeeService{
+		employeeService: employeeService,
+		seroEngine:      seroEngine,
+		txManager:       txManager,
+		mailerEngine:    mailerEngine,
 	}
 }

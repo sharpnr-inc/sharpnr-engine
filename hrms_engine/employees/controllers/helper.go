@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (c *employeeController) resolveRequestContexts(ctx *gin.Context) (uuid.UUID, uuid.UUID, bool) {
+func (c *hrmsEmployeeController) resolveRequestContexts(ctx *gin.Context) (uuid.UUID, uuid.UUID, bool) {
 	// 1. Extract and Parse Employee ID
 	empIDRaw, exists := ctx.Get(webMiddleware.UserIDContextKey)
 	if !exists {

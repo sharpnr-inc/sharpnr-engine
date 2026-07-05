@@ -7,13 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *employeeController) ListAllEmployeesOfOrg(ctx *gin.Context) {
+func (c *hrmsEmployeeController) ListAllEmployeesOfOrg(ctx *gin.Context) {
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
 		return
 	}
 
-	res, err := c.hrEmpSvc.ListOrgAllEmployees(ctx.Request.Context(), orgID, emplID)
+	res, err := c.hrmsEmpService.ListOrgAllEmployees(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, "", err)
 		return

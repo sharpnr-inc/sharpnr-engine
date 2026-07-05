@@ -1,4 +1,4 @@
-package employees_dtos
+package hrmsEmployeesDtos
 
 import "github.com/google/uuid"
 

@@ -1,13 +1,15 @@
 package employee_controllers
 
-import employee_services "sharpnr-engine/core/employees/services"
+import (
+	hrmsEmployeeServices "sharpnr-engine/hrms_engine/employees/services"
+)
 
-type employeeController struct {
-	hrEmpSvc employee_services.EmployeesHRServiceInterface
+type hrmsEmployeeController struct {
+	hrmsEmpService hrmsEmployeeServices.HRMSEmployeeServiceInterface
 }
 
-func NewEmployeeController(hrEmpSvc employee_services.EmployeesHRServiceInterface) *employeeController {
-	return &employeeController{
-		hrEmpSvc: hrEmpSvc,
+func NewEmployeeController(hrmsEmpService hrmsEmployeeServices.HRMSEmployeeServiceInterface) *hrmsEmployeeController {
+	return &hrmsEmployeeController{
+		hrmsEmpService: hrmsEmpService,
 	}
 }

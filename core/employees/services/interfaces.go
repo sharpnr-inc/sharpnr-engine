@@ -9,6 +9,8 @@ import (
 	"github.com/google/uuid"
 )
 
+// This interface is used by sharpnrIdentity modules Employee will directly interact with the employee module through this interface.
+// This interface will have employee Ops which are used by the other module interact with the employee module.
 type EmployeesIdentityServiceInterface interface {
 
 	// this is General service which will used by the other module to interact with the employee module,
@@ -39,7 +41,4 @@ type EmployeesHRServiceInterface interface {
 
 type EmployeesGeneralServiceInterface interface {
 	IsUserExists(ctx context.Context, employeeEmail string) (bool, error)
-	// IsEmployeeExists(ctx context.Context, orgID uuid.UUID, email string) (bool, error)
 }
-
-/* ---------------------------------- <***> --------------------------------- */
