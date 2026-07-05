@@ -13,6 +13,7 @@ type WebLoginResponse_dto struct {
 	EmployeeID   uuid.UUID `json:"employee_id"`
 	Name         string    `json:"name"`
 	Org          OrgData   `json:"org_data"`
+	Role         string    `json:"role"`
 	AccessToken  *string   `json:"access_token"`
 	RefreshToken *string   `json:"refresh_token"`
 }

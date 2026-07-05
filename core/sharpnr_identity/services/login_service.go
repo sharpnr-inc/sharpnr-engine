@@ -26,12 +26,18 @@ func (s *sharpnrIdentityAuthService) LoginUser(
 		return nil, err
 	}
 
+	role, err := s.sentinelService.GetEmployeeRole(ctx, employee.OrganizationID, employee.EmployeeID)
+	if err != nil {
+		return nil, err
+	}
+
 	resp := &sharpnr_identity_auth_dtos.WebLoginResponse_dto{
 		OrgId:      employee.OrganizationID,
 		Email:      employee.Name,
 		EmployeeID: employee.EmployeeID,
 		Name:       employee.Name,
 		Org:        sharpnr_identity_auth_dtos.OrgData{Name: orgdetails.Name, SharpID: orgdetails.SharpID},
+		Role:       role.Name,
 	}
 
 	return resp, nil
