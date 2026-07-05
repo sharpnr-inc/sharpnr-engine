@@ -48,7 +48,7 @@ func BootstrapModules(
 	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
 	orgSupplierService := bootstrapSupplier(db, txManager, mailerEngine, seroEngine)
 
-	identityService := bootstrapIdentity(employeesIdentityService, organizationService)
+	identityService := bootstrapIdentity(employeesIdentityService, organizationService, sentinelService)
 
 	orgSetupWizardService := bootstrapOrgSetupWizard(
 		db,
