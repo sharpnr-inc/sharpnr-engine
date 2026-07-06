@@ -94,7 +94,7 @@ func (m *AppModules) AuthenticationService() authenticationEngineServices.Authen
 	return m.authenticationService
 }
 
-func (m *AppModules) EmployeesIdentityService() coreEmployeeServices.EmployeeAuthenticationServiceInterface {
+func (m *AppModules) EmployeesAuthenticationService() coreEmployeeServices.EmployeeAuthenticationServiceInterface {
 	return m.employeesAuthneticationService
 }
 

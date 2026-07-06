@@ -36,7 +36,7 @@ type ModulesProvider interface {
 	OrgSignUpService() org_signup_services.OrganizationSignUpServiceInterfaces
 	AuthenticationService() authenticationEngineServices.AuthenticationServiceInterface
 
-	EmployeesIdentityService() coreEmployeeServices.EmployeeAuthenticationServiceInterface
+	EmployeesAuthenticationService() coreEmployeeServices.EmployeeAuthenticationServiceInterface
 	EmployeesHRService() coreEmployeeServices.EmployeesHRServiceInterface
 	HRMS() *hrmsengine.HRMSEngine
 	AccountingService() accounting_service.AccountingServiceInterface
