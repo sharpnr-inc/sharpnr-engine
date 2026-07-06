@@ -2,6 +2,7 @@
 package coreEmployeeModels
 
 import (
+	coreEmployeeConstants "sharpnr-engine/core/employees/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -19,8 +20,8 @@ type EmployeeEmployment struct {
 	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
 	EmployeeID uuid.UUID `gorm:"type:uuid;uniqueIndex;not null"`
 
-	EmploymentType string `gorm:"type:varchar(30);not null"`
-	Designation    string `gorm:"type:varchar(100);not null"`
+	EmploymentType coreEmployeeConstants.EmployeeEmployementType `gorm:"type:varchar(30);not null"`
+	Designation    string                                        `gorm:"type:varchar(100);not null"`
 
 	ConfirmationDate *time.Time `gorm:"type:date"`
 	JoinedAt         time.Time  `gorm:"type:date;not null"`

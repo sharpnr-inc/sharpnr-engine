@@ -3,6 +3,8 @@ package coreEmployeeServices
 import (
 	"context"
 	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
+	coreEmployeeModels "sharpnr-engine/core/employees/models"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -34,4 +36,54 @@ func (s *employeeService) UpdateSuperAdminEmployee(
 
 	// 3. Call the repo method
 	return s.employeeRepo.UpdateEmployee(ctx, orgID, emplID, updateMap)
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// CreateDefaultSuperAdmin implements HrEmployeeServiceInterface.
+func (h *employeeService) CreateDefaultSuperAdmin(
+	ctx context.Context,
+	orgId uuid.UUID,
+	rootEmail string,
+	hashPass string,
+) (uuid.UUID, error) {
+
+	employee := &coreEmployeeModels.Employee{
+		ID:             uuid.New(),
+		Email:          rootEmail,
+		OrganizationID: orgId,
+		Status:         "ACTIVE",
+	}
+
+	if err := h.employeeRepo.CreateEmployee(ctx, employee); err != nil {
+		return uuid.Nil, err
+	}
+
+	// 2️⃣ Create Auth (password provisioning can be deferred)
+	auth := &coreEmployeeModels.EmployeeAuth{
+		ID:            uuid.New(),
+		EmployeeID:    employee.ID,
+		Email:         rootEmail,
+		Username:      rootEmail,
+		IsActive:      true,
+		IsProvisioned: true,
+		PasswordHash:  hashPass,
+	}
+
+	if err := h.employeeRepo.CreateEmployeeAuth(ctx, auth); err != nil {
+		return uuid.Nil, err
+	}
+
+	onboarding := &coreEmployeeModels.EmployeeOnboarding{
+		ID:         uuid.New(),
+		EmployeeID: employee.ID,
+		Status:     "COMPLETED",
+		CreatedAt:  time.Now(),
+	}
+
+	if err := h.employeeRepo.CreateEmployeeOnBoarding(ctx, onboarding); err != nil {
+		return uuid.Nil, err
+	}
+
+	return employee.ID, nil
 }

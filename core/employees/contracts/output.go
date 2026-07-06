@@ -1,6 +1,10 @@
 package coreEmployeeContracts
 
-import "github.com/google/uuid"
+import (
+	coreEmployeeConstants "sharpnr-engine/core/employees/constants"
+
+	"github.com/google/uuid"
+)
 
 type EmployeeProfileOutput struct {
 	FirstName string `json:"first_name"`
@@ -12,10 +16,10 @@ type EmployeeProfileOutput struct {
 }
 
 type OrgEmployeeList struct {
-	ID           uuid.UUID `json:"id"`
-	EmployeeName string    `json:"employeeName"`
-	EmployeeID   string    `json:"employeeID"`
-	Status       string    `json:"status"`
+	ID           uuid.UUID                            `json:"id"`
+	EmployeeName string                               `json:"employeeName"`
+	EmployeeID   string                               `json:"employeeID"`
+	Status       coreEmployeeConstants.EmployeeStatus `json:"status"`
 }
 
 type EmployeeDetailsOutput struct {

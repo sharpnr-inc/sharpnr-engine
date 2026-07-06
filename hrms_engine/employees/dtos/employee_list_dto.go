@@ -1,12 +1,16 @@
 package hrmsEmployeesDtos
 
-import "github.com/google/uuid"
+import (
+	coreEmployeeConstants "sharpnr-engine/core/employees/constants"
+
+	"github.com/google/uuid"
+)
 
 type OrgEmployeeList struct {
-	ID           uuid.UUID `json:"id"`
-	EmployeeName string    `json:"employeeName"`
-	EmployeeID   string    `json:"employeeID"`
-	Status       string    `json:"status"`
+	ID           uuid.UUID                            `json:"id"`
+	EmployeeName string                               `json:"employeeName"`
+	EmployeeID   string                               `json:"employeeID"`
+	Status       coreEmployeeConstants.EmployeeStatus `json:"status"`
 }
 
 type EmployeeOrgProfile struct {
