@@ -9,7 +9,7 @@ import (
 )
 
 func bootstrapAuthentication(
-	employeeService coreEmployeeServices.EmployeesIdentityServiceInterface,
+	employeeService coreEmployeeServices.EmployeeAuthenticationServiceInterface,
 	orgService organization_services.OrganizationServiceInterface,
 	sentinelService sentinelservice.SentinelServiceInterface,
 ) authenticationEngineServices.AuthenticationServiceInterface {

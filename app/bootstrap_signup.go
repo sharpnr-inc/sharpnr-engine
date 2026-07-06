@@ -14,7 +14,7 @@ import (
 func bootstrapOrgSignup(
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-	employeeSvc coreEmployeeServices.EmployeesIdentityServiceInterface,
+	employeeSvc coreEmployeeServices.EmployeeAuthenticationServiceInterface,
 	organizationService organization_services.OrganizationServiceInterface,
 	setUpWizService org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface,
 	sentinelService sentinelservice.SentinelServiceInterface,

@@ -8,13 +8,13 @@ import (
 )
 
 type authenticationService struct {
-	employeeService coreEmployeeServices.EmployeesIdentityServiceInterface
+	employeeService coreEmployeeServices.EmployeeAuthenticationServiceInterface
 	orgService      organization_services.OrganizationServiceInterface
 	sentinelService sentinelservice.SentinelServiceInterface
 }
 
 func NewAuthenticationService(
-	employeeService coreEmployeeServices.EmployeesIdentityServiceInterface,
+	employeeService coreEmployeeServices.EmployeeAuthenticationServiceInterface,
 	orgService organization_services.OrganizationServiceInterface,
 	sentinelService sentinelservice.SentinelServiceInterface,
 ) *authenticationService {

@@ -8,13 +8,13 @@ import (
 	"github.com/google/uuid"
 )
 
+type EmployeesGeneralServiceInterface interface {
+	IsUserExists(ctx context.Context, employeeEmail string) (bool, error)
+}
+
 // This interface is used by authentication modules Employee will directly interact with the employee module through this interface.
 // This interface will have employee Ops which are used by the other module interact with the employee module.
-type EmployeesIdentityServiceInterface interface {
-
-	// this is General service which will used by the other module to interact with the employee module,
-	//this interface have employee Ops which are used by the other module to interact with the employee //
-	// module
+type EmployeeAuthenticationServiceInterface interface {
 	EmployeesGeneralServiceInterface
 	// Creates a default super admin for the organization. This is used when an organization is created. The super admin has all permissions and can manage the organization.
 	CreateDefaultSuperAdmin(ctx context.Context, orgId uuid.UUID, rootEmail string, hasPass string) (uuid.UUID, error)
@@ -37,10 +37,6 @@ type EmployeesHRServiceInterface interface {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
-
-type EmployeesGeneralServiceInterface interface {
-	IsUserExists(ctx context.Context, employeeEmail string) (bool, error)
-}
 
 type EmployeeIamEngineServiceInterface interface {
 	// this is General service which will used by the other module to interact with the employee module,

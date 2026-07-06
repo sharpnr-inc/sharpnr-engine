@@ -15,7 +15,7 @@ func bootstrapEmployeeIdentity(
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-) coreEmployeeServices.EmployeesIdentityServiceInterface {
+) coreEmployeeServices.EmployeeAuthenticationServiceInterface {
 	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
 	return coreEmployeeServices.NewEmployeeService(
 		employeeRepo,
