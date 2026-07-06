@@ -20,24 +20,23 @@ import (
 	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
 )
 
+// orchestratorService is the composed facade: one embedded orchestrator per
+// domain, each defined in its own file with only the dependencies it needs.
+// Method promotion makes this struct satisfy OrchestratorServiceInterface.
 type orchestratorService struct {
-	organizationService     organization_services.OrganizationServiceInterface
-	orgPropertyService      org_property_services.OrganizationPropertyServicesInterfaces
-	orgSetupWizService      org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface
-	hospitalityDomainSvc    *hospitalitydomain.HospitalityDomain
-	accountingEngineService accounting_service.AccountingServiceInterface
-	legalEntityService      legal_entity_service.OrgLegalEntityServiceInterface
-	txManager               dbtx.TxManager
-	seroEngine              *sero.SEROEngine
-	customerEngine          org_customer_service.OrgCustomerServiceInterface
-	paymentsEngine          payment_engine_service.PaymentServiceInterface
-	inventoryEngine         inventory_engine_services.InventoryEngineServicesInterface
-	supplierService         suppliers_service.SupplierServiceInterface
-	employeeHRService       coreEmployeeServices.EmployeeHRServiceInterface
-	employeeService         coreEmployeeServices.EmployeeOrchestratorServiceInterface
-	sentinelService         sentinelservice.SentinelServiceInterface
-	sentinelAggregator      sentinelAggregatorService.SentinelAggregatorServiceInterface
-	sentinelEngine          sentinelEngine.SentinelEngineInterface
+	*propertyOrchestrator
+	*setupWizardOrchestrator
+	*legalEntityOrchestrator
+	*customerOrchestrator
+	*paymentsOrchestrator
+	*suppliersOrchestrator
+	*inventoryOrchestrator
+	*employeeOrchestrator
+	*sentinelOrchestrator
+
+	// Parked: wired at bootstrap but not consumed by any flow yet. Move onto
+	// the owning domain orchestrator when the first flow lands.
+	seroEngine *sero.SEROEngine
 }
 
 func NewSharpnrOrchestratorService(
@@ -60,23 +59,56 @@ func NewSharpnrOrchestratorService(
 	sentinelAggregator sentinelAggregatorService.SentinelAggregatorServiceInterface,
 	sentinelAuthzEngine sentinelEngine.SentinelEngineInterface,
 ) *orchestratorService {
+
+	// One guard shared by every domain orchestrator (rule 1 in doc.go).
+	guard := &authzGuard{engine: sentinelAuthzEngine}
+
 	return &orchestratorService{
-		organizationService:     organizationService,
-		orgPropertyService:      orgPropertyService,
-		orgSetupWizService:      orgSetupWizService,
-		hospitalityDomainSvc:    hospitalityDomainSvc,
-		accountingEngineService: accountingEngineService,
-		legalEntityService:      legalEntityService,
-		txManager:               txManager,
-		seroEngine:              seroEngine,
-		customerEngine:          customerEngine,
-		paymentsEngine:          paymentsEngine,
-		inventoryEngine:         inventoryEngine,
-		supplierService:         supplierService,
-		employeeHRService:       employeeHRService,
-		employeeService:         employeeService,
-		sentinelService:         sentinelService,
-		sentinelAggregator:      sentinelAggregator,
-		sentinelEngine:          sentinelAuthzEngine,
+		propertyOrchestrator: &propertyOrchestrator{
+			guard:                guard,
+			txManager:            txManager,
+			orgPropertyService:   orgPropertyService,
+			organizationService:  organizationService,
+			hospitalityDomainSvc: hospitalityDomainSvc,
+		},
+		setupWizardOrchestrator: &setupWizardOrchestrator{
+			txManager:           txManager,
+			orgSetupWizService:  orgSetupWizService,
+			organizationService: organizationService,
+		},
+		legalEntityOrchestrator: &legalEntityOrchestrator{
+			txManager:               txManager,
+			legalEntityService:      legalEntityService,
+			accountingEngineService: accountingEngineService,
+		},
+		customerOrchestrator: &customerOrchestrator{
+			txManager:      txManager,
+			customerEngine: customerEngine,
+		},
+		paymentsOrchestrator: &paymentsOrchestrator{
+			txManager:      txManager,
+			paymentsEngine: paymentsEngine,
+		},
+		suppliersOrchestrator: &suppliersOrchestrator{
+			txManager:          txManager,
+			supplierService:    supplierService,
+			legalEntityService: legalEntityService,
+		},
+		inventoryOrchestrator: &inventoryOrchestrator{
+			txManager:       txManager,
+			inventoryEngine: inventoryEngine,
+		},
+		employeeOrchestrator: &employeeOrchestrator{
+			employeeHRService: employeeHRService,
+			employeeService:   employeeService,
+			sentinelService:   sentinelService,
+		},
+		sentinelOrchestrator: &sentinelOrchestrator{
+			guard:              guard,
+			sentinelService:    sentinelService,
+			sentinelAggregator: sentinelAggregator,
+		},
+
+		seroEngine: seroEngine,
 	}
 }

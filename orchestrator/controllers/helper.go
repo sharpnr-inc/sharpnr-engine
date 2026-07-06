@@ -53,72 +53,15 @@ func (c *OrchestratorController) resolveRequestContexts(ctx *gin.Context) (uuid.
 	return orgID, empID, true
 }
 
-func (c *OrchestratorController) getPropertyFromParams(ctx *gin.Context) (uuid.UUID, error) {
-
-	// 3. Param Parsing
-	propertyId := ctx.Param("propertyID")
-	pId, err := uuid.Parse(propertyId)
+// pathUUID extracts and parses the named UUID path parameter. On a malformed
+// value it writes the 400 response itself and returns ok=false — callers just
+// return.
+func pathUUID(ctx *gin.Context, name string) (uuid.UUID, bool) {
+	id, err := uuid.Parse(ctx.Param(name))
 	if err != nil {
-		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid propertyID format"))
-		return uuid.Nil, err
+		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed,
+			fmt.Errorf("invalid %s format", name))
+		return uuid.Nil, false
 	}
-
-	return pId, err
-}
-
-func (c *OrchestratorController) getLegalEntityIDFromParams(ctx *gin.Context) (uuid.UUID, error) {
-
-	// 3. Param Parsing
-	legalEntityID := ctx.Param("legalEntityID")
-	pId, err := uuid.Parse(legalEntityID)
-	if err != nil {
-		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid legalEntityID format"))
-		return uuid.Nil, err
-	}
-
-	return pId, err
-}
-
-func (c *OrchestratorController) getPaymentAccountIDFromParams(ctx *gin.Context) (uuid.UUID, error) {
-
-	// 3. Param Parsing
-	paymentAccountID := ctx.Param("paymentAccountID")
-	pId, err := uuid.Parse(paymentAccountID)
-	if err != nil {
-		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid payent account id format"))
-		return uuid.Nil, err
-	}
-
-	return pId, err
-}
-
-func (c *OrchestratorController) getSuppliersID_fromParams(ctx *gin.Context) (uuid.UUID, error) {
-
-	// 3. Param Parsing
-	suppliersID := ctx.Param("suppliersID")
-	sId, err := uuid.Parse(suppliersID)
-	if err != nil {
-		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid suppliers id format"))
-		return uuid.Nil, err
-	}
-
-	return sId, err
-}
-
-func (c *OrchestratorController) getInventoryAccountID_fromParams(ctx *gin.Context) (uuid.UUID, error) {
-
-	// 3. Param Parsing
-	inventoryAccountID := ctx.Param("inventoryAccountID")
-	invtaccId, err := uuid.Parse(inventoryAccountID)
-	if err != nil {
-		// Changed to StatusBadRequest (400) because the user sent a bad UUID string
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid inventory Account id format"))
-		return uuid.Nil, err
-	}
-
-	return invtaccId, err
+	return id, true
 }

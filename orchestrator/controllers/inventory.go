@@ -55,8 +55,8 @@ func (c *OrchestratorController) ListAllInventoriesOfInvetoryAccountHandler(ctx 
 		return
 	}
 
-	inventoryAccountID, err := c.getInventoryAccountID_fromParams(ctx)
-	if err != nil {
+	inventoryAccountID, ok := pathUUID(ctx, "inventoryAccountID")
+	if !ok {
 		return
 	}
 

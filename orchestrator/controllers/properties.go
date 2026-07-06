@@ -57,9 +57,9 @@ func (c *OrchestratorController) GetPropertyDetails(ctx *gin.Context) {
 	}
 
 	// 2. Param Parsing using your helper
-	pId, err := c.getPropertyFromParams(ctx)
-	if err != nil {
-		return // getPropertyFromParams already sent the 400 Failure response
+	pId, ok := pathUUID(ctx, "propertyID")
+	if !ok {
+		return // pathUUID already sent the 400 Failure response
 	}
 
 	// 4. Service Call
@@ -120,9 +120,9 @@ func (c *OrchestratorController) AddBusinessOperationModulesInPropertyHandler(ct
 		return // Response already sent by helper
 	}
 
-	proprtyID, err := c.getPropertyFromParams(ctx)
-	if err != nil {
-		utils.Failure(ctx, http.StatusBadGateway, "Important Data is missing", err)
+	propertyID, ok := pathUUID(ctx, "propertyID")
+	if !ok {
+		return
 	}
 
 	req, ok := utils.BindJSON[orchestrator_dtos.AddBusinessOpModulesRequestDto](ctx)
@@ -130,7 +130,7 @@ func (c *OrchestratorController) AddBusinessOperationModulesInPropertyHandler(ct
 		return
 	}
 
-	if err := c.orchestService.AddBusinessOperationModulesInProperty(ctx.Request.Context(), orgID, emplID, proprtyID, *req); err != nil {
+	if err := c.orchestService.AddBusinessOperationModulesInProperty(ctx.Request.Context(), orgID, emplID, propertyID, *req); err != nil {
 		failFromServiceError(ctx, err)
 		return
 	}
@@ -149,9 +149,8 @@ func (c *OrchestratorController) GetBusinessOperationModulesOfPropertyHandler(ct
 		return // Response already sent by helper
 	}
 
-	propertyID, err := c.getPropertyFromParams(ctx)
-	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, "Important data is missing", err)
+	propertyID, ok := pathUUID(ctx, "propertyID")
+	if !ok {
 		return
 	}
 
@@ -174,9 +173,8 @@ func (c *OrchestratorController) GetInfraModulesOfPropertyHandler(ctx *gin.Conte
 		return // Response already sent by helper
 	}
 
-	propertyID, err := c.getPropertyFromParams(ctx)
-	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, "Important data is missing", err)
+	propertyID, ok := pathUUID(ctx, "propertyID")
+	if !ok {
 		return
 	}
 
@@ -199,9 +197,8 @@ func (c *OrchestratorController) AddInfraModulesOfPropertyHandler(ctx *gin.Conte
 		return // Response already sent by helper
 	}
 
-	propertyID, err := c.getPropertyFromParams(ctx)
-	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, "Important data is missing", err)
+	propertyID, ok := pathUUID(ctx, "propertyID")
+	if !ok {
 		return
 	}
 

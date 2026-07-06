@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	bar_contracts "sharpnr-engine/business_ops/hospitality/bar/contracts"
 	hotel_contracts "sharpnr-engine/business_ops/hospitality/hotel/contracts"
 	kitchen_contracts "sharpnr-engine/business_ops/hospitality/kitchen/contracts"
@@ -11,6 +12,8 @@ import (
 	hospitality_utilities "sharpnr-engine/business_ops/hospitality/utilities"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	orgPropertyResources "sharpnr-engine/core/org_property/mod_resources"
+	org_property_services "sharpnr-engine/core/org_property/services"
+	organization_services "sharpnr-engine/core/organization/services"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	dbtx "sharpnr-engine/pkg/dbTx"
 
@@ -22,11 +25,21 @@ import (
 // ids come from the org-property module's mod_resources so checks and the
 // policy-builder palette can never drift apart.
 
+// propertyOrchestrator implements OrganizationPropertyOrchestrationInterface:
+// property CRUD plus attaching business/infra modules to a property.
+type propertyOrchestrator struct {
+	guard                *authzGuard
+	txManager            dbtx.TxManager
+	orgPropertyService   org_property_services.OrganizationPropertyServicesInterfaces
+	organizationService  organization_services.OrganizationServiceInterface
+	hospitalityDomainSvc *hospitalitydomain.HospitalityDomain
+}
+
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error) {
+func (s *propertyOrchestrator) GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error) {
 
-	if err := s.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, ""); err != nil {
+	if err := s.guard.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, ""); err != nil {
 		return nil, err
 	}
 
@@ -56,9 +69,9 @@ func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID, 
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (c *orchestratorService) GetPropertyDetail(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error) {
+func (c *propertyOrchestrator) GetPropertyDetail(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error) {
 
-	if err := c.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+	if err := c.guard.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
 		return nil, err
 	}
 
@@ -82,7 +95,7 @@ func (c *orchestratorService) GetPropertyDetail(ctx context.Context, orgID, empl
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) CreateProperty(ctx context.Context, orgID, emplID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error {
+func (s *propertyOrchestrator) CreateProperty(ctx context.Context, orgID, emplID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error {
 
 	// No orchestrator-level guard here: CreatePropertyDefault authorizes
 	// canCreateNewProperty itself, so every caller (orchestrator, setup wizard)
@@ -125,13 +138,13 @@ func (s *orchestratorService) CreateProperty(ctx context.Context, orgID, emplID 
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) AddBusinessOperationModulesInProperty(
+func (s *propertyOrchestrator) AddBusinessOperationModulesInProperty(
 	ctx context.Context,
 	orgID, emplID, propertyID uuid.UUID,
 	req orchestrator_dtos.AddBusinessOpModulesRequestDto,
 ) error {
 
-	if err := s.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanAddBusinessModules, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+	if err := s.guard.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanAddBusinessModules, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
 		return err
 	}
 
@@ -157,7 +170,7 @@ func (s *orchestratorService) AddBusinessOperationModulesInProperty(
 
 // setupHospitalityModule provisions a single default instance of the given
 // hospitality module for the property.
-func (s *orchestratorService) setupHospitalityModule(
+func (s *propertyOrchestrator) setupHospitalityModule(
 	ctx context.Context,
 	orgID, propertyID uuid.UUID,
 	module hospitality_utilities.HospitalityModulesType,
@@ -188,13 +201,13 @@ func (s *orchestratorService) setupHospitalityModule(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) AddInfraModulesInProperty(
+func (s *propertyOrchestrator) AddInfraModulesInProperty(
 	ctx context.Context,
 	orgID, emplID, propertyID uuid.UUID,
 	request orchestrator_dtos.AddInfraModulesRequestDto,
 ) error {
 
-	if err := s.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanAddInfraModules, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+	if err := s.guard.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanAddInfraModules, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
 		return err
 	}
 
@@ -226,12 +239,12 @@ func (s *orchestratorService) AddInfraModulesInProperty(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) ListAllBusinessOpsModules(
+func (s *propertyOrchestrator) ListAllBusinessOpsModules(
 	ctx context.Context,
 	orgID, emplID, propertyID uuid.UUID,
 ) (orchestrator_dtos.PropertyBusinessOperationModulesResponseDto, error) {
 
-	if err := s.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+	if err := s.guard.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
 		return orchestrator_dtos.PropertyBusinessOperationModulesResponseDto{}, err
 	}
 
@@ -323,12 +336,12 @@ func mapRestaurantToBusinessModule(r *restaurant_contracts.RestaurantDetails) or
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) ListAllInfraModulesOfProperty(
+func (s *propertyOrchestrator) ListAllInfraModulesOfProperty(
 	ctx context.Context,
 	orgID, emplID, propertyID uuid.UUID,
 ) (orchestrator_dtos.PropertyInfraModulesResponseDto, error) {
 
-	if err := s.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+	if err := s.guard.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
 		return orchestrator_dtos.PropertyInfraModulesResponseDto{}, err
 	}
 

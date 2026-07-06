@@ -9,16 +9,21 @@ import (
 	"github.com/google/uuid"
 )
 
-// authorize is the orchestrator's guard clause: may emplID perform action on
-// the given resource inside orgID? resourceID is empty for type-level checks
-// (create/list). Returns sentinelEngine.ErrAccessDenied on a deny, which the
-// controllers translate to 403.
-func (s *orchestratorService) authorize(ctx context.Context, orgID, emplID uuid.UUID, action, resourceType, resourceID string) error {
-	if s.sentinelEngine == nil {
+// authzGuard is the orchestrator's guard clause, shared by every domain
+// orchestrator: may emplID perform action on the given resource inside orgID?
+// resourceID is empty for type-level checks (create/list). Returns
+// sentinelEngine.ErrAccessDenied on a deny, which the controllers translate
+// to 403.
+type authzGuard struct {
+	engine sentinelEngine.SentinelEngineInterface
+}
+
+func (g *authzGuard) authorize(ctx context.Context, orgID, emplID uuid.UUID, action, resourceType, resourceID string) error {
+	if g == nil || g.engine == nil {
 		// Fail closed: a missing engine must never mean "everything allowed".
 		return errors.New("sentinel engine is not wired into the orchestrator")
 	}
-	return s.sentinelEngine.Authorize(ctx, sentinelEngine.AccessRequest{
+	return g.engine.Authorize(ctx, sentinelEngine.AccessRequest{
 		OrgID:  orgID,
 		UserID: emplID,
 		Action: action,

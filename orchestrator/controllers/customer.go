@@ -83,5 +83,3 @@ func (c *OrchestratorController) SearchCustomerHandler(ctx *gin.Context) {
 	// 4. Success Response
 	utils.Success(ctx, http.StatusOK, "Customers fetched successfully", results)
 }
-
-

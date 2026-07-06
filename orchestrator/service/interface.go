@@ -21,7 +21,7 @@ import (
 )
 
 type OrchestratorServiceInterface interface {
-	OrganizationOrchestartionInterface
+	OrganizationOrchestrationInterface
 	OrganizationPropertyOrchestrationInterface
 	LegalEntityOrchestrationServiceInterface
 	CustomerOrchestratorServiceInterface
@@ -29,7 +29,7 @@ type OrchestratorServiceInterface interface {
 	SuppliersAndVendorsOrchestratorServiceInterface
 	InventoryOrchestratorServiceInterface
 	OrchestratorSetupWizardInterface
-	EmployeeOrchestartionInterface
+	EmployeeOrchestrationInterface
 	SentinelOrchestrationInterface
 }
 
@@ -62,12 +62,12 @@ type SentinelOrchestrationInterface interface {
 	DetachPolicyFromRole(ctx context.Context, orgID, emplID, roleID, policyID uuid.UUID) error
 }
 
-type OrganizationOrchestartionInterface interface {
+type OrganizationOrchestrationInterface interface {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
 
-type EmployeeOrchestartionInterface interface {
+type EmployeeOrchestrationInterface interface {
 	GetAllEmployeesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) ([]orchestrator_dtos.EmployeeOfOrganization, error)
 }
 

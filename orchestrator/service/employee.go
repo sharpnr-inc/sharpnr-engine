@@ -2,13 +2,26 @@ package orchestrator_service
 
 import (
 	"context"
+	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
+	sentinelservice "sharpnr-engine/sentinel/service"
 
 	"github.com/google/uuid"
 )
 
+// employeeOrchestrator implements EmployeeOrchestrationInterface. The sentinel
+// service is here because employee listings are decorated with each
+// employee's role.
+type employeeOrchestrator struct {
+	employeeHRService coreEmployeeServices.EmployeeHRServiceInterface
+	sentinelService   sentinelservice.SentinelServiceInterface
+
+	// Wired for the upcoming owner-management flows; not consumed yet.
+	employeeService coreEmployeeServices.EmployeeOrchestratorServiceInterface
+}
+
 // Fetches all the employees of the organization
-func (s *orchestratorService) GetAllEmployeesOfOrg(
+func (s *employeeOrchestrator) GetAllEmployeesOfOrg(
 	ctx context.Context,
 	orgID, emplID uuid.UUID,
 ) ([]orchestrator_dtos.EmployeeOfOrganization, error) {

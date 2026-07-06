@@ -98,7 +98,7 @@ func SetupRouter(
 		{
 			v1.RegisterModuleRoutes(protected, modules)
 			iamEngineRoutes.RegisterIamEngineRoutes(protected, cookies, modules)
-			orchestrator_routes.RegisterOrchestratorRoutes(protected, txManager, cookies, jwtmgr, modules)
+			orchestrator_routes.RegisterOrchestratorRoutes(protected, modules)
 			authenticationEngineRoutes.RegisterAuthenticationProtectedWebRoutes(protected, cookies, jwtmgr, modules)
 			utilitiesApi_routes.UtilitesApiGeoRoutes(protected, modules)
 		}
@@ -118,7 +118,7 @@ func SetupRouter(
 			mobile_middleware.MobileMiddleware(jwtmgr),
 		)
 
-		orchestrator_routes.RegisterOrchestratorRoutes(protected_mobile_routes, txManager, cookies, jwtmgr, modules)
+		orchestrator_routes.RegisterOrchestratorRoutes(protected_mobile_routes, modules)
 		v1mobile.RegisterMobilesModulesRoutes(protected_mobile_routes, modules)
 		authenticationEngineRoutes.RegisterAuthenticationProtectedMobileRoutes(protected_mobile_routes, modules, cookies, jwtmgr)
 

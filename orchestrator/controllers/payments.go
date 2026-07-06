@@ -77,8 +77,8 @@ func (c *OrchestratorController) GetPaymentAccountGatewayDetails(ctx *gin.Contex
 		return
 	}
 
-	paymentAccountID, err := c.getPaymentAccountIDFromParams(ctx)
-	if err != nil {
+	paymentAccountID, ok := pathUUID(ctx, "paymentAccountID")
+	if !ok {
 		return
 	}
 
