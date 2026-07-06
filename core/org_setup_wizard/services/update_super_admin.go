@@ -3,7 +3,7 @@ package org_setup_wizard_services
 import (
 	"context"
 	"log"
-	authenticationEngineDtos "sharpnr-engine/authentication/dtos"
+	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
 	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
 
@@ -60,17 +60,16 @@ func (s *orgSetupWizardService) UpdateSuperAdminDetailsStep(
 		emplID,
 	)
 
-	if err := s.authenticationService.UpdateSuperAdminDetails(
+	if err := s.coreEmployeeService.UpdateSuperAdminEmployee(
 		ctx,
 		orgID,
 		emplID,
-		authenticationEngineDtos.UpdateSuperAdminDetailsInput{
-			OrgID:          input.OrgID,
-			FirstName:      input.FirstName,
-			LastName:       input.LastName,
-			EmployeeID:     input.EmployeeID,
-			SecondaryEmail: input.SecondaryEmail,
-			PhoneNumber:    input.SecondaryPhone,
+		&coreEmployeeContracts.UpdateSuperAdminEmployeeInput{
+			OrganizationID: orgID,
+			EmployeeID:     &emplID,
+			FirstName:      &input.FirstName,
+			LastName:       &input.FirstName,
+			SecondaryEmail: &input.SecondaryEmail,
 		},
 	); err != nil {
 

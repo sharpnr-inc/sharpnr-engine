@@ -17,7 +17,7 @@ type DefaultSuperAdminEmployeeInput struct {
 
 type UpdateSuperAdminEmployeeInput struct {
 	OrganizationID uuid.UUID
-	EmployeeID     *string
+	EmployeeID     *uuid.UUID
 	FirstName      *string
 	LastName       *string
 	SecondaryEmail *string

@@ -47,7 +47,6 @@ func RegisterAuthenticationProtectedMobileRoutes(
 	idMobileProtectesRoutes := mobileV1.Group("/identity")
 	{
 		idMobileProtectesRoutes.GET("/myprofile", authController.GetMyProfile)
-		idMobileProtectesRoutes.POST("/update")
 	}
 
 }

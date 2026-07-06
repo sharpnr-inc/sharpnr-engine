@@ -23,10 +23,6 @@ func (c *authenticationControllers) VerifyAuthentication(ctx *gin.Context) {
 
 }
 
-func (c *authenticationControllers) UpdateMyProfile(ctx *gin.Context) {
-
-}
-
 func (c *authenticationControllers) GetUser(ctx *gin.Context) {
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {

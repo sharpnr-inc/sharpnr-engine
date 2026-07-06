@@ -25,7 +25,6 @@ type EmployeesSignUpServiceInterface interface {
 // This interface will have employee Ops which are used by the other module interact with the employee module.
 type EmployeeAuthenticationServiceInterface interface {
 	EmployeesGeneralServiceInterface
-	UpdateSuperAdminEmployee(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, updates *coreEmployeeContracts.UpdateSuperAdminEmployeeInput) error
 	AuthenticateEmployee(ctx context.Context, email string, pass string) (*coreEmployeeContracts.EmployeeReader, error)
 	GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*coreEmployeeContracts.EmployeeProfileOutput, error)
 	GetEmployeeDetails(ctx context.Context, orgID, emplID uuid.UUID) (*coreEmployeeContracts.EmployeeDetailsOutput, error)
@@ -47,4 +46,11 @@ type EmployeeIamEngineServiceInterface interface {
 	// this is General service which will used by the other module to interact with the employee module,
 	EmployeesGeneralServiceInterface
 	GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*coreEmployeeContracts.EmployeeProfileOutput, error)
+}
+
+type EmployeesOrchestratorService interface {
+}
+
+type EmployeeSetupWizServiceInterface interface {
+	UpdateSuperAdminEmployee(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, updates *coreEmployeeContracts.UpdateSuperAdminEmployeeInput) error
 }

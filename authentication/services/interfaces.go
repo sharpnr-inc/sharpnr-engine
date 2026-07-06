@@ -21,5 +21,4 @@ type AuthenticationServiceInterface interface {
 	) (*authenticationEngineDtos.ProfileResponse_dto, error)
 
 	GetAuthenticatedUserDetails(ctx context.Context, orgID, emplID uuid.UUID) (authenticationEngineDtos.UserDataResponseDto, error)
-	UpdateSuperAdminDetails(ctx context.Context, orgID, empID uuid.UUID, input authenticationEngineDtos.UpdateSuperAdminDetailsInput) error
 }

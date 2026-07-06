@@ -69,3 +69,33 @@ func bootstrapEmployeeSignUpService(
 		mailerEngine,
 	)
 }
+
+func bootstrapEmployeeOrchestratorService(
+	db *gorm.DB,
+	seroEngine *sero.SEROEngine,
+	txManager dbtx.TxManager,
+	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
+) coreEmployeeServices.EmployeesOrchestratorService {
+	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
+	return coreEmployeeServices.NewEmployeeService(
+		employeeRepo,
+		seroEngine,
+		txManager,
+		mailerEngine,
+	)
+}
+
+func bootstrapEmployeeSetUpWizService(
+	db *gorm.DB,
+	seroEngine *sero.SEROEngine,
+	txManager dbtx.TxManager,
+	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
+) coreEmployeeServices.EmployeeSetupWizServiceInterface {
+	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
+	return coreEmployeeServices.NewEmployeeService(
+		employeeRepo,
+		seroEngine,
+		txManager,
+		mailerEngine,
+	)
+}

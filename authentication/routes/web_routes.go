@@ -45,6 +45,5 @@ func RegisterAuthenticationProtectedWebRoutes(
 		idProtectedWebRoutes.GET("/verify-auth", authController.VerifyAuthentication)
 		idProtectedWebRoutes.GET("/user", authController.GetUser)
 		idProtectedWebRoutes.GET("/logout", authController.LogoutUser)
-		idProtectedWebRoutes.POST("/update", authController.UpdateMyProfile)
 	}
 }
