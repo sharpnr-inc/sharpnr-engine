@@ -52,7 +52,7 @@ func BootstrapModules(
 		employeesHRService,
 		employeesIamEngineService,
 		employeeSignUpService,
-		employeeSetUpWizService := bootstrapEmployeeServices(db, seroEngine, txManager, mailerEngine)
+		employeeSetUpWizService, employeeOrchestratorService := bootstrapEmployeeServices(db, seroEngine, txManager, mailerEngine)
 
 	/* ------------------------------- IAM engine ------------------------------- */
 	iamEngineService := bootstrapIamEngine(employeesIamEngineService)
@@ -135,6 +135,7 @@ func BootstrapModules(
 		inventoryEngine,
 		orgSupplierService,
 		employeesHRService,
+		employeeOrchestratorService,
 		sentinelService,
 		sentinelAggregator,
 		sentinelAuthzEngine,

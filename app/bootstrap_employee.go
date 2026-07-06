@@ -24,6 +24,7 @@ func bootstrapEmployeeServices(
 	coreEmployeeServices.EmployeeIamEngineServiceInterface,
 	coreEmployeeServices.EmployeeSignUpServiceInterface,
 	coreEmployeeServices.EmployeeSetupWizServiceInterface,
+	coreEmployeeServices.EmployeeOrchestratorServiceInterface,
 ) {
 	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
 	svc := coreEmployeeServices.NewEmployeeService(
@@ -32,5 +33,5 @@ func bootstrapEmployeeServices(
 		txManager,
 		mailerEngine,
 	)
-	return svc, svc, svc, svc, svc
+	return svc, svc, svc, svc, svc, svc
 }

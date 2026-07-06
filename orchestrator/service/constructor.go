@@ -34,6 +34,7 @@ type orchestratorService struct {
 	inventoryEngine         inventory_engine_services.InventoryEngineServicesInterface
 	supplierService         suppliers_service.SupplierServiceInterface
 	employeeHRService       coreEmployeeServices.EmployeeHRServiceInterface
+	employeeService         coreEmployeeServices.EmployeeOrchestratorServiceInterface
 	sentinelService         sentinelservice.SentinelServiceInterface
 	sentinelAggregator      sentinelAggregatorService.SentinelAggregatorServiceInterface
 	sentinelEngine          sentinelEngine.SentinelEngineInterface
@@ -53,6 +54,7 @@ func NewSharpnrOrchestratorService(
 	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	employeeHRService coreEmployeeServices.EmployeeHRServiceInterface,
+	employeeService coreEmployeeServices.EmployeeOrchestratorServiceInterface,
 
 	sentinelService sentinelservice.SentinelServiceInterface,
 	sentinelAggregator sentinelAggregatorService.SentinelAggregatorServiceInterface,
@@ -72,6 +74,7 @@ func NewSharpnrOrchestratorService(
 		inventoryEngine:         inventoryEngine,
 		supplierService:         supplierService,
 		employeeHRService:       employeeHRService,
+		employeeService:         employeeService,
 		sentinelService:         sentinelService,
 		sentinelAggregator:      sentinelAggregator,
 		sentinelEngine:          sentinelAuthzEngine,
