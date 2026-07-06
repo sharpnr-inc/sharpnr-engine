@@ -23,12 +23,12 @@ func NewOrganizationPropertyService(
 	orgPropertyRepo org_property_repo.OrganizationPropertyRepositoryInterface,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-	sentinelEngine sentinelEngine.SentinelEngineInterface,
+	sentinelAuthzEngine sentinelEngine.SentinelEngineInterface,
 ) *organizationPropertyService {
 	return &organizationPropertyService{
 		orgPropertyRepo: orgPropertyRepo,
 		txManager:       txManager,
 		mailerEngine:    mailerEngine,
-		sentinelEngine:  sentinelEngine,
+		sentinelEngine:  sentinelAuthzEngine,
 	}
 }

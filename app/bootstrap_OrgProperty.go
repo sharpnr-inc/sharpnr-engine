@@ -14,9 +14,9 @@ func bootstrapOrgProperty(
 	db *gorm.DB,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-	sentinelEngine sentinelEngine.SentinelEngineInterface,
+	sentinelAuthzEngine sentinelEngine.SentinelEngineInterface,
 ) org_property_services.OrganizationPropertyServicesInterfaces {
 	orgPropertyRepo := org_property_repo.NewOrganizationPropertyRepo(db)
-	return org_property_services.NewOrganizationPropertyService(orgPropertyRepo, txManager, mailerEngine, sentinelEngine)
+	return org_property_services.NewOrganizationPropertyService(orgPropertyRepo, txManager, mailerEngine, sentinelAuthzEngine)
 
 }
