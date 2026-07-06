@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func bootstrapEmployeeIdentity(
+func bootstrapEmployeeAuthentication(
 	db *gorm.DB,
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
@@ -46,6 +46,21 @@ func bootstrapEmployeeIamEngineService(
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 ) coreEmployeeServices.EmployeeIamEngineServiceInterface {
+	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
+	return coreEmployeeServices.NewEmployeeService(
+		employeeRepo,
+		seroEngine,
+		txManager,
+		mailerEngine,
+	)
+}
+
+func bootstrapEmployeeSignUpService(
+	db *gorm.DB,
+	seroEngine *sero.SEROEngine,
+	txManager dbtx.TxManager,
+	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
+) coreEmployeeServices.EmployeesSignUpServiceInterface {
 	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
 	return coreEmployeeServices.NewEmployeeService(
 		employeeRepo,
