@@ -7,7 +7,7 @@ import (
 	"sharpnr-engine/app"
 	"sharpnr-engine/config"
 	org_signup "sharpnr-engine/core/org_signup"
-	sharpnrIdentity_routes "sharpnr-engine/core/sharpnr_identity/routes"
+	sharpnrIdentity_routes "sharpnr-engine/sharpnr_identity/routes"
 	"sharpnr-engine/meta"
 	"sharpnr-engine/middlewares"
 	mobile_middleware "sharpnr-engine/middlewares/mobile"

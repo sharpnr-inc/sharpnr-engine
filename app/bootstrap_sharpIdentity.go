@@ -3,7 +3,7 @@ package app
 import (
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	organization_services "sharpnr-engine/core/organization/services"
-	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
+	sharpnr_identity_auth_services "sharpnr-engine/sharpnr_identity/services"
 
 	sentinelservice "sharpnr-engine/sentinel/service"
 )

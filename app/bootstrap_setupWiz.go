@@ -6,7 +6,7 @@ import (
 	org_setup_wizard_repos "sharpnr-engine/core/org_setup_wizard/repos"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	organization_services "sharpnr-engine/core/organization/services"
-	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
+	sharpnr_identity_auth_services "sharpnr-engine/sharpnr_identity/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 

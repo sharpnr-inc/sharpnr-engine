@@ -11,7 +11,7 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
-	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
+	sharpnr_identity_auth_services "sharpnr-engine/sharpnr_identity/services"
 	hrmsengine "sharpnr-engine/hrms_engine/engine"
 
 	orchestrator_service "sharpnr-engine/orchestrator/service"

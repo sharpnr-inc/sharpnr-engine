@@ -2,7 +2,7 @@ package sharpnr_identity_auth_controllers
 
 import (
 	"net/http"
-	sharpnr_identity_auth_dtos "sharpnr-engine/core/sharpnr_identity/dtos"
+	sharpnr_identity_auth_dtos "sharpnr-engine/sharpnr_identity/dtos"
 	"sharpnr-engine/pkg/cookieManager"
 	"sharpnr-engine/shared/utils"
 

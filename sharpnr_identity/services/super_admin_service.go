@@ -3,7 +3,7 @@ package sharpnr_identity_auth_services
 import (
 	"context"
 	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
-	sharpnr_identity_auth_dtos "sharpnr-engine/core/sharpnr_identity/dtos"
+	sharpnr_identity_auth_dtos "sharpnr-engine/sharpnr_identity/dtos"
 
 	"github.com/google/uuid"
 )

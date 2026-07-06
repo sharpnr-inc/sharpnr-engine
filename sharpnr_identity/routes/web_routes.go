@@ -2,7 +2,7 @@ package sharpnrIdentity_routes
 
 import (
 	"sharpnr-engine/app"
-	sharpnr_identity_auth_controllers "sharpnr-engine/core/sharpnr_identity/controllers"
+	sharpnr_identity_auth_controllers "sharpnr-engine/sharpnr_identity/controllers"
 	"sharpnr-engine/pkg/cookieManager"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 

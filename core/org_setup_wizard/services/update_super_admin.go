@@ -5,7 +5,7 @@ import (
 	"log"
 	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
-	sharpnr_identity_auth_dtos "sharpnr-engine/core/sharpnr_identity/dtos"
+	sharpnr_identity_auth_dtos "sharpnr-engine/sharpnr_identity/dtos"
 
 	"github.com/google/uuid"
 )

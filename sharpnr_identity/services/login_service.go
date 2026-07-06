@@ -2,7 +2,7 @@ package sharpnr_identity_auth_services
 
 import (
 	"context"
-	sharpnr_identity_auth_dtos "sharpnr-engine/core/sharpnr_identity/dtos"
+	sharpnr_identity_auth_dtos "sharpnr-engine/sharpnr_identity/dtos"
 )
 
 // LoginUser implements SharpnrIdentityAuthServiceInterface.
