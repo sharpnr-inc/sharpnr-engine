@@ -4,6 +4,7 @@ import (
 	coreEmployeeRepo "sharpnr-engine/core/employees/repo"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
+	sentinelservice "sharpnr-engine/sentinel/service"
 	"sharpnr-engine/sero"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
@@ -18,6 +19,7 @@ func bootstrapEmployeeServices(
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
+	sentinelService sentinelservice.SentinelServiceInterface,
 ) (
 	coreEmployeeServices.EmployeeAuthenticationServiceInterface,
 	coreEmployeeServices.EmployeeHRServiceInterface,
@@ -32,6 +34,7 @@ func bootstrapEmployeeServices(
 		seroEngine,
 		txManager,
 		mailerEngine,
+		sentinelService,
 	)
 	return svc, svc, svc, svc, svc, svc
 }
