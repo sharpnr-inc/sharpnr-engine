@@ -1,8 +1,8 @@
-package sharpnrIdentity_routes
+package authenticationEngineRoutes
 
 import (
 	"sharpnr-engine/app"
-	sharpnr_identity_auth_controllers "sharpnr-engine/sharpnr_identity/controllers"
+	authenticationEngineControllers "sharpnr-engine/authentication/controllers"
 	mobile_middleware "sharpnr-engine/middlewares/mobile"
 	"sharpnr-engine/pkg/cookieManager"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
@@ -12,18 +12,18 @@ import (
 
 // Unprotected routes for the login
 // for the mobile
-func RegisterSharpnrIdentityMobileRoutes(
+func RegisterAuthenticationMobileRoutes(
 	mobileV1 *gin.RouterGroup,
 	jwtMgr jwt_manager.Manager,
 	modules app.ModulesProvider,
 	cookie cookieManager.Manager,
 
 ) {
-	sharpIdService := modules.SharpAuthService()
-	sharpIdController := sharpnr_identity_auth_controllers.NewSharpnrIdentityAuthController(cookie, jwtMgr, sharpIdService)
+	authService := modules.AuthenticationService()
+	authController := authenticationEngineControllers.NewAuthenticationController(cookie, jwtMgr, authService)
 	idMobileRoutes := mobileV1.Group("/identity")
 	{
-		idMobileRoutes.POST("/login", sharpIdController.MobileLogin)
+		idMobileRoutes.POST("/login", authController.MobileLogin)
 		// Refresh endpoint — only needs the refresh token, NOT the access token
 		// so it sits outside MobileMiddleware
 		idMobileRoutes.POST("/auth/refresh", mobile_middleware.RefreshHandler(jwtMgr))
@@ -35,18 +35,18 @@ func RegisterSharpnrIdentityMobileRoutes(
 // Procted Routes for the sharpnr Identity service
 // These are accessible only after middleware validation
 // both Refresh Token and Access Token
-func RegisterIdentityProtectedMobileRoutes(
+func RegisterAuthenticationProtectedMobileRoutes(
 	mobileV1 *gin.RouterGroup,
 	modules app.ModulesProvider,
 	cookie cookieManager.Manager,
 	jwtMgr jwt_manager.Manager,
 ) {
-	sharpIdService := modules.SharpAuthService()
-	sharpIdController := sharpnr_identity_auth_controllers.NewSharpnrIdentityAuthController(cookie, jwtMgr, sharpIdService)
+	authService := modules.AuthenticationService()
+	authController := authenticationEngineControllers.NewAuthenticationController(cookie, jwtMgr, authService)
 
 	idMobileProtectesRoutes := mobileV1.Group("/identity")
 	{
-		idMobileProtectesRoutes.GET("/myprofile", sharpIdController.GetMyProfile)
+		idMobileProtectesRoutes.GET("/myprofile", authController.GetMyProfile)
 		idMobileProtectesRoutes.POST("/update")
 	}
 

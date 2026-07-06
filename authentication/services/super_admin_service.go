@@ -1,14 +1,14 @@
-package sharpnr_identity_auth_services
+package authenticationEngineServices
 
 import (
 	"context"
+	authenticationEngineDtos "sharpnr-engine/authentication/dtos"
 	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
-	sharpnr_identity_auth_dtos "sharpnr-engine/sharpnr_identity/dtos"
 
 	"github.com/google/uuid"
 )
 
-func (s *sharpnrIdentityAuthService) UpdateSuperAdminDetails(ctx context.Context, orgID, empID uuid.UUID, input sharpnr_identity_auth_dtos.UpdateSuperAdminDetailsInput) error {
+func (s *authenticationService) UpdateSuperAdminDetails(ctx context.Context, orgID, empID uuid.UUID, input authenticationEngineDtos.UpdateSuperAdminDetailsInput) error {
 
 	// Check if the secondary email already exists for another user
 	_, err := s.employeeService.IsUserExists(ctx, input.SecondaryEmail)

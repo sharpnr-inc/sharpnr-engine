@@ -5,6 +5,7 @@ import (
 	v1 "sharpnr-engine/api/v1"
 	"sharpnr-engine/api/v1mobile"
 	"sharpnr-engine/app"
+	authenticationEngineRoutes "sharpnr-engine/authentication/routes"
 	"sharpnr-engine/config"
 	org_signup "sharpnr-engine/core/org_signup"
 	iamEngineRoutes "sharpnr-engine/iam_engine/routes"
@@ -16,7 +17,6 @@ import (
 	"sharpnr-engine/pkg/cookieManager"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
-	sharpnrIdentity_routes "sharpnr-engine/sharpnr_identity/routes"
 	utilitiesApi_routes "sharpnr-engine/utilities_apis/routes"
 
 	"github.com/gin-gonic/gin"
@@ -87,7 +87,7 @@ func SetupRouter(
 	{
 		org_signup.OrgSignUpRoute(webV1, cookies, jwtmgr, modules)
 
-		sharpnrIdentity_routes.RegisterSharpnrIdentityWebRoutes(webV1, cookies, jwtmgr, modules)
+		authenticationEngineRoutes.RegisterAuthenticationWebRoutes(webV1, cookies, jwtmgr, modules)
 
 		protected := webV1.Group("/")
 		protected.Use(
@@ -99,7 +99,7 @@ func SetupRouter(
 			v1.RegisterModuleRoutes(protected, modules)
 			iamEngineRoutes.RegisterIamEngineRoutes(protected, cookies, modules)
 			orchestrator_routes.RegisterOrchestratorRoutes(protected, txManager, cookies, jwtmgr, modules)
-			sharpnrIdentity_routes.RegisterSharpnrIdentityProtectedWebRoutes(protected, cookies, jwtmgr, modules)
+			authenticationEngineRoutes.RegisterAuthenticationProtectedWebRoutes(protected, cookies, jwtmgr, modules)
 			utilitiesApi_routes.UtilitesApiGeoRoutes(protected, modules)
 		}
 	}
@@ -110,7 +110,7 @@ func SetupRouter(
 	mobileV1 := router.Group("/api/v1/mobile")
 	{
 		// Unprotected routes for the Login
-		sharpnrIdentity_routes.RegisterSharpnrIdentityMobileRoutes(mobileV1, jwtmgr, modules, cookies)
+		authenticationEngineRoutes.RegisterAuthenticationMobileRoutes(mobileV1, jwtmgr, modules, cookies)
 		protected_mobile_routes := mobileV1.Group("/")
 
 		// these are mobile routes for the other user
@@ -120,7 +120,7 @@ func SetupRouter(
 
 		orchestrator_routes.RegisterOrchestratorRoutes(protected_mobile_routes, txManager, cookies, jwtmgr, modules)
 		v1mobile.RegisterMobilesModulesRoutes(protected_mobile_routes, modules)
-		sharpnrIdentity_routes.RegisterIdentityProtectedMobileRoutes(protected_mobile_routes, modules, cookies, jwtmgr)
+		authenticationEngineRoutes.RegisterAuthenticationProtectedMobileRoutes(protected_mobile_routes, modules, cookies, jwtmgr)
 
 	}
 

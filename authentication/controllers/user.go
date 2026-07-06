@@ -1,4 +1,4 @@
-package sharpnr_identity_auth_controllers
+package authenticationEngineControllers
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *sharpnrIdentityAuthControllers) VerifyAuthentication(ctx *gin.Context) {
+func (c *authenticationControllers) VerifyAuthentication(ctx *gin.Context) {
 
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
@@ -23,17 +23,17 @@ func (c *sharpnrIdentityAuthControllers) VerifyAuthentication(ctx *gin.Context) 
 
 }
 
-func (c *sharpnrIdentityAuthControllers) UpdateMyProfile(ctx *gin.Context) {
+func (c *authenticationControllers) UpdateMyProfile(ctx *gin.Context) {
 
 }
 
-func (c *sharpnrIdentityAuthControllers) GetUser(ctx *gin.Context) {
+func (c *authenticationControllers) GetUser(ctx *gin.Context) {
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
 		return
 	}
 
-	res, err := c.IdSvc.GetAuthenticatedUserDetails(ctx.Request.Context(), orgID, emplID)
+	res, err := c.authSvc.GetAuthenticatedUserDetails(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
 		utils.Failure(ctx, http.StatusUnauthorized, "unauthorised", err)
 	}
@@ -41,7 +41,7 @@ func (c *sharpnrIdentityAuthControllers) GetUser(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusOK, "Success", res)
 }
 
-func (c *sharpnrIdentityAuthControllers) LogoutUser(ctx *gin.Context) {
+func (c *authenticationControllers) LogoutUser(ctx *gin.Context) {
 
 	// Clear auth cookies
 	c.cookieMgr.Clear(ctx, cookieManager.Auth)

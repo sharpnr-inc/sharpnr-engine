@@ -1,4 +1,4 @@
-package sharpnr_identity_auth_dtos
+package authenticationEngineDtos
 
 import "github.com/google/uuid"
 

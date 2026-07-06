@@ -1,15 +1,15 @@
-package sharpnr_identity_auth_services
+package authenticationEngineServices
 
 import (
 	"context"
-	sharpnr_identity_auth_dtos "sharpnr-engine/sharpnr_identity/dtos"
+	authenticationEngineDtos "sharpnr-engine/authentication/dtos"
 )
 
-// LoginUser implements SharpnrIdentityAuthServiceInterface.
-func (s *sharpnrIdentityAuthService) LoginUser(
+// LoginUser implements AuthenticationServiceInterface.
+func (s *authenticationService) LoginUser(
 	ctx context.Context,
-	req sharpnr_identity_auth_dtos.LoginRequest_dto,
-) (*sharpnr_identity_auth_dtos.WebLoginResponse_dto, error) {
+	req authenticationEngineDtos.LoginRequest_dto,
+) (*authenticationEngineDtos.WebLoginResponse_dto, error) {
 
 	employee, err := s.employeeService.AuthenticateEmployee(
 		ctx,
@@ -31,12 +31,12 @@ func (s *sharpnrIdentityAuthService) LoginUser(
 		return nil, err
 	}
 
-	resp := &sharpnr_identity_auth_dtos.WebLoginResponse_dto{
+	resp := &authenticationEngineDtos.WebLoginResponse_dto{
 		OrgId:      employee.OrganizationID,
 		Email:      employee.Name,
 		EmployeeID: employee.EmployeeID,
 		Name:       employee.Name,
-		Org:        sharpnr_identity_auth_dtos.OrgData{Name: orgdetails.Name, SharpID: orgdetails.SharpID},
+		Org:        authenticationEngineDtos.OrgData{Name: orgdetails.Name, SharpID: orgdetails.SharpID},
 		Role:       role.Name,
 	}
 

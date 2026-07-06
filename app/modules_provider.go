@@ -3,6 +3,7 @@ package app
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	auditEngineService "sharpnr-engine/audit_log_engine/service"
+	authenticationEngineServices "sharpnr-engine/authentication/services"
 	hospitality_orchestration_service "sharpnr-engine/business_ops/hospitality/orchestration/service"
 	org_customer_service "sharpnr-engine/core/customer/service"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
@@ -11,9 +12,8 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
-	iamEngineService "sharpnr-engine/iam_engine/service"
-	sharpnr_identity_auth_services "sharpnr-engine/sharpnr_identity/services"
 	hrmsengine "sharpnr-engine/hrms_engine/engine"
+	iamEngineService "sharpnr-engine/iam_engine/service"
 
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
@@ -34,7 +34,7 @@ type ModulesProvider interface {
 	OrgPropertyService() org_property_services.OrganizationPropertyServicesInterfaces
 
 	OrgSignUpService() org_signup_services.OrganizationSignUpServiceInterfaces
-	SharpAuthService() sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
+	AuthenticationService() authenticationEngineServices.AuthenticationServiceInterface
 
 	EmployeesIdentityService() coreEmployeeServices.EmployeesIdentityServiceInterface
 	EmployeesHRService() coreEmployeeServices.EmployeesHRServiceInterface

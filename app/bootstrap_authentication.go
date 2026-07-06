@@ -1,19 +1,19 @@
 package app
 
 import (
+	authenticationEngineServices "sharpnr-engine/authentication/services"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	organization_services "sharpnr-engine/core/organization/services"
-	sharpnr_identity_auth_services "sharpnr-engine/sharpnr_identity/services"
 
 	sentinelservice "sharpnr-engine/sentinel/service"
 )
 
-func bootstrapIdentity(
+func bootstrapAuthentication(
 	employeeService coreEmployeeServices.EmployeesIdentityServiceInterface,
 	orgService organization_services.OrganizationServiceInterface,
 	sentinelService sentinelservice.SentinelServiceInterface,
-) sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface {
-	return sharpnr_identity_auth_services.NewSharpnrIdentityAuthService(
+) authenticationEngineServices.AuthenticationServiceInterface {
+	return authenticationEngineServices.NewAuthenticationService(
 		employeeService,
 		orgService,
 		sentinelService,

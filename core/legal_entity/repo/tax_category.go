@@ -28,29 +28,29 @@ func (r *orgLegalEntityRepo) CreateTaxCategory(ctx context.Context, category *le
 /* ---------------------------------- <***> --------------------------------- */
 
 func (r *orgLegalEntityRepo) ListTaxCategories(ctx context.Context, entityID uuid.UUID) ([]legal_entity_models.LegalEntityTaxCategory, error) {
-    db, ok := dbtx.ExtractTx(ctx)
-    if !ok {
-        db = r.db
-    }
+	db, ok := dbtx.ExtractTx(ctx)
+	if !ok {
+		db = r.db
+	}
 
-    var categories []legal_entity_models.LegalEntityTaxCategory
+	var categories []legal_entity_models.LegalEntityTaxCategory
 
-    err := db.WithContext(ctx).
-        Where("legal_entity_id = ?", entityID).
-        Order("code ASC").
-        Find(&categories).
-        Error
-    if err != nil {
-        return nil, err
-    }
+	err := db.WithContext(ctx).
+		Where("legal_entity_id = ?", entityID).
+		Order("code ASC").
+		Find(&categories).
+		Error
+	if err != nil {
+		return nil, err
+	}
 
-    // Since Find doesn't return ErrRecordNotFound, check the slice length
-    if len(categories) == 0 {
-        // You can return a custom error, or gorm.ErrRecordNotFound if you want to fake it
-        return nil, gorm.ErrRecordNotFound 
-    }
+	// Since Find doesn't return ErrRecordNotFound, check the slice length
+	if len(categories) == 0 {
+		// You can return a custom error, or gorm.ErrRecordNotFound if you want to fake it
+		return nil, gorm.ErrRecordNotFound
+	}
 
-    return categories, nil
+	return categories, nil
 }
 
 /* ---------------------------------- <***> --------------------------------- */

@@ -9,12 +9,12 @@ import (
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 
+	authenticationEngineServices "sharpnr-engine/authentication/services"
 	hospitality_orchestration_service "sharpnr-engine/business_ops/hospitality/orchestration/service"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
-	iamEngineService "sharpnr-engine/iam_engine/service"
-	sharpnr_identity_auth_services "sharpnr-engine/sharpnr_identity/services"
 	hrmsengine "sharpnr-engine/hrms_engine/engine"
+	iamEngineService "sharpnr-engine/iam_engine/service"
 
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
@@ -36,11 +36,11 @@ type AppModules struct {
 
 	orgLegalEntityService legal_entity_service.OrgLegalEntityServiceInterface
 	//Signup service
-	orgSignupService    org_signup_services.OrganizationSignUpServiceInterfaces
-	sharpAuthService    sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface
-	orgPropertyService  org_property_services.OrganizationPropertyServicesInterfaces
-	orchestratorService orchestrator_service.OrchestratorServiceInterface
-	orgSetupWizard      org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface
+	orgSignupService      org_signup_services.OrganizationSignUpServiceInterfaces
+	authenticationService authenticationEngineServices.AuthenticationServiceInterface
+	orgPropertyService    org_property_services.OrganizationPropertyServicesInterfaces
+	orchestratorService   orchestrator_service.OrchestratorServiceInterface
+	orgSetupWizard        org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface
 
 	hospitality              *hospitalitydomain.HospitalityDomain
 	hospitalityOrchestration hospitality_orchestration_service.OrchestrationServiceInterface
@@ -89,9 +89,9 @@ func (m *AppModules) AccountingService() accounting_service.AccountingServiceInt
 	return m.accountingService
 }
 
-// SharpAuthService implements ModulesProvider.
-func (m *AppModules) SharpAuthService() sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface {
-	return m.sharpAuthService
+// AuthenticationService implements ModulesProvider.
+func (m *AppModules) AuthenticationService() authenticationEngineServices.AuthenticationServiceInterface {
+	return m.authenticationService
 }
 
 func (m *AppModules) EmployeesIdentityService() coreEmployeeServices.EmployeesIdentityServiceInterface {

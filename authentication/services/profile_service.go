@@ -1,21 +1,21 @@
-package sharpnr_identity_auth_services
+package authenticationEngineServices
 
 import (
 	"context"
 	"errors"
-	sharpnr_identity_auth_dtos "sharpnr-engine/sharpnr_identity/dtos"
+	authenticationEngineDtos "sharpnr-engine/authentication/dtos"
 
 	"github.com/google/uuid"
 )
 
-func (s *sharpnrIdentityAuthService) GetProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*sharpnr_identity_auth_dtos.ProfileResponse_dto, error) {
+func (s *authenticationService) GetProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*authenticationEngineDtos.ProfileResponse_dto, error) {
 
 	empProfile, err := s.employeeService.GetEmployeeProfile(ctx, orgID, empID)
 	if err != nil {
 		return nil, err
 	}
 
-	return &sharpnr_identity_auth_dtos.ProfileResponse_dto{
+	return &authenticationEngineDtos.ProfileResponse_dto{
 		Email:     empProfile.Email,
 		FirstName: empProfile.FirstName,
 		LastName:  empProfile.LastName,
@@ -27,32 +27,32 @@ func (s *sharpnrIdentityAuthService) GetProfile(ctx context.Context, orgID uuid.
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *sharpnrIdentityAuthService) GetAuthenticatedUserDetails(
+func (s *authenticationService) GetAuthenticatedUserDetails(
 	ctx context.Context,
 	orgID, emplID uuid.UUID,
-) (sharpnr_identity_auth_dtos.UserDataResponseDto, error) {
+) (authenticationEngineDtos.UserDataResponseDto, error) {
 
 	empl, err := s.employeeService.GetEmployeeDetails(ctx, orgID, emplID)
 	if err != nil {
-		return sharpnr_identity_auth_dtos.UserDataResponseDto{}, err
+		return authenticationEngineDtos.UserDataResponseDto{}, err
 	}
 
 	orgDetails, err := s.orgService.GetOrgDetailsByID(ctx, orgID, emplID)
 	if err != nil {
-		return sharpnr_identity_auth_dtos.UserDataResponseDto{}, err
+		return authenticationEngineDtos.UserDataResponseDto{}, err
 	}
 
 	if orgDetails == nil {
-		return sharpnr_identity_auth_dtos.UserDataResponseDto{},
+		return authenticationEngineDtos.UserDataResponseDto{},
 			errors.New("organization details not found")
 	}
 
-	out := sharpnr_identity_auth_dtos.UserDataResponseDto{
+	out := authenticationEngineDtos.UserDataResponseDto{
 		Email:     empl.Email,
 		FirstName: empl.FirstName,
 		LastName:  empl.LastName,
 		ID:        empl.ID,
-		Org: sharpnr_identity_auth_dtos.OrgData{
+		Org: authenticationEngineDtos.OrgData{
 			Name:    orgDetails.Name,
 			SharpID: orgDetails.SharpID,
 		},

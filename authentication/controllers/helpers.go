@@ -1,4 +1,4 @@
-package sharpnr_identity_auth_controllers
+package authenticationEngineControllers
 
 import (
 	"errors"
@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (c *sharpnrIdentityAuthControllers) getOrgIDAndEmpIDFromContext(ctx *gin.Context) (uuid.UUID, uuid.UUID, error) {
+func (c *authenticationControllers) getOrgIDAndEmpIDFromContext(ctx *gin.Context) (uuid.UUID, uuid.UUID, error) {
 
 	// 1. Get OrgID from context
 	orgIDVal, ok := ctx.Get(webMiddleware.OrgUUIDContextKey)
@@ -42,7 +42,7 @@ func (c *sharpnrIdentityAuthControllers) getOrgIDAndEmpIDFromContext(ctx *gin.Co
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (c *sharpnrIdentityAuthControllers) resolveRequestContexts(ctx *gin.Context) (uuid.UUID, uuid.UUID, bool) {
+func (c *authenticationControllers) resolveRequestContexts(ctx *gin.Context) (uuid.UUID, uuid.UUID, bool) {
 	// 1. Extract and Parse Employee ID
 	empIDRaw, exists := ctx.Get(webMiddleware.UserIDContextKey)
 	if !exists {

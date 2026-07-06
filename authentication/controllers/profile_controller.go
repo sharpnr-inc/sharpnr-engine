@@ -1,4 +1,4 @@
-package sharpnr_identity_auth_controllers
+package authenticationEngineControllers
 
 import (
 	"sharpnr-engine/shared/utils"
@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *sharpnrIdentityAuthControllers) GetMyProfile(ctx *gin.Context) {
+func (c *authenticationControllers) GetMyProfile(ctx *gin.Context) {
 
 	orgID, empID, err := c.getOrgIDAndEmpIDFromContext(ctx)
 	if err != nil {
@@ -14,7 +14,7 @@ func (c *sharpnrIdentityAuthControllers) GetMyProfile(ctx *gin.Context) {
 		return
 	}
 
-	profile, err := c.IdSvc.GetProfile(ctx.Request.Context(), orgID, empID)
+	profile, err := c.authSvc.GetProfile(ctx.Request.Context(), orgID, empID)
 	if err != nil {
 		utils.Failure(ctx, 500, utils.CodeInternalError, err)
 		return

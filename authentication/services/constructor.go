@@ -1,4 +1,4 @@
-package sharpnr_identity_auth_services
+package authenticationEngineServices
 
 import (
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
@@ -7,18 +7,18 @@ import (
 	sentinelservice "sharpnr-engine/sentinel/service"
 )
 
-type sharpnrIdentityAuthService struct {
+type authenticationService struct {
 	employeeService coreEmployeeServices.EmployeesIdentityServiceInterface
 	orgService      organization_services.OrganizationServiceInterface
 	sentinelService sentinelservice.SentinelServiceInterface
 }
 
-func NewSharpnrIdentityAuthService(
+func NewAuthenticationService(
 	employeeService coreEmployeeServices.EmployeesIdentityServiceInterface,
 	orgService organization_services.OrganizationServiceInterface,
 	sentinelService sentinelservice.SentinelServiceInterface,
-) *sharpnrIdentityAuthService {
-	return &sharpnrIdentityAuthService{
+) *authenticationService {
+	return &authenticationService{
 		employeeService: employeeService,
 		orgService:      orgService,
 		sentinelService: sentinelService,

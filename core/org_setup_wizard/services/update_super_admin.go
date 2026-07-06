@@ -3,9 +3,9 @@ package org_setup_wizard_services
 import (
 	"context"
 	"log"
+	authenticationEngineDtos "sharpnr-engine/authentication/dtos"
 	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
-	sharpnr_identity_auth_dtos "sharpnr-engine/sharpnr_identity/dtos"
 
 	"github.com/google/uuid"
 )
@@ -60,11 +60,11 @@ func (s *orgSetupWizardService) UpdateSuperAdminDetailsStep(
 		emplID,
 	)
 
-	if err := s.sharpIdentity.UpdateSuperAdminDetails(
+	if err := s.authenticationService.UpdateSuperAdminDetails(
 		ctx,
 		orgID,
 		emplID,
-		sharpnr_identity_auth_dtos.UpdateSuperAdminDetailsInput{
+		authenticationEngineDtos.UpdateSuperAdminDetailsInput{
 			OrgID:          input.OrgID,
 			FirstName:      input.FirstName,
 			LastName:       input.LastName,

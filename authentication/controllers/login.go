@@ -1,8 +1,8 @@
-package sharpnr_identity_auth_controllers
+package authenticationEngineControllers
 
 import (
 	"net/http"
-	sharpnr_identity_auth_dtos "sharpnr-engine/sharpnr_identity/dtos"
+	authenticationEngineDtos "sharpnr-engine/authentication/dtos"
 	"sharpnr-engine/pkg/cookieManager"
 	"sharpnr-engine/shared/utils"
 
@@ -10,15 +10,15 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *sharpnrIdentityAuthControllers) WebLogin(ctx *gin.Context) {
+func (s *authenticationControllers) WebLogin(ctx *gin.Context) {
 
-	var req sharpnr_identity_auth_dtos.LoginRequest_dto
+	var req authenticationEngineDtos.LoginRequest_dto
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		utils.Failure(ctx, http.StatusBadRequest, "Invalid Credentials", err)
 		return
 	}
 
-	res, err := s.IdSvc.LoginUser(ctx.Request.Context(), req)
+	res, err := s.authSvc.LoginUser(ctx.Request.Context(), req)
 	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
 		return
@@ -40,14 +40,14 @@ func (s *sharpnrIdentityAuthControllers) WebLogin(ctx *gin.Context) {
 /*                           Mobile Login Controller                          */
 /* -------------------------------------------------------------------------- */
 
-func (s *sharpnrIdentityAuthControllers) MobileLogin(ctx *gin.Context) {
-	var req sharpnr_identity_auth_dtos.LoginRequest_dto
+func (s *authenticationControllers) MobileLogin(ctx *gin.Context) {
+	var req authenticationEngineDtos.LoginRequest_dto
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		utils.Failure(ctx, http.StatusBadRequest, "Invalid Credentials", err)
 		return
 	}
 
-	res, err := s.IdSvc.LoginUser(ctx.Request.Context(), req)
+	res, err := s.authSvc.LoginUser(ctx.Request.Context(), req)
 	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
 		return

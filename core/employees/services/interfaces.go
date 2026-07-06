@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// This interface is used by sharpnrIdentity modules Employee will directly interact with the employee module through this interface.
+// This interface is used by authentication modules Employee will directly interact with the employee module through this interface.
 // This interface will have employee Ops which are used by the other module interact with the employee module.
 type EmployeesIdentityServiceInterface interface {
 
