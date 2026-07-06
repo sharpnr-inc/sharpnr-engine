@@ -1,13 +1,19 @@
 package kitchencontrollers
 
 import (
-	"fmt"
 	"io"
 	"net/http"
+	"time"
+
+	kitchen_contracts "sharpnr-engine/business_ops/hospitality/kitchen/contracts"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
 )
+
+// keepAliveInterval must stay below proxy/LB idle timeouts (nginx defaults
+// to 60s) or quiet streams get cut mid-connection.
+const keepAliveInterval = 20 * time.Second
 
 func (c *KitchenController) GetKots(ctx *gin.Context) {
 	// 1. Resolve Auth and KitchenID
@@ -21,39 +27,53 @@ func (c *KitchenController) GetKots(ctx *gin.Context) {
 		return
 	}
 
-	// 2. Subscribe using the EXACT same string format as the Service
-	// Since kitchenID is a UUID, we use .String() and %s
-	topic := fmt.Sprintf("kitchen_%s", kitchenID.String())
-	clientChan := c.sseEngine.Subscribe(topic)
+	// 2. Subscribe before the initial fetch so an update landing in between
+	// is caught by the subscription instead of lost.
+	sub := c.sseEngine.Subscribe(kitchen_contracts.KotsTopic(kitchenID))
+	defer sub.Close()
 
-	// 3. Clean up when the client leaves
-	defer c.sseEngine.Unsubscribe(topic, clientChan)
+	// 3. Immediate first load so the user sees their KOTs instantly. Failing
+	// here (before any stream bytes are written) still allows a proper HTTP
+	// error; the client's EventSource can react and reconnect.
+	initialData, err := c.kitchenService.GetKots(ctx.Request.Context(), kitchenID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		return
+	}
 
 	// 4. Set Headers for SSE
 	ctx.Header("Content-Type", "text/event-stream")
 	ctx.Header("Cache-Control", "no-cache")
 	ctx.Header("Connection", "keep-alive")
-	ctx.Header("Transfer-Encoding", "chunked")
+	// Stops nginx from buffering the stream; without it events sit in the
+	// proxy until its buffer fills.
+	ctx.Header("X-Accel-Buffering", "no")
 
-	// 5. Immediate First Load
-	// This ensures the user sees their KOTs instantly without waiting for an update
-	initialData, err := c.kitchenService.GetKots(ctx.Request.Context(), kitchenID)
-	if err == nil {
-		ctx.SSEvent("message", initialData)
-		ctx.Writer.Flush()
-	}
+	ctx.SSEvent("message", initialData)
+	ctx.Writer.Flush()
 
-	// 6. Real-time Stream
+	keepAlive := time.NewTicker(keepAliveInterval)
+	defer keepAlive.Stop()
+
+	// 5. Real-time Stream (gin flushes after every step)
 	ctx.Stream(func(w io.Writer) bool {
 		select {
 		case <-ctx.Request.Context().Done():
 			// Browser closed or connection lost
 			return false
 
-		case data := <-clientChan:
-			// Triggered by s.sseEngine.MessageChan in the Service
-			ctx.SSEvent("message", data)
-			ctx.Writer.Flush()
+		case ev, open := <-sub.C():
+			if !open {
+				// Engine shut down (server stopping)
+				return false
+			}
+			ctx.SSEvent("message", ev.Payload)
+			return true
+
+		case <-keepAlive.C:
+			// SSE comment: invisible to EventSource, keeps intermediaries
+			// from closing an idle connection.
+			io.WriteString(w, ": keepalive\n\n")
 			return true
 		}
 	})

@@ -2,10 +2,8 @@ package kitchenservices
 
 import (
 	"context"
-	"fmt"
 	kitchen_contracts "sharpnr-engine/business_ops/hospitality/kitchen/contracts"
 	kitchen_models "sharpnr-engine/business_ops/hospitality/kitchen/models"
-	sse_engine "sharpnr-engine/sse_engine"
 	"time"
 
 	"github.com/google/uuid"
@@ -84,23 +82,9 @@ func (s *kitchenService) CreateKOT(ctx context.Context, input kitchen_contracts.
 		}
 	}
 
-	go func() {
-		// Use a fresh context for the background broadcast
-		bgCtx := context.Background()
-
-		// Fetch the updated list for this specific kitchen
-		updatedKots, err := s.GetKots(bgCtx, input.KitchenID)
-		if err != nil {
-			return // Log error: failed to fetch updated KOTs for broadcast
-		}
-
-		// Push to the SSE Engine
-		// The topic must match what the controller subscribes to: "kitchen_<uuid>"
-		s.sseEngine.MessageChan <- sse_engine.Event{
-			Topic:   fmt.Sprintf("kitchen_%s", input.KitchenID.String()),
-			Payload: updatedKots,
-		}
-	}()
+	// Broadcast the updated list to SSE subscribers of this kitchen without
+	// delaying the API response.
+	go s.broadcastKots(input.KitchenID)
 
 	return nil
 }
