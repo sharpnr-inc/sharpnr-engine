@@ -59,3 +59,40 @@ func (s *sentinelService) ListGroups(ctx context.Context, orgID uuid.UUID) ([]se
 	}
 	return sentinelDtos.ToGroupViews(groups), nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *sentinelService) GetEmployeeGroups(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.GroupView, error) {
+
+	// Fetch all group assignments for the given employee
+	userGroups, err := s.repo.GetGroupsAssignedToUser(ctx, emplID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Initialize as an empty slice so it serializes to [] instead of null in JSON
+	result := make([]sentinelDtos.GroupView, 0)
+
+	for _, userGroup := range userGroups {
+		// Enforce tenant scoping by filtering by organization ID
+		if userGroup.OrganizationID == orgID {
+			groupDetails, err := s.repo.GetGroupByID(ctx, userGroup.GroupID)
+			if err != nil {
+				// Fail fast if a group cannot be fetched, or log and continue depending on requirements
+				return nil, err
+			}
+
+			// Map the sentinelengine_models.Group to sentinelDtos.GroupView
+			groupView := sentinelDtos.GroupView{
+				ID:            groupDetails.ID,
+				Name:          groupDetails.Name,
+				Description:   groupDetails.Description,
+				ParentGroupID: groupDetails.ParentGroupID, // Directly maps *uuid.UUID
+			}
+
+			result = append(result, groupView)
+		}
+	}
+
+	return result, nil
+}

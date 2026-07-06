@@ -23,6 +23,7 @@ type SentinelServiceInterface interface {
 
 	// GetEmployeeRole resolves the role assigned to an employee within an org.
 	GetEmployeeRole(ctx context.Context, orgID, emplID uuid.UUID) (sentinelDtos.RoleView, error)
+	GetEmployeeGroups(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.GroupView, error)
 
 	// GetPrincipals returns the policy builder's principal palette: the static
 	// Cedar entity types (User/Role/Group) plus the org's live roles and groups.

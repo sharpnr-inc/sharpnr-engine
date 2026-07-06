@@ -22,3 +22,4 @@ type UpdateSuperAdminEmployeeInput struct {
 	LastName       *string
 	SecondaryEmail *string
 }
+
