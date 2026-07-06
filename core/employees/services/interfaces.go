@@ -8,14 +8,14 @@ import (
 	"github.com/google/uuid"
 )
 
-type EmployeesGeneralServiceInterface interface {
+type EmployeeGeneralServiceInterface interface {
 	IsUserExists(ctx context.Context, employeeEmail string) (bool, error)
 }
 
 /* ---------------------------------- <***> --------------------------------- */
 
-type EmployeesSignUpServiceInterface interface {
-	EmployeesGeneralServiceInterface
+type EmployeeSignUpServiceInterface interface {
+	EmployeeGeneralServiceInterface
 	CreateDefaultSuperAdmin(ctx context.Context, orgId uuid.UUID, rootEmail string, hasPass string) (uuid.UUID, error)
 }
 
@@ -24,7 +24,7 @@ type EmployeesSignUpServiceInterface interface {
 // This interface is used by authentication modules Employee will directly interact with the employee module through this interface.
 // This interface will have employee Ops which are used by the other module interact with the employee module.
 type EmployeeAuthenticationServiceInterface interface {
-	EmployeesGeneralServiceInterface
+	EmployeeGeneralServiceInterface
 	AuthenticateEmployee(ctx context.Context, email string, pass string) (*coreEmployeeContracts.EmployeeReader, error)
 	GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*coreEmployeeContracts.EmployeeProfileOutput, error)
 	GetEmployeeDetails(ctx context.Context, orgID, emplID uuid.UUID) (*coreEmployeeContracts.EmployeeDetailsOutput, error)
@@ -33,10 +33,10 @@ type EmployeeAuthenticationServiceInterface interface {
 /* ---------------------------------- <***> --------------------------------- */
 
 // this is interface which will used by the HR module to interact with the employee module, this interface the have employee Ops used by the Org Hr
-type EmployeesHRServiceInterface interface {
+type EmployeeHRServiceInterface interface {
 
 	// General service which will used by the other module to interact with the employee module,
-	EmployeesGeneralServiceInterface
+	EmployeeGeneralServiceInterface
 	ListOrgAllEmployees(ctx context.Context, orgID, emplID uuid.UUID) ([]*coreEmployeeContracts.OrgEmployeeList, error)
 }
 
@@ -44,11 +44,11 @@ type EmployeesHRServiceInterface interface {
 
 type EmployeeIamEngineServiceInterface interface {
 	// this is General service which will used by the other module to interact with the employee module,
-	EmployeesGeneralServiceInterface
+	EmployeeGeneralServiceInterface
 	GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*coreEmployeeContracts.EmployeeProfileOutput, error)
 }
 
-type EmployeesOrchestratorService interface {
+type EmployeeOrchestratorServiceInterface interface {
 }
 
 type EmployeeSetupWizServiceInterface interface {

@@ -9,14 +9,14 @@ import (
 )
 
 type hrmsemployeeService struct {
-	employeeService coreEmployeeServices.EmployeesHRServiceInterface
+	employeeService coreEmployeeServices.EmployeeHRServiceInterface
 	seroEngine      *sero.SEROEngine
 	txManager       dbtx.TxManager
 	mailerEngine    *sharp_mailer_engine.SharpMailerEngine
 }
 
 func NewHRMSEmployeeService(
-	employeeService coreEmployeeServices.EmployeesHRServiceInterface,
+	employeeService coreEmployeeServices.EmployeeHRServiceInterface,
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,

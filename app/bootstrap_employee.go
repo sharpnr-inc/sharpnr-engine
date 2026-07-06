@@ -10,92 +10,27 @@ import (
 	"gorm.io/gorm"
 )
 
-func bootstrapEmployeeAuthentication(
+// bootstrapEmployeeServices wires a single core employee service instance and
+// exposes it to each consuming module through its own segregated interface,
+// so every consumer only sees the employee Ops it is allowed to call.
+func bootstrapEmployeeServices(
 	db *gorm.DB,
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-) coreEmployeeServices.EmployeeAuthenticationServiceInterface {
+) (
+	coreEmployeeServices.EmployeeAuthenticationServiceInterface,
+	coreEmployeeServices.EmployeeHRServiceInterface,
+	coreEmployeeServices.EmployeeIamEngineServiceInterface,
+	coreEmployeeServices.EmployeeSignUpServiceInterface,
+	coreEmployeeServices.EmployeeSetupWizServiceInterface,
+) {
 	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
-	return coreEmployeeServices.NewEmployeeService(
+	svc := coreEmployeeServices.NewEmployeeService(
 		employeeRepo,
 		seroEngine,
 		txManager,
 		mailerEngine,
 	)
-}
-
-func bootstrapEmployeeHR(
-	db *gorm.DB,
-	seroEngine *sero.SEROEngine,
-	txManager dbtx.TxManager,
-	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-) coreEmployeeServices.EmployeesHRServiceInterface {
-	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
-	return coreEmployeeServices.NewEmployeeService(
-		employeeRepo,
-		seroEngine,
-		txManager,
-		mailerEngine,
-	)
-}
-
-func bootstrapEmployeeIamEngineService(
-	db *gorm.DB,
-	seroEngine *sero.SEROEngine,
-	txManager dbtx.TxManager,
-	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-) coreEmployeeServices.EmployeeIamEngineServiceInterface {
-	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
-	return coreEmployeeServices.NewEmployeeService(
-		employeeRepo,
-		seroEngine,
-		txManager,
-		mailerEngine,
-	)
-}
-
-func bootstrapEmployeeSignUpService(
-	db *gorm.DB,
-	seroEngine *sero.SEROEngine,
-	txManager dbtx.TxManager,
-	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-) coreEmployeeServices.EmployeesSignUpServiceInterface {
-	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
-	return coreEmployeeServices.NewEmployeeService(
-		employeeRepo,
-		seroEngine,
-		txManager,
-		mailerEngine,
-	)
-}
-
-func bootstrapEmployeeOrchestratorService(
-	db *gorm.DB,
-	seroEngine *sero.SEROEngine,
-	txManager dbtx.TxManager,
-	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-) coreEmployeeServices.EmployeesOrchestratorService {
-	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
-	return coreEmployeeServices.NewEmployeeService(
-		employeeRepo,
-		seroEngine,
-		txManager,
-		mailerEngine,
-	)
-}
-
-func bootstrapEmployeeSetUpWizService(
-	db *gorm.DB,
-	seroEngine *sero.SEROEngine,
-	txManager dbtx.TxManager,
-	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-) coreEmployeeServices.EmployeeSetupWizServiceInterface {
-	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
-	return coreEmployeeServices.NewEmployeeService(
-		employeeRepo,
-		seroEngine,
-		txManager,
-		mailerEngine,
-	)
+	return svc, svc, svc, svc, svc
 }

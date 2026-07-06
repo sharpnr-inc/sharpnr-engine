@@ -37,7 +37,7 @@ type ModulesProvider interface {
 	AuthenticationService() authenticationEngineServices.AuthenticationServiceInterface
 
 	EmployeesAuthenticationService() coreEmployeeServices.EmployeeAuthenticationServiceInterface
-	EmployeesHRService() coreEmployeeServices.EmployeesHRServiceInterface
+	EmployeesHRService() coreEmployeeServices.EmployeeHRServiceInterface
 	HRMS() *hrmsengine.HRMSEngine
 	AccountingService() accounting_service.AccountingServiceInterface
 	SseEngine() *sse_engine.StreamManager

@@ -19,7 +19,7 @@ func bootstrapHRMSEngine(
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-	employeesHRService coreEmployeeServices.EmployeesHRServiceInterface,
+	employeesHRService coreEmployeeServices.EmployeeHRServiceInterface,
 ) *hrmsengine.HRMSEngine {
 
 	hrmsEmployeeService := hrmsEmployeeServices.NewHRMSEmployeeService(

@@ -33,7 +33,7 @@ type orchestratorService struct {
 	paymentsEngine          payment_engine_service.PaymentServiceInterface
 	inventoryEngine         inventory_engine_services.InventoryEngineServicesInterface
 	supplierService         suppliers_service.SupplierServiceInterface
-	employeeHRService       coreEmployeeServices.EmployeesHRServiceInterface
+	employeeHRService       coreEmployeeServices.EmployeeHRServiceInterface
 	sentinelService         sentinelservice.SentinelServiceInterface
 	sentinelAggregator      sentinelAggregatorService.SentinelAggregatorServiceInterface
 	sentinelEngine          sentinelEngine.SentinelEngineInterface
@@ -52,7 +52,7 @@ func NewSharpnrOrchestratorService(
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
 	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
-	employeeHRService coreEmployeeServices.EmployeesHRServiceInterface,
+	employeeHRService coreEmployeeServices.EmployeeHRServiceInterface,
 
 	sentinelService sentinelservice.SentinelServiceInterface,
 	sentinelAggregator sentinelAggregatorService.SentinelAggregatorServiceInterface,

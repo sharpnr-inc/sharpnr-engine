@@ -14,7 +14,6 @@ type EmployeeRepositoryInterface interface {
 	EmployeeVerificationRepositoryInterface
 	EmployeeOnboardingRepositoryInterface
 	EmployeeAuthenticationRepositoryInterface
-	EmployeeVerificationRepositoryInterface
 	EmployeeProfileRepositoryInterface
 	EmployeeEmploymentRepositoryInterface
 }
@@ -30,7 +29,7 @@ type EmployeeMainRepositoryInterface interface {
 	GetEmployeeByEmail(ctx context.Context, email string) (*coreEmployeeModels.Employee, error)
 	EmployeeExistsByEmail(ctx context.Context, email string) (bool, error)
 	ListEmployeesByOrg(ctx context.Context, orgID uuid.UUID) ([]*coreEmployeeModels.Employee, error)
-	UpdateEmployee(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, updates map[string]interface{}) error
+	UpdateEmployee(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, updates map[string]any) error
 }
 
 type EmployeeAuthenticationRepositoryInterface interface {

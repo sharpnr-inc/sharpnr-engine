@@ -46,12 +46,13 @@ func BootstrapModules(
 	inventory_engine_sero_handlers.RegisterSeroHandler(seroEngine, inventoryEngine)
 	/* ---------------------------- inventory engine ---------------------------- */
 
-	employeesAuthneticationService := bootstrapEmployeeAuthentication(db, seroEngine, txManager, mailerEngine)
-	employeesHRService := bootstrapEmployeeHR(db, seroEngine, txManager, mailerEngine)
-	employeesIamEngineService := bootstrapEmployeeIamEngineService(db, seroEngine, txManager, mailerEngine)
-	employeeSignUpService := bootstrapEmployeeSignUpService(db, seroEngine, txManager, mailerEngine)
-	// employeeOrchestratorService := bootstrapEmployeeOrchestratorService(db, seroEngine, txManager, mailerEngine)
-	employeeSetUpWizService := bootstrapEmployeeSetUpWizService(db, seroEngine, txManager, mailerEngine)
+	// One core employee service instance, handed to each consumer through its
+	// own segregated interface.
+	employeesAuthneticationService,
+		employeesHRService,
+		employeesIamEngineService,
+		employeeSignUpService,
+		employeeSetUpWizService := bootstrapEmployeeServices(db, seroEngine, txManager, mailerEngine)
 
 	/* ------------------------------- IAM engine ------------------------------- */
 	iamEngineService := bootstrapIamEngine(employeesIamEngineService)
