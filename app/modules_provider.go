@@ -11,6 +11,7 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
+	iamEngineService "sharpnr-engine/iam_engine/service"
 	sharpnr_identity_auth_services "sharpnr-engine/sharpnr_identity/services"
 	hrmsengine "sharpnr-engine/hrms_engine/engine"
 
@@ -45,4 +46,5 @@ type ModulesProvider interface {
 	PaymentEngineService() payment_engine_service.PaymentServiceInterface
 	UtilitiesApiService() utilitiesApi_service.UtilitiesAPIServiceInterface
 	AuditLogService() auditEngineService.AuditLogServiceInterface
+	IamEngineService() iamEngineService.IamEngineServiceInterface
 }

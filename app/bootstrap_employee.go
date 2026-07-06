@@ -39,3 +39,18 @@ func bootstrapEmployeeHR(
 		mailerEngine,
 	)
 }
+
+func bootstrapEmployeeIamEngineService(
+	db *gorm.DB,
+	seroEngine *sero.SEROEngine,
+	txManager dbtx.TxManager,
+	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
+) coreEmployeeServices.EmployeeIamEngineServiceInterface {
+	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
+	return coreEmployeeServices.NewEmployeeService(
+		employeeRepo,
+		seroEngine,
+		txManager,
+		mailerEngine,
+	)
+}

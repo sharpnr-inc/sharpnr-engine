@@ -12,6 +12,7 @@ import (
 	hospitality_orchestration_service "sharpnr-engine/business_ops/hospitality/orchestration/service"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
+	iamEngineService "sharpnr-engine/iam_engine/service"
 	sharpnr_identity_auth_services "sharpnr-engine/sharpnr_identity/services"
 	hrmsengine "sharpnr-engine/hrms_engine/engine"
 
@@ -46,6 +47,10 @@ type AppModules struct {
 
 	employeesIdentityService coreEmployeeServices.EmployeesIdentityServiceInterface
 	employeesHRService       coreEmployeeServices.EmployeesHRServiceInterface
+
+	// iamEngineService exposes identity & access management operations
+	// (profile, etc.) backed by the core employees module.
+	iamEngineService iamEngineService.IamEngineServiceInterface
 
 	// hrmsEngine aggregates all HRMS module services (employees, attendance,
 	// payroll, recruitment, ...) behind a single entry point for the HR routes.
@@ -139,4 +144,8 @@ func (m *AppModules) UtilitiesApiService() utilitiesApi_service.UtilitiesAPIServ
 
 func (m *AppModules) AuditLogService() auditEngineService.AuditLogServiceInterface {
 	return m.auditLogService
+}
+
+func (m *AppModules) IamEngineService() iamEngineService.IamEngineServiceInterface {
+	return m.iamEngineService
 }

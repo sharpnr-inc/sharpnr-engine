@@ -7,7 +7,7 @@ import (
 	"sharpnr-engine/app"
 	"sharpnr-engine/config"
 	org_signup "sharpnr-engine/core/org_signup"
-	sharpnrIdentity_routes "sharpnr-engine/sharpnr_identity/routes"
+	iamEngineRoutes "sharpnr-engine/iam_engine/routes"
 	"sharpnr-engine/meta"
 	"sharpnr-engine/middlewares"
 	mobile_middleware "sharpnr-engine/middlewares/mobile"
@@ -16,6 +16,7 @@ import (
 	"sharpnr-engine/pkg/cookieManager"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
+	sharpnrIdentity_routes "sharpnr-engine/sharpnr_identity/routes"
 	utilitiesApi_routes "sharpnr-engine/utilities_apis/routes"
 
 	"github.com/gin-gonic/gin"
@@ -96,6 +97,7 @@ func SetupRouter(
 
 		{
 			v1.RegisterModuleRoutes(protected, modules)
+			iamEngineRoutes.RegisterIamEngineRoutes(protected, cookies, modules)
 			orchestrator_routes.RegisterOrchestratorRoutes(protected, txManager, cookies, jwtmgr, modules)
 			sharpnrIdentity_routes.RegisterSharpnrIdentityProtectedWebRoutes(protected, cookies, jwtmgr, modules)
 			utilitiesApi_routes.UtilitesApiGeoRoutes(protected, modules)

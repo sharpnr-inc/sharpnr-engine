@@ -41,3 +41,9 @@ type EmployeesHRServiceInterface interface {
 type EmployeesGeneralServiceInterface interface {
 	IsUserExists(ctx context.Context, employeeEmail string) (bool, error)
 }
+
+type EmployeeIamEngineServiceInterface interface {
+	// this is General service which will used by the other module to interact with the employee module,
+	EmployeesGeneralServiceInterface
+	GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*coreEmployeeContracts.EmployeeProfileOutput, error)
+}
