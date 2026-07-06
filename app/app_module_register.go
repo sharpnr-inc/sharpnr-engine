@@ -2,6 +2,7 @@ package app
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
+	auditEngineService "sharpnr-engine/audit_log_engine/service"
 	org_customer_service "sharpnr-engine/core/customer/service"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
@@ -23,6 +24,10 @@ import (
 )
 
 type AppModules struct {
+
+	// auditLogService records every tenant event so the org has a full
+	// history of what happened. Injected into every other engine.
+	auditLogService auditEngineService.AuditLogServiceInterface
 
 	// This is the Organization service which includes both repo
 	// Redis and Main Pgsql DB
@@ -130,4 +135,8 @@ func (m *AppModules) PaymentEngineService() payment_engine_service.PaymentServic
 
 func (m *AppModules) UtilitiesApiService() utilitiesApi_service.UtilitiesAPIServiceInterface {
 	return m.utilitiesApiService
+}
+
+func (m *AppModules) AuditLogService() auditEngineService.AuditLogServiceInterface {
+	return m.auditLogService
 }

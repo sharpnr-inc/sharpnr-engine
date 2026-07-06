@@ -22,6 +22,10 @@ func BootstrapModules(
 	sseEngine *sse_engine.StreamManager,
 ) *AppModules {
 
+	// Audit log engine: records every tenant event. Bootstrapped first so it
+	// can be injected into every other engine as they are wired below.
+	auditLogService := bootstrapAuditLogEngine(db)
+
 	// Sentinel authorization engine: shared, concurrency-safe Cedar evaluator.
 	// Injected into the orchestrator for authorization decisions and into the
 	// authoring service as its cache invalidator.
@@ -130,6 +134,7 @@ func BootstrapModules(
 	utilitiesApiService := bootstrapUtilitiesApiService(db)
 
 	return &AppModules{
+		auditLogService:          auditLogService,
 		organizationService:      organizationService,
 		orgSignupService:         orgSignupService,
 		orgPropertyService:       orgPropertyService,

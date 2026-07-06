@@ -2,6 +2,7 @@ package app
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
+	auditEngineService "sharpnr-engine/audit_log_engine/service"
 	hospitality_orchestration_service "sharpnr-engine/business_ops/hospitality/orchestration/service"
 	org_customer_service "sharpnr-engine/core/customer/service"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
@@ -43,4 +44,5 @@ type ModulesProvider interface {
 	CustomerEngineService() org_customer_service.OrgCustomerServiceInterface
 	PaymentEngineService() payment_engine_service.PaymentServiceInterface
 	UtilitiesApiService() utilitiesApi_service.UtilitiesAPIServiceInterface
+	AuditLogService() auditEngineService.AuditLogServiceInterface
 }
