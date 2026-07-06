@@ -23,6 +23,7 @@ function renderSidebar() {
     <div class="tpl-item ${t.id === state.activeId ? "active" : ""}" data-id="${t.id}">
       <div class="tpl-dot"></div>
       <span class="tpl-name">${t.name}</span>
+      ${t.dirty ? `<span class="tpl-dirty" title="Unsaved changes">●</span>` : ""}
       <button class="tpl-del" data-del="${t.name}" title="Delete ${t.name}">×</button>
     </div>
   `,
@@ -36,6 +37,7 @@ function selectTemplate(id) {
   if (!tpl) return;
   renderSidebar();
   renderVarsPanel(tpl);
+  loadEditor(tpl);
   refreshPreview();
 }
 
@@ -69,6 +71,8 @@ function bindSidebarEvents() {
           document.getElementById("varsForm").innerHTML =
             `<div class="empty-state">Select a template to preview it.</div>`;
           document.getElementById("previewFrame").srcdoc = "";
+          document.getElementById("editorFrame").srcdoc = "";
+          loadEditor(null);
         }
         setStatus("deleted", "ok");
       } catch (err) {
