@@ -46,7 +46,7 @@ func BootstrapModules(
 	inventory_engine_sero_handlers.RegisterSeroHandler(seroEngine, inventoryEngine)
 	/* ---------------------------- inventory engine ---------------------------- */
 
-	employeesIdentityService := bootstrapEmployeeAuthentication(db, seroEngine, txManager, mailerEngine)
+	employeesAuthneticationService := bootstrapEmployeeAuthentication(db, seroEngine, txManager, mailerEngine)
 	employeesHRService := bootstrapEmployeeHR(db, seroEngine, txManager, mailerEngine)
 	employeesIamEngineService := bootstrapEmployeeIamEngineService(db, seroEngine, txManager, mailerEngine)
 	employeeSignUpService := bootstrapEmployeeSignUpService(db, seroEngine, txManager, mailerEngine)
@@ -64,7 +64,7 @@ func BootstrapModules(
 	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
 	orgSupplierService := bootstrapSupplier(db, txManager, mailerEngine, seroEngine)
 
-	authenticationService := bootstrapAuthentication(employeesIdentityService, organizationService, sentinelService)
+	authenticationService := bootstrapAuthentication(employeesAuthneticationService, organizationService, sentinelService)
 
 	orgSetupWizardService := bootstrapOrgSetupWizard(
 		db,
@@ -142,24 +142,24 @@ func BootstrapModules(
 	utilitiesApiService := bootstrapUtilitiesApiService(db)
 
 	return &AppModules{
-		auditLogService:          auditLogService,
-		organizationService:      organizationService,
-		orgSignupService:         orgSignupService,
-		orgPropertyService:       orgPropertyService,
-		orgLegalEntityService:    orgLegalEntityService,
-		employeesIdentityService: employeesIdentityService,
-		employeesHRService:       employeesHRService,
-		iamEngineService:         iamEngineService,
-		hrmsEngine:               hrmsEngine,
-		accountingService:        accountingService,
-		authenticationService:    authenticationService,
-		hospitality:              hospitality,
-		hospitalityOrchestration: hospitalityOrchestration,
-		orchestratorService:      orchestratorService,
-		orgSetupWizard:           orgSetupWizardService,
-		sseEngine:                sseEngine,
-		orgCustomerService:       orgCustomerService,
-		utilitiesApiService:      utilitiesApiService,
+		auditLogService:                auditLogService,
+		organizationService:            organizationService,
+		orgSignupService:               orgSignupService,
+		orgPropertyService:             orgPropertyService,
+		orgLegalEntityService:          orgLegalEntityService,
+		employeesAuthneticationService: employeesAuthneticationService,
+		employeesHRService:             employeesHRService,
+		iamEngineService:               iamEngineService,
+		hrmsEngine:                     hrmsEngine,
+		accountingService:              accountingService,
+		authenticationService:          authenticationService,
+		hospitality:                    hospitality,
+		hospitalityOrchestration:       hospitalityOrchestration,
+		orchestratorService:            orchestratorService,
+		orgSetupWizard:                 orgSetupWizardService,
+		sseEngine:                      sseEngine,
+		orgCustomerService:             orgCustomerService,
+		utilitiesApiService:            utilitiesApiService,
 	}
 
 }

@@ -45,8 +45,8 @@ type AppModules struct {
 	hospitality              *hospitalitydomain.HospitalityDomain
 	hospitalityOrchestration hospitality_orchestration_service.OrchestrationServiceInterface
 
-	employeesIdentityService coreEmployeeServices.EmployeeAuthenticationServiceInterface
-	employeesHRService       coreEmployeeServices.EmployeesHRServiceInterface
+	employeesAuthneticationService coreEmployeeServices.EmployeeAuthenticationServiceInterface
+	employeesHRService             coreEmployeeServices.EmployeesHRServiceInterface
 
 	// iamEngineService exposes identity & access management operations
 	// (profile, etc.) backed by the core employees module.
@@ -95,7 +95,7 @@ func (m *AppModules) AuthenticationService() authenticationEngineServices.Authen
 }
 
 func (m *AppModules) EmployeesIdentityService() coreEmployeeServices.EmployeeAuthenticationServiceInterface {
-	return m.employeesIdentityService
+	return m.employeesAuthneticationService
 }
 
 func (m *AppModules) EmployeesHRService() coreEmployeeServices.EmployeesHRServiceInterface {
