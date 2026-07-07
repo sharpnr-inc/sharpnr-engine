@@ -46,6 +46,7 @@ type EmployeeIamEngineServiceInterface interface {
 	// this is General service which will used by the other module to interact with the employee module,
 	EmployeeGeneralServiceInterface
 	GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*coreEmployeeContracts.EmployeeProfileOutput, error)
+	// GetEmployeeEmploymentDetails()
 }
 
 type EmployeeOrchestratorServiceInterface interface {
