@@ -54,14 +54,14 @@ func (EmployeeDocument) TableName() string {
 // -------------------------------
 type EmployeeBankAccount struct {
 	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
-	EmployeeID uuid.UUID `gorm:"type:uuid;uniqueIndex;not null"`
+	EmployeeID uuid.UUID `gorm:"type:uuid;index;not null"`
 
 	BankName      string `gorm:"type:varchar(100)"`
 	AccountNumber string `gorm:"type:varchar(50)"`
 	IFSC          string `gorm:"type:varchar(20)"`
 	UPI           string `gorm:"type:varchar(100)"`
 
-	IsPrimary bool `gorm:"default:true"`
+	IsPrimary bool `gorm:"default:false"`
 
 	CreatedAt time.Time
 }
