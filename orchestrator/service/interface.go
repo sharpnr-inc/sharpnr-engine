@@ -4,6 +4,7 @@ import (
 	"context"
 	org_customer_contracts "sharpnr-engine/core/customer/contracts"
 	org_customer_models "sharpnr-engine/core/customer/models"
+	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
@@ -69,6 +70,8 @@ type OrganizationOrchestrationInterface interface {
 
 type EmployeeOrchestrationInterface interface {
 	GetAllEmployeesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) ([]orchestrator_dtos.EmployeeOfOrganization, error)
+	GetEmployeeDetails(ctx context.Context, orgID, emplID uuid.UUID, requestEmplID uuid.UUID) (orchestrator_dtos.EmployeeDetailsResponseDto, error)
+	AddNewSuperAdmin(ctx context.Context, orgID, emplID uuid.UUID, request coreEmployeeContracts.AddNewSuperAdminInOrganizationRequestDto) error
 }
 
 /* ---------------------------------- <***> --------------------------------- */

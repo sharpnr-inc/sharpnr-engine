@@ -2,6 +2,7 @@ package orchestrator_service
 
 import (
 	"context"
+	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	sentinelservice "sharpnr-engine/sentinel/service"
@@ -63,4 +64,24 @@ func (s *employeeOrchestrator) GetAllEmployeesOfOrg(
 	}
 
 	return result, nil
+}
+
+/* -------------------------------------------------------------------------- */
+/*                            Add a New Super Admin                           */
+/* -------------------------------------------------------------------------- */
+
+func (c *employeeOrchestrator) AddNewSuperAdmin(
+	ctx context.Context,
+	orgID, emplID uuid.UUID,
+	request coreEmployeeContracts.AddNewSuperAdminInOrganizationRequestDto,
+) error {
+	return nil
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Employee Details                              */
+/* -------------------------------------------------------------------------- */
+
+func (c *employeeOrchestrator) GetEmployeeDetails(ctx context.Context, orgID, emplID uuid.UUID, requestEmplID uuid.UUID) (orchestrator_dtos.EmployeeDetailsResponseDto, error) {
+	panic("")
 }

@@ -65,3 +65,7 @@ func pathUUID(ctx *gin.Context, name string) (uuid.UUID, bool) {
 	}
 	return id, true
 }
+
+func (c *OrchestratorController) getEmployeeIDFromParams(ctx *gin.Context) (uuid.UUID, bool) {
+	panic("")
+}

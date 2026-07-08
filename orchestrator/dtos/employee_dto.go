@@ -19,3 +19,14 @@ type EmployeeOfOrganization struct {
 	Role     EmployeeRole                         `json:"role"`
 	Status   coreEmployeeConstants.EmployeeStatus `json:"status"`
 }
+
+type EmployeeDetailsResponseDto struct {
+	ID         uuid.UUID `json:"id"`
+	FirstName  string    `json:"firstName"`
+	LastName   string    `json:"lastName"`
+	Department *string   `json:"department,omitempty"`
+	CostCenter *string   `json:"costCenter,omitempty"`
+	Role       *string   `json:"role,omitempty"`
+	Status     string    `json:"status"`
+	// further details will be added here this is just temporary
+}

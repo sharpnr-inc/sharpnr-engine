@@ -22,3 +22,9 @@ type UpdateSuperAdminEmployeeInput struct {
 	LastName       *string
 	SecondaryEmail *string
 }
+
+type AddNewSuperAdminInOrganizationRequestDto struct {
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
+}
