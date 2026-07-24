@@ -2,6 +2,7 @@ package app
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
+	auditEngineService "sharpnr-engine/audit_log_engine/service"
 	hospitality_orchestration_service "sharpnr-engine/business_ops/hospitality/orchestration/service"
 	org_customer_service "sharpnr-engine/core/customer/service"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
@@ -40,6 +41,7 @@ func bootstrapSharpnrOrchestrator(
 	sentinelService sentinelservice.SentinelServiceInterface,
 	sentinelAggregator sentinelAggregatorService.SentinelAggregatorServiceInterface,
 	sentinelAuthzEngine sentinelEngine.SentinelEngineInterface,
+	auditLogService auditEngineService.AuditLogServiceInterface,
 ) orchestrator_service.OrchestratorServiceInterface {
 	return orchestrator_service.NewSharpnrOrchestratorService(
 		organizationService,
@@ -59,6 +61,7 @@ func bootstrapSharpnrOrchestrator(
 		sentinelService,
 		sentinelAggregator,
 		sentinelAuthzEngine,
+		auditLogService,
 	)
 }
 

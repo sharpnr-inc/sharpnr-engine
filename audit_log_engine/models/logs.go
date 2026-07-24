@@ -20,11 +20,13 @@ type AuditLog struct {
 	ID             uuid.UUID
 	OrganizationID uuid.UUID // tenant scope — every event belongs to an org
 
-	ActorID   *uuid.UUID // employee who performed the action; nil for system events
-	ActorType string     // ActorTypeEmployee | ActorTypeSystem
+	ActorID        *uuid.UUID // employee who performed the action; nil for system events
+	ActorType      string
+	ActorIPAddress string
 
-	Module string // engine/module that emitted the event: "hrms", "customers", "payments", ...
-	Action string // dot-notation event name: "customer.created", "employee.updated", ...
+	Module       string // engine/module that emitted the event: "hrms", "customers", "payments", ...
+	Action       string // dot-notation event name: "customer.created", "employee.updated", ...
+	ActionStatus string
 
 	ResourceType string     // entity the event is about: "customer", "employee", ...
 	ResourceID   *uuid.UUID // id of that entity, when applicable

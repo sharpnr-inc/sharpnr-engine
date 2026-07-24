@@ -139,6 +139,7 @@ func BootstrapModules(
 		sentinelService,
 		sentinelAggregator,
 		sentinelAuthzEngine,
+		auditLogService,
 	)
 
 	utilitiesApiService := bootstrapUtilitiesApiService(db)

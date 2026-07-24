@@ -2,6 +2,7 @@ package orchestrator_service
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
+	auditEngineService "sharpnr-engine/audit_log_engine/service"
 	org_customer_service "sharpnr-engine/core/customer/service"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
@@ -33,6 +34,7 @@ type orchestratorService struct {
 	*inventoryOrchestrator
 	*employeeOrchestrator
 	*sentinelOrchestrator
+	*auditOrchestraterService
 
 	// Parked: wired at bootstrap but not consumed by any flow yet. Move onto
 	// the owning domain orchestrator when the first flow lands.
@@ -58,6 +60,7 @@ func NewSharpnrOrchestratorService(
 	sentinelService sentinelservice.SentinelServiceInterface,
 	sentinelAggregator sentinelAggregatorService.SentinelAggregatorServiceInterface,
 	sentinelAuthzEngine sentinelEngine.SentinelEngineInterface,
+	auditLogEngineService auditEngineService.AuditLogServiceInterface,
 ) *orchestratorService {
 
 	// One guard shared by every domain orchestrator (rule 1 in doc.go).
@@ -107,6 +110,10 @@ func NewSharpnrOrchestratorService(
 			guard:              guard,
 			sentinelService:    sentinelService,
 			sentinelAggregator: sentinelAggregator,
+		},
+
+		auditOrchestraterService: &auditOrchestraterService{
+			auditLogService: auditLogEngineService,
 		},
 
 		seroEngine: seroEngine,
