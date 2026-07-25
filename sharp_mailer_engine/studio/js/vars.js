@@ -91,21 +91,28 @@ function renderVarsPanel(tpl) {
     return;
   }
 
-  // Initialise defaults for this template if first visit
+  // Initialise defaults — also fills keys added later via the editor
   if (!state.varData) state.varData = {};
-  if (!state.varData[tpl.id]) {
-    state.varData[tpl.id] = {};
-    keys.forEach((key) => {
+  if (!state.varData[tpl.id]) state.varData[tpl.id] = {};
+  keys.forEach((key) => {
+    if (state.varData[tpl.id][key] === undefined) {
       state.varData[tpl.id][key] = FIELD_DEFAULTS[key] ?? `Sample ${key}`;
-    });
-  }
+    }
+  });
 
   const data = state.varData[tpl.id];
+
+  // A field wrapped in {{if .Key}} in this template is optional,
+  // in addition to the known optional names above.
+  const ifKeys = new Set();
+  const ifRe = /\{\{if \.(\w+)\}\}/g;
+  let im;
+  while ((im = ifRe.exec(tpl.content)) !== null) ifKeys.add(im[1]);
 
   form.innerHTML = keys
     .map((key) => {
       const val = String(data[key] ?? "");
-      const optional = OPTIONAL_FIELDS.has(key);
+      const optional = OPTIONAL_FIELDS.has(key) || ifKeys.has(key);
       const optLabel = optional ? ` <span class="opt">(optional)</span>` : "";
 
       if (TEXTAREA_FIELDS.has(key)) {

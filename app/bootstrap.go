@@ -22,11 +22,23 @@ func BootstrapModules(
 	sseEngine *sse_engine.StreamManager,
 ) *AppModules {
 
-	// Sentinel Engine uses the DB and used to Evaluate the authorization
-	// sentinel_engine := bootStrapSentinelEngine(db)
+	// Audit log engine: records every tenant event. Bootstrapped first so it
+	// can be injected into every other engine as they are wired below.
+	auditLogService := bootstrapAuditLogEngine(db)
+
+	// Sentinel authorization engine: shared, concurrency-safe Cedar evaluator.
+	// Injected into the orchestrator for authorization decisions and into the
+	// authoring service as its cache invalidator.
+	sentinelAuthzEngine := bootstrapSentinelEngine(db)
+
+	// Sentinel authoring service: policy/role/group CRUD + attach/detach.
+	sentinelService := bootstrapSentinel(db, txManager, sentinelAuthzEngine)
 
 	organizationService := bootstrapOrganization(db, redis, mailerEngine, txManager)
-	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine)
+	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine, sentinelAuthzEngine)
+
+	// Resources aggregator: every module's mod_resources, for the FE policy builder.
+	sentinelAggregator := bootstrapSentinelAggregator(orgPropertyService, sentinelService)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
 
 	/* ---------------------------- inventory engine ---------------------------- */
@@ -34,20 +46,33 @@ func BootstrapModules(
 	inventory_engine_sero_handlers.RegisterSeroHandler(seroEngine, inventoryEngine)
 	/* ---------------------------- inventory engine ---------------------------- */
 
-	employeesIdentityService := bootstrapEmployeeIdentity(db, seroEngine, txManager, mailerEngine)
-	employeesHRService := bootstrapEmployeeHR(db, seroEngine, txManager, mailerEngine)
+	// One core employee service instance, handed to each consumer through its
+	// own segregated interface.
+	employeesAuthneticationService,
+		employeesHRService,
+		employeesIamEngineService,
+		employeeSignUpService,
+		employeeSetUpWizService, employeeOrchestratorService := bootstrapEmployeeServices(db, seroEngine, txManager, mailerEngine, sentinelService, sentinelAuthzEngine)
+
+	/* ------------------------------- IAM engine ------------------------------- */
+	iamEngineService := bootstrapIamEngine(employeesIamEngineService)
+	/* ------------------------------- IAM engine ------------------------------- */
+
+	/* ------------------------------ HRMS engine ------------------------------ */
+	hrmsEngine := bootstrapHRMSEngine(db, seroEngine, txManager, mailerEngine, employeesHRService)
+	/* ------------------------------ HRMS engine ------------------------------ */
 
 	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
 	orgSupplierService := bootstrapSupplier(db, txManager, mailerEngine, seroEngine)
 
-	identityService := bootstrapIdentity(employeesIdentityService, organizationService)
+	authenticationService := bootstrapAuthentication(employeesAuthneticationService, organizationService, sentinelService)
 
 	orgSetupWizardService := bootstrapOrgSetupWizard(
 		db,
 		orgLegalEntityService,
 		orgPropertyService,
 		organizationService,
-		identityService,
+		employeeSetUpWizService,
 		txManager,
 		mailerEngine,
 	)
@@ -55,9 +80,10 @@ func BootstrapModules(
 	orgSignupService := bootstrapOrgSignup(
 		txManager,
 		mailerEngine,
-		employeesIdentityService,
+		employeeSignUpService,
 		organizationService,
 		orgSetupWizardService,
+		sentinelService,
 	)
 
 	paymentsEngine := bootstrapPaymentEngine(db, mailerEngine, txManager, seroEngine)
@@ -108,25 +134,35 @@ func BootstrapModules(
 		paymentsEngine,
 		inventoryEngine,
 		orgSupplierService,
+		employeesHRService,
+		employeeOrchestratorService,
+		sentinelService,
+		sentinelAggregator,
+		sentinelAuthzEngine,
+		auditLogService,
 	)
 
+	utilitiesApiService := bootstrapUtilitiesApiService(db)
+
 	return &AppModules{
-		organizationService:   organizationService,
-		orgSignupService:      orgSignupService,
-		orgPropertyService:    orgPropertyService,
-		orgLegalEntityService: orgLegalEntityService,
-
-		employeesIdentityService: employeesIdentityService,
-		employeesHRService:       employeesHRService,
-
-		accountingService:        accountingService,
-		sharpAuthService:         identityService,
-		hospitality:              hospitality,
-		hospitalityOrchestration: hospitalityOrchestration,
-		orchestratorService:      orchestratorService,
-		orgSetupWizard:           orgSetupWizardService,
-		sseEngine:                sseEngine,
-		orgCustomerService:       orgCustomerService,
+		auditLogService:                auditLogService,
+		organizationService:            organizationService,
+		orgSignupService:               orgSignupService,
+		orgPropertyService:             orgPropertyService,
+		orgLegalEntityService:          orgLegalEntityService,
+		employeesAuthneticationService: employeesAuthneticationService,
+		employeesHRService:             employeesHRService,
+		iamEngineService:               iamEngineService,
+		hrmsEngine:                     hrmsEngine,
+		accountingService:              accountingService,
+		authenticationService:          authenticationService,
+		hospitality:                    hospitality,
+		hospitalityOrchestration:       hospitalityOrchestration,
+		orchestratorService:            orchestratorService,
+		orgSetupWizard:                 orgSetupWizardService,
+		sseEngine:                      sseEngine,
+		orgCustomerService:             orgCustomerService,
+		utilitiesApiService:            utilitiesApiService,
 	}
 
 }

@@ -1,0 +1,12 @@
+-- ============================================================
+-- (no-op) Sentinel "Full Access" policy — now seeded in application code.
+--
+-- This migration originally seeded a system "Full Access" managed policy. With
+-- managed policies abandoned (see 000031), the owner's full-access grant is
+-- seeded per-org at provisioning by the Sentinel service
+-- (default_policies.OwnerPolcy is written into sentinel_engine.sentinel_policies),
+-- not by a migration.
+--
+-- Left intentionally empty to preserve the migration version sequence (never
+-- released).
+-- ============================================================

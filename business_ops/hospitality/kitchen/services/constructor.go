@@ -5,6 +5,7 @@ import (
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
 	sse_engine "sharpnr-engine/sse_engine"
+	"sync"
 )
 
 type kitchenService struct {
@@ -12,6 +13,10 @@ type kitchenService struct {
 	seroEngine  *sero.SEROEngine
 	sseEngine   *sse_engine.StreamManager
 	txManager   dbtx.TxManager
+
+	// Per-kitchen locks (uuid.UUID -> *sync.Mutex) serializing SSE
+	// broadcasts; see broadcastKots.
+	kotBroadcastLocks sync.Map
 }
 
 func NewKitchenService(

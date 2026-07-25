@@ -2,26 +2,47 @@
    layout.js — template rendering helpers
 ══════════════════════════════════════════════════ */
 
-/* ── Extract {{define "content"}}…{{end}} block from a raw Go template file ── */
+/* ── Extract the {{define "content"}}…{{end}} block from a raw Go template file ──
+   The closing {{end}} must be matched by depth, not by the first occurrence:
+   content blocks routinely contain their own {{if}}…{{end}} pairs, and a
+   non-greedy match would truncate everything after the first inner {{end}}
+   (which then gets written back to disk on save — data loss). ── */
 function extractContent(raw) {
-  const m = raw.match(/\{\{define\s+"content"\}\}([\s\S]*?)\{\{end\}\}/);
-  return m ? m[1].trim() : raw.trim();
+  const def = /\{\{define\s+"content"\}\}/.exec(raw);
+  if (!def) return raw.trim();
+
+  const start = def.index + def[0].length;
+  const tokenRe = /\{\{-?\s*(if|range|with|block|define|end)\b[^{}]*\}\}/g;
+  tokenRe.lastIndex = start;
+
+  let depth = 0;
+  let tok;
+  while ((tok = tokenRe.exec(raw)) !== null) {
+    if (tok[1] === "end") {
+      if (depth === 0) return raw.slice(start, tok.index).trim();
+      depth--;
+    } else {
+      depth++;
+    }
+  }
+  return raw.slice(start).trim();
 }
 
 /* ── Client-side Go template renderer (preview only, not for production) ──
    Handles:
      {{.Key}}
      {{if .Key}}…{{end}}
+     {{if .Key}}…{{else}}…{{end}}
 ── */
 function renderGoTemplate(content, data) {
   let out = content;
 
-  // {{if .Key}}...{{end}}
+  // {{if .Key}}...{{else}}...{{end}}  (else block optional)
   out = out.replace(
-    /\{\{if \.(\w+)\}\}([\s\S]*?)\{\{end\}\}/g,
-    (_, key, inner) => {
+    /\{\{if \.(\w+)\}\}([\s\S]*?)(?:\{\{else\}\}([\s\S]*?))?\{\{end\}\}/g,
+    (_, key, ifBlock, elseBlock = "") => {
       const val = data[key];
-      return val && String(val).trim() ? inner : "";
+      return val && String(val).trim() ? ifBlock : elseBlock;
     },
   );
 

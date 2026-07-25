@@ -5,9 +5,11 @@ import (
 	v1 "sharpnr-engine/api/v1"
 	"sharpnr-engine/api/v1mobile"
 	"sharpnr-engine/app"
+	authenticationEngineRoutes "sharpnr-engine/authentication/routes"
 	"sharpnr-engine/config"
 	org_signup "sharpnr-engine/core/org_signup"
-	sharpnrIdentity_routes "sharpnr-engine/core/sharpnr_identity/routes"
+	iamEngineRoutes "sharpnr-engine/iam_engine/routes"
+	"sharpnr-engine/meta"
 	"sharpnr-engine/middlewares"
 	mobile_middleware "sharpnr-engine/middlewares/mobile"
 	webMiddleware "sharpnr-engine/middlewares/web"
@@ -15,7 +17,7 @@ import (
 	"sharpnr-engine/pkg/cookieManager"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
-	"sharpnr-engine/meta"
+	utilitiesApi_routes "sharpnr-engine/utilities_apis/routes"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -85,7 +87,7 @@ func SetupRouter(
 	{
 		org_signup.OrgSignUpRoute(webV1, cookies, jwtmgr, modules)
 
-		sharpnrIdentity_routes.RegisterSharpnrIdentityWebRoutes(webV1, cookies, jwtmgr, modules)
+		authenticationEngineRoutes.RegisterAuthenticationWebRoutes(webV1, cookies, jwtmgr, modules)
 
 		protected := webV1.Group("/")
 		protected.Use(
@@ -95,8 +97,10 @@ func SetupRouter(
 
 		{
 			v1.RegisterModuleRoutes(protected, modules)
-			orchestrator_routes.RegisterOrchestratorRoutes(protected, txManager, cookies, jwtmgr, modules)
-			sharpnrIdentity_routes.RegisterSharpnrIdentityProtectedWebRoutes(protected, cookies, jwtmgr, modules)
+			iamEngineRoutes.RegisterIamEngineRoutes(protected, cookies, modules)
+			orchestrator_routes.RegisterOrchestratorRoutes(protected, modules)
+			authenticationEngineRoutes.RegisterAuthenticationProtectedWebRoutes(protected, cookies, jwtmgr, modules)
+			utilitiesApi_routes.UtilitesApiGeoRoutes(protected, modules)
 		}
 	}
 
@@ -106,7 +110,7 @@ func SetupRouter(
 	mobileV1 := router.Group("/api/v1/mobile")
 	{
 		// Unprotected routes for the Login
-		sharpnrIdentity_routes.RegisterSharpnrIdentityMobileRoutes(mobileV1, jwtmgr, modules, cookies)
+		authenticationEngineRoutes.RegisterAuthenticationMobileRoutes(mobileV1, jwtmgr, modules, cookies)
 		protected_mobile_routes := mobileV1.Group("/")
 
 		// these are mobile routes for the other user
@@ -114,9 +118,9 @@ func SetupRouter(
 			mobile_middleware.MobileMiddleware(jwtmgr),
 		)
 
-		orchestrator_routes.RegisterOrchestratorRoutes(protected_mobile_routes, txManager, cookies, jwtmgr, modules)
+		orchestrator_routes.RegisterOrchestratorRoutes(protected_mobile_routes, modules)
 		v1mobile.RegisterMobilesModulesRoutes(protected_mobile_routes, modules)
-		sharpnrIdentity_routes.RegisterIdentityProtectedMobileRoutes(protected_mobile_routes, modules, cookies, jwtmgr)
+		authenticationEngineRoutes.RegisterAuthenticationProtectedMobileRoutes(protected_mobile_routes, modules, cookies, jwtmgr)
 
 	}
 

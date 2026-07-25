@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sharpnr — Mail Studio</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Crect width='1024' height='1024' rx='180' fill='%230a0a2e'/%3E%3Cpath fill='white' d='M 512 180 L 740 720 L 640 720 L 600 653 L 424 653 L 384 720 L 284 720 Z'/%3E%3C/svg%3E"
+    />
     <link rel="stylesheet" href="mail_studio.css" />
   </head>
   <body>
@@ -84,8 +88,12 @@
           <div class="preview-toolbar">
             <div class="preview-tabs">
               <button class="ptab active" data-tab="preview">preview</button>
+              <button class="ptab" data-tab="edit">edit</button>
               <button class="ptab" data-tab="source">html source</button>
-              <button class="ptab" data-tab="gotpl">go template</button>
+            </div>
+            <div class="preview-actions" id="viewportToggle">
+              <button class="vp-btn active" data-vp="desktop" title="Desktop width (560px)">desktop</button>
+              <button class="vp-btn" data-vp="mobile" title="Mobile width (375px)">mobile</button>
             </div>
           </div>
 
@@ -98,14 +106,28 @@
             ></iframe>
           </div>
 
+          <!-- Editor: Go template content on the left, live preview on the right -->
+          <div class="editor-split hidden" id="editWrap">
+            <div class="editor-pane">
+              <textarea
+                id="editorArea"
+                spellcheck="false"
+                autocomplete="off"
+                placeholder="Select a template to edit its content block…"
+              ></textarea>
+            </div>
+            <div class="editor-preview-pane">
+              <iframe
+                id="editorFrame"
+                sandbox="allow-same-origin"
+                title="Live preview"
+              ></iframe>
+            </div>
+          </div>
+
           <!-- Rendered HTML source -->
           <div class="preview-wrap hidden" id="sourceWrap">
             <pre id="sourceView"></pre>
-          </div>
-
-          <!-- Raw Go template source -->
-          <div class="preview-wrap hidden" id="gotplWrap">
-            <pre id="gotplView"></pre>
           </div>
         </section>
       </div>
@@ -165,6 +187,7 @@
     <script src="js/vars.js"></script>
     <script src="js/sidebar.js"></script>
     <script src="js/preview.js"></script>
+    <script src="js/editor.js"></script>
     <script src="js/modal.js"></script>
     <script src="js/main.js"></script>
   </body>

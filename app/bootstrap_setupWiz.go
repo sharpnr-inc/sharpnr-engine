@@ -1,12 +1,12 @@
 package app
 
 import (
+	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_repos "sharpnr-engine/core/org_setup_wizard/repos"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	organization_services "sharpnr-engine/core/organization/services"
-	sharpnr_identity_auth_services "sharpnr-engine/core/sharpnr_identity/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
@@ -18,7 +18,7 @@ func bootstrapOrgSetupWizard(
 	orgLegalEntitySvc legal_entity_service.OrgLegalEntityServiceInterface,
 	orgPropertySvc org_property_services.OrganizationPropertyServicesInterfaces,
 	orgService organization_services.OrganizationServiceInterface,
-	sharpIdentity sharpnr_identity_auth_services.SharpnrIdentityAuthServiceInterface,
+	coreEmployeeService coreEmployeeServices.EmployeeSetupWizServiceInterface,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 ) org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface {
@@ -28,7 +28,7 @@ func bootstrapOrgSetupWizard(
 		orgLegalEntitySvc,
 		orgPropertySvc,
 		orgService,
-		sharpIdentity,
+		coreEmployeeService,
 		txManager,
 		mailerEngine,
 	)

@@ -5,14 +5,21 @@ import (
 	dbtx "sharpnr-engine/pkg/dbTx"
 	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
 	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
+	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
+// inventoryOrchestrator implements InventoryOrchestratorServiceInterface.
+type inventoryOrchestrator struct {
+	txManager       dbtx.TxManager
+	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface
+}
+
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *inventory_dtos.NewInventoryAccountRequestDto) error {
+func (s *inventoryOrchestrator) AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *inventory_dtos.NewInventoryAccountRequestDto) error {
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
@@ -28,7 +35,7 @@ func (s *orchestratorService) AddNewInventoryAccount(ctx context.Context, orgID,
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error) {
+func (s *inventoryOrchestrator) ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error) {
 	var results []inventory_engine_models.InventoryAccount
 
 	// Wrapping in a transaction ensures read consistency across the request
@@ -55,7 +62,7 @@ func (s *orchestratorService) ListAllInventoryAccount(ctx context.Context, orgID
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]inventory_engine_models.Inventory, error) {
+func (s *inventoryOrchestrator) GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]inventory_engine_models.Inventory, error) {
 	var inventoryList []inventory_engine_models.Inventory
 
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {

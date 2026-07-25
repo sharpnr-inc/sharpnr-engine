@@ -3,15 +3,22 @@ package orchestrator_service
 import (
 	"context"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
+	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
+// paymentsOrchestrator implements PaymentOrchestratorServiceInterface.
+type paymentsOrchestrator struct {
+	txManager      dbtx.TxManager
+	paymentsEngine payment_engine_service.PaymentServiceInterface
+}
+
 /* ---------------------------------- <***> --------------------------------- */
 
-func (c *orchestratorService) AddPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req payment_engine_contracts.CreatePaymentAccountRequest) error {
+func (c *paymentsOrchestrator) AddPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req payment_engine_contracts.CreatePaymentAccountRequest) error {
 
 	return c.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 
@@ -27,7 +34,7 @@ func (c *orchestratorService) AddPaymentAccount(ctx context.Context, orgID uuid.
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (c *orchestratorService) GetAllPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]payment_engine_contracts.PaymentAccountResponseDto, error) {
+func (c *paymentsOrchestrator) GetAllPaymentAccount(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID) ([]payment_engine_contracts.PaymentAccountResponseDto, error) {
 	var results []payment_engine_contracts.PaymentAccountResponseDto
 
 	err := c.txManager.WithTx(ctx, func(tx *gorm.DB) error {
@@ -63,7 +70,7 @@ func (c *orchestratorService) GetAllPaymentAccount(ctx context.Context, orgID uu
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) AddGatewayConfigInPaymentAccount(
+func (s *paymentsOrchestrator) AddGatewayConfigInPaymentAccount(
 	ctx context.Context,
 	orgID, emplID uuid.UUID,
 	req payment_engine_contracts.AddGatewayConfigRequest,
@@ -82,7 +89,7 @@ func (s *orchestratorService) AddGatewayConfigInPaymentAccount(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) GetPaymentAccountDetails(
+func (s *paymentsOrchestrator) GetPaymentAccountDetails(
 	ctx context.Context,
 	orgID uuid.UUID,
 	emplID uuid.UUID,

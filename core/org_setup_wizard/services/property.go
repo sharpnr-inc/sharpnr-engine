@@ -29,6 +29,7 @@ func (s *orgSetupWizardService) Step_two_AddProperty(ctx context.Context, orgID,
 
 		mappedData := org_property_contracts.CreateOrgPropertyInput{
 			OrgID:       input.OrgID,
+			UserID:      emplID,
 			Name:        input.Name,
 			Code:        input.PropertyCode,
 			AddressLine: input.AddressLine,

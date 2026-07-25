@@ -1,41 +1,43 @@
 package app
 
 import (
+	coreEmployeeRepo "sharpnr-engine/core/employees/repo"
+	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
+	sentinelservice "sharpnr-engine/sentinel/service"
+	sentinelEngine "sharpnr-engine/sentinel_engine"
 	"sharpnr-engine/sero"
-	employee_repo "sharpnr-engine/sharp_hrms_engine/employees/repo"
-	employee_services "sharpnr-engine/sharp_hrms_engine/employees/services"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 
 	"gorm.io/gorm"
 )
 
-func bootstrapEmployeeIdentity(
+// bootstrapEmployeeServices wires a single core employee service instance and
+// exposes it to each consuming module through its own segregated interface,
+// so every consumer only sees the employee Ops it is allowed to call.
+func bootstrapEmployeeServices(
 	db *gorm.DB,
 	seroEngine *sero.SEROEngine,
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-) employee_services.EmployeesIdentityServiceInterface {
-	employeeRepo := employee_repo.NewEmployeeRepository(db)
-	return employee_services.NewEmployeeService(
+	sentinelService sentinelservice.SentinelServiceInterface,
+	sentinelAuthzEngine sentinelEngine.SentinelEngineInterface,
+) (
+	coreEmployeeServices.EmployeeAuthenticationServiceInterface,
+	coreEmployeeServices.EmployeeHRServiceInterface,
+	coreEmployeeServices.EmployeeIamEngineServiceInterface,
+	coreEmployeeServices.EmployeeSignUpServiceInterface,
+	coreEmployeeServices.EmployeeSetupWizServiceInterface,
+	coreEmployeeServices.EmployeeOrchestratorServiceInterface,
+) {
+	employeeRepo := coreEmployeeRepo.NewEmployeeRepository(db)
+	svc := coreEmployeeServices.NewEmployeeService(
 		employeeRepo,
 		seroEngine,
 		txManager,
 		mailerEngine,
+		sentinelService,
+		sentinelAuthzEngine,
 	)
-}
-
-func bootstrapEmployeeHR(
-	db *gorm.DB,
-	seroEngine *sero.SEROEngine,
-	txManager dbtx.TxManager,
-	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
-) employee_services.EmployeesHRServiceInterface {
-	employeeRepo := employee_repo.NewEmployeeRepository(db)
-	return employee_services.NewEmployeeService(
-		employeeRepo,
-		seroEngine,
-		txManager,
-		mailerEngine,
-	)
+	return svc, svc, svc, svc, svc, svc
 }

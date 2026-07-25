@@ -2,25 +2,46 @@ package orchestrator_service
 
 import (
 	"context"
-	"errors"
 	"fmt"
+
+	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
+	bar_contracts "sharpnr-engine/business_ops/hospitality/bar/contracts"
+	hotel_contracts "sharpnr-engine/business_ops/hospitality/hotel/contracts"
+	kitchen_contracts "sharpnr-engine/business_ops/hospitality/kitchen/contracts"
+	restaurant_contracts "sharpnr-engine/business_ops/hospitality/restaurant/contracts"
+	hospitality_utilities "sharpnr-engine/business_ops/hospitality/utilities"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
+	orgPropertyResources "sharpnr-engine/core/org_property/mod_resources"
+	org_property_services "sharpnr-engine/core/org_property/services"
+	organization_services "sharpnr-engine/core/organization/services"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	"sharpnr-engine/shared/utils"
-	"sync"
 
 	"github.com/google/uuid"
-	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 )
 
+// Property flows are guarded by the Sentinel engine. Action and resource-type
+// ids come from the org-property module's mod_resources so checks and the
+// policy-builder palette can never drift apart.
+
+// propertyOrchestrator implements OrganizationPropertyOrchestrationInterface:
+// property CRUD plus attaching business/infra modules to a property.
+type propertyOrchestrator struct {
+	guard                *authzGuard
+	txManager            dbtx.TxManager
+	orgPropertyService   org_property_services.OrganizationPropertyServicesInterfaces
+	organizationService  organization_services.OrganizationServiceInterface
+	hospitalityDomainSvc *hospitalitydomain.HospitalityDomain
+}
+
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error) {
+func (s *propertyOrchestrator) GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error) {
 
-	// make sure to verify the organization status and its exists
-	// emplID can be checked user have the access for the fetching the data
+	if err := s.guard.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, ""); err != nil {
+		return nil, err
+	}
 
 	res, err := s.orgPropertyService.GetPropertiesOfOrg(ctx, orgID)
 	if err != nil {
@@ -48,7 +69,11 @@ func (s *orchestratorService) GetAllPropertiesOfOrg(ctx context.Context, orgID, 
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (c *orchestratorService) GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error) {
+func (c *propertyOrchestrator) GetPropertyDetail(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error) {
+
+	if err := c.guard.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+		return nil, err
+	}
 
 	propDetail, err := c.orgPropertyService.GetPropertyDetailsByID(ctx, orgID, propertyID)
 	if err != nil {
@@ -65,402 +90,22 @@ func (c *orchestratorService) GetPropertyDetail(ctx context.Context, orgID, prop
 		Country:     propDetail.Country,
 	}
 
-	err = c.enrichHospitalityData(ctx, orgID, propertyID, response)
-	if err != nil {
-		return nil, err
-	}
-
 	return response, nil
 }
 
-func (c *orchestratorService) enrichHospitalityData(
-	ctx context.Context,
-	orgID, propertyID uuid.UUID,
-	res *orchestrator_dtos.PropertyDetails_res_dto,
-) error {
-	g, ctx := errgroup.WithContext(ctx)
-
-	var (
-		mu      sync.Mutex
-		modules []orchestrator_dtos.ModulesDetails_dto
-		infra   []orchestrator_dtos.PropertyInfra_res_dto
-	)
-
-	// --- 1. Hotel Module ---
-	g.Go(func() error {
-		hotel, err := c.hospitalityDomainSvc.
-			HotelService().
-			GetHotelDetails(ctx, orgID, propertyID)
-
-		if err != nil {
-			if utils.IsNotFoundError(err) {
-				return nil
-			}
-			return err
-		}
-
-		if hotel == nil || len(hotel.Hotels) == 0 {
-			return nil
-		}
-
-		hotelDTOs := make([]orchestrator_dtos.ModulesDetails_dto, 0, len(hotel.Hotels))
-		for _, h := range hotel.Hotels {
-			hotelDTOs = append(hotelDTOs, orchestrator_dtos.ModulesDetails_dto{
-				ID:           h.ID,
-				Name:         h.Name,
-				Status:       h.Status,
-				IsConfigured: h.IsConfigured,
-				Module_Type:  "HOTEL",
-			})
-		}
-
-		mu.Lock()
-		modules = append(modules, hotelDTOs...)
-		mu.Unlock()
-
-		return nil
-	})
-
-	// --- 2. Restaurant Module ---
-	g.Go(func() error {
-		restaurant, err := c.hospitalityDomainSvc.
-			RestaurantService().
-			GetAllRestaurantOfProperty(ctx, propertyID)
-
-		if err != nil {
-			if utils.IsNotFoundError(err) {
-				return nil
-			}
-			return err
-		}
-
-		if len(restaurant) == 0 {
-			return nil
-		}
-
-		dTOs := make([]orchestrator_dtos.ModulesDetails_dto, 0, len(restaurant))
-		for _, h := range restaurant {
-			dTOs = append(dTOs, orchestrator_dtos.ModulesDetails_dto{
-				ID:           h.ID,
-				Name:         h.Name,
-				Status:       h.Status,
-				IsConfigured: h.IsConfigured,
-				Module_Type:  "RESTAURANT",
-			})
-		}
-
-		mu.Lock()
-		modules = append(modules, dTOs...)
-		mu.Unlock()
-
-		return nil
-	})
-
-	// --- 3. Kitchen (Infra) ---
-	g.Go(func() error {
-		kitchens, err := c.hospitalityDomainSvc.
-			KitchenService().
-			GetKitchensByPropertyID(ctx, propertyID)
-
-		if err != nil && !utils.IsNotFoundError(err) {
-			return err
-		}
-
-		if len(kitchens) == 0 {
-			return nil
-		}
-
-		kitchenDTOs := make([]orchestrator_dtos.PropertyInfra_res_dto, 0, len(kitchens))
-		for _, k := range kitchens {
-			kitchenDTOs = append(kitchenDTOs, orchestrator_dtos.PropertyInfra_res_dto{
-				ID:         k.ID,
-				Name:       k.Name,
-				Status:     k.Status,
-				Infra_Type: "KITCHEN",
-			})
-		}
-
-		mu.Lock()
-		infra = append(infra, kitchenDTOs...)
-		mu.Unlock()
-
-		return nil
-	})
-
-	// Wait for all goroutines
-	if err := g.Wait(); err != nil {
-		return err
-	}
-
-	// Attach only if data exists
-	if len(modules) > 0 {
-		res.Modules = &modules
-	}
-	if len(infra) > 0 {
-		res.Infra = &infra
-	}
-
-	return nil
-}
-
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) ConfigurePropertyToDomain(
-	ctx context.Context,
-	orgID uuid.UUID,
-	propertyID uuid.UUID,
-	req *orchestrator_dtos.AddDomainToPropertyReq_DTO,
-) error {
+func (s *propertyOrchestrator) CreateProperty(ctx context.Context, orgID, emplID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error {
 
-	verify, err := s.organizationService.VerifyOrgByID(ctx, orgID)
-	if err != nil {
-		return err
-	}
-
-	if !verify {
-		return errors.New("org invalid")
-	}
-
-	return nil
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
-func (s *orchestratorService) AddModulesInProperty(
-	ctx context.Context,
-	orgID uuid.UUID,
-	propertyID uuid.UUID,
-	req *orchestrator_dtos.PropertyModuleConfigurationDTO,
-) (*orchestrator_dtos.ModuleOperationResult, error) {
-
-	result := &orchestrator_dtos.ModuleOperationResult{
-		Created: []string{},
-		Skipped: []string{},
-	}
-
-	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
-		txCtx := dbtx.InjectTx(ctx, tx)
-
-		// ----------------------------------------------------
-		// 1. Property Validation
-		// ----------------------------------------------------
-		prt, err := s.orgPropertyService.GetPropertiesOfOrg(txCtx, orgID)
-		if err != nil {
-			return err
-		}
-
-		var property *org_property_contracts.PropertiesReader
-		for i := range prt {
-			if prt[i].ID == propertyID {
-				property = &prt[i]
-				break
-			}
-		}
-
-		if property == nil {
-			return errors.New("property not found")
-		}
-
-		// ----------------------------------------------------
-		// 2. Identification Phase
-		// ----------------------------------------------------
-		var modulesToCreate []string
-
-		if req.Modules != nil {
-			for _, module := range *req.Modules {
-
-				exists := false
-
-				switch module {
-
-				case "HOTEL":
-					h, _ := s.hospitalityDomainSvc.
-						HotelService().
-						GetHotelByPropertyID(txCtx, propertyID)
-
-					if h != nil && len(h.Hotels) > 0 {
-						exists = true
-					}
-
-				case "BAR":
-					b, _ := s.hospitalityDomainSvc.
-						BarService().
-						GetBarDetailsOfProperty(txCtx, orgID, propertyID)
-
-					if len(b) > 0 {
-						exists = true
-					}
-
-				case "RESTAURANT":
-					r, _ := s.hospitalityDomainSvc.
-						RestaurantService().
-						GetAllRestaurantOfProperty(txCtx, propertyID)
-
-					if len(r) > 0 {
-						exists = true
-					}
-				}
-
-				if exists {
-					result.Skipped = append(result.Skipped, module)
-				} else {
-					modulesToCreate = append(modulesToCreate, module)
-				}
-			}
-		}
-
-		// ----------------------------------------------------
-		// 3. Execution Phase (MULTI MODULE SUPPORT)
-		// ----------------------------------------------------
-		for _, target := range modulesToCreate {
-
-			var setupErr error
-
-			switch target {
-
-			case "HOTEL":
-				_, setupErr = s.hospitalityDomainSvc.
-					HotelService().
-					SetupDefaultHotel(txCtx, orgID, propertyID)
-
-			case "BAR":
-				_, setupErr = s.hospitalityDomainSvc.
-					BarService().
-					SetupDefaultBar(txCtx, orgID, propertyID)
-
-			case "RESTAURANT":
-				_, setupErr = s.hospitalityDomainSvc.
-					RestaurantService().
-					SetupDefaultRestaurant(txCtx, orgID, propertyID)
-			}
-
-			if setupErr != nil {
-				return setupErr
-			}
-
-			result.Created = append(result.Created, target)
-		}
-
-		// ----------------------------------------------------
-		// 4. Infrastructure (Kitchen qty support)
-		// ----------------------------------------------------
-		if req.Infrastructure != nil {
-
-			for _, infra := range *req.Infrastructure {
-
-				if infra.Infra_Name == "Kitchen/Service Point" {
-
-					qty := infra.InfraQty
-					if qty <= 0 {
-						qty = 1
-					}
-
-					for i := 0; i < qty; i++ {
-
-						name := fmt.Sprintf("DEFAULT-%d", i+1)
-
-						if err := s.hospitalityDomainSvc.
-							KitchenService().
-							CreateDefaultKitchen(
-								txCtx,
-								orgID,
-								propertyID,
-								name,
-							); err != nil {
-							return err
-						}
-
-						result.Created = append(
-							result.Created,
-							"Kitchen/Service Point",
-						)
-					}
-				}
-			}
-		}
-
-		// ----------------------------------------------------
-		// 5. Update Property Configuration Status
-		// ----------------------------------------------------
-		// if err := s.orgPropertyService.
-		// 	UpdatePropertyConfigurationStatus(
-		// 		txCtx,
-		// 		propertyID,
-		// 		true,
-		// 	); err != nil {
-		// 	return err
-		// }
-
-		// ----------------------------------------------------
-		// 6. Final Message
-		// ----------------------------------------------------
-		result.Message = fmt.Sprintf(
-			"%v created. %v already existed and were skipped.",
-			result.Created,
-			result.Skipped,
-		)
-
-		return nil
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
-func (s *orchestratorService) AddInfraInProperty(
-	ctx context.Context,
-	orgID uuid.UUID,
-	propertyID uuid.UUID,
-	req *orchestrator_dtos.PropertyInfraConfiguration,
-) error {
-
-	// Guard clause
-	if req == nil {
-		return fmt.Errorf("infra configuration is nil")
-	}
-
-	// Handle Kitchen / Service Point infra
-	if req.Infra_Name != "Kitchen/Service Point" {
-		return nil
-	}
-
-	// Default quantity fallback
-	qty := req.InfraQty
-	if qty <= 0 {
-		qty = 1
-	}
-
-	kitchenSvc := s.hospitalityDomainSvc.KitchenService()
-
-	for i := 0; i < qty; i++ {
-		name := fmt.Sprintf("DEFAULT-%d", i+1)
-
-		if err := kitchenSvc.CreateDefaultKitchen(
-			ctx,
-			orgID,
-			propertyID,
-			name,
-		); err != nil {
-			return fmt.Errorf("failed creating kitchen %s: %w", name, err)
-		}
-	}
-
-	return nil
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
-func (s *orchestratorService) CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error {
+	// No orchestrator-level guard here: CreatePropertyDefault authorizes
+	// canCreateNewProperty itself, so every caller (orchestrator, setup wizard)
+	// is covered by the one check in the property service.
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
 		prInp := org_property_contracts.CreateOrgPropertyInput{
 			OrgID:       orgID,
+			UserID:      emplID,
 			Name:        req.Name,
 			Code:        req.Code,
 			AddressLine: req.AddressLine,
@@ -493,38 +138,252 @@ func (s *orchestratorService) CreateProperty(ctx context.Context, orgID uuid.UUI
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) GetPropertyInfra(
+func (s *propertyOrchestrator) AddBusinessOperationModulesInProperty(
 	ctx context.Context,
-	propertyID uuid.UUID,
-	orgID uuid.UUID, infraType *string) (*orchestrator_dtos.ListAllInfraOfProperty_Res_dto, error) {
+	orgID, emplID, propertyID uuid.UUID,
+	req orchestrator_dtos.AddBusinessOpModulesRequestDto,
+) error {
 
-	_, err := s.orgPropertyService.GetPropertyDetailsByID(ctx, orgID, propertyID)
-	if err != nil {
-		return nil, err
+	if err := s.guard.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanAddBusinessModules, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+		return err
 	}
 
-	// For Now we have only Kitchen as Infra, so directly calling that. In future, we can use infraType to decide which infra details to fetch
-	kitchens, err := s.hospitalityDomainSvc.KitchenService().GetKitchensByPropertyID(ctx, propertyID)
-	if err != nil {
-		return nil, err
-	}
+	// Request validation is done in the controller, so the module types and
+	// quantities here are already known-valid.
 
-	results := make([]*orchestrator_dtos.PropertyInfra_res_dto, 0, len(kitchens))
+	// Healthcare is on hold for now — req.HealthcareModules is intentionally
+	// ignored until that domain is wired up.
 
-	for i, inf := range kitchens {
-		results[i] = &orchestrator_dtos.PropertyInfra_res_dto{
-			ID:         inf.ID,
-			Name:       inf.Name,
-			Status:     inf.Status,
-			Infra_Type: inf.Name,
+	for _, m := range req.HospitalityModules {
+		for i := 0; i < m.Quantity; i++ {
+			if err := s.setupHospitalityModule(ctx, orgID, propertyID, m.Module); err != nil {
+				return fmt.Errorf(
+					"setup hospitality module %q (instance %d of %d) for property %s: %w",
+					m.Module, i+1, m.Quantity, propertyID, err,
+				)
+			}
 		}
 	}
 
-	return &orchestrator_dtos.ListAllInfraOfProperty_Res_dto{
-		PropertyID:      propertyID,
-		Infrastructures: results,
-	}, nil
+	return nil
+}
 
+// setupHospitalityModule provisions a single default instance of the given
+// hospitality module for the property.
+func (s *propertyOrchestrator) setupHospitalityModule(
+	ctx context.Context,
+	orgID, propertyID uuid.UUID,
+	module hospitality_utilities.HospitalityModulesType,
+) error {
+	switch module {
+	case hospitality_utilities.Hotel:
+		_, err := s.hospitalityDomainSvc.HotelService().SetupDefaultHotel(ctx, orgID, propertyID)
+		return err
+
+	case hospitality_utilities.Bar:
+		_, err := s.hospitalityDomainSvc.BarService().SetupDefaultBar(ctx, orgID, propertyID)
+		return err
+
+	case hospitality_utilities.Restaurant:
+		_, err := s.hospitalityDomainSvc.RestaurantService().SetupDefaultRestaurant(ctx, orgID, propertyID)
+		return err
+
+	case hospitality_utilities.NightClub,
+		hospitality_utilities.Resort,
+		hospitality_utilities.CloudKitchen_Takeaways:
+		// Declared module types that don't have a setup service yet.
+		return fmt.Errorf("hospitality module %q is not yet supported", module)
+
+	default:
+		return fmt.Errorf("unknown hospitality module %q", module)
+	}
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *propertyOrchestrator) AddInfraModulesInProperty(
+	ctx context.Context,
+	orgID, emplID, propertyID uuid.UUID,
+	request orchestrator_dtos.AddInfraModulesRequestDto,
+) error {
+
+	if err := s.guard.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanAddInfraModules, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+		return err
+	}
+
+	// Scope for now: only Hospitality infra is provisioned, and within it only
+	// the Kitchen module. General infra and Healthcare infra are intentionally
+	// ignored even if present in the request body, and any other hospitality
+	// infra types are skipped until their setup services exist.
+
+	for _, m := range request.HospitalityInfra {
+		if m.Module != hospitality_utilities.Kitchen {
+			// Not yet supported — skip rather than fail the whole request.
+			continue
+		}
+
+		for i := 0; i < m.Quantity; i++ {
+			err := s.hospitalityDomainSvc.KitchenService().
+				CreateDefaultKitchen(ctx, orgID, propertyID, string(m.Module))
+			if err != nil {
+				return fmt.Errorf(
+					"create default kitchen (instance %d of %d) for property %s: %w",
+					i+1, m.Quantity, propertyID, err,
+				)
+			}
+		}
+	}
+
+	return nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *propertyOrchestrator) ListAllBusinessOpsModules(
+	ctx context.Context,
+	orgID, emplID, propertyID uuid.UUID,
+) (orchestrator_dtos.PropertyBusinessOperationModulesResponseDto, error) {
+
+	if err := s.guard.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+		return orchestrator_dtos.PropertyBusinessOperationModulesResponseDto{}, err
+	}
+
+	// Initialised to empty (non-nil) slices so the JSON response is [] rather
+	// than null when a domain has no modules.
+	resp := orchestrator_dtos.PropertyBusinessOperationModulesResponseDto{
+		HospitalityModules: make([]orchestrator_dtos.HospitalityBusinessModule, 0),
+		HealthCareModules:  make([]orchestrator_dtos.HealthCareBusinessModule, 0),
+	}
+
+	// ---------------------------- Hospitality ----------------------------
+
+	bars, err := s.hospitalityDomainSvc.BarService().
+		GetBarDetailsOfProperty(ctx, orgID, propertyID)
+	if err != nil {
+		return orchestrator_dtos.PropertyBusinessOperationModulesResponseDto{},
+			fmt.Errorf("list bars for property %s: %w", propertyID, err)
+	}
+	for _, b := range bars {
+		if b == nil {
+			continue
+		}
+		resp.HospitalityModules = append(resp.HospitalityModules, mapBarToBusinessModule(b))
+	}
+
+	// Single hotel for now; comment in source says this becomes a slice later.
+	hotels, err := s.hospitalityDomainSvc.HotelService().
+		GetHotelByPropertyID(ctx, propertyID)
+	if err != nil {
+		return orchestrator_dtos.PropertyBusinessOperationModulesResponseDto{},
+			fmt.Errorf("list hotels for property %s: %w", propertyID, err)
+	}
+	for _, h := range hotels {
+		resp.HospitalityModules = append(resp.HospitalityModules, mapHotelToBusinessModule(h))
+	}
+
+	restaurants, err := s.hospitalityDomainSvc.RestaurantService().
+		GetAllRestaurantOfProperty(ctx, propertyID)
+	if err != nil {
+		return orchestrator_dtos.PropertyBusinessOperationModulesResponseDto{},
+			fmt.Errorf("list restaurants for property %s: %w", propertyID, err)
+	}
+	for _, r := range restaurants {
+		if r == nil {
+			continue
+		}
+		resp.HospitalityModules = append(resp.HospitalityModules, mapRestaurantToBusinessModule(r))
+	}
+
+	// ----------------------------- Healthcare -----------------------------
+	// Domain not ready yet — HealthCareModules intentionally left empty.
+
+	return resp, nil
+}
+
+// --- mapping helpers ---
+// ModuleType is set from the originating service (known & correct).
+// Field accessors below are ASSUMPTIONS — adjust once the contract structs are known.
+
+func mapBarToBusinessModule(b *bar_contracts.BarDetailsReader) orchestrator_dtos.HospitalityBusinessModule {
+	return orchestrator_dtos.HospitalityBusinessModule{
+		ID:         b.ID,
+		Name:       b.Name,
+		ModuleType: hospitality_utilities.Bar,
+		// Status:       b.Status,
+		// IsConfigured: b.IsConfigured,
+	}
+}
+
+func mapHotelToBusinessModule(h hotel_contracts.HotelReader) orchestrator_dtos.HospitalityBusinessModule {
+	return orchestrator_dtos.HospitalityBusinessModule{
+		ID:           h.ID,
+		Name:         h.Name,
+		ModuleType:   hospitality_utilities.Hotel,
+		Status:       h.Status,
+		IsConfigured: h.IsConfigured,
+	}
+}
+
+func mapRestaurantToBusinessModule(r *restaurant_contracts.RestaurantDetails) orchestrator_dtos.HospitalityBusinessModule {
+	return orchestrator_dtos.HospitalityBusinessModule{
+		ID:           r.ID,
+		Name:         r.Name,
+		ModuleType:   hospitality_utilities.Restaurant,
+		Status:       r.Status,
+		IsConfigured: r.IsConfigured,
+	}
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *propertyOrchestrator) ListAllInfraModulesOfProperty(
+	ctx context.Context,
+	orgID, emplID, propertyID uuid.UUID,
+) (orchestrator_dtos.PropertyInfraModulesResponseDto, error) {
+
+	if err := s.guard.authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, propertyID.String()); err != nil {
+		return orchestrator_dtos.PropertyInfraModulesResponseDto{}, err
+	}
+
+	// Empty (non-nil) slices so absent domains serialize as [] rather than null.
+	resp := orchestrator_dtos.PropertyInfraModulesResponseDto{
+		GeneralInfraModules:     make([]orchestrator_dtos.GeneralInfraModule, 0),
+		HospitalityInfraModules: make([]orchestrator_dtos.HospitalityInfraModule, 0),
+		HealthCareInfraModules:  make([]orchestrator_dtos.HealthCareInfraModule, 0),
+	}
+
+	// -------------------------- Hospitality infra --------------------------
+	// Only Kitchen is wired up today. NOTE: kitchen lives directly on the
+	// hospitality domain for now; later it folds into
+	// hospitalityDomainSvc.InfraModules().Kitchen().
+	kitchens, err := s.hospitalityDomainSvc.KitchenService().
+		GetKitchensByPropertyID(ctx, propertyID)
+	if err != nil {
+		return orchestrator_dtos.PropertyInfraModulesResponseDto{},
+			fmt.Errorf("list kitchens for property %s: %w", propertyID, err)
+	}
+	for _, k := range kitchens {
+		if k == nil {
+			continue
+		}
+		resp.HospitalityInfraModules = append(resp.HospitalityInfraModules, mapKitchenToInfraModule(k))
+	}
+
+	// General infra and Healthcare infra are intentionally skipped for now and
+	// returned as empty slices.
+
+	return resp, nil
+}
+
+// mapKitchenToInfraModule maps a kitchen read-model to the infra DTO.
+func mapKitchenToInfraModule(k *kitchen_contracts.Kitchen_Reader) orchestrator_dtos.HospitalityInfraModule {
+	return orchestrator_dtos.HospitalityInfraModule{
+		ID:        k.ID,
+		Name:      k.Name,
+		Status:    k.Status,
+		InfraType: hospitality_utilities.Kitchen,
+		Meta:      nil, // shape TBD
+	}
 }
 
 /* ---------------------------------- <***> --------------------------------- */

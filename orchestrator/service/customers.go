@@ -4,15 +4,22 @@ import (
 	"context"
 	org_customer_contracts "sharpnr-engine/core/customer/contracts"
 	org_customer_models "sharpnr-engine/core/customer/models"
+	org_customer_service "sharpnr-engine/core/customer/service"
 	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
+// customerOrchestrator implements CustomerOrchestratorServiceInterface.
+type customerOrchestrator struct {
+	txManager      dbtx.TxManager
+	customerEngine org_customer_service.OrgCustomerServiceInterface
+}
+
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) AddCustomer(ctx context.Context, orgID, emplID uuid.UUID, req org_customer_contracts.AddCustomerRequestDto) error {
+func (s *customerOrchestrator) AddCustomer(ctx context.Context, orgID, emplID uuid.UUID, req org_customer_contracts.AddCustomerRequestDto) error {
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 
@@ -25,7 +32,7 @@ func (s *orchestratorService) AddCustomer(ctx context.Context, orgID, emplID uui
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) SearchCustomer(ctx context.Context, orgID, emplID uuid.UUID, searchQuery string) ([]org_customer_models.Customer, error) {
+func (s *customerOrchestrator) SearchCustomer(ctx context.Context, orgID, emplID uuid.UUID, searchQuery string) ([]org_customer_models.Customer, error) {
 	var results []org_customer_models.Customer
 
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {

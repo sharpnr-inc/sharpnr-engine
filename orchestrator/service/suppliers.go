@@ -3,17 +3,28 @@ package orchestrator_service
 import (
 	"context"
 	"errors"
+	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
+	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	dbtx "sharpnr-engine/pkg/dbTx"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
+// suppliersOrchestrator implements SuppliersAndVendorsOrchestratorServiceInterface.
+// The legal entity service is here because supplier listings resolve the
+// legal entities each supplier is linked to.
+type suppliersOrchestrator struct {
+	txManager          dbtx.TxManager
+	supplierService    suppliers_service.SupplierServiceInterface
+	legalEntityService legal_entity_service.OrgLegalEntityServiceInterface
+}
+
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) AddNewSupplier(ctx context.Context, orgID, emplID uuid.UUID, request *suppliers_dtos.CreateSuppliersAPIRequestdto) error {
+func (s *suppliersOrchestrator) AddNewSupplier(ctx context.Context, orgID, emplID uuid.UUID, request *suppliers_dtos.CreateSuppliersAPIRequestdto) error {
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
@@ -24,7 +35,7 @@ func (s *orchestratorService) AddNewSupplier(ctx context.Context, orgID, emplID 
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) ListAllOrganizationSuppliers(ctx context.Context, orgID, emplID uuid.UUID) ([]suppliers_dtos.SuppliersResponseDetails, error) {
+func (s *suppliersOrchestrator) ListAllOrganizationSuppliers(ctx context.Context, orgID, emplID uuid.UUID) ([]suppliers_dtos.SuppliersResponseDetails, error) {
 	var results []suppliers_dtos.SuppliersResponseDetails
 
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
@@ -88,7 +99,7 @@ func (s *orchestratorService) ListAllOrganizationSuppliers(ctx context.Context, 
 
 // This Service method Connects a supplier to a legal entity by creating a link between them. It first checks for existing links to prevent duplicates,
 
-func (s *orchestratorService) AddLegalEntityLinksInSuppliers(ctx context.Context, orgID, emplID, suppliersID uuid.UUID, request *supplier_contracts.AddLegalEntityLinkInSuppliersRequestDto) error {
+func (s *suppliersOrchestrator) AddLegalEntityLinksInSuppliers(ctx context.Context, orgID, emplID, suppliersID uuid.UUID, request *supplier_contracts.AddLegalEntityLinkInSuppliersRequestDto) error {
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)

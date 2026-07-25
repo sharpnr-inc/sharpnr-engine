@@ -25,7 +25,12 @@ func (r *organizationRepo) CreateOrganization(
 		return errors.New("organization ID is required")
 	}
 
-	return r.db.
+	db := r.db
+	if tx, ok := dbtx.ExtractTx(ctx); ok {
+		db = tx
+	}
+
+	return db.
 		WithContext(ctx).
 		Create(org).
 		Error

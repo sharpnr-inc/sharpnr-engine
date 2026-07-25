@@ -127,6 +127,20 @@ def static_files(filename):
 
 # ── API ────────────────────────────────────────────────────────────────
 
+@app.route("/api/config", methods=["GET"])
+def api_config():
+    """
+    GET /api/config
+    Probed by api.js at startup: a 200 here means the page is being
+    served by Flask, so relative /api URLs work.
+    """
+    return jsonify({
+        "ok":            True,
+        "templates_dir": str(TEMPLATES_DIR),
+        "go_src_dir":    str(GO_SRC_DIR),
+    })
+
+
 @app.route("/api/templates", methods=["GET"])
 def api_list_templates():
     """

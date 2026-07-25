@@ -1,0 +1,3 @@
+-- (no-op) See 000032_sentinel_full_access_policy.up.sql — the full-access grant
+-- is seeded in application code at provisioning; this migration creates nothing
+-- to reverse.

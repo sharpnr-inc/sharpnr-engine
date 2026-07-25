@@ -59,8 +59,8 @@ func (c *OrchestratorController) AddLegalEntityLinkToSupplierHandler(ctx *gin.Co
 		return
 	}
 
-	suppliersID, err := c.getSuppliersID_fromParams(ctx)
-	if err != nil {
+	suppliersID, ok := pathUUID(ctx, "suppliersID")
+	if !ok {
 		return
 	}
 

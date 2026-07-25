@@ -62,9 +62,8 @@ func (c *OrchestratorController) GetLegalEntityDetailsHandler(ctx *gin.Context) 
 		return
 	}
 
-	// we will take out the legalEntityID from ID
-	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
-	if err != nil {
+	legalEntityID, ok := pathUUID(ctx, "legalEntityID")
+	if !ok {
 		return
 	}
 
@@ -90,9 +89,8 @@ func (c *OrchestratorController) AddContactsInLegalEntityHandler(ctx *gin.Contex
 		return
 	}
 
-	// we will take out the legalEntityID from ID
-	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
-	if err != nil {
+	legalEntityID, ok := pathUUID(ctx, "legalEntityID")
+	if !ok {
 		return
 	}
 
@@ -124,9 +122,8 @@ func (c *OrchestratorController) AddAddressesInLegalEntityHandler(ctx *gin.Conte
 		return
 	}
 
-	// we will take out the legalEntityID from ID
-	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
-	if err != nil {
+	legalEntityID, ok := pathUUID(ctx, "legalEntityID")
+	if !ok {
 		return
 	}
 
@@ -159,9 +156,8 @@ func (c *OrchestratorController) AddBankAccountDetailsInLegalEntityHandler(ctx *
 		return
 	}
 
-	// we will take out the legalEntityID from ID
-	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
-	if err != nil {
+	legalEntityID, ok := pathUUID(ctx, "legalEntityID")
+	if !ok {
 		return
 	}
 
@@ -194,9 +190,8 @@ func (c *OrchestratorController) AddIdentifiersInLegalEntityHandler(ctx *gin.Con
 		return
 	}
 
-	// we will take out the legalEntityID from ID
-	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
-	if err != nil {
+	legalEntityID, ok := pathUUID(ctx, "legalEntityID")
+	if !ok {
 		return
 	}
 
@@ -223,9 +218,8 @@ func (c *OrchestratorController) AddLicenseAndComplianceHandler(ctx *gin.Context
 		return
 	}
 
-	// we will take out the legalEntityID from ID
-	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
-	if err != nil {
+	legalEntityID, ok := pathUUID(ctx, "legalEntityID")
+	if !ok {
 		return
 	}
 
@@ -258,9 +252,8 @@ func (c *OrchestratorController) AddTaxRegistrationInLegalEntityHandler(ctx *gin
 		return
 	}
 
-	// we will take out the legalEntityID from ID
-	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
-	if err != nil {
+	legalEntityID, ok := pathUUID(ctx, "legalEntityID")
+	if !ok {
 		return
 	}
 
@@ -297,9 +290,8 @@ func (c *OrchestratorController) ListAllAccountingBooksOfLegalEntityHandler(ctx 
 		return
 	}
 
-	// we will take out the legalEntityID from ID
-	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
-	if err != nil {
+	legalEntityID, ok := pathUUID(ctx, "legalEntityID")
+	if !ok {
 		return
 	}
 
@@ -321,9 +313,8 @@ func (c *OrchestratorController) GetAccountBalancesOfLegalEntityHandler(ctx *gin
 		return
 	}
 
-	// we will take out the legalEntityID from ID
-	legalEntityID, err := c.getLegalEntityIDFromParams(ctx)
-	if err != nil {
+	legalEntityID, ok := pathUUID(ctx, "legalEntityID")
+	if !ok {
 		return
 	}
 

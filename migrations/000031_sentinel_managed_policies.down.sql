@@ -1,0 +1,2 @@
+-- (no-op) See 000031_sentinel_managed_policies.up.sql — managed policies were
+-- abandoned before release; this migration creates nothing to reverse.

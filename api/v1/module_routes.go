@@ -6,7 +6,7 @@ import (
 	accounting_engine_routes "sharpnr-engine/sharp_accounting_engine/accounting_engine/routes"
 
 	hospitality_routes "sharpnr-engine/business_ops/hospitality/routes"
-	hr_routes "sharpnr-engine/sharp_hrms_engine/routes"
+	hr_routes "sharpnr-engine/hrms_engine/routes"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,4 +21,5 @@ func RegisterModuleRoutes(
 	accounting_engine_routes.RegisterAccountingRoutes(v1, modules)
 	hr_routes.RegisterHRRoutes(v1, modules)
 	payment_engine_routes.PaymentGatewaysRoutes(v1, modules)
+
 }

@@ -4,15 +4,26 @@ import (
 	"context"
 	"errors"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
+	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	accounting_engine_contracts "sharpnr-engine/sharp_accounting_engine/accounting_engine/contracts"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
+	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-func (c *orchestratorService) GetAllLegalEntity(ctx context.Context, orgID, emplID uuid.UUID) ([]legal_entity_contracts.LegalEntityResponseDto, error) {
+// legalEntityOrchestrator implements LegalEntityOrchestrationServiceInterface.
+// Creating a legal entity also provisions its draft accounting setup, which is
+// why the accounting engine lives here too.
+type legalEntityOrchestrator struct {
+	txManager               dbtx.TxManager
+	legalEntityService      legal_entity_service.OrgLegalEntityServiceInterface
+	accountingEngineService accounting_service.AccountingServiceInterface
+}
+
+func (c *legalEntityOrchestrator) GetAllLegalEntity(ctx context.Context, orgID, emplID uuid.UUID) ([]legal_entity_contracts.LegalEntityResponseDto, error) {
 
 	var response []legal_entity_contracts.LegalEntityResponseDto
 
@@ -39,7 +50,7 @@ func (c *orchestratorService) GetAllLegalEntity(ctx context.Context, orgID, empl
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (c *orchestratorService) CreateLegalEntity(ctx context.Context, orgID, emplID uuid.UUID, req *legal_entity_contracts.NewLegalEntityRequestDto) error {
+func (c *legalEntityOrchestrator) CreateLegalEntity(ctx context.Context, orgID, emplID uuid.UUID, req *legal_entity_contracts.NewLegalEntityRequestDto) error {
 
 	return c.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
@@ -67,7 +78,7 @@ func (c *orchestratorService) CreateLegalEntity(ctx context.Context, orgID, empl
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) GetDetailsOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (legal_entity_contracts.LegalEntityDetails, error) {
+func (s *legalEntityOrchestrator) GetDetailsOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (legal_entity_contracts.LegalEntityDetails, error) {
 	// Simply invoke the downstream service directly using the request context.
 	// If you implemented errgroup inside GetLegalEntityDetails, it will safely spawn sub-connections here.
 	res, err := s.legalEntityService.GetLegalEntityDetails(ctx, orgID, emplID, legalEntityID)
@@ -80,7 +91,7 @@ func (s *orchestratorService) GetDetailsOfLegalEntity(ctx context.Context, orgID
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) AddContactsInLegalEntity(
+func (s *legalEntityOrchestrator) AddContactsInLegalEntity(
 	ctx context.Context,
 	orgID, emplID, legalEntityID uuid.UUID,
 	req *legal_entity_contracts.CreateLegalEntityContactsRequestDto,
@@ -104,7 +115,7 @@ func (s *orchestratorService) AddContactsInLegalEntity(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) AddAddressInLegalEntity(
+func (s *legalEntityOrchestrator) AddAddressInLegalEntity(
 	ctx context.Context,
 	orgID, emplID, legalEntityID uuid.UUID,
 	req *legal_entity_contracts.CreateLegalEntityAddressRequest,
@@ -133,7 +144,7 @@ func (s *orchestratorService) AddAddressInLegalEntity(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) AddBankAccountDetailsInLegalEntity(
+func (s *legalEntityOrchestrator) AddBankAccountDetailsInLegalEntity(
 	ctx context.Context,
 	orgID, emplID, legalEntityID uuid.UUID,
 	req *legal_entity_contracts.AddBankAccountInLegalEntityRequestDto,
@@ -155,7 +166,7 @@ func (s *orchestratorService) AddBankAccountDetailsInLegalEntity(
 }
 
 /* ---------------------------------- <***> --------------------------------- */
-func (s *orchestratorService) AddIdentifiersInLegalEntity(
+func (s *legalEntityOrchestrator) AddIdentifiersInLegalEntity(
 	ctx context.Context,
 	orgID, emplID, legalEntityID uuid.UUID,
 	req *legal_entity_contracts.AddIdentifiersInLegalEntityRequestDto,
@@ -178,7 +189,7 @@ func (s *orchestratorService) AddIdentifiersInLegalEntity(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) AddLicenseOrComplianceInLegalEntity(
+func (s *legalEntityOrchestrator) AddLicenseOrComplianceInLegalEntity(
 	ctx context.Context,
 	orgID, emplID, legalEntityID uuid.UUID,
 	req legal_entity_contracts.AddNewLicenseAndComplianceRequestDto,
@@ -194,7 +205,7 @@ func (s *orchestratorService) AddLicenseOrComplianceInLegalEntity(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) AddTaxRegistrationInLegalEntity(
+func (s *legalEntityOrchestrator) AddTaxRegistrationInLegalEntity(
 	ctx context.Context,
 	orgID, emplID, legalEntityID uuid.UUID,
 	req legal_entity_contracts.AddNewTaxRegistrationInLegalEntityRequestDto,
@@ -211,11 +222,11 @@ func (s *orchestratorService) AddTaxRegistrationInLegalEntity(
 /*                       Legal Entity Accounting Service                      */
 /* -------------------------------------------------------------------------- */
 
-func (s *orchestratorService) GetAccountingBooksOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.AccountingBookOfLegalEntity_Response_dto, error) {
+func (s *legalEntityOrchestrator) GetAccountingBooksOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.AccountingBookOfLegalEntity_Response_dto, error) {
 
 	panic("")
 }
 
-func (s *orchestratorService) GetAllAccountBalancesOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accountingdtos.AccountGroupBalanceResponseDto, error) {
+func (s *legalEntityOrchestrator) GetAllAccountBalancesOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accountingdtos.AccountGroupBalanceResponseDto, error) {
 	panic("")
 }

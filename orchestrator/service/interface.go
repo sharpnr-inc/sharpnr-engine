@@ -4,11 +4,16 @@ import (
 	"context"
 	org_customer_contracts "sharpnr-engine/core/customer/contracts"
 	org_customer_models "sharpnr-engine/core/customer/models"
+	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
+	sentinelDtos "sharpnr-engine/sentinel/dtos"
+	sentinelengine_models "sharpnr-engine/sentinel/models"
+	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
+	sentinelContexts "sharpnr-engine/sentinel_contexts"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
 	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
@@ -17,7 +22,7 @@ import (
 )
 
 type OrchestratorServiceInterface interface {
-	OrganizationOrchestartionInterface
+	OrganizationOrchestrationInterface
 	OrganizationPropertyOrchestrationInterface
 	LegalEntityOrchestrationServiceInterface
 	CustomerOrchestratorServiceInterface
@@ -25,23 +30,67 @@ type OrchestratorServiceInterface interface {
 	SuppliersAndVendorsOrchestratorServiceInterface
 	InventoryOrchestratorServiceInterface
 	OrchestratorSetupWizardInterface
+	EmployeeOrchestrationInterface
+	SentinelOrchestrationInterface
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
+// SentinelOrchestrationInterface exposes the authorization authoring + display
+// surface (Cedar policies, roles, privileges) to the frontend. Everything
+// delegates to the Sentinel service; the orchestrator is just the HTTP facade.
+type SentinelOrchestrationInterface interface {
+	// Policy-builder palettes. Principals: types + roles + groups.
+	ListPrincipals(ctx context.Context, orgID, emplID uuid.UUID) (sentinelDtos.PrincipalsView, error)
+
+	// Resources palette, served by the sentinel aggregator: which resource
+	// types exist, and per type its actions, attributes and live instances.
+	ListAuthzResources(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelAggregatorService.ResourceSummaryView, error)
+	GetAuthzResourceDetails(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) (sentinelAggregatorService.ResourceDetailsView, error)
+
+	// Context palette: the canonical context.*/principal.* keys the engine
+	// stamps on every evaluation, for the builder's condition editor.
+	GetAuthzContextPalette(ctx context.Context, orgID, emplID uuid.UUID) (sentinelContexts.Palette, error)
+
+	ListPolicies(ctx context.Context, orgID, emplID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error)
+	CreatePolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error)
+
+	ListRoles(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.RoleView, error)
+	CreateRole(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.CreateRoleInput) (uuid.UUID, error)
+	GetRolePrivileges(ctx context.Context, orgID, emplID, roleID uuid.UUID) (sentinelDtos.RolePrivilegesView, error)
+
+	AttachPoliciesToRole(ctx context.Context, orgID, emplID, roleID uuid.UUID, in sentinelDtos.AttachPoliciesInput) error
+	DetachPolicyFromRole(ctx context.Context, orgID, emplID, roleID, policyID uuid.UUID) error
+}
+
+type OrganizationOrchestrationInterface interface {
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+type EmployeeOrchestrationInterface interface {
+	GetAllEmployeesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) ([]orchestrator_dtos.EmployeeOfOrganization, error)
+	GetEmployeeDetails(ctx context.Context, orgID, emplID uuid.UUID, requestEmplID uuid.UUID) (orchestrator_dtos.EmployeeDetailsResponseDto, error)
+	AddNewSuperAdmin(ctx context.Context, orgID, emplID uuid.UUID, request coreEmployeeContracts.AddNewSuperAdminInOrganizationRequestDto) error
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// Property Operations in Orchestraor services interface
 type OrganizationPropertyOrchestrationInterface interface {
-	ConfigurePropertyToDomain(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, req *orchestrator_dtos.AddDomainToPropertyReq_DTO) error
-	AddModulesInProperty(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, req *orchestrator_dtos.PropertyModuleConfigurationDTO) (*orchestrator_dtos.ModuleOperationResult, error)
-	AddInfraInProperty(ctx context.Context, orgID uuid.UUID, propertyID uuid.UUID, req *orchestrator_dtos.PropertyInfraConfiguration) error
-	HospitalityPropertyOrchestrationInterface
-}
 
-type HospitalityPropertyOrchestrationInterface interface {
-	GetPropertyDetail(ctx context.Context, orgID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
-	CreateProperty(ctx context.Context, orgID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error
-	GetPropertyInfra(ctx context.Context, propertyID uuid.UUID, orgID uuid.UUID, infraType *string) (*orchestrator_dtos.ListAllInfraOfProperty_Res_dto, error)
-}
-
-type OrganizationOrchestartionInterface interface {
+	// General Property service methods
 	GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
+	GetPropertyDetail(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
+	CreateProperty(ctx context.Context, orgID, emplID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error
+
+	// Business Modules
+	AddBusinessOperationModulesInProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID, req orchestrator_dtos.AddBusinessOpModulesRequestDto) error
+	ListAllBusinessOpsModules(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (orchestrator_dtos.PropertyBusinessOperationModulesResponseDto, error)
+
+	// Infra Modules
+	AddInfraModulesInProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID, request orchestrator_dtos.AddInfraModulesRequestDto) error
+	ListAllInfraModulesOfProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (orchestrator_dtos.PropertyInfraModulesResponseDto, error)
 }
 
 /* ---------------------------------- <***> --------------------------------- */

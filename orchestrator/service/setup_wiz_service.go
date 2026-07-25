@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
+	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
+	organization_services "sharpnr-engine/core/organization/services"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	dbtx "sharpnr-engine/pkg/dbTx"
 
@@ -11,13 +13,21 @@ import (
 	"gorm.io/gorm"
 )
 
+// setupWizardOrchestrator implements OrchestratorSetupWizardInterface: the
+// step-by-step onboarding flow that runs before the org is fully configured.
+type setupWizardOrchestrator struct {
+	txManager           dbtx.TxManager
+	orgSetupWizService  org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface
+	organizationService organization_services.OrganizationServiceInterface
+}
+
 /* ---------------------------------- <***> --------------------------------- */
 
 /* -------------------------------------------------------------------------- */
 /*                        Version 1.0.0 of Setup Wizard                       */
 /* -------------------------------------------------------------------------- */
 
-func (s *orchestratorService) SetupWiz_AddProperty(
+func (s *setupWizardOrchestrator) SetupWiz_AddProperty(
 	ctx context.Context,
 	orgID uuid.UUID, emplID uuid.UUID,
 	req *orchestrator_dtos.SetupOrgPropertyReqDTO,
@@ -57,7 +67,7 @@ func (s *orchestratorService) SetupWiz_AddProperty(
 // This method retrieves the current progress of the setup wizard for a given organization.
 // It returns a structured response containing the overall status, current step, progress percentage, completion
 // status, and details of each step in the wizard.
-func (s *orchestratorService) SetUpWizProgress(
+func (s *setupWizardOrchestrator) SetUpWizProgress(
 	ctx context.Context,
 	orgID uuid.UUID,
 ) (orchestrator_dtos.SetupProgressResponseDTO, error) {
@@ -94,7 +104,7 @@ func (s *orchestratorService) SetUpWizProgress(
 // this is method completes the super admin details
 //
 // it takes organizationID and emplID id that we created after the signup process
-func (s *orchestratorService) SetUpSuperAdminDetails(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req *orchestrator_dtos.SetupSuperAdminDetailsReqDTO) error {
+func (s *setupWizardOrchestrator) SetUpSuperAdminDetails(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req *orchestrator_dtos.SetupSuperAdminDetailsReqDTO) error {
 	// 1. Verify Org exists and is verified
 	verified, err := s.organizationService.VerifyOrgByID(ctx, orgID)
 	if err != nil {
@@ -123,7 +133,7 @@ func (s *orchestratorService) SetUpSuperAdminDetails(ctx context.Context, orgID 
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *orchestratorService) SetupWiz_UpdateOrgName(ctx context.Context, orgID, emplID uuid.UUID, request *orchestrator_dtos.SetupWizUpdateOrgNameRequestDto) error {
+func (s *setupWizardOrchestrator) SetupWiz_UpdateOrgName(ctx context.Context, orgID, emplID uuid.UUID, request *orchestrator_dtos.SetupWizUpdateOrgNameRequestDto) error {
 
 	verified, err := s.organizationService.VerifyOrgByID(ctx, orgID)
 	if err != nil {

@@ -266,6 +266,13 @@ body {
   white-space: nowrap;
 }
 
+.tpl-dirty {
+  color: #d97706;
+  font-size: 8px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
 .tpl-del {
   width: 18px;
   height: 18px;
@@ -420,7 +427,30 @@ body {
 
 .preview-actions {
   display: flex;
-  gap: 6px;
+  gap: 4px;
+}
+.preview-actions.hidden {
+  display: none;
+}
+
+.vp-btn {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  transition: all 0.15s;
+}
+.vp-btn.active {
+  background: var(--bg-secondary);
+  border-color: var(--border-light);
+  color: var(--text-primary);
+}
+.vp-btn:not(.active):hover {
+  color: var(--text-secondary);
 }
 
 .action-btn {
@@ -472,6 +502,60 @@ body {
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
   background: white;
   min-height: 400px;
+  transition: max-width 0.2s ease;
+}
+.preview-wrap.mobile iframe {
+  max-width: 375px;
+}
+
+/* ── EDITOR SPLIT (edit tab) ── */
+.editor-split {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+.editor-split.hidden {
+  display: none;
+}
+
+.editor-pane {
+  flex: 1 1 50%;
+  min-width: 0;
+  display: flex;
+  border-right: 1px solid var(--border-light);
+}
+
+#editorArea {
+  flex: 1;
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 16px 18px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.65;
+  tab-size: 2;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  white-space: pre;
+  overflow: auto;
+}
+
+.editor-preview-pane {
+  flex: 1 1 50%;
+  min-width: 0;
+  padding: 14px;
+  background: var(--bg-tertiary);
+}
+.editor-preview-pane iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: var(--radius-md);
+  background: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
 .preview-wrap pre {

@@ -3,9 +3,10 @@
 ══════════════════════════════════════════════════ */
 
 const state = {
-  templates: [], // [{id, name, content, raw}]
+  templates: [], // [{id, name, content, raw, dirty}]
   activeId: null,
   activeTab: "preview",
+  viewport: "desktop", // preview width: "desktop" | "mobile"
   baseLayoutRaw: null, // raw base_layout.html source (from /api/base_layout)
   fields: {}, // Go struct map from /api/fields
   varData: {}, // {templateId: {FieldKey: value}}
@@ -61,8 +62,9 @@ async function saveActiveTemplate() {
   try {
     const goSource = buildGoTemplate(tpl.content);
     await apiSaveTemplate(tpl.name, goSource);
-    // Update raw so the "go template" tab reflects the saved state
     tpl.raw = goSource;
+    tpl.dirty = false;
+    renderSidebar();
     setStatus("saved!", "ok");
   } catch (err) {
     setStatus(`Save failed: ${err.message}`, "error");
@@ -79,9 +81,11 @@ function copyCurrentView() {
   const tpl = state.templates.find((t) => t.id === state.activeId);
   if (!tpl) return;
 
+  // Edit tab → the Go template file as it would be saved;
+  // preview/source tabs → the fully rendered HTML.
   const text =
-    state.activeTab === "gotpl"
-      ? (tpl.raw ?? buildGoTemplate(tpl.content))
+    state.activeTab === "edit"
+      ? buildGoTemplate(tpl.content)
       : buildPreviewHTML(tpl);
 
   navigator.clipboard
@@ -98,6 +102,13 @@ function copyCurrentView() {
    RELOAD templates from disk
 ══════════════════════════════════ */
 async function reloadTemplates() {
+  if (
+    state.templates.some((t) => t.dirty) &&
+    !confirm("Discard unsaved changes and reload templates from disk?")
+  ) {
+    return;
+  }
+
   const btn = document.getElementById("reloadBtn");
   btn.style.opacity = "0.4";
   btn.disabled = true;
@@ -171,6 +182,11 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
   });
 
+  // Desktop / mobile preview width
+  document.querySelectorAll(".vp-btn").forEach((btn) => {
+    btn.addEventListener("click", () => setViewport(btn.dataset.vp));
+  });
+
   // Topbar buttons
   document
     .getElementById("saveBtn")
@@ -192,9 +208,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Warn before leaving with unsaved edits
+  window.addEventListener("beforeunload", (e) => {
+    if (state.templates.some((t) => t.dirty)) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+  });
+
   // Module-level events
   bindSidebarEvents();
   bindVarsEvents();
+  bindEditorEvents();
   bindModalEvents();
 
   // Boot

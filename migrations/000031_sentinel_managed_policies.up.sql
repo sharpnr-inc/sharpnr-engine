@@ -1,0 +1,13 @@
+-- ============================================================
+-- (no-op) Sentinel managed policies — ABANDONED before release.
+--
+-- This migration originally added an AWS-style managed-policy authoring layer
+-- (sentinel_engine.managed_policies + an old role_policies join + source columns
+-- on sentinel_policies). That design was dropped: policies are now authored as
+-- raw Cedar text in the frontend and stored directly in
+-- sentinel_engine.sentinel_policies. The role<->policy and user<->policy join
+-- tables are created against sentinel_policies in 000034.
+--
+-- Left intentionally empty to preserve the migration version sequence (these
+-- migrations were never released).
+-- ============================================================

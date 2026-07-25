@@ -1,7 +1,7 @@
 package hospitality_order_engine_models
 
 import (
-	hospitality_utilities "sharpnr-engine/business_ops/hospitality/utilities_api"
+	hospitality_utilities "sharpnr-engine/business_ops/hospitality/utilities"
 	"time"
 
 	"github.com/google/uuid"

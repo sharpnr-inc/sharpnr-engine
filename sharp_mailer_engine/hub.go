@@ -4,8 +4,12 @@ import (
 	"html/template"
 	"log"
 	"sharpnr-engine/config"
-	mailer "sharpnr-engine/sharp_mailer"
 	"sync"
+)
+
+const (
+	defaultPoolSize  = 3
+	defaultQueueSize = 100
 )
 
 type SharpMailerEngine struct {
@@ -13,7 +17,9 @@ type SharpMailerEngine struct {
 	queues        map[MailType]chan internalEmailJob // unexported — use Enqueue()
 	templateCache *template.Template
 	wg            sync.WaitGroup
-	quit          chan struct{}
+
+	mu      sync.RWMutex
+	stopped bool
 }
 
 // New creates the engine and wires up one queue per mail identity.
@@ -22,11 +28,14 @@ func New(cfg *config.Config) *SharpMailerEngine {
 	engine := &SharpMailerEngine{
 		cfg:    cfg,
 		queues: make(map[MailType]chan internalEmailJob),
-		quit:   make(chan struct{}),
 	}
 
-	for mailType := range cfg.Email.Identities {
-		engine.queues[mailType] = make(chan internalEmailJob, 100)
+	for mailType, identity := range cfg.Email.Identities {
+		queueSize := identity.QueueSize
+		if queueSize == 0 {
+			queueSize = defaultQueueSize
+		}
+		engine.queues[mailType] = make(chan internalEmailJob, queueSize)
 	}
 
 	return engine
@@ -38,18 +47,27 @@ func (e *SharpMailerEngine) Start() {
 	for mailType, identity := range e.cfg.Email.Identities {
 		poolSize := identity.PoolSize
 		if poolSize == 0 {
-			poolSize = 3 // sensible default
+			poolSize = defaultPoolSize
 		}
 		e.startPool(e.queues[mailType], poolSize, identity.FromAddress)
 	}
 }
 
-// Enqueue puts a job on the correct queue. Always non-blocking —
-// if the queue is full the job is dropped and logged.
-func (e *SharpMailerEngine) Enqueue(mailType MailType, job internalEmailJob) {
-	queue, ok := e.queues[mailType]
+// Enqueue puts a job on the queue matching its mail type. Always
+// non-blocking — if the queue is full or the engine has been shut
+// down, the job is dropped and logged.
+func (e *SharpMailerEngine) Enqueue(job internalEmailJob) {
+	e.mu.RLock()
+	defer e.mu.RUnlock()
+
+	if e.stopped {
+		log.Printf("[mailer] engine is shut down, dropping email to %s", job.To)
+		return
+	}
+
+	queue, ok := e.queues[job.mailType]
 	if !ok {
-		log.Printf("[mailer] no queue for mail type %q — is it in config?", mailType)
+		log.Printf("[mailer] no queue for mail type %q — is it in config?", job.mailType)
 		return
 	}
 
@@ -57,34 +75,43 @@ func (e *SharpMailerEngine) Enqueue(mailType MailType, job internalEmailJob) {
 	case queue <- job:
 		// delivered to queue
 	default:
-		log.Printf("[mailer] queue full for %q, dropping email to %s", mailType, job.To)
+		log.Printf("[mailer] queue full for %q, dropping email to %s", job.mailType, job.To)
 	}
 }
 
-// Shutdown signals all workers to stop and waits for them to finish.
+// Shutdown stops accepting new jobs, then waits for the workers to
+// drain the queues and finish any in-flight sends.
 func (e *SharpMailerEngine) Shutdown() {
-	close(e.quit)
+	e.mu.Lock()
+	if e.stopped {
+		e.mu.Unlock()
+		return
+	}
+	e.stopped = true
+	for _, queue := range e.queues {
+		close(queue)
+	}
+	e.mu.Unlock()
+
 	e.wg.Wait()
 }
 
 // ── Typed job constructors ─────────────────────────────────────────
-// These are the only way to create jobs — keeps Data typed at the call site.
+// These are the only way to create jobs — they keep Data typed at the
+// call site and bind each job to its sending identity.
 
 func NewOTPJob(to, subject string, data OTPData) internalEmailJob {
-	return internalEmailJob{To: to, Subject: subject, Template: TmplVerification, Data: data}
+	return internalEmailJob{mailType: MailTypeOTP, To: to, Subject: subject, Template: TmplVerification, Data: data}
 }
 
 func NewNotificationJob(to, subject string, data NotificationData) internalEmailJob {
-	return internalEmailJob{To: to, Subject: subject, Template: TmplNotification, Data: data}
+	return internalEmailJob{mailType: MailTypeNotification, To: to, Subject: subject, Template: TmplNotification, Data: data}
 }
 
 func NewBillingJob(to, subject string, data BillingData) internalEmailJob {
-	return internalEmailJob{To: to, Subject: subject, Template: TmplInvoice, Data: data}
+	return internalEmailJob{mailType: MailTypeBilling, To: to, Subject: subject, Template: TmplInvoice, Data: data}
 }
 
 func NewWelcomeJob(to, subject string, data WelcomeData) internalEmailJob {
-	return internalEmailJob{To: to, Subject: subject, Template: TmplWelcome, Data: data}
+	return internalEmailJob{mailType: MailTypeNotification, To: to, Subject: subject, Template: TmplWelcome, Data: data}
 }
-
-// keep compiler happy if mailer import is only used for the alias
-var _ mailer.Type

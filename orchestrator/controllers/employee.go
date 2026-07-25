@@ -1,0 +1,71 @@
+package orchestrator_controllers
+
+import (
+	"net/http"
+	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
+	"sharpnr-engine/shared/utils"
+
+	"github.com/gin-gonic/gin"
+)
+
+func (c *OrchestratorController) FetchAllEmployeesHandler(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	employees, err := c.orchestService.GetAllEmployeesOfOrg(ctx.Request.Context(), orgID, emplID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Employees fetched successfully", employees)
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) GetEmployeeDetails(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	requestedDetails, ok := c.getEmployeeIDFromParams(ctx)
+	if !ok {
+		return
+	}
+
+	employeeDetails, err := c.orchestService.GetEmployeeDetails(ctx.Request.Context(), orgID, emplID, requestedDetails)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Employee Details Fetched Successfully", employeeDetails)
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) CreateSuperAdmin(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	req, ok := utils.BindJSON[coreEmployeeContracts.AddNewSuperAdminInOrganizationRequestDto](ctx)
+
+	if err := c.orchestService.AddNewSuperAdmin(ctx.Request.Context(), orgID, emplID, *req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, err.Error(), err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusCreated, "Invitation for super admin sent to email")
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */

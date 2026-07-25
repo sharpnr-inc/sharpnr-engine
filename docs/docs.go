@@ -211,9 +211,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/orchestrator/setup-status": {
+        "/orchestrator/property": {
             "get": {
-                "description": "Detailed explanation of what happens. Note: This requires an 'org_id' inside the session cookie.",
+                "description": "Fetches all properties belonging to the current organization, scoped to the authenticated employee.",
                 "consumes": [
                     "application/json"
                 ],
@@ -221,13 +221,13 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Orchestrator"
+                    "Orchestrator.Properties"
                 ],
-                "summary": "Short, punchy summary of the action",
+                "summary": "List all properties of the organization",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Session cookie containing org_id",
+                        "description": "Session cookie containing org_id and empl_id",
                         "name": "Cookie",
                         "in": "header",
                         "required": true
@@ -235,65 +235,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/utils.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "boolean"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Validation Error",
-                        "schema": {
-                            "$ref": "#/definitions/utils.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/orchestrator/setup-wiz/step3": {
-            "post": {
-                "description": "Third step of the onboarding wizard to define the organization's legal and physical presence.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "core-setup"
-                ],
-                "summary": "Setup Legal Entity",
-                "parameters": [
-                    {
-                        "description": "Legal Entity Details",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/orchestrator_dtos.SetupLegalEntityReqDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Legal entity configured successfully",
-                        "schema": {
-                            "$ref": "#/definitions/utils.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Validation or binding error",
+                        "description": "Properties fetch successfully",
                         "schema": {
                             "$ref": "#/definitions/utils.Response"
                         }
@@ -305,7 +247,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Internal server error",
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/utils.Response"
                         }
@@ -313,9 +255,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/orchestrator/setup-wizard/progress": {
-            "get": {
-                "description": "Detailed explanation of what happens (e.g., database changes, emails sent).",
+        "/orchestrator/property/create": {
+            "post": {
+                "description": "Creates a new property under the current organization.",
                 "consumes": [
                     "application/json"
                 ],
@@ -323,13 +265,30 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "CategoryName (e.g.",
-                    "accounting-ap)"
+                    "Orchestrator.Properties"
                 ],
-                "summary": "Short, punchy summary of the action",
+                "summary": "Create a property",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session cookie containing org_id",
+                        "name": "Cookie",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Property details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/orchestrator_dtos.CreatePropertyReq_dto"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Complete\" \"Success message",
+                        "description": "Property Created Successfully",
                         "schema": {
                             "$ref": "#/definitions/utils.Response"
                         }
@@ -355,8 +314,266 @@ const docTemplate = `{
                 }
             }
         },
-        "/orchestrator/setup-wizard/step1": {
+        "/orchestrator/property/{propertyID}": {
+            "get": {
+                "description": "Fetches the full details of a single property belonging to the current organization.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orchestrator.Properties"
+                ],
+                "summary": "Get property details",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session cookie containing org_id",
+                        "name": "Cookie",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Property ID (UUID)",
+                        "name": "propertyID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Property details fetch successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid property ID",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/property/{propertyID}/add-infra": {
             "post": {
+                "description": "Adds infrastructure (e.g. rooms, tables) of a given type and quantity to a property.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orchestrator.Properties"
+                ],
+                "summary": "Add infrastructure to a property",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session cookie containing org_id",
+                        "name": "Cookie",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Property ID (UUID)",
+                        "name": "propertyID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Infrastructure configuration",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/orchestrator_dtos.PropertyInfraConfiguration"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Result",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/property/{propertyID}/add-modules": {
+            "post": {
+                "description": "Attaches one or more business modules (and optional infrastructure) to a property. Returns the created and skipped modules.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orchestrator.Properties"
+                ],
+                "summary": "Add modules to a property",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session cookie containing org_id",
+                        "name": "Cookie",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Property ID (UUID)",
+                        "name": "propertyID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Module configuration",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/orchestrator_dtos.PropertyModuleConfigurationDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Result",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/orchestrator_dtos.ModuleOperationResult"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Validation Error / module constraint conflict",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/property/{propertyID}/infra": {
+            "get": {
+                "description": "Fetches all infrastructure configured for a property within the current organization.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Orchestrator.Properties"
+                ],
+                "summary": "Get property infrastructure",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session cookie containing org_id",
+                        "name": "Cookie",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Property ID (UUID)",
+                        "name": "propertyID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Property Infra fetched successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/utils.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/orchestrator_dtos.ListAllInfraOfProperty_Res_dto"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid property ID",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orchestrator/setup-wizard/progress": {
+            "get": {
                 "description": "Detailed explanation of what happens (e.g., database changes, emails sent).",
                 "consumes": [
                     "application/json"
@@ -369,20 +586,9 @@ const docTemplate = `{
                     "accounting-ap)"
                 ],
                 "summary": "Short, punchy summary of the action",
-                "parameters": [
-                    {
-                        "description": "Input description",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/orchestrator_dtos.SetupOrganizationHQAddressReqDTO"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
-                        "description": "Org HQ successfully\" \"Success message",
+                        "description": "Complete\" \"Success message",
                         "schema": {
                             "$ref": "#/definitions/utils.Response"
                         }
@@ -514,16 +720,16 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "orchestrator_dtos.SetupLegalEntityReqDTO": {
+        "orchestrator_dtos.CreatePropertyReq_dto": {
             "type": "object",
-            "required": [
-                "step_id"
-            ],
             "properties": {
                 "address_line": {
                     "type": "string"
                 },
                 "city": {
+                    "type": "string"
+                },
+                "code": {
                     "type": "string"
                 },
                 "country": {
@@ -537,11 +743,90 @@ const docTemplate = `{
                 },
                 "state": {
                     "type": "string"
+                }
+            }
+        },
+        "orchestrator_dtos.ListAllInfraOfProperty_Res_dto": {
+            "type": "object",
+            "properties": {
+                "infrastructures": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/orchestrator_dtos.PropertyInfra_res_dto"
+                    }
                 },
-                "step_id": {
+                "property_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "orchestrator_dtos.ModuleOperationResult": {
+            "type": "object",
+            "properties": {
+                "created": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "message": {
                     "type": "string"
                 },
-                "type": {
+                "skipped": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "orchestrator_dtos.PropertyInfraConfiguration": {
+            "type": "object",
+            "properties": {
+                "infra_name": {
+                    "type": "string"
+                },
+                "qty": {
+                    "type": "integer"
+                }
+            }
+        },
+        "orchestrator_dtos.PropertyInfra_res_dto": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "infra_type": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "orchestrator_dtos.PropertyModuleConfigurationDTO": {
+            "type": "object",
+            "properties": {
+                "domain": {
+                    "$ref": "#/definitions/property_constants.PropertyDomainTypes"
+                },
+                "infrastructure": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/orchestrator_dtos.PropertyInfraConfiguration"
+                    }
+                },
+                "modules": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "property_id": {
                     "type": "string"
                 }
             }
@@ -568,6 +853,7 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "longitude": {
+                    "description": "Optional geolocation fields to capture the organization's location for location-based services and analytics.",
                     "type": "number"
                 },
                 "name": {
@@ -576,44 +862,7 @@ const docTemplate = `{
                 "pincode": {
                     "type": "string"
                 },
-                "state": {
-                    "type": "string"
-                },
-                "step_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "orchestrator_dtos.SetupOrganizationHQAddressReqDTO": {
-            "type": "object",
-            "required": [
-                "address_line",
-                "city",
-                "country",
-                "pincode",
-                "state",
-                "step_id"
-            ],
-            "properties": {
-                "accuracy_m": {
-                    "type": "integer"
-                },
-                "address_line": {
-                    "type": "string"
-                },
-                "city": {
-                    "type": "string"
-                },
-                "country": {
-                    "type": "string"
-                },
-                "latitude": {
-                    "type": "number"
-                },
-                "longitude": {
-                    "type": "number"
-                },
-                "pincode": {
+                "property_code": {
                     "type": "string"
                 },
                 "state": {
@@ -667,6 +916,19 @@ const docTemplate = `{
                     "minLength": 8
                 }
             }
+        },
+        "property_constants.PropertyDomainTypes": {
+            "type": "string",
+            "enum": [
+                "HOSPITALITY",
+                "EDUCATION",
+                "MEDICAL_SCIENCE"
+            ],
+            "x-enum-varnames": [
+                "Hospitality",
+                "Education",
+                "MedicalScience"
+            ]
         },
         "utils.APIError": {
             "type": "object",
