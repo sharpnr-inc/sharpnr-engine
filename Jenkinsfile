@@ -157,6 +157,7 @@ pipeline {
 
         // ─────────────────────────────────────────
         // Restart + Verify (part of deploy flow)
+        // FIXED: Wait longer for app startup + retry loop for port check
         // ─────────────────────────────────────────
         stage('Start & Verify') {
             steps {
@@ -164,24 +165,44 @@ pipeline {
                     echo "▶ Starting ${SERVICE_NAME}..."
                     sudo systemctl start ${SERVICE_NAME}
 
-                    echo "▶ Waiting for service to stabilize..."
-                    sleep 3
+                    echo "▶ Waiting for service to stabilize (20 seconds)..."
+                    sleep 20
 
                     echo "▶ Checking service status..."
                     sudo systemctl status ${SERVICE_NAME} --no-pager
 
-                    echo "▶ Verifying port 8080..."
-                    ss -tlnp | grep 8080 && echo "✅ Port 8080 is open" || { echo "❌ Port 8080 not found"; exit 1; }
+                    # ── Retry loop for port verification ────────────────────
+                    echo "▶ Verifying port 8080 (with retry)..."
+                    PORT_READY=false
+                    for i in {1..10}; do
+                        if ss -tlnp 2>/dev/null | grep -q :8080; then
+                            echo "✅ Port 8080 is open (attempt $i/10)"
+                            PORT_READY=true
+                            break
+                        fi
+                        echo "  ⏳ Attempt $i/10 - waiting for port to open..."
+                        sleep 1
+                    done
 
+                    if [ "$PORT_READY" = false ]; then
+                        echo "❌ Port 8080 failed to open after 10 seconds"
+                        echo "▶ Checking service logs for errors..."
+                        journalctl -u ${SERVICE_NAME} -n 30 --no-pager
+                        exit 1
+                    fi
+
+                    echo ""
                     echo "▶ Deployed version:"
                     curl -fsS http://localhost:8080/version || echo "⚠️ /version not reachable"
                     echo ""
 
                     echo "▶ Checking recent logs for errors..."
-                    journalctl -u ${SERVICE_NAME} -n 20 --no-pager \
-                        | grep -iE "error|failed|panic" \
-                        && { echo "❌ Errors found in logs"; exit 1; } \
-                        || echo "✅ No errors in logs"
+                    if journalctl -u ${SERVICE_NAME} -n 20 --no-pager | grep -iE "error|failed|panic"; then
+                        echo "❌ Errors found in logs"
+                        exit 1
+                    else
+                        echo "✅ No errors in logs"
+                    fi
                 '''
             }
         }
