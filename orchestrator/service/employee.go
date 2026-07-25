@@ -75,6 +75,10 @@ func (c *employeeOrchestrator) AddNewSuperAdmin(
 	orgID, emplID uuid.UUID,
 	request coreEmployeeContracts.AddNewSuperAdminInOrganizationRequestDto,
 ) error {
+
+	// step 1 first we will check if these user is in other companies
+	// step 2 then we create a temporary 
+
 	return nil
 }
 
