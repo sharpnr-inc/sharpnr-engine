@@ -3,6 +3,7 @@ package orchestrator_controllers
 import (
 	"net/http"
 	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
+	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
@@ -64,6 +65,24 @@ func (c *OrchestratorController) CreateSuperAdmin(ctx *gin.Context) {
 		return
 	}
 
+	utils.Success(ctx, http.StatusCreated, "Invitation for super admin sent to email")
+
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) AddEmployeeInBulk(ctx *gin.Context) {
+
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+	req, ok := utils.BindJSON[[]orchestrator_dtos.AddEmployeeBulkRequestDto](ctx)
+
+	if err := c.orchestService.AddEmployeeInBulk(ctx.Request.Context(), orgID, emplID, req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, err.Error(), err)
+		return
+	}
 	utils.Success(ctx, http.StatusCreated, "Invitation for super admin sent to email")
 
 }

@@ -12,5 +12,6 @@ func registerEmployeeRoutes(r *gin.RouterGroup, co *orchestrator_controllers.Orc
 		emr.GET("", co.FetchAllEmployeesHandler)          // fetches all the employees
 		emr.GET("/:employeeID")                           // fetches a single employee by ID
 		emr.POST("/add_super_admin", co.CreateSuperAdmin) // adds a new superAdmin/owner employee
+		emr.POST("/add-employee-bulk")
 	}
 }

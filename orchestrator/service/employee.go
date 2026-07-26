@@ -70,14 +70,14 @@ func (s *employeeOrchestrator) GetAllEmployeesOfOrg(
 /*                            Add a New Super Admin                           */
 /* -------------------------------------------------------------------------- */
 
-func (c *employeeOrchestrator) AddNewSuperAdmin(
+func (s *employeeOrchestrator) AddNewSuperAdmin(
 	ctx context.Context,
 	orgID, emplID uuid.UUID,
 	request coreEmployeeContracts.AddNewSuperAdminInOrganizationRequestDto,
 ) error {
 
 	// step 1 first we will check if these user is in other companies
-	// step 2 then we create a temporary 
+	// step 2 then we create a temporary
 
 	return nil
 }
@@ -89,3 +89,11 @@ func (c *employeeOrchestrator) AddNewSuperAdmin(
 func (c *employeeOrchestrator) GetEmployeeDetails(ctx context.Context, orgID, emplID uuid.UUID, requestEmplID uuid.UUID) (orchestrator_dtos.EmployeeDetailsResponseDto, error) {
 	panic("")
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *employeeOrchestrator) AddEmployeeInBulk(ctx context.Context, orgID, emplID uuid.UUID, request *[]orchestrator_dtos.AddEmployeeBulkRequestDto) error {
+	panic("")
+}
+
+/* ---------------------------------- <***> --------------------------------- */

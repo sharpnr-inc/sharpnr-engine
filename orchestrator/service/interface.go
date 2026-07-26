@@ -72,6 +72,7 @@ type EmployeeOrchestrationInterface interface {
 	GetAllEmployeesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) ([]orchestrator_dtos.EmployeeOfOrganization, error)
 	GetEmployeeDetails(ctx context.Context, orgID, emplID uuid.UUID, requestEmplID uuid.UUID) (orchestrator_dtos.EmployeeDetailsResponseDto, error)
 	AddNewSuperAdmin(ctx context.Context, orgID, emplID uuid.UUID, request coreEmployeeContracts.AddNewSuperAdminInOrganizationRequestDto) error
+	AddEmployeeInBulk(ctx context.Context, orgID, emplID uuid.UUID, request *[]orchestrator_dtos.AddEmployeeBulkRequestDto) error
 }
 
 /* ---------------------------------- <***> --------------------------------- */
