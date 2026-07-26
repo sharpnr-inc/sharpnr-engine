@@ -2,8 +2,11 @@ package authenticationEngineControllers
 
 import (
 	"net/http"
+	"time"
+
 	authenticationEngineDtos "sharpnr-engine/authentication/dtos"
 	"sharpnr-engine/pkg/cookieManager"
+	sentinelContexts "sharpnr-engine/sentinel_contexts"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +21,18 @@ func (s *authenticationControllers) WebLogin(ctx *gin.Context) {
 		return
 	}
 
-	res, err := s.authSvc.LoginUser(ctx.Request.Context(), req)
+	// Login sits ahead of WebAuthMiddleware (no session yet), so stamp the
+	// request IP here — LoginUser reads it back via sentinelContexts.Extract
+	// to attribute the login's audit log entry.
+	reqCtx := sentinelContexts.Inject(ctx.Request.Context(), sentinelContexts.AuthzContext{
+		Request: sentinelContexts.RequestContext{
+			Channel:     sentinelContexts.ChannelWeb,
+			IPAddress:   ctx.ClientIP(),
+			RequestedAt: time.Now(),
+		},
+	})
+
+	res, err := s.authSvc.LoginUser(reqCtx, req)
 	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
 		return
@@ -47,7 +61,18 @@ func (s *authenticationControllers) MobileLogin(ctx *gin.Context) {
 		return
 	}
 
-	res, err := s.authSvc.LoginUser(ctx.Request.Context(), req)
+	// Login sits ahead of mobile auth middleware (no session yet), so stamp
+	// the request IP here — LoginUser reads it back via
+	// sentinelContexts.Extract to attribute the login's audit log entry.
+	reqCtx := sentinelContexts.Inject(ctx.Request.Context(), sentinelContexts.AuthzContext{
+		Request: sentinelContexts.RequestContext{
+			Channel:     sentinelContexts.ChannelMobile,
+			IPAddress:   ctx.ClientIP(),
+			RequestedAt: time.Now(),
+		},
+	})
+
+	res, err := s.authSvc.LoginUser(reqCtx, req)
 	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
 		return

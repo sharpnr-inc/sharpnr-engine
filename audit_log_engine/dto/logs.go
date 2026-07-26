@@ -9,8 +9,9 @@ import (
 type RecordEventInput struct {
 	OrganizationID uuid.UUID
 
-	ActorID   *uuid.UUID // employee who did it; nil for system-triggered events
-	ActorType string     // models.ActorTypeEmployee | models.ActorTypeSystem
+	ActorID        *uuid.UUID // employee who did it; nil for system-triggered events
+	ActorType      string     // models.ActorTypeEmployee | models.ActorTypeSystem
+	ActorIPAddress string     // client IP the request came from, when known
 
 	Module string // emitting engine: "hrms", "customers", "payments", ...
 	Action string // dot-notation event name: "customer.created"

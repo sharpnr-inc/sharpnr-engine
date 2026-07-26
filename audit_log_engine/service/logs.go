@@ -49,6 +49,7 @@ func (s *auditLogService) Record(
 		OrganizationID: input.OrganizationID,
 		ActorID:        input.ActorID,
 		ActorType:      actorType,
+		ActorIPAddress: input.ActorIPAddress,
 		Module:         input.Module,
 		Action:         input.Action,
 		ResourceType:   input.ResourceType,
