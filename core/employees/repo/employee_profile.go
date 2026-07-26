@@ -7,21 +7,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// CreateEmployeeSystemAccess implements [EmployeeProfileRepositoryInterface].
-func (r *employeeRepo) CreateEmployeeSystemAccess(ctx context.Context, access *coreEmployeeModels.EmployeeSystemAccess) (*coreEmployeeModels.EmployeeSystemAccess, error) {
-	panic("unimplemented")
-}
-
-// GetEmployeeSystemAccessByEmployeeID implements [EmployeeProfileRepositoryInterface].
-func (r *employeeRepo) GetEmployeeSystemAccessByEmployeeID(ctx context.Context, empID uuid.UUID) ([]*coreEmployeeModels.EmployeeSystemAccess, error) {
-	panic("unimplemented")
-}
-
-// IsEmployeeHaveOnlineAccess implements [EmployeeProfileRepositoryInterface].
-func (r *employeeRepo) IsEmployeeHaveOnlineAccess(ctx context.Context, empID uuid.UUID) (bool, error) {
-	panic("unimplemented")
-}
-
 func (r *employeeRepo) CreateEmployeeProfile(
 	ctx context.Context,
 	profile *coreEmployeeModels.EmployeeProfile,

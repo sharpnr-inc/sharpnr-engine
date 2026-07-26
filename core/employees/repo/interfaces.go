@@ -11,7 +11,6 @@ import (
 
 type EmployeeRepositoryInterface interface {
 	EmployeeMainRepositoryInterface
-	EmployeeVerificationRepositoryInterface
 	EmployeeOnboardingRepositoryInterface
 	EmployeeAuthenticationRepositoryInterface
 	EmployeeProfileRepositoryInterface
@@ -45,20 +44,10 @@ type EmployeeOnboardingRepositoryInterface interface {
 	UpdateStatus(ctx context.Context, empID uuid.UUID, status string) error
 }
 
-type EmployeeVerificationRepositoryInterface interface {
-	CreateEmplVerification(ctx context.Context, v *coreEmployeeModels.EmployeeVerification) error
-	GetByTokenHash(ctx context.Context, hash string) (*coreEmployeeModels.EmployeeVerification, error)
-	MarkVerified(ctx context.Context, id uuid.UUID, at time.Time) error
-}
-
 type EmployeeProfileRepositoryInterface interface {
 	CreateEmployeeProfile(ctx context.Context, profile *coreEmployeeModels.EmployeeProfile) error
 	GetProfileByEmployeeID(ctx context.Context, empID uuid.UUID) (*coreEmployeeModels.EmployeeProfile, error)
 	UpdateEmployeeProfile(ctx context.Context, profile *coreEmployeeModels.EmployeeProfile) error
-
-	CreateEmployeeSystemAccess(ctx context.Context, access *coreEmployeeModels.EmployeeSystemAccess) (*coreEmployeeModels.EmployeeSystemAccess, error)
-	GetEmployeeSystemAccessByEmployeeID(ctx context.Context, empID uuid.UUID) ([]*coreEmployeeModels.EmployeeSystemAccess, error)
-	IsEmployeeHaveOnlineAccess(ctx context.Context, empID uuid.UUID) (bool, error)
 }
 
 type EmployeeEmploymentRepositoryInterface interface {
