@@ -38,6 +38,8 @@ type EmployeeHRServiceInterface interface {
 	// General service which will used by the other module to interact with the employee module,
 	EmployeeGeneralServiceInterface
 	ListOrgAllEmployees(ctx context.Context, orgID, emplID uuid.UUID) ([]*coreEmployeeContracts.OrgEmployeeList, error)
+	// Add Employees in bulk in the organization
+	AddEmployeeInBulkInOrg(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req []coreEmployeeContracts.AddEmployeeInBulkInOrganizationRequestDto) error
 }
 
 /* ---------------------------------- <***> --------------------------------- */

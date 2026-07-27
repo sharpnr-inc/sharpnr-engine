@@ -45,3 +45,12 @@ func loadJWT() JwtManagerConfigs {
 		WebCookieTokenTTL: getEnvAsDuration("JWT_AUTH_WEB_COOKIE_TTL", "10h"),
 	}
 }
+
+/*
+JWT_SECRET=xIkJA27tQd7PbDgVrW+i4dl2v8NDFyepBmvNCwGQQXOmFuRLEW1h/sNnuzmAyuXwXyuusdL9gzw8Ng+ciuscCGiGrCRfgQXB2fM7N1p+/tJsByc1MgecHzFpgt+Mh5ZxGdErzp+Pq/Ta6mpDkbuatkJJRX91ZwSh2AS951WTUT4=
+JWT_ISSUER=sharpnr-engine
+JWT_AUDIENCE=sharpnr-client
+JWT_ACCESS_TTL=15m
+JWT_REFRESH_TTL=168h
+JWT_SIGNUP_TTL=24h
+*/

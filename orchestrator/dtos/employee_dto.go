@@ -44,4 +44,10 @@ type AddEmployeeBulkRequestDto struct {
 	DepartmentID *uuid.UUID `json:"departmentId,omitempty"`
 }
 
+type BulkProcessResult struct {
+	CreatedCount  int      `json:"createdCount"`
+	SkippedCount  int      `json:"skippedCount"`
+	SkippedEmails []string `json:"skippedEmails"`
+}
+
 /* ---------------------------------- <***> --------------------------------- */

@@ -1,9 +1,11 @@
 package app
 
 import (
+	auditEngineService "sharpnr-engine/audit_log_engine/service"
 	coreEmployeeRepo "sharpnr-engine/core/employees/repo"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
+	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	sentinelservice "sharpnr-engine/sentinel/service"
 	sentinelEngine "sharpnr-engine/sentinel_engine"
 	"sharpnr-engine/sero"
@@ -22,6 +24,8 @@ func bootstrapEmployeeServices(
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	sentinelService sentinelservice.SentinelServiceInterface,
 	sentinelAuthzEngine sentinelEngine.SentinelEngineInterface,
+	auditEngine auditEngineService.AuditLogServiceInterface,
+	jwtManager jwt_manager.Manager,
 ) (
 	coreEmployeeServices.EmployeeAuthenticationServiceInterface,
 	coreEmployeeServices.EmployeeHRServiceInterface,
@@ -38,6 +42,8 @@ func bootstrapEmployeeServices(
 		mailerEngine,
 		sentinelService,
 		sentinelAuthzEngine,
+		auditEngine,
+		jwtManager,
 	)
 	return svc, svc, svc, svc, svc, svc
 }

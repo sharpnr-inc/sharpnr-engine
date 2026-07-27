@@ -94,7 +94,7 @@ func main() {
 	txManager := dbtx.NewGormTxManager(db)
 	sseEngine := sse_engine.NewStreamManager()
 	defer sseEngine.Close()
-	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, mailerEng, seroEngine, sseEngine)
+	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, mailerEng, seroEngine, sseEngine, jwtmgr)
 
 	// Create and configure the main router
 	r := api.SetupRouter(

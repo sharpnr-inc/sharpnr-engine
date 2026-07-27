@@ -71,6 +71,8 @@ func (c *OrchestratorController) CreateSuperAdmin(ctx *gin.Context) {
 
 /* ---------------------------------- <***> --------------------------------- */
 
+// this controller will add employees in the bulk in the organization.
+// this method will can take the xls format sheet
 func (c *OrchestratorController) AddEmployeeInBulk(ctx *gin.Context) {
 
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
@@ -79,11 +81,12 @@ func (c *OrchestratorController) AddEmployeeInBulk(ctx *gin.Context) {
 	}
 	req, ok := utils.BindJSON[[]orchestrator_dtos.AddEmployeeBulkRequestDto](ctx)
 
-	if err := c.orchestService.AddEmployeeInBulk(ctx.Request.Context(), orgID, emplID, req); err != nil {
+	result, err := c.orchestService.AddEmployeeInBulk(ctx.Request.Context(), orgID, emplID, req)
+	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, err.Error(), err)
 		return
 	}
-	utils.Success(ctx, http.StatusCreated, "Invitation for super admin sent to email")
+	utils.Success(ctx, http.StatusCreated, "Invitation for super admin sent to email", result)
 
 }
 

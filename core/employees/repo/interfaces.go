@@ -15,6 +15,7 @@ type EmployeeRepositoryInterface interface {
 	EmployeeAuthenticationRepositoryInterface
 	EmployeeProfileRepositoryInterface
 	EmployeeEmploymentRepositoryInterface
+	EmployeeProvisioningRepoInterface
 }
 
 type EmployeeMainRepositoryInterface interface {
@@ -53,4 +54,10 @@ type EmployeeProfileRepositoryInterface interface {
 type EmployeeEmploymentRepositoryInterface interface {
 	CreateEmployement(ctx context.Context, emp *coreEmployeeModels.EmployeeEmployment) error
 	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*coreEmployeeModels.EmployeeEmployment, error)
+}
+
+type EmployeeProvisioningRepoInterface interface {
+	CreateEmployeeProvision(ctx context.Context, orgID uuid.UUID, provisions []coreEmployeeModels.EmployeeProvisioning) error
+	GetEmployeeProvioionByEmployeeID(ctx context.Context, orgID uuid.UUID, employeeID uuid.UUID) ([]coreEmployeeModels.EmployeeProvisioning, error)
+	AddConsumeTimeInProvisioningToken(ctx context.Context, orgID uuid.UUID, employeeID uuid.UUID, consumptionTime time.Time) error
 }

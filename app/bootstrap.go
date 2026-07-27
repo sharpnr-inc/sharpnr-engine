@@ -2,6 +2,7 @@ package app
 
 import (
 	dbtx "sharpnr-engine/pkg/dbTx"
+	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sero"
 	accounting_sero_event_handler "sharpnr-engine/sharp_accounting_engine/accounting_engine/sero_handler"
 	inventory_engine_sero_handlers "sharpnr-engine/sharp_inventory_engine/sero_handlers"
@@ -20,6 +21,7 @@ func BootstrapModules(
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	seroEngine *sero.SEROEngine,
 	sseEngine *sse_engine.StreamManager,
+	jwtmgr jwt_manager.Manager,
 ) *AppModules {
 
 	// Audit log engine: records every tenant event. Bootstrapped first so it
@@ -52,7 +54,7 @@ func BootstrapModules(
 		employeesHRService,
 		employeesIamEngineService,
 		employeeSignUpService,
-		employeeSetUpWizService, employeeOrchestratorService := bootstrapEmployeeServices(db, seroEngine, txManager, mailerEngine, sentinelService, sentinelAuthzEngine)
+		employeeSetUpWizService, employeeOrchestratorService := bootstrapEmployeeServices(db, seroEngine, txManager, mailerEngine, sentinelService, sentinelAuthzEngine, auditLogService, jwtmgr)
 
 	/* ------------------------------- IAM engine ------------------------------- */
 	iamEngineService := bootstrapIamEngine(employeesIamEngineService)
