@@ -19,6 +19,7 @@ import (
 
 	_ "sharpnr-engine/docs"
 
+	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -43,6 +44,12 @@ func main() {
 	log.Printf("🏷️  Sharpnr Engine %s", meta.Get())
 
 	cfg := config.Load()
+
+	// Must run before any gin engine is constructed. AppConfig.GinMode was
+	// being computed and never applied, so production ran in debug mode —
+	// verbose per-request logging and debug warnings included.
+	gin.SetMode(cfg.App.GinMode)
+
 	redisDb := database.ConnectRedis(cfg.Redis)
 	db := database.ConnectDB(cfg.Database)
 
@@ -94,7 +101,7 @@ func main() {
 	txManager := dbtx.NewGormTxManager(db)
 	sseEngine := sse_engine.NewStreamManager()
 	defer sseEngine.Close()
-	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, mailerEng, seroEngine, sseEngine, jwtmgr)
+	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, mailerEng, seroEngine, sseEngine, jwtmgr, cfg.TTL)
 
 	// Create and configure the main router
 	r := api.SetupRouter(

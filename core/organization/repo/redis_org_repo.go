@@ -7,7 +7,6 @@ import (
 	"sharpnr-engine/core/organization/models"
 
 	"strings"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
@@ -26,9 +25,7 @@ func (rd *organizationRedisRepo) Create(
 		return errors.New("email or phone is required")
 	}
 
-	const signupOTPTTL = 40 * time.Minute
-
-	ttl := signupOTPTTL
+	ttl := rd.stagingTTL
 
 	key := "org:signup:staging:" + tempOrg.ID.String()
 

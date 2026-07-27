@@ -10,9 +10,11 @@ import (
 )
 
 func MigrateDB(cfg config.DatabaseConfig) error {
+	// Must use the same sslmode as ConnectDB — a migrator that quietly falls
+	// back to an unencrypted connection is the same leak, just at startup.
 	dsn := fmt.Sprintf(
-		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name,
+		"postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name, cfg.SSLMode,
 	)
 
 	m, err := migrate.New("file://migrations", dsn)

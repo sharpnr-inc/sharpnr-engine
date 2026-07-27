@@ -1,6 +1,7 @@
 package app
 
 import (
+	"sharpnr-engine/config"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sero"
@@ -22,6 +23,7 @@ func BootstrapModules(
 	seroEngine *sero.SEROEngine,
 	sseEngine *sse_engine.StreamManager,
 	jwtmgr jwt_manager.Manager,
+	ttl config.TTLConfig,
 ) *AppModules {
 
 	// Audit log engine: records every tenant event. Bootstrapped first so it
@@ -36,7 +38,7 @@ func BootstrapModules(
 	// Sentinel authoring service: policy/role/group CRUD + attach/detach.
 	sentinelService := bootstrapSentinel(db, txManager, sentinelAuthzEngine)
 
-	organizationService := bootstrapOrganization(db, redis, mailerEngine, txManager)
+	organizationService := bootstrapOrganization(db, redis, mailerEngine, txManager, ttl)
 	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine, sentinelAuthzEngine)
 
 	// Resources aggregator: every module's mod_resources, for the FE policy builder.

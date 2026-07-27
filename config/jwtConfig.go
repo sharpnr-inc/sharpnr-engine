@@ -34,23 +34,19 @@ func (j JwtManagerConfigs) ToManagerConfig() jwt_manager.Config {
 	}
 }
 
+// Issuer and audience are required rather than defaulted. They are verified on
+// every parse, so a deployment that supplies JWT_SECRET but not JWT_ISSUER
+// would boot cleanly and then reject every token minted by the previous
+// release — a silent, total auth outage with nothing in the logs. Failing at
+// startup makes that misconfiguration loud instead.
 func loadJWT() JwtManagerConfigs {
 	return JwtManagerConfigs{
 		Secret:            mustGet("JWT_SECRET"),
-		Issuer:            getEnv("JWT_ISSUER", "sharpnr"),
-		Audience:          getEnv("JWT_AUDIENCE", "sharpnr-client"),
+		Issuer:            mustGet("JWT_ISSUER"),
+		Audience:          mustGet("JWT_AUDIENCE"),
 		AccessTTL:         getEnvAsDuration("JWT_ACCESS_TTL", "15m"),
 		RefreshTTL:        getEnvAsDuration("JWT_REFRESH_TTL", "24h"),
 		SignupTTL:         getEnvAsDuration("JWT_SIGNUP_TTL", "24h"),
 		WebCookieTokenTTL: getEnvAsDuration("JWT_AUTH_WEB_COOKIE_TTL", "10h"),
 	}
 }
-
-/*
-JWT_SECRET=xIkJA27tQd7PbDgVrW+i4dl2v8NDFyepBmvNCwGQQXOmFuRLEW1h/sNnuzmAyuXwXyuusdL9gzw8Ng+ciuscCGiGrCRfgQXB2fM7N1p+/tJsByc1MgecHzFpgt+Mh5ZxGdErzp+Pq/Ta6mpDkbuatkJJRX91ZwSh2AS951WTUT4=
-JWT_ISSUER=sharpnr-engine
-JWT_AUDIENCE=sharpnr-client
-JWT_ACCESS_TTL=15m
-JWT_REFRESH_TTL=168h
-JWT_SIGNUP_TTL=24h
-*/

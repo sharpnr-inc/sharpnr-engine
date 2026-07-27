@@ -14,8 +14,12 @@ func (d *employeeRepo) CreateEmployeeProvision(ctx context.Context, orgID uuid.U
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (d *employeeRepo) GetEmployeeProvioionByEmployeeID(ctx context.Context, orgID uuid.UUID, employeeID uuid.UUID) ([]coreEmployeeModels.EmployeeProvisioning, error)
+func (d *employeeRepo) GetEmployeeProvioionByEmployeeID(ctx context.Context, orgID uuid.UUID, employeeID uuid.UUID) ([]coreEmployeeModels.EmployeeProvisioning, error) {
+	panic("")
+}
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (d *employeeRepo) AddConsumeTimeInProvisioningToken(ctx context.Context, orgID uuid.UUID, employeeID uuid.UUID, consumptionTime time.Time) error
+func (d *employeeRepo) AddConsumeTimeInProvisioningToken(ctx context.Context, orgID uuid.UUID, employeeID uuid.UUID, consumptionTime time.Time) error {
+	return nil
+}
