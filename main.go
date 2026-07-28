@@ -103,6 +103,11 @@ func main() {
 	defer sseEngine.Close()
 	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, mailerEng, seroEngine, sseEngine, jwtmgr, cfg.TTL)
 
+	// Mobile refresh sessions are rows without a TTL, so something has to
+	// reclaim them. Shares the SERO relay's context, so it stops on shutdown.
+	go app.StartExpiredSessionSweeper(ctx, sharpnrModules.AuthenticationService())
+	log.Println("🧹 Expired mobile session sweeper started.")
+
 	// Create and configure the main router
 	r := api.SetupRouter(
 		db,

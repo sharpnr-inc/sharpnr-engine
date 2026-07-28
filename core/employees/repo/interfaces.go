@@ -16,6 +16,7 @@ type EmployeeRepositoryInterface interface {
 	EmployeeProfileRepositoryInterface
 	EmployeeEmploymentRepositoryInterface
 	EmployeeProvisioningRepoInterface
+	EmployeeRefreshSessionRepositoryInterface
 }
 
 type EmployeeMainRepositoryInterface interface {
@@ -54,6 +55,18 @@ type EmployeeProfileRepositoryInterface interface {
 type EmployeeEmploymentRepositoryInterface interface {
 	CreateEmployement(ctx context.Context, emp *coreEmployeeModels.EmployeeEmployment) error
 	GetByEmployeeID(ctx context.Context, empID uuid.UUID) (*coreEmployeeModels.EmployeeEmployment, error)
+}
+
+// EmployeeRefreshSessionRepositoryInterface backs mobile refresh-token
+// rotation. RotateRefreshSession is the only method that may advance a
+// session's jti, and it does so atomically — see its doc comment.
+type EmployeeRefreshSessionRepositoryInterface interface {
+	CreateRefreshSession(ctx context.Context, session *coreEmployeeModels.EmployeeRefreshSession) error
+	GetRefreshSessionByID(ctx context.Context, sessionID uuid.UUID) (*coreEmployeeModels.EmployeeRefreshSession, error)
+	RotateRefreshSession(ctx context.Context, sessionID, expectedJTI, newJTI uuid.UUID, now time.Time) (bool, error)
+	RevokeRefreshSession(ctx context.Context, sessionID uuid.UUID, reason string, at time.Time) error
+	RevokeAllRefreshSessionsForEmployee(ctx context.Context, employeeID uuid.UUID, reason string, at time.Time) (int64, error)
+	PurgeExpiredRefreshSessions(ctx context.Context, before time.Time) (int64, error)
 }
 
 type EmployeeProvisioningRepoInterface interface {

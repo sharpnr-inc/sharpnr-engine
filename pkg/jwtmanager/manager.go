@@ -32,8 +32,10 @@ type Manager interface {
 	IssueAccess(userID, orgID uuid.UUID, role string) (string, error)
 
 	// IssueRefresh creates a long-lived refresh token for the mobile API.
-	// sessionID ties the token to a revocable server-side session.
-	IssueRefresh(userID, orgID uuid.UUID) (string, error)
+	// sessionID ties the token to a revocable server-side session; jti
+	// identifies this single token within that session so rotation can retire
+	// it. See the RefreshClaims doc comment for how the two interact.
+	IssueRefresh(userID, orgID, sessionID, jti uuid.UUID) (string, error)
 
 	// IssueSignup creates an onboarding token valid for the signup TTL.
 	// Issued once OTP is verified; consumed when the account is created.
@@ -50,6 +52,15 @@ type Manager interface {
 	VerifyRefresh(token string) (*RefreshClaims, error)
 	VerifySignup(token string) (*SignupClaims, error)
 	VerifyWebCookie(token string) (*WebCookieTokenClaims, error)
+
+	// --- Introspection ---
+
+	// RefreshTTL exposes the configured refresh lifetime so callers can stamp
+	// a server-side session row with the same expiry as the token it issues.
+	// Without this the two are set from separate sources and drift apart: a
+	// session row outliving its token is harmless, but one expiring early
+	// silently logs the user out while they still hold a valid token.
+	RefreshTTL() time.Duration
 }
 
 // manager is the private implementation of Manager.
@@ -84,4 +95,9 @@ func New(cfg Config) (Manager, error) {
 		cfg: cfg,
 		now: time.Now,
 	}, nil
+}
+
+// RefreshTTL implements Manager.
+func (m *manager) RefreshTTL() time.Duration {
+	return m.cfg.RefreshTTL
 }

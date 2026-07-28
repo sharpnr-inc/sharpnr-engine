@@ -78,14 +78,24 @@ func (s *authenticationControllers) MobileLogin(ctx *gin.Context) {
 		return
 	}
 
-	// Access is issued first — if it fails we haven't wasted the refresh issuance
-	accessToken, err := s.jwtMgr.IssueAccess(res.EmployeeID, res.OrgId, res.Org.Name)
+	// Access is issued first — if it fails we haven't wasted the refresh issuance.
+	// res.Role, not res.Org.Name: the role claim previously carried the
+	// organisation name, which made the claim useless for authorisation.
+	accessToken, err := s.jwtMgr.IssueAccess(res.EmployeeID, res.OrgId, res.Role)
 	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
 		return
 	}
 
-	refreshToken, err := s.jwtMgr.IssueRefresh(res.EmployeeID, res.OrgId)
+	// The session row must exist before the token that references it is
+	// handed out, otherwise the first refresh finds nothing to rotate.
+	sessionID, jti, err := s.authSvc.StartMobileSession(reqCtx, res.EmployeeID, res.OrgId, res.Role)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
+		return
+	}
+
+	refreshToken, err := s.jwtMgr.IssueRefresh(res.EmployeeID, res.OrgId, sessionID, jti)
 	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
 		return

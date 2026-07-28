@@ -53,13 +53,23 @@ func (m *manager) IssueAccess(userID, orgID uuid.UUID, role string) (string, err
 }
 
 // IssueRefresh creates a long-lived refresh token for the mobile API.
-// The sessionID must match a record in the sessions table — this is what
-// allows individual sessions to be revoked (e.g. "log out this device").
-func (m *manager) IssueRefresh(userID, orgID uuid.UUID) (string, error) {
+//
+// sessionID must match a row in employee.employee_refresh_session — that is
+// what allows a single session to be revoked ("log out this device").
+//
+// jti identifies this specific token within the session. The caller must store
+// it as the session's current jti in the same operation that issues the token,
+// otherwise the token is born already-superseded and its first use will look
+// like replay.
+func (m *manager) IssueRefresh(userID, orgID, sessionID, jti uuid.UUID) (string, error) {
+	registered := m.buildRegistered("refresh", m.cfg.RefreshTTL)
+	registered.ID = jti.String()
+
 	return m.sign(RefreshClaims{
 		UserID:           userID,
 		OrgID:            orgID,
-		RegisteredClaims: m.buildRegistered("refresh", m.cfg.RefreshTTL),
+		SessionID:        sessionID,
+		RegisteredClaims: registered,
 	})
 }
 
