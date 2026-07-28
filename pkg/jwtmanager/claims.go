@@ -87,3 +87,12 @@ type SignupClaims struct {
 	UserID uuid.UUID `json:"uid"`
 	jwt.RegisteredClaims
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+type EmployeeProvisioningTokenClaims struct {
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Email     string `json:"email"`
+	jwt.RegisteredClaims
+}

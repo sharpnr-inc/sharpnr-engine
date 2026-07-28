@@ -46,6 +46,9 @@ type Manager interface {
 	// split for web; the cookie is rolled on every request by WebAuthMiddleware.
 	IssueWebAuthCookieToken(userID, orgID uuid.UUID) (string, error)
 
+	// IssueEmployeeProvisioningToken creates the Token for Employee Onboarding
+	IssueEmployeeProvisioningToken(firstname, lastname, email string) (string, error)
+
 	// --- Verifiers ---
 
 	VerifyAccess(token string) (*AccessClaims, error)
