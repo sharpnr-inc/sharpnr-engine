@@ -96,14 +96,15 @@ func (m *manager) IssueWebAuthCookieToken(userID, orgID uuid.UUID) (string, erro
 	})
 }
 
-// this is the method which produce token
+// this is the method which produce token for provisioning employee to set there password
+// this is
 func (m *manager) IssueEmployeeProvisioningToken(firstname, lastname, email string) (string, error) {
 	return m.sign(EmployeeProvisioningTokenClaims{
 		Firstname: firstname,
 		Lastname:  lastname,
 		Email:     email,
 		RegisteredClaims: m.buildRegistered(
-			"employee_provisioning", m.cfg.AccessTTL,
+			"employee_provisioning", m.cfg.EmployeeProvisioningTokenTTL,
 		),
 	})
 }

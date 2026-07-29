@@ -55,6 +55,7 @@ type Manager interface {
 	VerifyRefresh(token string) (*RefreshClaims, error)
 	VerifySignup(token string) (*SignupClaims, error)
 	VerifyWebCookie(token string) (*WebCookieTokenClaims, error)
+	VerifyEmployeeProvisioningToken(token string) (*EmployeeProvisioningTokenClaims, error)
 
 	// --- Introspection ---
 

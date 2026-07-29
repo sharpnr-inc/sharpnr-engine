@@ -45,5 +45,6 @@ func RegisterAuthenticationProtectedWebRoutes(
 		idProtectedWebRoutes.GET("/verify-auth", authController.VerifyAuthentication)
 		idProtectedWebRoutes.GET("/user", authController.GetUser)
 		idProtectedWebRoutes.GET("/logout", authController.LogoutUser)
+		idProtectedWebRoutes.POST("/provision", authController.VerifyEmployeeProvision) // this contains token and employee details in the params
 	}
 }
