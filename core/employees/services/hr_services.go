@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	coreEmployeeConstants "sharpnr-engine/core/employees/constants"
 	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
 	coreEmployeeModels "sharpnr-engine/core/employees/models"
 	"sharpnr-engine/sharp_mailer_engine"
@@ -17,6 +18,7 @@ func (s *employeeService) AddEmployeeInBulkInOrg(ctx context.Context, orgID uuid
 		return nil
 	}
 
+	employees := make([]coreEmployeeModels.Employee, 0, len(req))
 	provisions := make([]coreEmployeeModels.EmployeeProvisioning, 0, len(req))
 
 	for _, emp := range req {
@@ -25,25 +27,57 @@ func (s *employeeService) AddEmployeeInBulkInOrg(ctx context.Context, orgID uuid
 			lastName = *emp.LastName
 		}
 
-		// 1. Create Provisioning Token
+		middleName := ""
+		if emp.MiddleName != nil {
+			middleName = *emp.MiddleName
+		}
+
+		nickname := ""
+		if emp.Nickname != nil {
+			nickname = *emp.Nickname
+		}
+
+		employeeCode := ""
+		if emp.EmployeeCode != nil {
+			employeeCode = *emp.EmployeeCode
+		}
+
+		// 1. Prepare New Employee Record (Status: PENDING)
+		employeeID := uuid.New()
+		newEmployee := coreEmployeeModels.Employee{
+			ID:             employeeID,
+			OrganizationID: orgID,
+			FirstName:      emp.FirstName,
+			MiddleName:     middleName,
+			LastName:       lastName,
+			NickName:       nickname,
+			Email:          emp.Email,
+			PhoneNumber:    emp.PhoneNumber,
+			Status:         coreEmployeeConstants.EmployeeStatusPending,
+			EmployeeCode:   employeeCode,
+			CreatedAt:      time.Now(),
+			UpdatedAt:      time.Now(),
+		}
+		employees = append(employees, newEmployee)
+
+		// 2. Issue Provisioning Token
 		token, err := s.jwtManager.IssueEmployeeProvisioningToken(emp.FirstName, lastName, emp.Email)
 		if err != nil {
 			return fmt.Errorf("failed to issue provisioning token for %s: %w", emp.Email, err)
 		}
 
-		// 2. Prepare Provisioning Model Record
-		// (Assuming token is stored directly in TokenHash or hashed if your architecture requires it)
+		// 3. Prepare Provisioning Record Linked to the newly generated Employee ID
 		provision := coreEmployeeModels.EmployeeProvisioning{
 			ID:         uuid.New(),
-			EmployeeID: emplID,
+			EmployeeID: employeeID,
 			Email:      emp.Email,
 			TokenHash:  token,
-			ExpiresAt:  time.Now().Add(24 * 7 * time.Hour), // Set standard expiration duration (e.g., 7 days)
+			ExpiresAt:  time.Now().Add(24 * 7 * time.Hour), // 7 days expiration
 			CreatedAt:  time.Now(),
 		}
 		provisions = append(provisions, provision)
 
-		// 3. Construct URL
+		// 4. Construct Safely Encoded URL
 		actionURL := fmt.Sprintf(
 			"https://auth.sharpnr.com/emp/prov/%s+%s+%s+%s",
 			url.QueryEscape(token),
@@ -51,7 +85,8 @@ func (s *employeeService) AddEmployeeInBulkInOrg(ctx context.Context, orgID uuid
 			url.QueryEscape(lastName),
 			url.QueryEscape(emp.Email),
 		)
-		// 4. Enqueue Email Notification
+
+		// 5. Enqueue Notification Job
 		s.mailerEngine.Enqueue(sharp_mailer_engine.NewNotificationJob(
 			emp.Email,
 			"Set Up Your Employee Account",
@@ -62,15 +97,10 @@ func (s *employeeService) AddEmployeeInBulkInOrg(ctx context.Context, orgID uuid
 				ActionURL:  actionURL,
 				ActionText: "Set Up Account",
 				FooterNote: "This link will expire in 7 days.",
-			},
+			},       
 		))
-
 	}
-
-	// 5. Save all provisions in bulk
-	if err := s.employeeRepo.CreateEmployeeProvision(ctx, orgID, provisions); err != nil {
-		return fmt.Errorf("failed to persist employee provisions: %w", err)
-	}
-
+                                        
+                         
 	return nil
 }
