@@ -25,15 +25,15 @@ func OrgSignUpRoute(
 	)
 
 	publicSignup := v1.Group("/signup")
-	{
-		publicSignup.POST("/initiate", controller.InitiateNewOrgRegistration) // this is for starting the SignUp process.
+	{ // this is for starting the SignUp process. after this user will recieve an OTP in their email, and we will set the cokkie with the token for the next step of the signup process
+		publicSignup.POST("/initiate", controller.InitiateNewOrgRegistration)
 	}
 
 	protectedSignup := v1.Group("/signup")
 	protectedSignup.Use(webMiddleware.SignupGuardMiddleware(jwtmgr, cookies))
 	{
-		protectedSignup.POST("/verify-otp", controller.VerifyOtpForSignup)
 		protectedSignup.GET("/verify-slug", controller.VerifySlug)
+		protectedSignup.POST("/verify-otp", controller.VerifyOtpForSignup)
 		protectedSignup.GET("/resend-otp", controller.ResendOtp)
 	}
 }

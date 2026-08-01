@@ -71,7 +71,7 @@ func (s *orgSignUpService) InitiateRegistration(
 			Name:          req.Mobile,
 			Code:          otp,
 			Email:         req.Email,
-			ExpiryMinutes: 10,
+			ExpiryMinutes: 40,
 		},
 	))
 
