@@ -88,6 +88,7 @@ func BootstrapModules(
 		organizationService,
 		orgSetupWizardService,
 		sentinelService,
+		ttl.SignupStaging,
 	)
 
 	paymentsEngine := bootstrapPaymentEngine(db, mailerEngine, txManager, seroEngine)

@@ -1,6 +1,8 @@
 package app
 
 import (
+	"time"
+
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
@@ -18,6 +20,7 @@ func bootstrapOrgSignup(
 	organizationService organization_services.OrganizationServiceInterface,
 	setUpWizService org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface,
 	sentinelService sentinelservice.SentinelServiceInterface,
+	stagingTTL time.Duration,
 ) org_signup_services.OrganizationSignUpServiceInterfaces {
 
 	return org_signup_services.NewOrgSignUpService(
@@ -27,5 +30,6 @@ func bootstrapOrgSignup(
 		organizationService,
 		setUpWizService,
 		sentinelService,
+		stagingTTL,
 	)
 }

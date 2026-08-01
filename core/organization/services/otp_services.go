@@ -2,10 +2,21 @@ package organization_services
 
 import (
 	"context"
+	"crypto/subtle"
 	"errors"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
 
 	"github.com/google/uuid"
+)
+
+// Sentinel errors for the signup verification step. Callers match on these with
+// errors.Is to decide what the client is told: these three are the caller's
+// fault, anything else coming out of this function is an infrastructure failure
+// and must not be reported as a rejected OTP.
+var (
+	ErrSignupNotFound    = errors.New("signup not found or expired")
+	ErrInvalidOTP        = errors.New("invalid otp")
+	ErrInvalidSignupData = errors.New("invalid signup data")
 )
 
 // VerifySlugCreateDefaultOrg implements OrganizationServiceInterface.
@@ -24,15 +35,15 @@ func (r *organizationService) VerifySlugCreateDefaultOrg(
 	}
 
 	if staging == nil {
-		return output, errors.New("signup not found or expired")
+		return output, ErrSignupNotFound
 	}
 
-	if staging.Otp != otp {
-		return output, errors.New("invalid otp")
+	if subtle.ConstantTimeCompare([]byte(staging.Otp), []byte(otp)) != 1 {
+		return output, ErrInvalidOTP
 	}
 
 	if staging.Email == "" || staging.Password == "" {
-		return output, errors.New("invalid signup data")
+		return output, ErrInvalidSignupData
 	}
 
 	output = organization_contracts.InputDataForOrgAndEmp{
@@ -41,9 +52,11 @@ func (r *organizationService) VerifySlugCreateDefaultOrg(
 		Phone:      staging.Phone,
 	}
 
-	if err := r.orgRedisRepo.Delete(ctx, slug); err != nil {
-		return output, err
-	}
-
+	// The staging record is deliberately NOT deleted here. This runs inside the
+	// signup transaction, and Redis does not roll back with it: if a later step
+	// (org, employee, sentinel, wizard) fails, the database unwinds while the
+	// delete stands, leaving the user with a dead OTP and no way to retry.
+	// The caller discards the record once the transaction has committed —
+	// see DiscardSignupStaging.
 	return output, nil
 }

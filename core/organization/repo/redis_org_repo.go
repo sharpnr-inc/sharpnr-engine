@@ -139,9 +139,26 @@ func (rd *organizationRedisRepo) Delete(
 		return errors.New("signupID is required")
 	}
 
-	key := "org:signup:staging:" + signupID
+	// The email/phone reverse-lookup keys written by Create point back at this
+	// record, so they have to go with it. Deleting only the primary key leaves
+	// them reporting a signup that no longer exists until their TTL runs out.
+	keys := []string{"org:signup:staging:" + signupID}
 
-	return rd.redis.Del(ctx, key).Err()
+	staging, err := rd.Get(ctx, signupID)
+	if err != nil {
+		return err
+	}
+
+	if staging != nil {
+		if staging.Email != "" {
+			keys = append(keys, "org:signup:staging:email:"+strings.ToLower(staging.Email))
+		}
+		if staging.Phone != "" {
+			keys = append(keys, "org:signup:staging:phone:"+staging.Phone)
+		}
+	}
+
+	return rd.redis.Del(ctx, keys...).Err()
 }
 
 func (rd *organizationRedisRepo) GetByEmailOrPhone(

@@ -25,5 +25,9 @@ type OrganizationServiceInterface interface {
 
 	VerifySlugCreateDefaultOrg(ctx context.Context, otp string, slugID uuid.UUID) (output organization_contracts.InputDataForOrgAndEmp, err error)
 
+	// DiscardSignupStaging drops a consumed staging record. Must be called only
+	// after the signup transaction has committed — Redis does not roll back.
+	DiscardSignupStaging(ctx context.Context, tempID uuid.UUID) error
+
 	GetOrgDetailsByID(ctx context.Context, orgID, emplID uuid.UUID) (*organization_contracts.OrganizationResult, error)
 }

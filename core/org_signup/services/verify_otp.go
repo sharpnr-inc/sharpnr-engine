@@ -2,6 +2,7 @@ package org_signup_services
 
 import (
 	"context"
+	"log/slog"
 	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	dbtx "sharpnr-engine/pkg/dbTx"
 
@@ -61,6 +62,21 @@ func (r *orgSignUpService) VerifyOtp(
 	})
 	if err != nil {
 		return uuid.Nil, uuid.Nil, err
+	}
+
+	// Only now that the organization is durably committed is it safe to drop the
+	// staging record. Doing it inside the transaction would burn the user's OTP
+	// even on a rollback, since Redis unwinds with nothing.
+	//
+	// A failure here is not worth failing the request over: the org exists and
+	// the caller is about to be signed in. The leftover record expires on its
+	// own TTL, and its OTP is useless because the email is now taken.
+	if err := r.organizationService.DiscardSignupStaging(ctx, slug); err != nil {
+		slog.Error("failed to discard signup staging record after commit",
+			"error", err,
+			"slug", slug,
+			"org_id", orgID,
+		)
 	}
 
 	return orgID, emp, nil
