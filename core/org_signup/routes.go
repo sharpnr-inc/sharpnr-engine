@@ -26,7 +26,7 @@ func OrgSignUpRoute(
 
 	publicSignup := v1.Group("/signup")
 	{
-		publicSignup.POST("/initiate", controller.InitiateNewOrgRegistration)
+		publicSignup.POST("/initiate", controller.InitiateNewOrgRegistration) // this is for starting the SignUp process.
 	}
 
 	protectedSignup := v1.Group("/signup")
@@ -34,7 +34,6 @@ func OrgSignUpRoute(
 	{
 		protectedSignup.POST("/verify-otp", controller.VerifyOtpForSignup)
 		protectedSignup.GET("/verify-slug", controller.VerifySlug)
-
 		protectedSignup.GET("/resend-otp", controller.ResendOtp)
 	}
 }

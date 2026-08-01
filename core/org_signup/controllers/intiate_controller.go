@@ -37,7 +37,8 @@ func (c *orgSignUpController) InitiateNewOrgRegistration(ctx *gin.Context) {
 
 	jwt, _ := c.jwtMgr.IssueSignup(slug)
 	c.cookies.Set(ctx, cookieManager.Signup, jwt)
-
 	utils.Success(ctx, 200, "Otp Sent successfully")
 
 }
+
+// so this Controllers needs 

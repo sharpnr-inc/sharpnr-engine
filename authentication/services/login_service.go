@@ -71,7 +71,7 @@ func (s *authenticationService) LoginUser(
 
 	resp := &authenticationEngineDtos.WebLoginResponse_dto{
 		OrgId:      employee.OrganizationID,
-		Email:      employee.Name,
+		Email:      req.Email,
 		EmployeeID: employee.EmployeeID,
 		Name:       employee.Name,
 		Org:        authenticationEngineDtos.OrgData{Name: orgdetails.Name, SharpID: orgdetails.SharpID},
