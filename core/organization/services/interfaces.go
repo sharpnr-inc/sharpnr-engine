@@ -9,6 +9,7 @@ import (
 )
 
 type OrganizationServiceInterface interface {
+	
 	CreateNewOrganization(ctx context.Context, input organization_contracts.InputDataForOrgAndEmp) (output organization_contracts.InputForCreateDefaultEmployee, err error)
 	CreateDraftOrgForSignup(ctx context.Context, input organization_contracts.DraftOrganizationInput) (uuid.UUID, string, error)
 
