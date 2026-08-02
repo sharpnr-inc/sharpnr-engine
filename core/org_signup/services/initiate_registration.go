@@ -2,19 +2,14 @@ package org_signup_services
 
 import (
 	"context"
-	"errors"
 	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
+	organizationErrs "sharpnr-engine/core/organization/errs"
 	"sharpnr-engine/sharp_mailer_engine"
 	"strings"
 
 	"github.com/google/uuid"
 	"golang.org/x/sync/errgroup"
-)
-
-var (
-	ErrUserAlreadyExists = errors.New("user already exists")
-	ErrOrgAlreadyExists  = errors.New("organization already exists")
 )
 
 func (s *orgSignUpService) InitiateRegistration(
@@ -33,7 +28,7 @@ func (s *orgSignUpService) InitiateRegistration(
 			return err
 		}
 		if userExists {
-			return ErrUserAlreadyExists
+			return organizationErrs.OrganizationAlreadyExistsErr
 		}
 		return nil
 	})
@@ -44,7 +39,7 @@ func (s *orgSignUpService) InitiateRegistration(
 			return err
 		}
 		if orgExists {
-			return ErrOrgAlreadyExists
+			return organizationErrs.OrganizationAlreadyExistsErr
 		}
 		return nil
 	})

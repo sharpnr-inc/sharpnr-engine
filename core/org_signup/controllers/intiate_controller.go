@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
-	org_signup_services "sharpnr-engine/core/org_signup/services"
+	organizationErrs "sharpnr-engine/core/organization/errs"
 	"sharpnr-engine/pkg/cookieManager"
 	"sharpnr-engine/shared/utils"
 
@@ -27,21 +27,20 @@ import (
 func (c *orgSignUpController) InitiateNewOrgRegistration(ctx *gin.Context) {
 
 	// This Controller First need to check Request is Correct and comes properly
-	var req org_signup_dtos.OrganizationRegistrationDTO
 
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.ValidationError(ctx, err)
-		return
+	req, ok := utils.BindJSON[org_signup_dtos.OrganizationRegistrationDTO](ctx)
+	if !ok {
+		utils.Failure(ctx, http.StatusBadRequest, "", errors.New("invalid request body"))
 	}
 
-	slug, err := c.signUpSvc.InitiateRegistration(ctx.Request.Context(), req)
+	slug, err := c.signUpSvc.InitiateRegistration(ctx.Request.Context(), *req)
 	if err != nil {
 		// Only the "already taken" cases are the caller's fault. Anything else
 		// is ours (database, Redis, hashing) and must not be reported as a 400
 		// with the raw error text in the body.
 		switch {
-		case errors.Is(err, org_signup_services.ErrUserAlreadyExists),
-			errors.Is(err, org_signup_services.ErrOrgAlreadyExists):
+		case errors.Is(err, organizationErrs.OrganizationAlreadyExistsErr),
+			errors.Is(err, organizationErrs.OrganizationAlreadyExistsErr):
 			utils.Failure(ctx, http.StatusConflict, utils.CodeConflict, err)
 		default:
 			slog.Error("signup initiation failed",

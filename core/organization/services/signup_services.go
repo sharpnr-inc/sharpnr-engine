@@ -111,10 +111,6 @@ func (r *organizationService) CreateDraftOrgForSignup(
 	input organization_contracts.DraftOrganizationInput,
 ) (signupSlug uuid.UUID, otp string, err error) {
 
-	if input.Email == "" && (input.Mobile == nil || *input.Mobile == "") {
-		return uuid.Nil, "", errors.New("email or phone is required")
-	}
-
 	hashPassword, err := utils.HashPassword(input.Password)
 	if err != nil {
 		return uuid.Nil, "", err
