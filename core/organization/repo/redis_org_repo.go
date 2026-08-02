@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	organizationErrs "sharpnr-engine/core/organization/errs"
 	"sharpnr-engine/core/organization/models"
 
 	"strings"
@@ -60,65 +61,17 @@ func (rd *organizationRedisRepo) Create(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-// Get fetches a temporary organization signup record from Redis.
-//
-// This method is used during the organization onboarding flow to retrieve
-// signup data that was previously stored with a TTL (for example, during
-// OTP verification or onboarding continuation).
-//
-// The data is stored in Redis as a JSON payload under the key:
-//
-//	org:signup:staging:{signupID}
-//
-// Behavior:
-//   - If the key exists, the JSON payload is unmarshaled into
-//     models.OrganizationSignUpStaging and returned.
-//   - If the key does not exist (expired or never created), the method
-//     returns (nil, nil).
-//   - Any Redis or JSON unmarshalling error is returned as-is.
-//
-// Parameters:
-//   - ctx: Context for request-scoped cancellation and deadlines.
-//   - signupID: Unique identifier for the signup session.
-//
-// Returns:
-//   - *models.OrganizationSignUpStaging: The staged signup data if found.
-//   - nil, nil: If the signup session does not exist or has expired.
-//   - error: For Redis access or unmarshalling failures.
-//
-// Example:
-//
-//	signupID := "7c9f6b8e-2c0b-4d5c-bdf1-9b1e3d41e92a"
-//
-//	staging, err := tempSignupRepo.Get(ctx, signupID)
-//	if err != nil {
-//	    return err
-//	}
-//
-//	if staging == nil {
-//	    // Signup expired or invalid
-//	    return ErrSignupSessionExpired
-//	}
-//
-//	if staging.Otp != inputOtp {
-//	    return ErrInvalidOTP
-//	}
-//
 // Proceed with organization creation
 func (rd *organizationRedisRepo) Get(
 	ctx context.Context,
-	signupID string,
+	signupID uuid.UUID,
 ) (*models.OrganizationSignUpStaging, error) {
-	if signupID == "" {
-		return nil, errors.New("signupID is required")
-	}
 
-	key := "org:signup:staging:" + signupID
+	key := "org:signup:staging:" + signupID.String()
 
 	val, err := rd.redis.Get(ctx, key).Result()
 	if err == redis.Nil {
-		// Not found or expired
-		return nil, nil
+		return nil, organizationErrs.SignupSessionExpiredErr
 	}
 	if err != nil {
 		return nil, err
@@ -136,30 +89,25 @@ func (rd *organizationRedisRepo) Get(
 
 func (rd *organizationRedisRepo) Delete(
 	ctx context.Context,
-	signupID string,
+	signupID uuid.UUID,
 ) error {
 
-	if signupID == "" {
-		return errors.New("signupID is required")
-	}
-
-	// The email/phone reverse-lookup keys written by Create point back at this
-	// record, so they have to go with it. Deleting only the primary key leaves
-	// them reporting a signup that no longer exists until their TTL runs out.
-	keys := []string{"org:signup:staging:" + signupID}
+	keys := []string{"org:signup:staging:" + signupID.String()}
 
 	staging, err := rd.Get(ctx, signupID)
 	if err != nil {
+		if errors.Is(err, organizationErrs.SignupSessionExpiredErr) {
+			// Already gone/expired. Nothing to delete.
+			return nil
+		}
 		return err
 	}
 
-	if staging != nil {
-		if staging.Email != "" {
-			keys = append(keys, "org:signup:staging:email:"+strings.ToLower(staging.Email))
-		}
-		if staging.Phone != "" {
-			keys = append(keys, "org:signup:staging:phone:"+staging.Phone)
-		}
+	if staging.Email != "" {
+		keys = append(keys, "org:signup:staging:email:"+strings.ToLower(staging.Email))
+	}
+	if staging.Phone != "" {
+		keys = append(keys, "org:signup:staging:phone:"+staging.Phone)
 	}
 
 	return rd.redis.Del(ctx, keys...).Err()

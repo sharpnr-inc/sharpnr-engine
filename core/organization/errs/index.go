@@ -1,10 +1,11 @@
-// This package conatains all the errors related Erros and Types related to Organization Signup and Verification Process.
 package organizationErrs
 
-var (
-	OrganizationAlreadyExistsErr = "organization already exists"
-	OrganizationNotFoundErr      = "organization not found"
+import "errors"
 
-	SignupSessionExpiredErr = "signup session not found or expired"
-	InvalidOTPError         = "invalid OTP"
+var (
+	OrganizationAlreadyExistsErr = errors.New("organization already exists")
+	OrganizationNotFoundErr      = errors.New("organization not found")
+
+	SignupSessionExpiredErr = errors.New("signup session not found or expired")
+	InvalidOTPError         = errors.New("invalid OTP")
 )

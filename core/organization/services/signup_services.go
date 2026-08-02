@@ -17,9 +17,8 @@ func (r *organizationService) GetSignupSlug(
 	ctx context.Context, tempID uuid.UUID,
 ) (string, error) {
 
-	signupID := tempID.String()
 	// 2. Fetch from Redis
-	staging, err := r.orgRedisRepo.Get(ctx, signupID)
+	staging, err := r.orgRedisRepo.Get(ctx, tempID)
 	if err != nil {
 		return "", err
 	}
@@ -39,6 +38,8 @@ func (r *organizationService) GetSignupSlug(
 	return staging.Email, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 // DiscardSignupStaging removes a consumed signup staging record (and its
 // email/phone reverse-lookup keys) from Redis.
 //
@@ -48,8 +49,10 @@ func (r *organizationService) GetSignupSlug(
 func (r *organizationService) DiscardSignupStaging(
 	ctx context.Context, tempID uuid.UUID,
 ) error {
-	return r.orgRedisRepo.Delete(ctx, tempID.String())
+	return r.orgRedisRepo.Delete(ctx, tempID)
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 // Sentinel errors for the signup verification step. Callers match on these with
 // errors.Is to decide what the client is told: these three are the caller's
@@ -69,9 +72,7 @@ func (r *organizationService) VerifySlugCreateDefaultOrg(
 	slugID uuid.UUID,
 ) (output organization_contracts.InputDataForOrgAndEmp, err error) {
 
-	slug := slugID.String()
-
-	staging, err := r.orgRedisRepo.Get(ctx, slug)
+	staging, err := r.orgRedisRepo.Get(ctx, slugID)
 	if err != nil {
 		return output, err
 	}
@@ -102,6 +103,8 @@ func (r *organizationService) VerifySlugCreateDefaultOrg(
 	// see DiscardSignupStaging.
 	return output, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (r *organizationService) CreateDraftOrgForSignup(
 	ctx context.Context,
@@ -143,6 +146,8 @@ func (r *organizationService) CreateDraftOrgForSignup(
 
 	return stagingID, otp, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (r *organizationService) CreateNewOrganization(
 	ctx context.Context,
@@ -189,3 +194,5 @@ func (r *organizationService) CreateNewOrganization(
 
 	return output, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
