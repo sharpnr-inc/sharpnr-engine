@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
-	organization_services "sharpnr-engine/core/organization/services"
+	organizationErrs "sharpnr-engine/core/organization/errs"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	"sharpnr-engine/pkg/cookieManager"
 	"sharpnr-engine/shared/utils"
@@ -48,9 +48,9 @@ func (c *orgSignUpController) VerifyOtpForSignup(ctx *gin.Context) {
 		// used to come back as "unauthorized", which told the user their code
 		// was wrong when the real problem was ours.
 		switch {
-		case errors.Is(err, organization_services.ErrInvalidOTP),
-			errors.Is(err, organization_services.ErrSignupNotFound),
-			errors.Is(err, organization_services.ErrInvalidSignupData):
+		case errors.Is(err, organizationErrs.InvalidOTPError),
+			errors.Is(err, organizationErrs.OrganizationNotFoundErr),
+			errors.Is(err, organizationErrs.OrganizationNotFoundErr):
 			slog.Info("signup otp rejected", "reason", err.Error(), "slug", slugId)
 			utils.Failure(ctx, http.StatusUnauthorized, err)
 		default:

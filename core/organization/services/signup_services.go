@@ -3,9 +3,9 @@ package organization_services
 import (
 	"context"
 	"crypto/subtle"
-	"errors"
 	organization_constants "sharpnr-engine/core/organization/constants"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
+	organizationErrs "sharpnr-engine/core/organization/errs"
 	"sharpnr-engine/core/organization/models"
 	"sharpnr-engine/shared/utils"
 	"strings"
@@ -27,12 +27,12 @@ func (r *organizationService) GetSignupSlug(
 	// same sentinels: the caller has to tell "your signup expired, start over"
 	// apart from "Redis is down", and a bare errors.New cannot express that.
 	if staging == nil {
-		return "", ErrSignupNotFound
+		return "", organizationErrs.SignupSessionExpiredErr
 	}
 
 	// 3. Return ONLY email
 	if staging.Email == "" {
-		return "", ErrInvalidSignupData
+		return "", organizationErrs.SignupSessionExpiredErr
 	}
 
 	return staging.Email, nil
@@ -54,17 +54,6 @@ func (r *organizationService) DiscardSignupStaging(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-// Sentinel errors for the signup verification step. Callers match on these with
-// errors.Is to decide what the client is told: these three are the caller's
-// fault, anything else coming out of this function is an infrastructure failure
-// and must not be reported as a rejected OTP.
-var (
-	ErrSignupNotFound    = errors.New("signup not found or expired")
-	ErrInvalidOTP        = errors.New("invalid otp")
-	ErrInvalidSignupData = errors.New("invalid signup data")
-)
-
-// VerifySlugCreateDefaultOrg implements OrganizationServiceInterface.
 // !! Remind to change the name of this method to VerifySlugAndOtp
 func (r *organizationService) VerifySlugCreateDefaultOrg(
 	ctx context.Context,
@@ -78,15 +67,15 @@ func (r *organizationService) VerifySlugCreateDefaultOrg(
 	}
 
 	if staging == nil {
-		return output, ErrSignupNotFound
+		return output, organizationErrs.SignupSessionExpiredErr
 	}
 
 	if subtle.ConstantTimeCompare([]byte(staging.Otp), []byte(otp)) != 1 {
-		return output, ErrInvalidOTP
+		return output, organizationErrs.InvalidOTPError
 	}
 
 	if staging.Email == "" || staging.Password == "" {
-		return output, ErrInvalidSignupData
+		return output, organizationErrs.SignupSessionExpiredErr
 	}
 
 	output = organization_contracts.InputDataForOrgAndEmp{

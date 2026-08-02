@@ -3,7 +3,7 @@ package org_signup_controllers
 import (
 	"errors"
 	"net/http"
-	organization_services "sharpnr-engine/core/organization/services"
+	organizationErrs "sharpnr-engine/core/organization/errs"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	"sharpnr-engine/shared/utils"
 
@@ -38,8 +38,8 @@ func (c *orgSignUpController) VerifySlug(ctx *gin.Context) {
 		// client can switch on to send the user back to /signup/initiate — it
 		// is not a malformed request (400) and not an auth failure (401).
 		switch {
-		case errors.Is(err, organization_services.ErrSignupNotFound),
-			errors.Is(err, organization_services.ErrInvalidSignupData):
+		case errors.Is(err, organizationErrs.SignupSessionExpiredErr),
+			errors.Is(err, organizationErrs.OrganizationNotFoundErr):
 			utils.Failure(
 				ctx,
 				http.StatusGone,
