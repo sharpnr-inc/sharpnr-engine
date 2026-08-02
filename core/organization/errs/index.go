@@ -5,6 +5,6 @@ var (
 	OrganizationAlreadyExistsErr = "organization already exists"
 	OrganizationNotFoundErr      = "organization not found"
 
-	SignupSessionExpiredErr = "signup session expired"
+	SignupSessionExpiredErr = "signup session not found or expired"
 	InvalidOTPError         = "invalid OTP"
 )

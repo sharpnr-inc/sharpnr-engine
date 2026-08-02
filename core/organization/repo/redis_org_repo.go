@@ -58,6 +58,8 @@ func (rd *organizationRedisRepo) Create(
 	return nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 // Get fetches a temporary organization signup record from Redis.
 //
 // This method is used during the organization onboarding flow to retrieve
@@ -130,6 +132,8 @@ func (rd *organizationRedisRepo) Get(
 	return &tempOrg, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 func (rd *organizationRedisRepo) Delete(
 	ctx context.Context,
 	signupID string,
@@ -160,6 +164,8 @@ func (rd *organizationRedisRepo) Delete(
 
 	return rd.redis.Del(ctx, keys...).Err()
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (rd *organizationRedisRepo) GetByEmailOrPhone(
 	ctx context.Context,
