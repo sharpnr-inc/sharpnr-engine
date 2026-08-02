@@ -33,7 +33,7 @@ func (c *AccountingController) CreateAccount(ctx *gin.Context) {
 	)
 
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something Went Wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -57,7 +57,7 @@ func (c *AccountingController) GetAccountLedger(ctx *gin.Context) {
 
 	ledger, err := c.accSvc.GetAccountLeger(ctx.Request.Context(), orgID, emplID, legalEntityID, accountID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something Went Wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

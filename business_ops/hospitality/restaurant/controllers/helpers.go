@@ -16,7 +16,7 @@ func (c *RestaurantController) resolveContext(ctx *gin.Context) (orgID uuid.UUID
 	// 1. Resolve and Parse Employee/User ID
 	userIDRaw, exists := ctx.Get(webMiddleware.UserIDContextKey)
 	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
+		utils.Failure(ctx, http.StatusUnauthorized, errors.New("user not authenticated"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
@@ -24,21 +24,21 @@ func (c *RestaurantController) resolveContext(ctx *gin.Context) (orgID uuid.UUID
 	var err error
 	employeeID, err = uuid.Parse(fmt.Sprintf("%v", userIDRaw))
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid user uuid format"))
+		utils.Failure(ctx, http.StatusInternalServerError, errors.New("invalid user uuid format"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	// 2. Resolve and Parse Org ID
 	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
 	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
+		utils.Failure(ctx, http.StatusUnauthorized, errors.New("organization not found in context"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	// Convert interface to string and parse
 	orgID, err = uuid.Parse(fmt.Sprintf("%v", orgUUIDRaw))
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid format"))
+		utils.Failure(ctx, http.StatusInternalServerError, errors.New("invalid org uuid format"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
@@ -50,7 +50,7 @@ func (c *RestaurantController) resolveRestaurantID(ctx *gin.Context) (uuid.UUID,
 	restaurantIDStr := ctx.Param("restaurantID")
 	parsedID, err := uuid.Parse(restaurantIDStr)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid restaurantID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid restaurantID format"))
 		return uuid.Nil, false
 	}
 	return parsedID, true
@@ -61,7 +61,7 @@ func (c *RestaurantController) resolveTableID(ctx *gin.Context) (uuid.UUID, bool
 	tableIDStr := ctx.Param("tableID")
 	parsedID, err := uuid.Parse(tableIDStr)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid tableID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid tableID format"))
 		return uuid.Nil, false
 	}
 	return parsedID, true
@@ -71,7 +71,7 @@ func (c *RestaurantController) resolveDineInSessionID(ctx *gin.Context) (uuid.UU
 	dineSessionIDStr := ctx.Param("dineSessionID")
 	parsedID, err := uuid.Parse(dineSessionIDStr)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid Dine In Session ID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid Dine In Session ID format"))
 		return uuid.Nil, false
 	}
 	return parsedID, true
@@ -81,7 +81,7 @@ func (c *RestaurantController) resolveInventoryAccountID(ctx *gin.Context) (uuid
 	inventoryAccountID := ctx.Param("inventoryAccountID")
 	parsedID, err := uuid.Parse(inventoryAccountID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid inventory Account ID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid inventory Account ID format"))
 		return uuid.Nil, false
 	}
 	return parsedID, true
@@ -90,7 +90,7 @@ func (c *RestaurantController) resolveInventoryAccountID(ctx *gin.Context) (uuid
 // resolveBody binds the JSON request body to the provided struct type.
 func (c *RestaurantController) resolveBody(ctx *gin.Context, target interface{}) bool {
 	if err := ctx.ShouldBindJSON(target); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, fmt.Errorf("invalid request body: %w", err))
+		utils.Failure(ctx, http.StatusBadRequest, fmt.Errorf("invalid request body: %w", err))
 		return false
 	}
 	return true

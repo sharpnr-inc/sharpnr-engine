@@ -13,33 +13,33 @@ import (
 func (c *hotelController) GetHotelLayout(ctx *gin.Context) {
 
 	if _, exists := ctx.Get(webMiddleware.UserIDContextKey); !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
+		utils.Failure(ctx, http.StatusUnauthorized, errors.New("user not authenticated"))
 		return
 	}
 
 	// 2. Org context check
 	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
 	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
+		utils.Failure(ctx, http.StatusUnauthorized, errors.New("organization not found in context"))
 		return
 	}
 
 	_, ok := orgUUIDRaw.(uuid.UUID)
 	if !ok {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid type"))
+		utils.Failure(ctx, http.StatusInternalServerError, errors.New("invalid org uuid type"))
 		return
 	}
 
 	hotelID := ctx.Param("hotelID")
 	parsedHotelID, err := uuid.Parse(hotelID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid restaurantID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid restaurantID format"))
 		return
 	}
 
 	res, err := c.hotelService.GetHotelLayout(ctx.Request.Context(), parsedHotelID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadGateway, "", err)
+		utils.Failure(ctx, http.StatusBadGateway, err)
 		return
 	}
 

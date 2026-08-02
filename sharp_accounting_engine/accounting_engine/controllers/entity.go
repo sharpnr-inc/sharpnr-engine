@@ -15,7 +15,7 @@ func (c *AccountingController) GetAllLegalEntities(ctx *gin.Context) {
 
 	response, err := c.accSvc.GetLegalEntities(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "something went wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 	}
 
 	utils.Success(ctx, http.StatusOK, "legal entities fetched successfully", response)

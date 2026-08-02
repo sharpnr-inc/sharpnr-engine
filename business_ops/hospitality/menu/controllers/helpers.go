@@ -15,7 +15,7 @@ func (c *menuController) resolveContext(ctx *gin.Context) (orgID uuid.UUID, empl
 	// 1. Resolve and Parse Employee/User ID
 	userIDRaw, exists := ctx.Get(webMiddleware.UserIDContextKey)
 	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
+		utils.Failure(ctx, http.StatusUnauthorized, errors.New("user not authenticated"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
@@ -23,21 +23,21 @@ func (c *menuController) resolveContext(ctx *gin.Context) (orgID uuid.UUID, empl
 	var err error
 	employeeID, err = uuid.Parse(fmt.Sprintf("%v", userIDRaw))
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid user uuid format"))
+		utils.Failure(ctx, http.StatusInternalServerError, errors.New("invalid user uuid format"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	// 2. Resolve and Parse Org ID
 	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
 	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
+		utils.Failure(ctx, http.StatusUnauthorized, errors.New("organization not found in context"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	// Convert interface to string and parse
 	orgID, err = uuid.Parse(fmt.Sprintf("%v", orgUUIDRaw))
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid format"))
+		utils.Failure(ctx, http.StatusInternalServerError, errors.New("invalid org uuid format"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
@@ -48,7 +48,7 @@ func (c *menuController) resolveMenuOwnersID(ctx *gin.Context) (uuid.UUID, bool)
 	ownersIDStr := ctx.Param("ownersID")
 	parsedID, err := uuid.Parse(ownersIDStr)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid OwnersID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid OwnersID format"))
 		return uuid.Nil, false
 	}
 	return parsedID, true
@@ -57,7 +57,7 @@ func (c *menuController) resolveMenuOwnersID(ctx *gin.Context) (uuid.UUID, bool)
 // resolveBody binds the JSON request body to the provided struct type.
 func (c *menuController) resolveBody(ctx *gin.Context, target interface{}) bool {
 	if err := ctx.ShouldBindJSON(target); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, fmt.Errorf("invalid request body: %w", err))
+		utils.Failure(ctx, http.StatusBadRequest, fmt.Errorf("invalid request body: %w", err))
 		return false
 	}
 	return true

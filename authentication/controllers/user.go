@@ -31,7 +31,7 @@ func (c *authenticationControllers) GetUser(ctx *gin.Context) {
 
 	res, err := c.authSvc.GetAuthenticatedUserDetails(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusUnauthorized, "unauthorised", err)
+		utils.Failure(ctx, http.StatusUnauthorized, err)
 	}
 
 	utils.Success(ctx, http.StatusOK, "Success", res)

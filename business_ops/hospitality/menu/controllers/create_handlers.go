@@ -21,18 +21,18 @@ func (c *menuController) AddMenu(ctx *gin.Context) {
 	ownersIDRaw := ctx.Param("ownersID")
 	_, err := uuid.Parse(ownersIDRaw)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid ownersID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid ownersID format"))
 		return
 	}
 
 	var req hospitality_menu_contracts.CreateMenuInput
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	if _, err := c.menuService.CreateMenu(ctx, orgID, emplID, &req); err != nil {
-		utils.Failure(ctx, http.StatusBadGateway, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusBadGateway, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "success")
@@ -48,18 +48,18 @@ func (c *menuController) AddCategoryInMenu(ctx *gin.Context) {
 	ownersID := ctx.Param("ownersID")
 	_, err := uuid.Parse(ownersID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid restaurantID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid restaurantID format"))
 		return
 	}
 
 	var req *hospitality_menu_contracts.AddMenuCategoryInput
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	if _, err := c.menuService.AddCategoryInMenu(ctx, req); err != nil {
-		utils.Failure(ctx, http.StatusBadGateway, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusBadGateway, err)
 		return
 	}
 
@@ -77,18 +77,18 @@ func (c *menuController) AddSubCategory(ctx *gin.Context) {
 	ownersIDRaw := ctx.Param("ownersID")
 	_, err := uuid.Parse(ownersIDRaw)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid ownersID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid ownersID format"))
 		return
 	}
 
 	var req hospitality_menu_contracts.AddSubCategoryInput
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	if _, err := c.menuService.AddSubCategoryInCategory(ctx, &req); err != nil {
-		utils.Failure(ctx, http.StatusBadGateway, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusBadGateway, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "success")
@@ -104,18 +104,18 @@ func (c *menuController) AddMenuItems(ctx *gin.Context) {
 	ownersIDRaw := ctx.Param("ownersID")
 	_, err := uuid.Parse(ownersIDRaw)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid ownersID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid ownersID format"))
 		return
 	}
 
 	var req hospitality_menu_contracts.AddMenuItemInput
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	if _, err := c.menuService.AddMenuItemInSubCategory(ctx, &req); err != nil {
-		utils.Failure(ctx, http.StatusBadGateway, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusBadGateway, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "success")
@@ -131,18 +131,18 @@ func (c *menuController) AddVariantsGroup(ctx *gin.Context) {
 	ownersIDRaw := ctx.Param("ownersID")
 	_, err := uuid.Parse(ownersIDRaw)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid ownersID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid ownersID format"))
 		return
 	}
 
 	var req hospitality_menu_contracts.AddVariantGroupInput
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	if _, err := c.menuService.AddVariantGroup(ctx, &req); err != nil {
-		utils.Failure(ctx, http.StatusBadGateway, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusBadGateway, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "success")
@@ -158,18 +158,18 @@ func (c *menuController) AddVariants(ctx *gin.Context) {
 	ownersIDRaw := ctx.Param("ownersID")
 	_, err := uuid.Parse(ownersIDRaw)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid ownersID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid ownersID format"))
 		return
 	}
 
 	var req hospitality_menu_contracts.AddVariantInput
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	if _, err := c.menuService.AddVariantsInVariantsGroup(ctx, &req); err != nil {
-		utils.Failure(ctx, http.StatusBadGateway, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusBadGateway, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "success")
@@ -185,18 +185,18 @@ func (c *menuController) AddAddons(ctx *gin.Context) {
 	ownersIDRaw := ctx.Param("ownersID")
 	_, err := uuid.Parse(ownersIDRaw)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid ownersID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid ownersID format"))
 		return
 	}
 
 	var req hospitality_menu_contracts.AddAddOnInput
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeConflict, err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	if _, err := c.menuService.AddAddOnInMenu(ctx, &req); err != nil {
-		utils.Failure(ctx, http.StatusBadGateway, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusBadGateway, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "success")

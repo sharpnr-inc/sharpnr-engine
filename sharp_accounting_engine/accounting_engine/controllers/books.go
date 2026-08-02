@@ -20,7 +20,7 @@ func (c *AccountingController) GetAccountingBooks(ctx *gin.Context) {
 
 	response, err := c.accSvc.GetAccountingBook(ctx.Request.Context(), orgID, emplID, legalEntityID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Error Fetching AccountingBook", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

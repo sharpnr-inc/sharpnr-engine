@@ -98,7 +98,7 @@ func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 
 	var req *orchestrator_dtos.CreatePropertyReq_dto
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, err.Error(), err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 

@@ -15,7 +15,7 @@ func (c *hrmsEmployeeController) ListAllEmployeesOfOrg(ctx *gin.Context) {
 
 	res, err := c.hrmsEmpService.ListOrgAllEmployees(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

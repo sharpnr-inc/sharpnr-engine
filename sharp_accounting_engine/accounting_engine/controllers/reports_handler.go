@@ -24,7 +24,7 @@ func (c *AccountingController) GetProfitAndLossReport(ctx *gin.Context) {
 
 	res, err := c.accSvc.GenerateProfitAndLossReport(ctx.Request.Context(), orgID, emplID, legelEntityID, from, to)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "something went wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

@@ -27,7 +27,7 @@ func (c *RestaurantController) GetAllInventoryAccounts(ctx *gin.Context) {
 	acc, err := c.resSvc.GetAllInventoryAccounts(ctx.Request.Context(), orgID, empID)
 	if err != nil {
 
-		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -55,7 +55,7 @@ func (c *RestaurantController) AddInventoryInInventoryAccount(ctx *gin.Context) 
 	}
 
 	if err := c.resSvc.AddNewInventoryInRestaurant(ctx.Request.Context(), orgID, empID, restaurantID, req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -83,7 +83,7 @@ func (c *RestaurantController) GetBusinessUnitInventories(ctx *gin.Context) {
 	if val := ctx.Query("inventoryAccountID"); val != "" {
 		parsedID, err := uuid.Parse(val)
 		if err != nil {
-			utils.Failure(ctx, http.StatusBadRequest, "invalid inventoryAccountID", err)
+			utils.Failure(ctx, http.StatusBadRequest, err)
 			return
 		}
 		inventoryAccountID = &parsedID
@@ -95,7 +95,7 @@ func (c *RestaurantController) GetBusinessUnitInventories(ctx *gin.Context) {
 		inventoryAccountID, // optional filter passed
 	)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

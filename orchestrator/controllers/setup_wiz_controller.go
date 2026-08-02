@@ -35,9 +35,9 @@ func (c *OrchestratorController) SetupWizGetSetupProgress(ctx *gin.Context) {
 		utils.Failure(
 			ctx,
 			http.StatusInternalServerError,
-			utils.CodeInternalError,
-			err,
-		)
+
+			err)
+
 		return
 	}
 
@@ -64,7 +64,7 @@ func (s *OrchestratorController) SetupWizHandleSuperAdminSetupCompletion(ctx *gi
 	}
 
 	if err := s.orchestService.SetUpSuperAdminDetails(ctx.Request.Context(), orgID, emplID, req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -101,8 +101,7 @@ func (c *OrchestratorController) SetupWizOperation_AddProperty(ctx *gin.Context)
 
 	// 4. Call Service Layer
 	if err := c.orchestService.SetupWiz_AddProperty(ctx.Request.Context(), orgID, emplID, &req); err != nil {
-		// Use your stable CodeInternalError or a specific domain code
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -125,7 +124,7 @@ func (c *OrchestratorController) SetupWiz_UpdateOrganizationName(ctx *gin.Contex
 	}
 
 	if err := c.orchestService.SetupWiz_UpdateOrgName(ctx.Request.Context(), orgID, emplID, &req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something went wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

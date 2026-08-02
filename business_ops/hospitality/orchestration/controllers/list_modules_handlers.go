@@ -15,7 +15,7 @@ func (c *hospitalityOrchestrationController) ListAllHotelsHandler(ctx *gin.Conte
 
 	res, err := c.hospitalityOrchestService.ListAllOrgsHotels(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something went wrong Try again", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -33,7 +33,7 @@ func (c *hospitalityOrchestrationController) ListAllRestaurantHandler(ctx *gin.C
 
 	res, err := c.hospitalityOrchestService.ListAllOrgsHotels(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something went wrong Try again", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -51,7 +51,7 @@ func (c *hospitalityOrchestrationController) ListAllBarHandler(ctx *gin.Context)
 
 	res, err := c.hospitalityOrchestService.ListAllOrgsHotels(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something went wrong Try again", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -69,7 +69,7 @@ func (c *hospitalityOrchestrationController) ListAllInfraHandler(ctx *gin.Contex
 
 	res, err := c.hospitalityOrchestService.ListAllOrgsHotels(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something went wrong Try again", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

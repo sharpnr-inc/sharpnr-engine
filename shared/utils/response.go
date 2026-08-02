@@ -10,27 +10,11 @@ import (
 
 /*
 ========================
-Application Error Codes
-========================
-Stable identifiers for frontend & logs
-*/
-const (
-	CodeValidationFailed = "VALIDATION_FAILED"
-	CodeUnauthorized     = "UNAUTHORIZED"
-	CodeForbidden        = "FORBIDDEN"
-	CodeNotFound         = "NOT_FOUND"
-	CodeConflict         = "CONFLICT"
-	CodeInternalError    = "INTERNAL_ERROR"
-)
-
-/*
-========================
 API Error Model
 ========================
 */
 type APIError struct {
 	HTTPStatus int    `json:"status"`
-	Code       string `json:"code"`
 	Message    string `json:"message"`
 }
 
@@ -82,7 +66,6 @@ Failure Response
 func Failure(
 	ctx *gin.Context,
 	status int,
-	code string,
 	err error,
 ) {
 	msg := http.StatusText(status)
@@ -94,7 +77,6 @@ func Failure(
 		Success: false,
 		Error: &APIError{
 			HTTPStatus: status,
-			Code:       code,
 			Message:    msg,
 		},
 		Timestamp: time.Now(),
@@ -119,7 +101,6 @@ func ValidationError(ctx *gin.Context, err error) {
 		Success: false,
 		Error: &APIError{
 			HTTPStatus: http.StatusBadRequest,
-			Code:       CodeValidationFailed,
 			Message:    "Invalid request payload",
 		},
 		Data:      fieldErrors,

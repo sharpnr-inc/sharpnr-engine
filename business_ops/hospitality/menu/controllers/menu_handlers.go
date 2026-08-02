@@ -18,13 +18,13 @@ func (c *menuController) GetMenu(ctx *gin.Context) {
 	ownersIDRaw := ctx.Param("ownersID")
 	parsedOwnersID, err := uuid.Parse(ownersIDRaw)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid ownersID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid ownersID format"))
 		return
 	}
 
 	res, err := c.menuService.GetMenusOfOwners(ctx, orgID, emplID, parsedOwnersID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusNotFound, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusNotFound, err)
 		return
 	}
 

@@ -22,9 +22,9 @@ func (c *orgSignUpController) VerifyOtpForSignup(ctx *gin.Context) {
 		utils.Failure(
 			ctx,
 			http.StatusForbidden,
-			utils.CodeUnauthorized,
-			errors.New("signup context missing or expired"),
-		)
+
+			errors.New("signup context missing or expired"))
+
 		return
 	}
 
@@ -52,7 +52,7 @@ func (c *orgSignUpController) VerifyOtpForSignup(ctx *gin.Context) {
 			errors.Is(err, organization_services.ErrSignupNotFound),
 			errors.Is(err, organization_services.ErrInvalidSignupData):
 			slog.Info("signup otp rejected", "reason", err.Error(), "slug", slugId)
-			utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, err)
+			utils.Failure(ctx, http.StatusUnauthorized, err)
 		default:
 			slog.Error("signup verification failed",
 				"error", err,
@@ -62,9 +62,9 @@ func (c *orgSignUpController) VerifyOtpForSignup(ctx *gin.Context) {
 			utils.Failure(
 				ctx,
 				http.StatusInternalServerError,
-				utils.CodeInternalError,
-				errors.New("could not complete signup, please try again"),
-			)
+
+				errors.New("could not complete signup, please try again"))
+
 		}
 		return
 	}
@@ -84,9 +84,9 @@ func (c *orgSignUpController) VerifyOtpForSignup(ctx *gin.Context) {
 		utils.Failure(
 			ctx,
 			http.StatusInternalServerError,
-			utils.CodeInternalError,
-			errors.New("signup completed but session could not be started, please sign in"),
-		)
+
+			errors.New("signup completed but session could not be started, please sign in"))
+
 		return
 	}
 

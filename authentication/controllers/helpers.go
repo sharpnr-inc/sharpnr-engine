@@ -46,26 +46,26 @@ func (c *authenticationControllers) resolveRequestContexts(ctx *gin.Context) (uu
 	// 1. Extract and Parse Employee ID
 	empIDRaw, exists := ctx.Get(webMiddleware.UserIDContextKey)
 	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
+		utils.Failure(ctx, http.StatusUnauthorized, errors.New("user not authenticated"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	empID, err := uuid.Parse(fmt.Sprint(empIDRaw))
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid employee uuid format"))
+		utils.Failure(ctx, http.StatusInternalServerError, errors.New("invalid employee uuid format"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	// 2. Extract and Parse Org ID
 	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
 	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
+		utils.Failure(ctx, http.StatusUnauthorized, errors.New("organization not found in context"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	orgID, err := uuid.Parse(fmt.Sprint(orgUUIDRaw))
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid format"))
+		utils.Failure(ctx, http.StatusInternalServerError, errors.New("invalid org uuid format"))
 		return uuid.Nil, uuid.Nil, false
 	}
 

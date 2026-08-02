@@ -28,7 +28,7 @@ func (c *AccountingController) CreateJournalEntry(ctx *gin.Context) {
 
 	journalEntryID, err := c.accSvc.CreateJournalEntry(ctx.Request.Context(), orgID, emplID, legalEntityID, *req)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Failed to Create Journal Entry", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -51,7 +51,7 @@ func (c *AccountingController) GetJournalEntries(ctx *gin.Context) {
 
 	res, err := c.accSvc.GetJournalEntries(ctx.Request.Context(), orgID, emplID, legalEntityID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Failed to Fetch Journal Entries", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

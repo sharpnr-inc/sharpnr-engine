@@ -37,7 +37,7 @@ func (c *KitchenController) GetKots(ctx *gin.Context) {
 	// error; the client's EventSource can react and reconnect.
 	initialData, err := c.kitchenService.GetKots(ctx.Request.Context(), kitchenID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -102,12 +102,12 @@ func (c *KitchenController) UpdateKotsStatus(ctx *gin.Context) {
 	}
 
 	if err := ctx.ShouldBindJSON(&input); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, "", err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	if err := c.kitchenService.UpdateKotStatus(ctx.Request.Context(), kitchenID, kotID, input.Status); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

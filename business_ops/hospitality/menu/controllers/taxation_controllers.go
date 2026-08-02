@@ -26,7 +26,7 @@ func (c *menuController) AddTaxCategoryInMenuGroup(ctx *gin.Context) {
 	}
 
 	if err := c.menuService.AddTaxCategoryInMenuGroup(ctx.Request.Context(), orgID, emplID, ownersID, *req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something Went Wrong During Setting the Tax Category", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

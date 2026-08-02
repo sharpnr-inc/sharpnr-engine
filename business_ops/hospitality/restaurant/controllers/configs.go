@@ -26,7 +26,7 @@ func (c *RestaurantController) GetGeneralDetails(ctx *gin.Context) {
 
 	response, err := c.resSvc.GetGeneralDetails(ctx, orgID, employeeID, restaurantID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -50,13 +50,13 @@ func (c *RestaurantController) UpdateGeneralDetails(ctx *gin.Context) {
 
 	var req restaurant_contracts.UpdateBodyRequestDto
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, "SomeThing went Wrong", err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	err := c.resSvc.UpdateGeneralDetails(ctx, orgID, employeeID, restaurantID, req)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -79,13 +79,13 @@ func (c *RestaurantController) AddLayout(ctx *gin.Context) {
 
 	var req restaurant_contracts.AddLayoutRequestDto
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, "SomeThing went Wrong", err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	err := c.resSvc.SetupRestaurantLayout(ctx, orgID, employeeID, restaurantID, req)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -107,7 +107,7 @@ func (c *RestaurantController) GetRestaurantPreferredKitchen(ctx *gin.Context) {
 
 	response, err := c.resSvc.GetRestaurantPreferredKitchenID(ctx, orgID, employeeID, restaurantID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -129,12 +129,12 @@ func (c *RestaurantController) AddRestaurantPreferredKitchen(ctx *gin.Context) {
 	pfkStr := ctx.Param("pfKitchenID")
 	parsedPfkStr, err := uuid.Parse(pfkStr)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid preferred Kitchen ID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid preferred Kitchen ID format"))
 		return
 	}
 
 	if err := c.resSvc.AddPreferredKitchen(ctx.Request.Context(), orgID, employeeID, restaurantID, parsedPfkStr); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, err.Error(), err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -156,7 +156,7 @@ func (c *RestaurantController) ActivateDeactivateKitchen(ctx *gin.Context) {
 
 	active, err := strconv.ParseBool(switchParam)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, "switch must be true or false", err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
@@ -168,7 +168,7 @@ func (c *RestaurantController) ActivateDeactivateKitchen(ctx *gin.Context) {
 		active,
 	)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Restaurant switch operation failed", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

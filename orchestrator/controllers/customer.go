@@ -31,7 +31,7 @@ func (c *OrchestratorController) CreateCustomerHandler(ctx *gin.Context) {
 	}
 
 	if err := c.orchestService.AddCustomer(ctx.Request.Context(), orgID, emplID, *req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Some Bad Happed", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -68,7 +68,7 @@ func (c *OrchestratorController) SearchCustomerHandler(ctx *gin.Context) {
 	}
 
 	if err := ctx.ShouldBindQuery(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, "Search query must be at least 3 characters", err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
@@ -76,7 +76,7 @@ func (c *OrchestratorController) SearchCustomerHandler(ctx *gin.Context) {
 	results, err := c.orchestService.SearchCustomer(ctx.Request.Context(), orgID, emplID, req.SearchQuery)
 	if err != nil {
 		// Log the actual error internally, return a cleaner message to the user
-		utils.Failure(ctx, http.StatusInternalServerError, "Failed to retrieve search results", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

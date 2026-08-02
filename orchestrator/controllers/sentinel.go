@@ -20,7 +20,7 @@ func (c *OrchestratorController) ListPrincipalsHandler(ctx *gin.Context) {
 
 	principals, err := c.orchestService.ListPrincipals(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "Principals fetched", principals)
@@ -36,7 +36,7 @@ func (c *OrchestratorController) GetAuthzContextPaletteHandler(ctx *gin.Context)
 	}
 	palette, err := c.orchestService.GetAuthzContextPalette(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "Context palette fetched", palette)
@@ -51,7 +51,7 @@ func (c *OrchestratorController) ListAuthzResourcesHandler(ctx *gin.Context) {
 	}
 	resources, err := c.orchestService.ListAuthzResources(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "Resources fetched", resources)
@@ -67,7 +67,7 @@ func (c *OrchestratorController) GetAuthzResourceDetailsHandler(ctx *gin.Context
 	resourceType := ctx.Param("resourceType")
 	details, err := c.orchestService.GetAuthzResourceDetails(ctx.Request.Context(), orgID, emplID, resourceType)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "Resource details fetched", details)
@@ -81,7 +81,7 @@ func (c *OrchestratorController) ListPoliciesHandler(ctx *gin.Context) {
 	scope := sentinelengine_models.PolicyScope(ctx.Query("scope"))
 	policies, err := c.orchestService.ListPolicies(ctx.Request.Context(), orgID, emplID, scope)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "Policies fetched", policies)
@@ -98,7 +98,7 @@ func (c *OrchestratorController) CreatePolicyHandler(ctx *gin.Context) {
 	}
 	id, err := c.orchestService.CreatePolicy(ctx.Request.Context(), orgID, emplID, *req)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 	utils.Success(ctx, http.StatusCreated, "Policy created", gin.H{"id": id})
@@ -111,7 +111,7 @@ func (c *OrchestratorController) ListRolesHandler(ctx *gin.Context) {
 	}
 	roles, err := c.orchestService.ListRoles(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "Roles fetched", roles)
@@ -128,7 +128,7 @@ func (c *OrchestratorController) CreateRoleHandler(ctx *gin.Context) {
 	}
 	id, err := c.orchestService.CreateRole(ctx.Request.Context(), orgID, emplID, *req)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 	utils.Success(ctx, http.StatusCreated, "Role created", gin.H{"id": id})
@@ -145,7 +145,7 @@ func (c *OrchestratorController) GetRolePrivilegesHandler(ctx *gin.Context) {
 	}
 	view, err := c.orchestService.GetRolePrivileges(ctx.Request.Context(), orgID, emplID, roleID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "Role privileges fetched", view)
@@ -165,7 +165,7 @@ func (c *OrchestratorController) AttachPoliciesToRoleHandler(ctx *gin.Context) {
 		return
 	}
 	if err := c.orchestService.AttachPoliciesToRole(ctx.Request.Context(), orgID, emplID, roleID, *req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "Policies attached")
@@ -182,11 +182,11 @@ func (c *OrchestratorController) DetachPolicyFromRoleHandler(ctx *gin.Context) {
 	}
 	policyID, err := uuid.Parse(ctx.Param("policyID"))
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid policyID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid policyID format"))
 		return
 	}
 	if err := c.orchestService.DetachPolicyFromRole(ctx.Request.Context(), orgID, emplID, roleID, policyID); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "Policy detached")
@@ -196,7 +196,7 @@ func (c *OrchestratorController) DetachPolicyFromRoleHandler(ctx *gin.Context) {
 func parseRoleID(ctx *gin.Context) (uuid.UUID, error) {
 	id, err := uuid.Parse(ctx.Param("roleID"))
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid roleID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid roleID format"))
 		return uuid.Nil, err
 	}
 	return id, nil

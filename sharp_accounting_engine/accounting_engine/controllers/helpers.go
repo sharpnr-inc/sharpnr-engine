@@ -15,7 +15,7 @@ func (c *AccountingController) resolveRequestContext(ctx *gin.Context) (orgID uu
 	// 1. Resolve and Parse Employee/User ID
 	userIDRaw, exists := ctx.Get(webMiddleware.UserIDContextKey)
 	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
+		utils.Failure(ctx, http.StatusUnauthorized, errors.New("user not authenticated"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
@@ -23,21 +23,21 @@ func (c *AccountingController) resolveRequestContext(ctx *gin.Context) (orgID uu
 	var err error
 	employeeID, err = uuid.Parse(fmt.Sprintf("%v", userIDRaw))
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid user uuid format"))
+		utils.Failure(ctx, http.StatusInternalServerError, errors.New("invalid user uuid format"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	// 2. Resolve and Parse Org ID
 	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
 	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
+		utils.Failure(ctx, http.StatusUnauthorized, errors.New("organization not found in context"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	// Convert interface to string and parse
 	orgID, err = uuid.Parse(fmt.Sprintf("%v", orgUUIDRaw))
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid format"))
+		utils.Failure(ctx, http.StatusInternalServerError, errors.New("invalid org uuid format"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
@@ -51,7 +51,7 @@ func (c *AccountingController) resolveLegalEntityID(ctx *gin.Context) (uuid.UUID
 	legalEntityIDStr := ctx.Param("legalEntityID")
 	parsedID, err := uuid.Parse(legalEntityIDStr)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid legalEntityID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid legalEntityID format"))
 		return uuid.Nil, false
 	}
 	return parsedID, true
@@ -61,7 +61,7 @@ func (c *AccountingController) resolveAccountID(ctx *gin.Context) (uuid.UUID, bo
 	accountIDStr := ctx.Param("accountID")
 	parsedID, err := uuid.Parse(accountIDStr)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid accountID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid accountID format"))
 		return uuid.Nil, false
 	}
 	return parsedID, true
@@ -71,7 +71,7 @@ func (c *AccountingController) resolveJournalEntryID(ctx *gin.Context) (uuid.UUI
 	entryIDStr := ctx.Param("entryID")
 	parsedID, err := uuid.Parse(entryIDStr)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, errors.New("invalid entryID format"))
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("invalid entryID format"))
 		return uuid.Nil, false
 	}
 	return parsedID, true

@@ -28,7 +28,7 @@ func (c *RestaurantController) CreateDineSession(ctx *gin.Context) {
 
 	_, err := c.resSvc.StartDineSession(ctx.Request.Context(), restaurantID, orgID, empID, tableID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -58,7 +58,7 @@ func (c *RestaurantController) AddOrderInDiningSession(ctx *gin.Context) {
 
 	var req *restaurant_contracts.DiningSessionOrder_req_dto
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, "", err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
@@ -68,7 +68,7 @@ func (c *RestaurantController) AddOrderInDiningSession(ctx *gin.Context) {
 		orgID,
 		restaurantID,
 	); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -96,7 +96,7 @@ func (c *RestaurantController) GetDineInSessionOrders(ctx *gin.Context) {
 
 	res, err := c.resSvc.GetDineSessionOrders(ctx, dineInSessionID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -136,7 +136,7 @@ func (c *RestaurantController) CloseDineInSession(ctx *gin.Context) {
 		*req,
 	)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something Went Wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

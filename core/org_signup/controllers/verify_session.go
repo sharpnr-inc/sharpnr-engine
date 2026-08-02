@@ -21,9 +21,8 @@ func (c *orgSignUpController) VerifySlug(ctx *gin.Context) {
 		utils.Failure(
 			ctx,
 			http.StatusForbidden,
-			utils.CodeUnauthorized,
-			errors.New("signup context missing or expired"),
-		)
+			errors.New("signup context missing or expired"))
+
 		return
 	}
 
@@ -44,16 +43,14 @@ func (c *orgSignUpController) VerifySlug(ctx *gin.Context) {
 			utils.Failure(
 				ctx,
 				http.StatusGone,
-				utils.CodeNotFound,
-				errors.New("signup session expired, please start again"),
-			)
+				errors.New("signup session expired, please start again"))
+
 		default:
 			utils.Failure(
 				ctx,
 				http.StatusInternalServerError,
-				utils.CodeInternalError,
-				errors.New("could not load signup session, please try again"),
-			)
+				errors.New("could not load signup session, please try again"))
+
 		}
 		return
 	}

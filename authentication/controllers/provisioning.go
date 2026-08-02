@@ -13,13 +13,13 @@ func (c *authenticationControllers) VerifyEmployeeProvision(ctx *gin.Context) {
 
 	req, ok := utils.BindJSON[authenticationEngineDtos.VerifyEmployeeProvisionRequestDto](ctx)
 	if !ok {
-		utils.Failure(ctx, http.StatusBadRequest, "Something went wrong", nil)
+		utils.Failure(ctx, http.StatusBadRequest, nil)
 		return
 	}
 
 	_, err := c.jwtMgr.VerifyEmployeeProvisioningToken(req.Token)
 	if err != nil {
-		utils.Failure(ctx, http.StatusUnauthorized, "Invalid or expired provisioning token", err)
+		utils.Failure(ctx, http.StatusUnauthorized, err)
 		return
 	}
 

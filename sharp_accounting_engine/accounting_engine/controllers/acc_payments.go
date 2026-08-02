@@ -21,7 +21,7 @@ func (c *AccountingController) GetAllPaymentOrders(ctx *gin.Context) {
 
 	res, err := c.accSvc.ListAllPaymentOrder(ctx.Request.Context(), orgID, emplID, legalEntityID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

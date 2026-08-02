@@ -17,7 +17,7 @@ func (s *authenticationControllers) WebLogin(ctx *gin.Context) {
 
 	var req authenticationEngineDtos.LoginRequest_dto
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, "Invalid Credentials", err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
@@ -34,13 +34,13 @@ func (s *authenticationControllers) WebLogin(ctx *gin.Context) {
 
 	res, err := s.authSvc.LoginUser(reqCtx, req)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
 	authToken, err := s.jwtMgr.IssueWebAuthCookieToken(res.EmployeeID, res.OrgId)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -57,7 +57,7 @@ func (s *authenticationControllers) WebLogin(ctx *gin.Context) {
 func (s *authenticationControllers) MobileLogin(ctx *gin.Context) {
 	var req authenticationEngineDtos.LoginRequest_dto
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, "Invalid Credentials", err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
@@ -74,7 +74,7 @@ func (s *authenticationControllers) MobileLogin(ctx *gin.Context) {
 
 	res, err := s.authSvc.LoginUser(reqCtx, req)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -83,7 +83,7 @@ func (s *authenticationControllers) MobileLogin(ctx *gin.Context) {
 	// organisation name, which made the claim useless for authorisation.
 	accessToken, err := s.jwtMgr.IssueAccess(res.EmployeeID, res.OrgId, res.Role)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -91,13 +91,13 @@ func (s *authenticationControllers) MobileLogin(ctx *gin.Context) {
 	// handed out, otherwise the first refresh finds nothing to rotate.
 	sessionID, jti, err := s.authSvc.StartMobileSession(reqCtx, res.EmployeeID, res.OrgId, res.Role)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
 	refreshToken, err := s.jwtMgr.IssueRefresh(res.EmployeeID, res.OrgId, sessionID, jti)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Internal Server Error", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

@@ -29,7 +29,7 @@ func (c *menuController) AddPreferredKitchenForMenuGroup(ctx *gin.Context) {
 		ctx.Request.Context(),
 		orgID, emplID, ownerID,
 		&req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Error In the Menu", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -60,7 +60,7 @@ func (c *menuController) AddPreferredKitchenForMenuCategory(ctx *gin.Context) {
 		ctx.Request.Context(),
 		orgID, emplID, ownerID,
 		&req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Error In the Menu", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -90,7 +90,7 @@ func (c *menuController) AddPreferredKitchenForMenuSubCategory(ctx *gin.Context)
 		ctx.Request.Context(),
 		orgID, emplID, ownerID,
 		&req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Error In the Menu", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -120,7 +120,7 @@ func (c *menuController) AddPreferredKitchenForMenuItem(ctx *gin.Context) {
 		ctx.Request.Context(),
 		orgID, emplID, ownerID,
 		&req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Error In the Menu", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
