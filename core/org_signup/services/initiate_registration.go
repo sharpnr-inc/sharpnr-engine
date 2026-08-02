@@ -28,7 +28,7 @@ func (s *orgSignUpService) InitiateRegistration(
 			return err
 		}
 		if userExists {
-			return organizationErrs.OrganizationAlreadyExistsErr
+			return err
 		}
 		return nil
 	})

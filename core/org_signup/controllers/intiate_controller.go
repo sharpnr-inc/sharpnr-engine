@@ -3,6 +3,7 @@ package org_signup_controllers
 import (
 	"errors"
 	"net/http"
+	coreEmployeeErrs "sharpnr-engine/core/employees/errs"
 	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
 	organizationErrs "sharpnr-engine/core/organization/errs"
 	"sharpnr-engine/pkg/cookieManager"
@@ -34,7 +35,7 @@ func (c *orgSignUpController) InitiateNewOrgRegistration(ctx *gin.Context) {
 	if err != nil {
 		switch {
 		case errors.Is(err, organizationErrs.OrganizationAlreadyExistsErr),
-			errors.Is(err, organizationErrs.OrganizationAlreadyExistsErr):
+			errors.Is(err, coreEmployeeErrs.EmployeeAlreadyExistsErr):
 			utils.Failure(ctx, http.StatusConflict, err)
 		default:
 			utils.Failure(
