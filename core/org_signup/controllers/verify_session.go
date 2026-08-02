@@ -2,7 +2,6 @@ package org_signup_controllers
 
 import (
 	"errors"
-	"log/slog"
 	"net/http"
 	organization_services "sharpnr-engine/core/organization/services"
 	webMiddleware "sharpnr-engine/middlewares/web"
@@ -49,11 +48,6 @@ func (c *orgSignUpController) VerifySlug(ctx *gin.Context) {
 				errors.New("signup session expired, please start again"),
 			)
 		default:
-			slog.Error("failed to load signup session",
-				"error", err,
-				"slug", slug,
-				"ip", ctx.ClientIP(),
-			)
 			utils.Failure(
 				ctx,
 				http.StatusInternalServerError,
