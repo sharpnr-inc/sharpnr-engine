@@ -27,7 +27,7 @@ func (r *orgSignUpService) VerifyOtp(
 	err = r.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
-		dataForEmp, err := r.organizationService.VerifySlugCreateDefaultOrg(txCtx, otp, slug)
+		dataForEmp, err := r.organizationService.VerifySlugAndOtp(txCtx, otp, slug)
 		if err != nil {
 			return err
 		}

@@ -19,7 +19,7 @@ type OrganizationSignUpServiceInterface interface {
 	CreateDraftOrgForSignup(ctx context.Context, input organization_contracts.DraftOrganizationInput) (uuid.UUID, string, error)
 	DiscardSignupStaging(ctx context.Context, tempID uuid.UUID) error
 	GetSignupSlug(ctx context.Context, tempId uuid.UUID) (string, error)
-	VerifySlugCreateDefaultOrg(ctx context.Context, otp string, slugID uuid.UUID) (output organization_contracts.InputDataForOrgAndEmp, err error)
+	VerifySlugAndOtp(ctx context.Context, otp string, slugID uuid.UUID) (output organization_contracts.InputDataForOrgAndEmp, err error)
 }
 
 // these are general services for organization, like status update, etc.

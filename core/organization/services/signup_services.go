@@ -54,8 +54,7 @@ func (r *organizationService) DiscardSignupStaging(
 
 /* ---------------------------------- <***> --------------------------------- */
 
-// !! Remind to change the name of this method to VerifySlugAndOtp
-func (r *organizationService) VerifySlugCreateDefaultOrg(
+func (r *organizationService) VerifySlugAndOtp(
 	ctx context.Context,
 	otp string,
 	slugID uuid.UUID,

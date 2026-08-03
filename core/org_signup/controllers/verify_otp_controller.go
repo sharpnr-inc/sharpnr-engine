@@ -46,10 +46,8 @@ func (c *orgSignUpController) VerifyOtpForSignup(ctx *gin.Context) {
 		// used to come back as "unauthorized", which told the user their code
 		// was wrong when the real problem was ours.
 		switch {
-		case errors.Is(err, organizationErrs.InvalidOTPError),
-			errors.Is(err, organizationErrs.OrganizationNotFoundErr),
-			errors.Is(err, organizationErrs.OrganizationNotFoundErr):
-			utils.Failure(ctx, http.StatusUnauthorized, err)
+		case errors.Is(err, organizationErrs.InvalidOTPError):
+			utils.Failure(ctx, http.StatusConflict, err)
 		default:
 			utils.Failure(
 				ctx,
