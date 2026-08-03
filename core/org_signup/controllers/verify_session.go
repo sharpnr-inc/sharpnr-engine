@@ -20,9 +20,8 @@ func (c *orgSignUpController) VerifySlug(ctx *gin.Context) {
 	if !exists || slug == uuid.Nil {
 		utils.Failure(
 			ctx,
-			http.StatusForbidden,
+			http.StatusBadGateway,
 			errors.New("signup context missing or expired"))
-
 		return
 	}
 
