@@ -2,11 +2,11 @@ package sentinelservice
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
+	sentinelServiceErrs "sharpnr-engine/sentinel/errs"
 	sentinelengine_models "sharpnr-engine/sentinel/models"
 
 	"github.com/google/uuid"
@@ -17,7 +17,7 @@ import (
 func (s *sentinelService) CreateGroup(ctx context.Context, orgID uuid.UUID, in sentinelDtos.CreateGroupsRequestDto) (uuid.UUID, error) {
 	name := strings.TrimSpace(in.Name)
 	if name == "" {
-		return uuid.Nil, errors.New("group name is required")
+		return uuid.Nil, sentinelServiceErrs.GroupNameRequiredErr
 	}
 
 	exists, err := s.repo.GroupExists(ctx, orgID, name)
@@ -25,7 +25,7 @@ func (s *sentinelService) CreateGroup(ctx context.Context, orgID uuid.UUID, in s
 		return uuid.Nil, err
 	}
 	if exists {
-		return uuid.Nil, fmt.Errorf("a group named %q already exists", name)
+		return uuid.Nil, fmt.Errorf("%w: %q", sentinelServiceErrs.GroupAlreadyExistsErr, name)
 	}
 
 	if in.ParentGroupID != nil {
@@ -34,7 +34,7 @@ func (s *sentinelService) CreateGroup(ctx context.Context, orgID uuid.UUID, in s
 			return uuid.Nil, fmt.Errorf("parent group: %w", err)
 		}
 		if parent.OrganizationID != orgID {
-			return uuid.Nil, errors.New("parent group not found in this organization")
+			return uuid.Nil, sentinelServiceErrs.ParentGroupNotFoundInOrgErr
 		}
 	}
 
