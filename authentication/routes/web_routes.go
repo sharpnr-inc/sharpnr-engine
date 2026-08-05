@@ -44,6 +44,14 @@ func RegisterAuthenticationProtectedWebRoutes(
 		idProtectedWebRoutes.GET("/verify-auth", authController.VerifyAuthentication)
 		idProtectedWebRoutes.GET("/user", authController.GetUser)
 		idProtectedWebRoutes.GET("/logout", authController.LogoutUser)
-		idProtectedWebRoutes.POST("/provision", authController.VerifyEmployeeProvision) // this contains token and employee details in the params
+
 	}
+
+	// Provisioning Rouetes
+	provisioningWebRoutes := routeGroup.Group("/identity/provision/")
+	{
+		provisioningWebRoutes.POST("/employee", authController.VerifyEmployeeProvision) // this contains token and employee details in the params
+		provisioningWebRoutes.POST("/superadmin")                                       // super admin provisioning
+	}
+
 }
