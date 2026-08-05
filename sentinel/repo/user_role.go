@@ -49,7 +49,10 @@ func (r *sentinelRepo) GetUsersAssignedToRole(ctx context.Context, organizationI
 	err := r.conn(ctx).
 		Where("organization_id = ? AND role_id = ?", organizationID, roleID).
 		Find(&edges).Error
-	return edges, err
+	if err != nil {
+		return nil, err
+	}
+	return edges, nil
 }
 
 // IsRoleAssignedToUser reports whether a user has a role.

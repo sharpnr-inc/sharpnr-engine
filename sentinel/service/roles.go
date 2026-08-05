@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
+	sentinelServiceErrs "sharpnr-engine/sentinel/errs"
 	sentinelengine_models "sharpnr-engine/sentinel/models"
 
 	"github.com/google/uuid"
@@ -99,6 +100,7 @@ func (s *sentinelService) GetRolePrivileges(ctx context.Context, orgID, roleID u
 // GetEmployeeRole implements [SentinelServiceInterface]: the role assigned to
 // an employee within an org (first one, if several).
 func (s *sentinelService) GetEmployeeRole(ctx context.Context, orgID, emplID uuid.UUID) (sentinelDtos.RoleView, error) {
+
 	edges, err := s.repo.GetRolesAssignedToUser(ctx, emplID)
 	if err != nil {
 		return sentinelDtos.RoleView{}, err
@@ -113,5 +115,8 @@ func (s *sentinelService) GetEmployeeRole(ctx context.Context, orgID, emplID uui
 		}
 		return sentinelDtos.ToRoleView(&role), nil
 	}
-	return sentinelDtos.RoleView{}, errors.New("employee has no role in this organization")
+
+	// No assignment edge for this org: the caller decides whether an employee
+	// without a role is an error or simply an unassigned user.
+	return sentinelDtos.RoleView{}, sentinelServiceErrs.EmployeeRoleNotFoundErr
 }
