@@ -1,7 +1,9 @@
 package orchestrator_controllers
 
 import (
+	"errors"
 	"net/http"
+	orgSetUpWizardErrs "sharpnr-engine/core/org_setup_wizard/errs"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	"sharpnr-engine/shared/utils"
 
@@ -101,7 +103,19 @@ func (c *OrchestratorController) SetupWizOperation_AddProperty(ctx *gin.Context)
 
 	// 4. Call Service Layer
 	if err := c.orchestService.SetupWiz_AddProperty(ctx.Request.Context(), orgID, emplID, &req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, err)
+		// A malformed step or missing property details is the caller's mistake,
+		// so it must not come back as an internal error.
+		switch {
+		case errors.Is(err, orgSetUpWizardErrs.InvalidStepIDErr),
+			errors.Is(err, orgSetUpWizardErrs.PropertyDetailsRequiredErr):
+			utils.Failure(ctx, http.StatusBadRequest, err)
+		case errors.Is(err, orgSetUpWizardErrs.StepDoesntExistErr):
+			utils.Failure(ctx, http.StatusNotFound, err)
+		case errors.Is(err, orgSetUpWizardErrs.InvalidStepStatusErr):
+			utils.Failure(ctx, http.StatusConflict, err)
+		default:
+			utils.Failure(ctx, http.StatusInternalServerError, err)
+		}
 		return
 	}
 

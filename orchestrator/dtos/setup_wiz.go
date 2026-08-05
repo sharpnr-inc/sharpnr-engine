@@ -2,6 +2,8 @@ package orchestrator_dtos
 
 import (
 	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
+	orgSetUpWizardErrs "sharpnr-engine/core/org_setup_wizard/errs"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -26,6 +28,25 @@ type SetupOrgPropertyReqDTO struct {
 	Longitude *float64 `json:"longitude,omitempty"`
 	Latitude  *float64 `json:"latitude,omitempty"`
 	AccuracyM *int     `json:"accuracy_m,omitempty"`
+}
+
+// The property fields are optional on the wire so that the step can be skipped,
+// which means they cannot be enforced by binding tags. They are required only
+// when the step is actually being completed.
+func (r *SetupOrgPropertyReqDTO) Validate() error {
+	if r.Skipped {
+		return nil
+	}
+
+	for _, field := range []*string{
+		r.Name, r.AddressLine, r.City, r.State, r.Country, r.Pincode,
+	} {
+		if field == nil || strings.TrimSpace(*field) == "" {
+			return orgSetUpWizardErrs.PropertyDetailsRequiredErr
+		}
+	}
+
+	return nil
 }
 
 /* ---------------------------------- <***> --------------------------------- */

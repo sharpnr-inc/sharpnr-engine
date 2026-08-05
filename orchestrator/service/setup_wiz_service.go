@@ -2,8 +2,8 @@ package orchestrator_service
 
 import (
 	"context"
-	"errors"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
+	orgSetUpWizardErrs "sharpnr-engine/core/org_setup_wizard/errs"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
@@ -27,6 +27,15 @@ type setupWizardOrchestrator struct {
 /*                        Version 1.0.0 of Setup Wizard                       */
 /* -------------------------------------------------------------------------- */
 
+// derefOrEmpty returns the value behind an optional request field, or the empty
+// string when the client omitted it.
+func derefOrEmpty(v *string) string {
+	if v == nil {
+		return ""
+	}
+	return *v
+}
+
 func (s *setupWizardOrchestrator) SetupWiz_AddProperty(
 	ctx context.Context,
 	orgID uuid.UUID, emplID uuid.UUID,
@@ -38,20 +47,26 @@ func (s *setupWizardOrchestrator) SetupWiz_AddProperty(
 
 		stepParse_uuid, err := uuid.Parse(req.StepID)
 		if err != nil {
+			return orgSetUpWizardErrs.InvalidStepIDErr
+		}
+
+		if err := req.Validate(); err != nil {
 			return err
 		}
 
+		// Every property field is optional on the wire so the step can be skipped,
+		// so they are dereferenced defensively rather than assumed present.
 		input := org_setup_wizard_contracts.PropertySetupInput{
 			StepID:       stepParse_uuid,
 			Skipped:      req.Skipped,
 			OrgID:        orgID,
-			Name:         *req.Name,
-			PropertyCode: *req.PropertyCode,
-			AddressLine:  *req.AddressLine,
-			City:         *req.City,
-			State:        *req.State,
-			Country:      *req.Country,
-			Pincode:      *req.Pincode,
+			Name:         derefOrEmpty(req.Name),
+			PropertyCode: derefOrEmpty(req.PropertyCode),
+			AddressLine:  derefOrEmpty(req.AddressLine),
+			City:         derefOrEmpty(req.City),
+			State:        derefOrEmpty(req.State),
+			Country:      derefOrEmpty(req.Country),
+			Pincode:      derefOrEmpty(req.Pincode),
 		}
 
 		if err := s.orgSetupWizService.Step_two_AddProperty(dbtx, orgID, emplID, input); err != nil {
@@ -113,7 +128,7 @@ func (s *setupWizardOrchestrator) SetUpSuperAdminDetails(ctx context.Context, or
 	}
 
 	if !verified {
-		return errors.New("organization must be verified before setting up super admin details")
+		return orgSetUpWizardErrs.OrgNotVerifiedErr
 	}
 
 	// 2. Now we will call the identity service to update the super admin details
@@ -142,7 +157,7 @@ func (s *setupWizardOrchestrator) SetupWiz_UpdateOrgName(ctx context.Context, or
 	}
 
 	if !verified {
-		return errors.New("organization must be verified before setting up super admin details")
+		return orgSetUpWizardErrs.OrgNotVerifiedErr
 	}
 
 	if err := s.orgSetupWizService.UpdateOrgDetailsStep(ctx, orgID, emplID, org_setup_wizard_contracts.OrganizationDetailsSetupInput{
