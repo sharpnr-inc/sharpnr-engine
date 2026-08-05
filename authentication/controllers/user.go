@@ -15,8 +15,7 @@ func (c *authenticationControllers) VerifyAuthentication(ctx *gin.Context) {
 		return
 	}
 
-	utils.Success(ctx, http.StatusOK, "User is authenticated")
-
+	utils.Success(ctx, http.StatusAccepted, "User is authenticated")
 }
 
 /* ---------------------------------- <***> --------------------------------- */
