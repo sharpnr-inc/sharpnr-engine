@@ -41,7 +41,6 @@ func RegisterAuthenticationProtectedWebRoutes(
 
 	idProtectedWebRoutes := routeGroup.Group("/identity/web")
 	{
-		idProtectedWebRoutes.GET("/profile", authController.GetMyProfile)
 		idProtectedWebRoutes.GET("/verify-auth", authController.VerifyAuthentication)
 		idProtectedWebRoutes.GET("/user", authController.GetUser)
 		idProtectedWebRoutes.GET("/logout", authController.LogoutUser)

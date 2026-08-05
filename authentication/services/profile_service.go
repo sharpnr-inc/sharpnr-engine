@@ -8,23 +8,6 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *authenticationService) GetProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*authenticationEngineDtos.ProfileResponse_dto, error) {
-
-	empProfile, err := s.employeeService.GetEmployeeProfile(ctx, orgID, empID)
-	if err != nil {
-		return nil, err
-	}
-
-	return &authenticationEngineDtos.ProfileResponse_dto{
-		Email:     empProfile.Email,
-		FirstName: empProfile.FirstName,
-		LastName:  empProfile.LastName,
-		DOB:       empProfile.DOB,
-		Address:   empProfile.Address,
-		Gender:    empProfile.Gender,
-	}, nil
-}
-
 /* ---------------------------------- <***> --------------------------------- */
 
 func (s *authenticationService) GetAuthenticatedUserDetails(

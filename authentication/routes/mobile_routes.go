@@ -42,12 +42,12 @@ func RegisterAuthenticationProtectedMobileRoutes(
 	cookie cookieManager.Manager,
 	jwtMgr jwt_manager.Manager,
 ) {
-	authService := modules.AuthenticationService()
-	authController := authenticationEngineControllers.NewAuthenticationController(cookie, jwtMgr, authService)
+	// authService := modules.AuthenticationService()
+	// authController := authenticationEngineControllers.NewAuthenticationController(cookie, jwtMgr, authService)
 
 	idMobileProtectesRoutes := mobileV1.Group("/identity")
 	{
-		idMobileProtectesRoutes.GET("/myprofile", authController.GetMyProfile)
+		idMobileProtectesRoutes.GET("/myprofile")
 	}
 
 }
