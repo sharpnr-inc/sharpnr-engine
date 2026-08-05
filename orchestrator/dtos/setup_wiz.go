@@ -13,13 +13,14 @@ import (
 // as its name, address, and geolocation. This information is crucial for setting up the organization's profile and ensuring accurate location-based services.
 type SetupOrgPropertyReqDTO struct {
 	StepID       string  `json:"step_id" binding:"required"`
-	Name         string  `json:"name"`
+	Skipped      bool    `json:"skipped"`
+	Name         *string `json:"name,omitempty"`
 	PropertyCode *string `json:"property_code,omitempty"`
-	AddressLine  string  `json:"address_line"`
-	City         string  `json:"city"`
-	State        string  `json:"state"`
-	Country      string  `json:"country"`
-	Pincode      string  `json:"pincode"`
+	AddressLine  *string `json:"address_line,omitempty"`
+	City         *string `json:"city,omitempty"`
+	State        *string `json:"state,omitempty"`
+	Country      *string `json:"country,omitempty"`
+	Pincode      *string `json:"pincode,omitempty"`
 
 	// Optional geolocation fields to capture the organization's location for location-based services and analytics.
 	Longitude *float64 `json:"longitude,omitempty"`

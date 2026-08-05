@@ -50,6 +50,8 @@ func ResolveSetupProgress(steps []*org_setup_wizard_models.OrganizationSetup) or
 		switch s.Status {
 		case org_setup_wizards_constants.SetupStatusCompleted:
 			completedCount++
+		case org_setup_wizards_constants.SetupStatusSkipped:
+			completedCount++
 		case org_setup_wizards_constants.SetupStatusInProgress:
 			if currentStep == nil {
 				currentStep = &s.CurrentStep

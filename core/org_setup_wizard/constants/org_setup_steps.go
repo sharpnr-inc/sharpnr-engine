@@ -4,6 +4,7 @@ type SetupStatus string
 
 const (
 	SetupStatusInProgress SetupStatus = "IN_PROGRESS"
+	SetupStatusSkipped    SetupStatus = "SKIPPED"
 	SetupStatusCompleted  SetupStatus = "COMPLETED"
 )
 

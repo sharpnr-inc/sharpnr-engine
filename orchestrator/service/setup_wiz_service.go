@@ -43,14 +43,15 @@ func (s *setupWizardOrchestrator) SetupWiz_AddProperty(
 
 		input := org_setup_wizard_contracts.PropertySetupInput{
 			StepID:       stepParse_uuid,
+			Skipped:      req.Skipped,
 			OrgID:        orgID,
-			Name:         req.Name,
+			Name:         *req.Name,
 			PropertyCode: *req.PropertyCode,
-			AddressLine:  req.AddressLine,
-			City:         req.City,
-			State:        req.State,
-			Country:      req.Country,
-			Pincode:      req.Pincode,
+			AddressLine:  *req.AddressLine,
+			City:         *req.City,
+			State:        *req.State,
+			Country:      *req.Country,
+			Pincode:      *req.Pincode,
 		}
 
 		if err := s.orgSetupWizService.Step_two_AddProperty(dbtx, orgID, emplID, input); err != nil {

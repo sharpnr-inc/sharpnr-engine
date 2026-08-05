@@ -27,6 +27,17 @@ func (s *orgSetupWizardService) Step_two_AddProperty(ctx context.Context, orgID,
 			return ErrorInvalidStepStatus
 		}
 
+		if input.Skipped {
+			if err := s.orgSetWizRepo.UpdateCurrentStepStatus(
+				dbTx, org_setup_wizards_constants.SetupStatusSkipped,
+				input.OrgID, input.StepID,
+			); err != nil {
+				return err
+			}
+
+			return nil
+		}
+
 		mappedData := org_property_contracts.CreateOrgPropertyInput{
 			OrgID:       input.OrgID,
 			UserID:      emplID,
