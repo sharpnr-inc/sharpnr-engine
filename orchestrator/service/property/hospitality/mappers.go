@@ -1,4 +1,4 @@
-package hospitality_orchestrator
+package propertyHospitalityOrchestrator
 
 import (
 	bar_contracts "sharpnr-engine/business_ops/hospitality/bar/contracts"

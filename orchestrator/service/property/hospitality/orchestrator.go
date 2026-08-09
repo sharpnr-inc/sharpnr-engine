@@ -1,4 +1,4 @@
-// Package hospitality_orchestrator owns every property-scoped hospitality flow:
+// Package propertyHospitalityOrchestrator owns every property-scoped hospitality flow:
 // the hospitality slice of a property's business/infra module composition, plus
 // the per-entity operations (hotel, restaurant, bar, kitchen, menu) mounted
 // under /property/:propertyID/... in the route tree.
@@ -11,7 +11,7 @@
 //
 // Rules from orchestrator/service/doc.go apply unchanged: guard first, tx only
 // when coordinating multiple writes, orchestrator_dtos on the wire.
-package hospitality_orchestrator
+package propertyHospitalityOrchestrator
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"

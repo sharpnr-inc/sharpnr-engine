@@ -1,4 +1,4 @@
-package hospitality_orchestrator
+package propertyHospitalityOrchestrator
 
 import (
 	"context"
@@ -10,14 +10,14 @@ import (
 	"github.com/google/uuid"
 )
 
-// SetupBusinessModules provisions the requested hospitality business modules
+// SetupHospitalityBusinessModules provisions the requested hospitality business modules
 // for the property, one default instance per unit of quantity.
 //
 // No guard call here: the caller
 // (property_orchestrator.AddBusinessOperationModulesInProperty) authorizes
 // canAddBusinessModules on the property before fanning out. Module types and
 // quantities are already validated by the controller's request binding.
-func (s *HospitalityOrchestrator) SetupBusinessModules(
+func (s *HospitalityOrchestrator) SetupHospitalityBusinessModules(
 	ctx context.Context,
 	orgID, propertyID uuid.UUID,
 	modules []orchestrator_dtos.HospitalityModuleQuantity,
@@ -66,13 +66,13 @@ func (s *HospitalityOrchestrator) setupModule(
 	}
 }
 
-// ListBusinessModules returns the hospitality slice of a property's business
+// ListHospitalityBusinessModules returns the hospitality slice of a property's business
 // modules: every bar, hotel and restaurant attached to it.
 //
 // No guard call here: the caller
 // (property_orchestrator.ListAllBusinessOpsModules) authorizes canViewProperty
 // before collecting each domain's contribution.
-func (s *HospitalityOrchestrator) ListBusinessModules(
+func (s *HospitalityOrchestrator) ListHospitalityBusinessModules(
 	ctx context.Context,
 	orgID, propertyID uuid.UUID,
 ) ([]orchestrator_dtos.HospitalityBusinessModule, error) {

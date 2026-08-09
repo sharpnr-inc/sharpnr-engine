@@ -1,4 +1,4 @@
-package hospitality_orchestrator
+package propertyHospitalityOrchestrator
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// SetupInfraModules provisions the requested hospitality infra for the property.
+// SetupHospitalityInfraModules provisions the requested hospitality infra for the property.
 //
 // Scope for now: only Kitchen is wired up. Any other hospitality infra type is
 // skipped rather than failing the whole request, until its setup service exists.
@@ -18,7 +18,7 @@ import (
 // No guard call here: the caller
 // (property_orchestrator.AddInfraModulesInProperty) authorizes
 // canAddInfraModules on the property before fanning out.
-func (s *HospitalityOrchestrator) SetupInfraModules(
+func (s *HospitalityOrchestrator) SetupHospitalityInfraModules(
 	ctx context.Context,
 	orgID, propertyID uuid.UUID,
 	modules []orchestrator_dtos.HospitalityInfraModuleQuantity,
@@ -44,7 +44,7 @@ func (s *HospitalityOrchestrator) SetupInfraModules(
 	return nil
 }
 
-// ListInfraModules returns the hospitality slice of a property's infra modules.
+// ListHospitalityInfraModules returns the hospitality slice of a property's infra modules.
 //
 // Only Kitchen is wired up today. NOTE: kitchen lives directly on the
 // hospitality domain for now; later it folds into domainSvc.InfraModules().Kitchen().
@@ -52,7 +52,7 @@ func (s *HospitalityOrchestrator) SetupInfraModules(
 // No guard call here: the caller
 // (property_orchestrator.ListAllInfraModulesOfProperty) authorizes
 // canViewProperty before collecting each domain's contribution.
-func (s *HospitalityOrchestrator) ListInfraModules(
+func (s *HospitalityOrchestrator) ListHospitalityInfraModules(
 	ctx context.Context,
 	propertyID uuid.UUID,
 ) ([]orchestrator_dtos.HospitalityInfraModule, error) {

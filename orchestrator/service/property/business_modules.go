@@ -27,7 +27,7 @@ func (s *PropertyOrchestrator) AddBusinessOperationModulesInProperty(
 	// Request validation is done in the controller, so the module types and
 	// quantities here are already known-valid.
 
-	if err := s.HospitalityOrchestrator.SetupBusinessModules(ctx, orgID, propertyID, req.HospitalityModules); err != nil {
+	if err := s.HospitalityOrchestrator.SetupHospitalityBusinessModules(ctx, orgID, propertyID, req.HospitalityModules); err != nil {
 		return err
 	}
 
@@ -50,7 +50,7 @@ func (s *PropertyOrchestrator) ListAllBusinessOpsModules(
 		return orchestrator_dtos.PropertyBusinessOperationModulesResponseDto{}, err
 	}
 
-	hospitalityModules, err := s.HospitalityOrchestrator.ListBusinessModules(ctx, orgID, propertyID)
+	hospitalityModules, err := s.HospitalityOrchestrator.ListHospitalityBusinessModules(ctx, orgID, propertyID)
 	if err != nil {
 		return orchestrator_dtos.PropertyBusinessOperationModulesResponseDto{}, err
 	}

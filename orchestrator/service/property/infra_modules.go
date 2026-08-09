@@ -28,7 +28,7 @@ func (s *PropertyOrchestrator) AddInfraModulesInProperty(
 		return err
 	}
 
-	return s.HospitalityOrchestrator.SetupInfraModules(ctx, orgID, propertyID, request.HospitalityInfra)
+	return s.HospitalityOrchestrator.SetupHospitalityInfraModules(ctx, orgID, propertyID, request.HospitalityInfra)
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -44,7 +44,7 @@ func (s *PropertyOrchestrator) ListAllInfraModulesOfProperty(
 		return orchestrator_dtos.PropertyInfraModulesResponseDto{}, err
 	}
 
-	hospitalityInfra, err := s.HospitalityOrchestrator.ListInfraModules(ctx, propertyID)
+	hospitalityInfra, err := s.HospitalityOrchestrator.ListHospitalityInfraModules(ctx, propertyID)
 	if err != nil {
 		return orchestrator_dtos.PropertyInfraModulesResponseDto{}, err
 	}

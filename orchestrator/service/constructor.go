@@ -12,7 +12,7 @@ import (
 	organization_services "sharpnr-engine/core/organization/services"
 	orchestrator_authz "sharpnr-engine/orchestrator/service/authz"
 	property_orchestrator "sharpnr-engine/orchestrator/service/property"
-	hospitality_orchestrator "sharpnr-engine/orchestrator/service/property/hospitality"
+	propertyHospitalityOrchestrator "sharpnr-engine/orchestrator/service/property/hospitality"
 
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
@@ -77,7 +77,7 @@ func NewSharpnrOrchestratorService(
 			txManager,
 			orgPropertyService,
 			organizationService,
-			hospitality_orchestrator.New(guard, hospitalityDomainSvc),
+			propertyHospitalityOrchestrator.New(guard, hospitalityDomainSvc),
 		),
 		setupWizardOrchestrator: &setupWizardOrchestrator{
 			txManager:           txManager,

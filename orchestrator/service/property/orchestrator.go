@@ -4,7 +4,7 @@ import (
 	org_property_services "sharpnr-engine/core/org_property/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	orchestrator_authz "sharpnr-engine/orchestrator/service/authz"
-	hospitality_orchestrator "sharpnr-engine/orchestrator/service/property/hospitality"
+	propertyHospitalityOrchestrator "sharpnr-engine/orchestrator/service/property/hospitality"
 	dbtx "sharpnr-engine/pkg/dbTx"
 )
 
@@ -23,7 +23,7 @@ type PropertyOrchestrator struct {
 
 	// One embedded orchestrator per business domain. Their methods are promoted
 	// onto PropertyOrchestrator and on up to the composed facade.
-	*hospitality_orchestrator.HospitalityOrchestrator
+	*propertyHospitalityOrchestrator.HospitalityOrchestrator
 	// soon: *healthcare_orchestrator.HealthcareOrchestrator
 	// soon: *retail_orchestrator.RetailOrchestrator
 }
@@ -33,7 +33,7 @@ func New(
 	txManager dbtx.TxManager,
 	orgPropertyService org_property_services.OrganizationPropertyServicesInterfaces,
 	organizationService organization_services.OrganizationServiceInterface,
-	hospitality *hospitality_orchestrator.HospitalityOrchestrator,
+	hospitality *propertyHospitalityOrchestrator.HospitalityOrchestrator,
 ) *PropertyOrchestrator {
 	return &PropertyOrchestrator{
 		guard:                   guard,
