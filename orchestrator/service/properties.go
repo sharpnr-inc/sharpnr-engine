@@ -33,6 +33,8 @@ type propertyOrchestrator struct {
 	orgPropertyService   org_property_services.OrganizationPropertyServicesInterfaces
 	organizationService  organization_services.OrganizationServiceInterface
 	hospitalityDomainSvc *hospitalitydomain.HospitalityDomain
+	// soon to Healthcare Domain
+	// soon to Retails Domain
 }
 
 /* ---------------------------------- <***> --------------------------------- */
