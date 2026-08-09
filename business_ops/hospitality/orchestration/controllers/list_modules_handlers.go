@@ -31,7 +31,7 @@ func (c *hospitalityOrchestrationController) ListAllRestaurantHandler(ctx *gin.C
 		return
 	}
 
-	res, err := c.hospitalityOrchestService.ListAllOrgsHotels(ctx.Request.Context(), orgID, emplID)
+	res, err := c.hospitalityOrchestService.ListAllRestaurant(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
