@@ -8,6 +8,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// The /property route tree's handlers are split across property_*.go files
+// mirroring orchestrator/service/property: this file is the property itself,
+// property_business_modules.go and property_infra_modules.go are the module
+// composition endpoints, and the per-entity handlers (hotel, restaurant, bar,
+// kitchen, menu) land in property_hosp_<entity>.go as they are implemented.
+// They all stay methods on the one OrchestratorController, so the route tree in
+// routes/property_routes.go keeps its single controller argument.
+
 // ListAllOrgProperty godoc
 // @Summary      List all properties of the organization
 // @Description  Fetches all properties belonging to the current organization, scoped to the authenticated employee.
@@ -109,110 +117,6 @@ func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 
 	utils.Success(ctx, http.StatusOK, "Property Created Successfully")
 
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
-func (c *OrchestratorController) AddBusinessOperationModulesInPropertyHandler(ctx *gin.Context) {
-	// 1. User Authentication Check
-	orgID, emplID, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return // Response already sent by helper
-	}
-
-	propertyID, ok := pathUUID(ctx, "propertyID")
-	if !ok {
-		return
-	}
-
-	req, ok := utils.BindJSON[orchestrator_dtos.AddBusinessOpModulesRequestDto](ctx)
-	if !ok {
-		return
-	}
-
-	if err := c.orchestService.AddBusinessOperationModulesInProperty(ctx.Request.Context(), orgID, emplID, propertyID, *req); err != nil {
-		failFromServiceError(ctx, err)
-		return
-	}
-
-	utils.Success(ctx, http.StatusCreated, "Modules Added Successfully")
-
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
-func (c *OrchestratorController) GetBusinessOperationModulesOfPropertyHandler(ctx *gin.Context) {
-
-	// 1. User Authentication Check
-	orgID, emplID, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return // Response already sent by helper
-	}
-
-	propertyID, ok := pathUUID(ctx, "propertyID")
-	if !ok {
-		return
-	}
-
-	response, err := c.orchestService.ListAllBusinessOpsModules(ctx.Request.Context(), orgID, emplID, propertyID)
-	if err != nil {
-		failFromServiceError(ctx, err)
-		return
-	}
-
-	utils.Success(ctx, http.StatusOK, "Business operation modules fetched successfully", response)
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
-func (c *OrchestratorController) GetInfraModulesOfPropertyHandler(ctx *gin.Context) {
-
-	// 1. User Authentication Check
-	orgID, emplID, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return // Response already sent by helper
-	}
-
-	propertyID, ok := pathUUID(ctx, "propertyID")
-	if !ok {
-		return
-	}
-
-	response, err := c.orchestService.ListAllInfraModulesOfProperty(ctx.Request.Context(), orgID, emplID, propertyID)
-	if err != nil {
-		failFromServiceError(ctx, err)
-		return
-	}
-
-	utils.Success(ctx, http.StatusOK, "Infra modules fetched successfully", response)
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
-func (c *OrchestratorController) AddInfraModulesOfPropertyHandler(ctx *gin.Context) {
-
-	// 1. User Authentication Check
-	orgID, emplID, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return // Response already sent by helper
-	}
-
-	propertyID, ok := pathUUID(ctx, "propertyID")
-	if !ok {
-		return
-	}
-
-	req, ok := utils.BindJSON[orchestrator_dtos.AddInfraModulesRequestDto](ctx)
-	if !ok {
-		return
-	}
-
-	if err := c.orchestService.AddInfraModulesInProperty(ctx.Request.Context(), orgID, emplID, propertyID, *req); err != nil {
-		failFromServiceError(ctx, err)
-		return
-	}
-
-	utils.Success(ctx, http.StatusCreated, "Infra modules added successfully")
 }
 
 /* ---------------------------------- <***> --------------------------------- */

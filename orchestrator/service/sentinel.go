@@ -3,6 +3,7 @@ package orchestrator_service
 import (
 	"context"
 
+	orchestrator_authz "sharpnr-engine/orchestrator/service/authz"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
 	sentinelengine_models "sharpnr-engine/sentinel/models"
 	sentinelservice "sharpnr-engine/sentinel/service"
@@ -21,11 +22,11 @@ import (
 // sentinelOrchestrator implements SentinelOrchestrationInterface.
 //
 // guard is the seam for the missing authoring authorization: policy/role
-// creation and attachment must call guard.authorize before delegating (rule 1
+// creation and attachment must call guard.Authorize before delegating (rule 1
 // in doc.go). The checks are not wired yet — do not ship policy authoring to
 // production before they are.
 type sentinelOrchestrator struct {
-	guard              *authzGuard
+	guard              *orchestrator_authz.Guard
 	sentinelService    sentinelservice.SentinelServiceInterface
 	sentinelAggregator sentinelAggregatorService.SentinelAggregatorServiceInterface
 }

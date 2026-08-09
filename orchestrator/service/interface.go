@@ -77,24 +77,8 @@ type EmployeeOrchestrationInterface interface {
 
 /* ---------------------------------- <***> --------------------------------- */
 
-// Property Operations in Orchestraor services interface
-type OrganizationPropertyOrchestrationInterface interface {
-
-	// General Property service methods
-	GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
-	GetPropertyDetail(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
-	CreateProperty(ctx context.Context, orgID, emplID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error
-
-	// Business Modules
-	AddBusinessOperationModulesInProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID, req orchestrator_dtos.AddBusinessOpModulesRequestDto) error
-	ListAllBusinessOpsModules(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (orchestrator_dtos.PropertyBusinessOperationModulesResponseDto, error)
-
-	// Infra Modules
-	AddInfraModulesInProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID, request orchestrator_dtos.AddInfraModulesRequestDto) error
-	ListAllInfraModulesOfProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (orchestrator_dtos.PropertyInfraModulesResponseDto, error)
-}
-
-/* ---------------------------------- <***> --------------------------------- */
+// OrganizationPropertyOrchestrationInterface lives in interface_property.go,
+// next to the package it is implemented by.
 
 /* -------------------------------------------------------------------------- */
 /*                     Orchestration for the Legal Entity                     */

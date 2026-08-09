@@ -10,6 +10,9 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	organization_services "sharpnr-engine/core/organization/services"
+	orchestrator_authz "sharpnr-engine/orchestrator/service/authz"
+	property_orchestrator "sharpnr-engine/orchestrator/service/property"
+	hospitality_orchestrator "sharpnr-engine/orchestrator/service/property/hospitality"
 
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
@@ -25,7 +28,7 @@ import (
 // domain, each defined in its own file with only the dependencies it needs.
 // Method promotion makes this struct satisfy OrchestratorServiceInterface.
 type orchestratorService struct {
-	*propertyOrchestrator
+	*property_orchestrator.PropertyOrchestrator
 	*setupWizardOrchestrator
 	*legalEntityOrchestrator
 	*customerOrchestrator
@@ -64,16 +67,18 @@ func NewSharpnrOrchestratorService(
 ) *orchestratorService {
 
 	// One guard shared by every domain orchestrator (rule 1 in doc.go).
-	guard := &authzGuard{engine: sentinelAuthzEngine}
+	guard := orchestrator_authz.New(sentinelAuthzEngine)
 
 	return &orchestratorService{
-		propertyOrchestrator: &propertyOrchestrator{
-			guard:                guard,
-			txManager:            txManager,
-			orgPropertyService:   orgPropertyService,
-			organizationService:  organizationService,
-			hospitalityDomainSvc: hospitalityDomainSvc,
-		},
+		// The property tree lives in its own package, one sub-package per
+		// business domain under it. See orchestrator/service/property/doc.go.
+		PropertyOrchestrator: property_orchestrator.New(
+			guard,
+			txManager,
+			orgPropertyService,
+			organizationService,
+			hospitality_orchestrator.New(guard, hospitalityDomainSvc),
+		),
 		setupWizardOrchestrator: &setupWizardOrchestrator{
 			txManager:           txManager,
 			orgSetupWizService:  orgSetupWizService,
