@@ -70,3 +70,7 @@ func pathUUID(ctx *gin.Context, name string) (uuid.UUID, bool) {
 func (c *OrchestratorController) getEmployeeIDFromParams(ctx *gin.Context) (uuid.UUID, bool) {
 	panic("")
 }
+
+func (c *OrchestratorController) getRestaurntIDFromParams(ctx *gin.Context) (restaurantID uuid.UUID, isThere bool) {
+	panic("")
+}

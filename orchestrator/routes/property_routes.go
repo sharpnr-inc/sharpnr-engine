@@ -45,9 +45,9 @@ func registerPropertyRoutes(r *gin.RouterGroup, c *orchestrator_controllers.Orch
 				// Restaurant — scoped by :restaurantID.
 				restaurant := hospitality.Group("/restaurant/:restaurantID")
 				{
-					restaurant.GET("")               // fetch restaurant details
-					restaurant.PATCH("/gen-details") // update general details
-					restaurant.POST("/add-tables")   // add tables
+					restaurant.GET("", c.GetRestaurantDetails) // fetch restaurant details
+					restaurant.PATCH("/gen-details")           // update general details
+					restaurant.POST("/add-tables")             // add tables
 				}
 
 				// Bar — scoped by :barID.

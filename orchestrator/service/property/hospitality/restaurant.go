@@ -1,1 +1,14 @@
 package propertyHospitalityOrchestrator
+
+import (
+	"context"
+	restaurant_contracts "sharpnr-engine/business_ops/hospitality/restaurant/contracts"
+
+	"github.com/google/uuid"
+)
+
+func (s *HospitalityOrchestrator) GetRestaurantDetailsByRestaurantID(ctx context.Context, orgID, employeeID, restaurantID uuid.UUID) (restaurant_contracts.RestaurantGeneralInfo_resp_dto, error) {
+
+	return s.domainSvc.RestaurantService().GetGeneralDetails(ctx, orgID, employeeID, restaurantID)
+
+}

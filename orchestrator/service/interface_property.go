@@ -3,6 +3,7 @@ package orchestrator_service
 import (
 	"context"
 
+	restaurant_contracts "sharpnr-engine/business_ops/hospitality/restaurant/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	property_orchestrator "sharpnr-engine/orchestrator/service/property"
 
@@ -29,6 +30,9 @@ type OrganizationPropertyOrchestrationInterface interface {
 	// Infra Modules
 	AddInfraModulesInProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID, request orchestrator_dtos.AddInfraModulesRequestDto) error
 	ListAllInfraModulesOfProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (orchestrator_dtos.PropertyInfraModulesResponseDto, error)
+
+	// Hospitality
+	GetRestaurantDetailsByRestaurantID(ctx context.Context, orgID, employeeID, restaurantID uuid.UUID) (restaurant_contracts.RestaurantGeneralInfo_resp_dto, error)
 }
 
 // Fail at compile time in the property package's own terms, rather than at the
