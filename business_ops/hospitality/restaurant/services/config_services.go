@@ -195,7 +195,7 @@ func (s *restaurantService) GetGeneralDetails(
 		// 4. Map base restaurant fields
 		response = restaurant_contracts.RestaurantGeneralInfo_resp_dto{
 			RestaurantID:            restaurant.ID,
-			RestaurantLegalEntityID: *restaurant.LegalEntityID,
+			RestaurantLegalEntityID: restaurant.LegalEntityID,
 			Name:                    restaurant.Name,
 			OpeningTime:             restaurant.OpeningTime,
 			ClosingTime:             restaurant.ClosingTime,

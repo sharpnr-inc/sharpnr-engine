@@ -12,3 +12,7 @@ func (s *HospitalityOrchestrator) GetRestaurantDetailsByRestaurantID(ctx context
 	return s.domainSvc.RestaurantService().GetGeneralDetails(ctx, orgID, employeeID, restaurantID)
 
 }
+
+func (s *HospitalityOrchestrator) GetRestaurantFloorLayouts(ctx context.Context, orgID, employeeID, restaurantID uuid.UUID) (restaurant_contracts.RestaurantLayout_Response_dto, error) {
+	return s.domainSvc.RestaurantService().GetRestaurantLayout(ctx, orgID, restaurantID)
+}

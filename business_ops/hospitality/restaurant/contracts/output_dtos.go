@@ -53,7 +53,7 @@ type Addon_resp_dto struct {
 
 type RestaurantGeneralInfo_resp_dto struct {
 	RestaurantID            uuid.UUID                                              `json:"restaurant_id"`
-	RestaurantLegalEntityID uuid.UUID                                              `json:"resturant_legal_entity_id"`
+	RestaurantLegalEntityID *uuid.UUID                                             `json:"resturant_legal_entity_id"`
 	Name                    string                                                 `json:"name"`
 	OpeningTime             string                                                 `json:"opening_time"`
 	ClosingTime             string                                                 `json:"closing_time"`

@@ -33,6 +33,7 @@ type OrganizationPropertyOrchestrationInterface interface {
 
 	// Hospitality
 	GetRestaurantDetailsByRestaurantID(ctx context.Context, orgID, employeeID, restaurantID uuid.UUID) (restaurant_contracts.RestaurantGeneralInfo_resp_dto, error)
+	GetRestaurantFloorLayouts(ctx context.Context, orgID, employeeID, restaurantID uuid.UUID) (restaurant_contracts.RestaurantLayout_Response_dto, error)
 }
 
 // Fail at compile time in the property package's own terms, rather than at the

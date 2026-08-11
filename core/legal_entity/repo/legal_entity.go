@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
+	legalEntityErrs "sharpnr-engine/core/legal_entity/errs"
 	legal_entity_models "sharpnr-engine/core/legal_entity/models"
 	dbtx "sharpnr-engine/pkg/dbTx"
 
@@ -110,8 +111,9 @@ func (o *orgLegalEntityRepo) GetLegalEntitiesByOrgID(ctx context.Context, orgID 
 	}
 
 	// Manually handle the "Not Found" case for slices if desired
+	// Manually handle the "Not Found" case for slices
 	if len(legalEntities) == 0 {
-		return nil, gorm.ErrRecordNotFound
+		return nil, legalEntityErrs.NoLegalEntityFoundForOrg
 	}
 
 	return legalEntities, nil

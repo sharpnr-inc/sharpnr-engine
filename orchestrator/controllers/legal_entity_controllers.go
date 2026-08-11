@@ -1,12 +1,15 @@
 package orchestrator_controllers
 
 import (
+	"errors"
 	"net/http"
 	legal_entity_constants "sharpnr-engine/core/legal_entity/constants"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
+	legalEntityErrs "sharpnr-engine/core/legal_entity/errs"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 /* -------------------------------------------------------------------------- */
@@ -16,7 +19,6 @@ import (
 /* -------------------------- list all Legal Entity ------------------------- */
 
 func (c *OrchestratorController) ListAllLegalEntity(ctx *gin.Context) {
-
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
 		return
@@ -24,6 +26,12 @@ func (c *OrchestratorController) ListAllLegalEntity(ctx *gin.Context) {
 
 	res, err := c.orchestService.GetAllLegalEntity(ctx, orgID, emplID)
 	if err != nil {
+		// Check if the error is a "Not Found" error
+		if errors.Is(err, gorm.ErrRecordNotFound) || errors.Is(err, legalEntityErrs.NoLegalEntityFoundForOrg) {
+			utils.Failure(ctx, http.StatusNotFound, err)
+			return
+		}
+
 		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}

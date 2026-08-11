@@ -71,6 +71,10 @@ func (c *OrchestratorController) getEmployeeIDFromParams(ctx *gin.Context) (uuid
 	panic("")
 }
 
+func (c *OrchestratorController) getPropertyIDFromParams(ctx *gin.Context) (propertyID uuid.UUID, isThere bool) {
+	return utils.ExtractUUIDParam(ctx, "propertyID")
+}
+
 func (c *OrchestratorController) getRestaurntIDFromParams(ctx *gin.Context) (restaurantID uuid.UUID, isThere bool) {
-	panic("")
+	return utils.ExtractUUIDParam(ctx, "restaurantID")
 }
