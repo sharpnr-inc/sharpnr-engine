@@ -4,7 +4,7 @@ import (
 	barservices "sharpnr-engine/property_business_ops/hospitality/bar/services"
 	hotelservices "sharpnr-engine/property_business_ops/hospitality/hotel/services"
 	kitchenservices "sharpnr-engine/property_infra/hospitality_infra/kitchen/services"
-	menuservice "sharpnr-engine/property_business_ops/hospitality/menu/service"
+	menuservice "sharpnr-engine/property_resources/hospitality_resources/menu/service"
 	hospitality_order_engine_service "sharpnr-engine/property_business_ops/hospitality/order_engine/service"
 	restaurantservices "sharpnr-engine/property_business_ops/hospitality/restaurant/services"
 )

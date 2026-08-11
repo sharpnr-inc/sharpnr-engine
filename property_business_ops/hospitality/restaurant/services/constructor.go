@@ -2,7 +2,7 @@ package restaurantservices
 
 import (
 	"context"
-	menuservice "sharpnr-engine/property_business_ops/hospitality/menu/service"
+	menuservice "sharpnr-engine/property_resources/hospitality_resources/menu/service"
 	restaurantrepo "sharpnr-engine/property_business_ops/hospitality/restaurant/repo"
 	org_customer_service "sharpnr-engine/core/customer/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
