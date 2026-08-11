@@ -2,7 +2,7 @@ package orchestrator_controllers
 
 import (
 	"net/http"
-	general_infra_utils "sharpnr-engine/property_business_ops/general_infra/utils"
+	general_infra_utils "sharpnr-engine/property_infra/general_infra/utils"
 	healthcare_utilities "sharpnr-engine/property_business_ops/healthcare/utility"
 	hospitality_utilities "sharpnr-engine/property_business_ops/hospitality/utilities"
 	"sharpnr-engine/shared/utils"
