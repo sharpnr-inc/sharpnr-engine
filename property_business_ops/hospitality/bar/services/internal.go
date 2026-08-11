@@ -2,7 +2,7 @@ package barservices
 
 import (
 	"context"
-	bar_contracts "sharpnr-engine/business_ops/hospitality/bar/contracts"
+	bar_contracts "sharpnr-engine/property_business_ops/hospitality/bar/contracts"
 
 	"github.com/google/uuid"
 )

@@ -3,7 +3,7 @@ package menu_controllers
 import (
 	"errors"
 	"net/http"
-	menuservice "sharpnr-engine/business_ops/hospitality/menu/service"
+	menuservice "sharpnr-engine/property_business_ops/hospitality/menu/service"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	"sharpnr-engine/shared/utils"
 

@@ -3,8 +3,8 @@ package orderEngineSero_event_handlers
 import (
 	"context"
 	"fmt"
-	hospitality_order_engine_service "sharpnr-engine/business_ops/hospitality/order_engine/service"
-	restaurant_events "sharpnr-engine/business_ops/hospitality/restaurant/events"
+	hospitality_order_engine_service "sharpnr-engine/property_business_ops/hospitality/order_engine/service"
+	restaurant_events "sharpnr-engine/property_business_ops/hospitality/restaurant/events"
 	"sharpnr-engine/sero"
 )
 

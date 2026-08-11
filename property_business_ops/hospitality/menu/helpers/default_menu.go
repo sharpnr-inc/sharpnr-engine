@@ -1,8 +1,8 @@
 package menu_helpers
 
 import (
-	menu_constants "sharpnr-engine/business_ops/hospitality/menu/constants"
-	hospitality_menu_contracts "sharpnr-engine/business_ops/hospitality/menu/contracts"
+	menu_constants "sharpnr-engine/property_business_ops/hospitality/menu/constants"
+	hospitality_menu_contracts "sharpnr-engine/property_business_ops/hospitality/menu/contracts"
 )
 
 var DefaultMenuCategories = []hospitality_menu_contracts.AddMenuCategoryInput{

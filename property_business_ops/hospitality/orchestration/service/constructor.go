@@ -5,9 +5,9 @@ package hospitality_orchestration_service
 // As all Domain exists on the Property it have property and legal Entity Service
 
 import (
-	hotelservices "sharpnr-engine/business_ops/hospitality/hotel/services"
-	kitchenservices "sharpnr-engine/business_ops/hospitality/kitchen/services"
-	restaurantservices "sharpnr-engine/business_ops/hospitality/restaurant/services"
+	hotelservices "sharpnr-engine/property_business_ops/hospitality/hotel/services"
+	kitchenservices "sharpnr-engine/property_business_ops/hospitality/kitchen/services"
+	restaurantservices "sharpnr-engine/property_business_ops/hospitality/restaurant/services"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 )

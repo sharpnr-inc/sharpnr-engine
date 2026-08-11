@@ -1,7 +1,7 @@
 package hotel_models
 
 import (
-	hotel_constants "sharpnr-engine/business_ops/hospitality/hotel/constants"
+	hotel_constants "sharpnr-engine/property_business_ops/hospitality/hotel/constants"
 	"time"
 
 	"github.com/google/uuid"

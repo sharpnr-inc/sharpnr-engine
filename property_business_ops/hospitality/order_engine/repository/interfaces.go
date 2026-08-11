@@ -2,7 +2,7 @@ package hospitality_order_engine_repository
 
 import (
 	"context"
-	hospitality_order_engine_models "sharpnr-engine/business_ops/hospitality/order_engine/models"
+	hospitality_order_engine_models "sharpnr-engine/property_business_ops/hospitality/order_engine/models"
 
 	"github.com/google/uuid"
 )

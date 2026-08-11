@@ -1,7 +1,7 @@
 package kitchen_routes
 
 import (
-	kitchencontrollers "sharpnr-engine/business_ops/hospitality/kitchen/controllers"
+	kitchencontrollers "sharpnr-engine/property_business_ops/hospitality/kitchen/controllers"
 
 	"github.com/gin-gonic/gin"
 )

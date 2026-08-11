@@ -1,7 +1,7 @@
 package kitchencontrollers
 
 import (
-	kitchenservices "sharpnr-engine/business_ops/hospitality/kitchen/services"
+	kitchenservices "sharpnr-engine/property_business_ops/hospitality/kitchen/services"
 	sse_engine "sharpnr-engine/sse_engine"
 )
 

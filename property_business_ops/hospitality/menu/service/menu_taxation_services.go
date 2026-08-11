@@ -2,8 +2,8 @@ package menuservice
 
 import (
 	"context"
-	hospitality_menu_contracts "sharpnr-engine/business_ops/hospitality/menu/contracts"
-	hospitalityMenu_models "sharpnr-engine/business_ops/hospitality/menu/models"
+	hospitality_menu_contracts "sharpnr-engine/property_business_ops/hospitality/menu/contracts"
+	hospitalityMenu_models "sharpnr-engine/property_business_ops/hospitality/menu/models"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 

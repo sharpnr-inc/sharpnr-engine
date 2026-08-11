@@ -2,7 +2,7 @@ package v1mobile
 
 import (
 	"sharpnr-engine/app"
-	hospitality_routes "sharpnr-engine/business_ops/hospitality/routes"
+	hospitality_routes "sharpnr-engine/property_business_ops/hospitality/routes"
 
 	"github.com/gin-gonic/gin"
 )

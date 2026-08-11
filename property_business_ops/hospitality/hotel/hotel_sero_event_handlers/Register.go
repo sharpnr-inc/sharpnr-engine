@@ -1,7 +1,7 @@
 package hotelseroeventhandlers
 
 import (
-	hotelservices "sharpnr-engine/business_ops/hospitality/hotel/services"
+	hotelservices "sharpnr-engine/property_business_ops/hospitality/hotel/services"
 	"sharpnr-engine/sero"
 )
 

@@ -2,7 +2,7 @@ package hotelrepo
 
 import (
 	"context"
-	hotel_models "sharpnr-engine/business_ops/hospitality/hotel/models"
+	hotel_models "sharpnr-engine/property_business_ops/hospitality/hotel/models"
 )
 
 func (r *hotelRepository) CreateHotelOperationalTiming(ctx context.Context, hotel_timing *hotel_models.HotelOperationsTiming) error {

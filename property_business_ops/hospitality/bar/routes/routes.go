@@ -2,7 +2,7 @@ package bar_routes
 
 import (
 	"sharpnr-engine/app"
-	barcontrollers "sharpnr-engine/business_ops/hospitality/bar/controllers"
+	barcontrollers "sharpnr-engine/property_business_ops/hospitality/bar/controllers"
 
 	"github.com/gin-gonic/gin"
 )

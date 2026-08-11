@@ -4,7 +4,7 @@ import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	auditEngineService "sharpnr-engine/audit_log_engine/service"
 	authenticationEngineServices "sharpnr-engine/authentication/services"
-	hospitality_orchestration_service "sharpnr-engine/business_ops/hospitality/orchestration/service"
+	hospitality_orchestration_service "sharpnr-engine/property_business_ops/hospitality/orchestration/service"
 	org_customer_service "sharpnr-engine/core/customer/service"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"

@@ -3,9 +3,9 @@ package restaurantservices
 import (
 	"context"
 	"errors"
-	restaurant_constants "sharpnr-engine/business_ops/hospitality/restaurant/constants"
-	restaurant_contracts "sharpnr-engine/business_ops/hospitality/restaurant/contracts"
-	restaurant_models "sharpnr-engine/business_ops/hospitality/restaurant/models"
+	restaurant_constants "sharpnr-engine/property_business_ops/hospitality/restaurant/constants"
+	restaurant_contracts "sharpnr-engine/property_business_ops/hospitality/restaurant/contracts"
+	restaurant_models "sharpnr-engine/property_business_ops/hospitality/restaurant/models"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 

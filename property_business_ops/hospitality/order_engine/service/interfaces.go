@@ -2,8 +2,8 @@ package hospitality_order_engine_service
 
 import (
 	"context"
-	hospitality_order_engine_contracts "sharpnr-engine/business_ops/hospitality/order_engine/contracts"
-	restaurant_events "sharpnr-engine/business_ops/hospitality/restaurant/events"
+	hospitality_order_engine_contracts "sharpnr-engine/property_business_ops/hospitality/order_engine/contracts"
+	restaurant_events "sharpnr-engine/property_business_ops/hospitality/restaurant/events"
 )
 
 type HospitalityOrderEngineServiceInterface interface {

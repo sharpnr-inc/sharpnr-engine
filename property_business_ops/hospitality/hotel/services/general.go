@@ -2,7 +2,7 @@ package hotelservices
 
 import (
 	"context"
-	hotel_contracts "sharpnr-engine/business_ops/hospitality/hotel/contracts"
+	hotel_contracts "sharpnr-engine/property_business_ops/hospitality/hotel/contracts"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

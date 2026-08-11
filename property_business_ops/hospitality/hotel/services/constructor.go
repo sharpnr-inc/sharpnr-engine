@@ -1,7 +1,7 @@
 package hotelservices
 
 import (
-	hotelrepo "sharpnr-engine/business_ops/hospitality/hotel/repo"
+	hotelrepo "sharpnr-engine/property_business_ops/hospitality/hotel/repo"
 	dbtx "sharpnr-engine/pkg/dbTx"
 )
 

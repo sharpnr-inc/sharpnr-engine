@@ -2,8 +2,8 @@ package hotelrepo
 
 import (
 	"context"
-	hotel_contracts "sharpnr-engine/business_ops/hospitality/hotel/contracts"
-	hotel_models "sharpnr-engine/business_ops/hospitality/hotel/models"
+	hotel_contracts "sharpnr-engine/property_business_ops/hospitality/hotel/contracts"
+	hotel_models "sharpnr-engine/property_business_ops/hospitality/hotel/models"
 
 	"github.com/google/uuid"
 )

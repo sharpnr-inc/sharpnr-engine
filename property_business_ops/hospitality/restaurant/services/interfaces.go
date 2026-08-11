@@ -2,8 +2,8 @@ package restaurantservices
 
 import (
 	"context"
-	restaurant_constants "sharpnr-engine/business_ops/hospitality/restaurant/constants"
-	restaurant_contracts "sharpnr-engine/business_ops/hospitality/restaurant/contracts"
+	restaurant_constants "sharpnr-engine/property_business_ops/hospitality/restaurant/constants"
+	restaurant_contracts "sharpnr-engine/property_business_ops/hospitality/restaurant/contracts"
 	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
 
 	"github.com/google/uuid"

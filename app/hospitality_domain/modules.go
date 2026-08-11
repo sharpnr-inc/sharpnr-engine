@@ -1,12 +1,12 @@
 package hospitalitydomain
 
 import (
-	barservices "sharpnr-engine/business_ops/hospitality/bar/services"
-	hotelservices "sharpnr-engine/business_ops/hospitality/hotel/services"
-	kitchenservices "sharpnr-engine/business_ops/hospitality/kitchen/services"
-	menuservice "sharpnr-engine/business_ops/hospitality/menu/service"
-	hospitality_order_engine_service "sharpnr-engine/business_ops/hospitality/order_engine/service"
-	restaurantservices "sharpnr-engine/business_ops/hospitality/restaurant/services"
+	barservices "sharpnr-engine/property_business_ops/hospitality/bar/services"
+	hotelservices "sharpnr-engine/property_business_ops/hospitality/hotel/services"
+	kitchenservices "sharpnr-engine/property_business_ops/hospitality/kitchen/services"
+	menuservice "sharpnr-engine/property_business_ops/hospitality/menu/service"
+	hospitality_order_engine_service "sharpnr-engine/property_business_ops/hospitality/order_engine/service"
+	restaurantservices "sharpnr-engine/property_business_ops/hospitality/restaurant/services"
 )
 
 type HospitalityDomain struct {

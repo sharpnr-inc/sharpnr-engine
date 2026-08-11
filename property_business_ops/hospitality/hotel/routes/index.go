@@ -2,7 +2,7 @@ package hotel_routes
 
 import (
 	"sharpnr-engine/app"
-	hotelcontrollers "sharpnr-engine/business_ops/hospitality/hotel/controllers"
+	hotelcontrollers "sharpnr-engine/property_business_ops/hospitality/hotel/controllers"
 
 	"github.com/gin-gonic/gin"
 )

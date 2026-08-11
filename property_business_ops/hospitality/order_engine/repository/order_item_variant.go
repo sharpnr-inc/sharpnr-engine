@@ -3,7 +3,7 @@ package hospitality_order_engine_repository
 import (
 	"context"
 	"fmt"
-	hospitality_order_engine_models "sharpnr-engine/business_ops/hospitality/order_engine/models"
+	hospitality_order_engine_models "sharpnr-engine/property_business_ops/hospitality/order_engine/models"
 )
 
 func (r *orderEngineRepo) CreateOrderItemVariant(ctx context.Context, itemVariant *hospitality_order_engine_models.HospitalityOrderItemVariant) error {

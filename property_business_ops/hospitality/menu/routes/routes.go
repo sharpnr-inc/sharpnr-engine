@@ -2,7 +2,7 @@ package menu_routes
 
 import (
 	"sharpnr-engine/app"
-	menu_controllers "sharpnr-engine/business_ops/hospitality/menu/controllers"
+	menu_controllers "sharpnr-engine/property_business_ops/hospitality/menu/controllers"
 
 	"github.com/gin-gonic/gin"
 )

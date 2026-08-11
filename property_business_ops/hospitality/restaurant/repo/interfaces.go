@@ -2,8 +2,8 @@ package restaurantrepo
 
 import (
 	"context"
-	restaurant_constants "sharpnr-engine/business_ops/hospitality/restaurant/constants"
-	restaurant_models "sharpnr-engine/business_ops/hospitality/restaurant/models"
+	restaurant_constants "sharpnr-engine/property_business_ops/hospitality/restaurant/constants"
+	restaurant_models "sharpnr-engine/property_business_ops/hospitality/restaurant/models"
 	"time"
 
 	"github.com/google/uuid"

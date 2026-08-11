@@ -2,8 +2,8 @@ package kitchenservices
 
 import (
 	"context"
-	kitchen_contracts "sharpnr-engine/business_ops/hospitality/kitchen/contracts"
-	kitchen_models "sharpnr-engine/business_ops/hospitality/kitchen/models"
+	kitchen_contracts "sharpnr-engine/property_business_ops/hospitality/kitchen/contracts"
+	kitchen_models "sharpnr-engine/property_business_ops/hospitality/kitchen/models"
 	"time"
 
 	"github.com/google/uuid"

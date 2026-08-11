@@ -3,8 +3,8 @@ package restaurant_event_handlers
 import (
 	"context"
 	"fmt"
-	restaurant_events "sharpnr-engine/business_ops/hospitality/restaurant/events"
-	restaurantservices "sharpnr-engine/business_ops/hospitality/restaurant/services"
+	restaurant_events "sharpnr-engine/property_business_ops/hospitality/restaurant/events"
+	restaurantservices "sharpnr-engine/property_business_ops/hospitality/restaurant/services"
 	"sharpnr-engine/sero"
 )
 

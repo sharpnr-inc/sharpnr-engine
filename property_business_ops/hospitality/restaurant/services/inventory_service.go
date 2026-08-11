@@ -2,7 +2,7 @@ package restaurantservices
 
 import (
 	"context"
-	restaurant_contracts "sharpnr-engine/business_ops/hospitality/restaurant/contracts"
+	restaurant_contracts "sharpnr-engine/property_business_ops/hospitality/restaurant/contracts"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
 	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"

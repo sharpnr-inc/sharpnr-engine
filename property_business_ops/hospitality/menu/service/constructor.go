@@ -1,7 +1,7 @@
 package menuservice
 
 import (
-	menurepo "sharpnr-engine/business_ops/hospitality/menu/repo"
+	menurepo "sharpnr-engine/property_business_ops/hospitality/menu/repo"
 	dbtx "sharpnr-engine/pkg/dbTx"
 )
 

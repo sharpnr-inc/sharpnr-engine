@@ -1,7 +1,7 @@
 package hospitality_menu_contracts
 
 import (
-	menu_constants "sharpnr-engine/business_ops/hospitality/menu/constants"
+	menu_constants "sharpnr-engine/property_business_ops/hospitality/menu/constants"
 
 	"github.com/google/uuid"
 )

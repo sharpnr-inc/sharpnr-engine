@@ -2,8 +2,8 @@ package hospitality_orchestration_service
 
 import (
 	"context"
-	hotel_contracts "sharpnr-engine/business_ops/hospitality/hotel/contracts"
-	restaurant_contracts "sharpnr-engine/business_ops/hospitality/restaurant/contracts"
+	hotel_contracts "sharpnr-engine/property_business_ops/hospitality/hotel/contracts"
+	restaurant_contracts "sharpnr-engine/property_business_ops/hospitality/restaurant/contracts"
 
 	"github.com/google/uuid"
 )

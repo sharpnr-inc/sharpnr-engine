@@ -2,10 +2,10 @@ package hospitality_order_engine_service
 
 import (
 	"context"
-	kitchenservices "sharpnr-engine/business_ops/hospitality/kitchen/services"
-	menuservice "sharpnr-engine/business_ops/hospitality/menu/service"
-	hospitality_order_engine_contracts "sharpnr-engine/business_ops/hospitality/order_engine/contracts"
-	hospitality_order_engine_repository "sharpnr-engine/business_ops/hospitality/order_engine/repository"
+	kitchenservices "sharpnr-engine/property_business_ops/hospitality/kitchen/services"
+	menuservice "sharpnr-engine/property_business_ops/hospitality/menu/service"
+	hospitality_order_engine_contracts "sharpnr-engine/property_business_ops/hospitality/order_engine/contracts"
+	hospitality_order_engine_repository "sharpnr-engine/property_business_ops/hospitality/order_engine/repository"
 	"sharpnr-engine/sero"
 )
 

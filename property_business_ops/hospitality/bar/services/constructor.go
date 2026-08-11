@@ -1,7 +1,7 @@
 package barservices
 
 import (
-	barrepo "sharpnr-engine/business_ops/hospitality/bar/repo"
+	barrepo "sharpnr-engine/property_business_ops/hospitality/bar/repo"
 )
 
 type barServices struct {

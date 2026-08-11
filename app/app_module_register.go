@@ -10,7 +10,7 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 
 	authenticationEngineServices "sharpnr-engine/authentication/services"
-	hospitality_orchestration_service "sharpnr-engine/business_ops/hospitality/orchestration/service"
+	hospitality_orchestration_service "sharpnr-engine/property_business_ops/hospitality/orchestration/service"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	hrmsengine "sharpnr-engine/hrms_engine/engine"

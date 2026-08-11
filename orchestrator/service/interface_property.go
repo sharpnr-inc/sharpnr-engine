@@ -3,7 +3,7 @@ package orchestrator_service
 import (
 	"context"
 
-	restaurant_contracts "sharpnr-engine/business_ops/hospitality/restaurant/contracts"
+	restaurant_contracts "sharpnr-engine/property_business_ops/hospitality/restaurant/contracts"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	property_orchestrator "sharpnr-engine/orchestrator/service/property"
 

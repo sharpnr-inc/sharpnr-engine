@@ -2,7 +2,7 @@ package restaurantcontrollers
 
 import (
 	"net/http"
-	restaurant_contracts "sharpnr-engine/business_ops/hospitality/restaurant/contracts"
+	restaurant_contracts "sharpnr-engine/property_business_ops/hospitality/restaurant/contracts"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"

@@ -1,7 +1,7 @@
 package kitchen_sero_event_handlers
 
 import (
-	kitchenservices "sharpnr-engine/business_ops/hospitality/kitchen/services"
+	kitchenservices "sharpnr-engine/property_business_ops/hospitality/kitchen/services"
 	"sharpnr-engine/sero"
 )
 

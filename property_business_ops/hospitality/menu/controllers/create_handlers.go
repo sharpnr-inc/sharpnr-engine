@@ -3,7 +3,7 @@ package menu_controllers
 import (
 	"errors"
 	"net/http"
-	hospitality_menu_contracts "sharpnr-engine/business_ops/hospitality/menu/contracts"
+	hospitality_menu_contracts "sharpnr-engine/property_business_ops/hospitality/menu/contracts"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"

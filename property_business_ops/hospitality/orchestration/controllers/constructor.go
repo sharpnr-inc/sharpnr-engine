@@ -1,6 +1,6 @@
 package hospitality_orchestration_controllers
 
-import hospitality_orchestration_service "sharpnr-engine/business_ops/hospitality/orchestration/service"
+import hospitality_orchestration_service "sharpnr-engine/property_business_ops/hospitality/orchestration/service"
 
 type hospitalityOrchestrationController struct {
 	hospitalityOrchestService hospitality_orchestration_service.OrchestrationServiceInterface

@@ -3,9 +3,9 @@ package hotelservices
 import (
 	"context"
 	"fmt"
-	hotel_contracts "sharpnr-engine/business_ops/hospitality/hotel/contracts"
-	hoteldtos "sharpnr-engine/business_ops/hospitality/hotel/dtos"
-	hotel_models "sharpnr-engine/business_ops/hospitality/hotel/models"
+	hotel_contracts "sharpnr-engine/property_business_ops/hospitality/hotel/contracts"
+	hoteldtos "sharpnr-engine/property_business_ops/hospitality/hotel/dtos"
+	hotel_models "sharpnr-engine/property_business_ops/hospitality/hotel/models"
 	"time"
 
 	"github.com/google/uuid"

@@ -2,7 +2,7 @@ package menurepo
 
 import (
 	"context"
-	hospitalityMenu_models "sharpnr-engine/business_ops/hospitality/menu/models"
+	hospitalityMenu_models "sharpnr-engine/property_business_ops/hospitality/menu/models"
 
 	"github.com/google/uuid"
 )

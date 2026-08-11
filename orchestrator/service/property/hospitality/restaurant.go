@@ -2,7 +2,7 @@ package propertyHospitalityOrchestrator
 
 import (
 	"context"
-	restaurant_contracts "sharpnr-engine/business_ops/hospitality/restaurant/contracts"
+	restaurant_contracts "sharpnr-engine/property_business_ops/hospitality/restaurant/contracts"
 
 	"github.com/google/uuid"
 )

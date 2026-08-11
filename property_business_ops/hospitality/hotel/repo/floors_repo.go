@@ -2,7 +2,7 @@ package hotelrepo
 
 import (
 	"context"
-	hotel_models "sharpnr-engine/business_ops/hospitality/hotel/models"
+	hotel_models "sharpnr-engine/property_business_ops/hospitality/hotel/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

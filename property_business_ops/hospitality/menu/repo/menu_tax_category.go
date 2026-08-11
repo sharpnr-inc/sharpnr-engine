@@ -3,7 +3,7 @@ package menurepo
 import (
 	"context"
 	"errors"
-	hospitalityMenu_models "sharpnr-engine/business_ops/hospitality/menu/models"
+	hospitalityMenu_models "sharpnr-engine/property_business_ops/hospitality/menu/models"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 

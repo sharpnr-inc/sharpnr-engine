@@ -1,6 +1,6 @@
 package restaurantcontrollers
 
-import restaurantservices "sharpnr-engine/business_ops/hospitality/restaurant/services"
+import restaurantservices "sharpnr-engine/property_business_ops/hospitality/restaurant/services"
 
 // RestaurantController handles all restaurant-related HTTP requests.
 //

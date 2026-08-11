@@ -3,7 +3,7 @@ package hotelrepo
 import (
 	"context"
 	"errors"
-	hotel_models "sharpnr-engine/business_ops/hospitality/hotel/models"
+	hotel_models "sharpnr-engine/property_business_ops/hospitality/hotel/models"
 
 	"strings"
 

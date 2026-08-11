@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	hospitality_utilities "sharpnr-engine/business_ops/hospitality/utilities"
+	hospitality_utilities "sharpnr-engine/property_business_ops/hospitality/utilities"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 
 	"github.com/google/uuid"

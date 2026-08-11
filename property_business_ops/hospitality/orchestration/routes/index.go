@@ -2,7 +2,7 @@ package hospitality_orchestration_routes
 
 import (
 	"sharpnr-engine/app"
-	hospitality_orchestration_controllers "sharpnr-engine/business_ops/hospitality/orchestration/controllers"
+	hospitality_orchestration_controllers "sharpnr-engine/property_business_ops/hospitality/orchestration/controllers"
 
 	"github.com/gin-gonic/gin"
 )

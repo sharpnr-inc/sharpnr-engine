@@ -2,7 +2,7 @@ package barservices
 
 import (
 	"context"
-	bar_models "sharpnr-engine/business_ops/hospitality/bar/models"
+	bar_models "sharpnr-engine/property_business_ops/hospitality/bar/models"
 	"time"
 
 	"github.com/google/uuid"

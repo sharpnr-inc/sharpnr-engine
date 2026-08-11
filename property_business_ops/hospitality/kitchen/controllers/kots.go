@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	kitchen_contracts "sharpnr-engine/business_ops/hospitality/kitchen/contracts"
+	kitchen_contracts "sharpnr-engine/property_business_ops/hospitality/kitchen/contracts"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"

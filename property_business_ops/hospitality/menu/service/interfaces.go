@@ -2,7 +2,7 @@ package menuservice
 
 import (
 	"context"
-	hospitality_menu_contracts "sharpnr-engine/business_ops/hospitality/menu/contracts"
+	hospitality_menu_contracts "sharpnr-engine/property_business_ops/hospitality/menu/contracts"
 
 	"github.com/google/uuid"
 )

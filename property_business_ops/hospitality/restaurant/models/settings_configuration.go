@@ -1,7 +1,7 @@
 package restaurant_models
 
 import (
-	restaurant_constants "sharpnr-engine/business_ops/hospitality/restaurant/constants"
+	restaurant_constants "sharpnr-engine/property_business_ops/hospitality/restaurant/constants"
 	"time"
 
 	"github.com/google/uuid"
