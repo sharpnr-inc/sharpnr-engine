@@ -2,7 +2,7 @@ package kitchenrepo
 
 import (
 	"context"
-	kitchen_models "sharpnr-engine/property_business_ops/hospitality/kitchen/models"
+	kitchen_models "sharpnr-engine/property_infra/hospitality_infra/kitchen/models"
 	"time"
 
 	"github.com/google/uuid"

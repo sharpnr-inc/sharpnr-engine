@@ -3,7 +3,7 @@ package kitchenservices
 import (
 	"context"
 	"errors"
-	kitchen_contracts "sharpnr-engine/property_business_ops/hospitality/kitchen/contracts"
+	kitchen_contracts "sharpnr-engine/property_infra/hospitality_infra/kitchen/contracts"
 	restaurant_events "sharpnr-engine/property_business_ops/hospitality/restaurant/events"
 	dbtx "sharpnr-engine/pkg/dbTx"
 

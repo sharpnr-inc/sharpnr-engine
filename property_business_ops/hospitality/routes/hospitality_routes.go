@@ -4,7 +4,7 @@ import (
 	"sharpnr-engine/app"
 	bar_routes "sharpnr-engine/property_business_ops/hospitality/bar/routes"
 	hotel_routes "sharpnr-engine/property_business_ops/hospitality/hotel/routes"
-	kitchen_routes "sharpnr-engine/property_business_ops/hospitality/kitchen/routes"
+	kitchen_routes "sharpnr-engine/property_infra/hospitality_infra/kitchen/routes"
 	menu_routes "sharpnr-engine/property_business_ops/hospitality/menu/routes"
 	hospitality_orchestration_routes "sharpnr-engine/property_business_ops/hospitality/orchestration/routes"
 	restaurant_routes "sharpnr-engine/property_business_ops/hospitality/restaurant/routes"

@@ -3,7 +3,7 @@ package kitchenrepo
 import (
 	"context"
 	"fmt"
-	kitchen_models "sharpnr-engine/property_business_ops/hospitality/kitchen/models"
+	kitchen_models "sharpnr-engine/property_infra/hospitality_infra/kitchen/models"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
 

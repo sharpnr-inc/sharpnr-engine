@@ -3,7 +3,7 @@ package propertyHospitalityOrchestrator
 import (
 	bar_contracts "sharpnr-engine/property_business_ops/hospitality/bar/contracts"
 	hotel_contracts "sharpnr-engine/property_business_ops/hospitality/hotel/contracts"
-	kitchen_contracts "sharpnr-engine/property_business_ops/hospitality/kitchen/contracts"
+	kitchen_contracts "sharpnr-engine/property_infra/hospitality_infra/kitchen/contracts"
 	restaurant_contracts "sharpnr-engine/property_business_ops/hospitality/restaurant/contracts"
 	hospitality_utilities "sharpnr-engine/property_business_ops/hospitality/utilities"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
