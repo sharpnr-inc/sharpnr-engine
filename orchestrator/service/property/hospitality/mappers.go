@@ -1,12 +1,13 @@
 package propertyHospitalityOrchestrator
 
 import (
+	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	bar_contracts "sharpnr-engine/property_business_ops/hospitality/bar/contracts"
 	hotel_contracts "sharpnr-engine/property_business_ops/hospitality/hotel/contracts"
-	kitchen_contracts "sharpnr-engine/property_infra/hospitality_infra/kitchen/contracts"
 	restaurant_contracts "sharpnr-engine/property_business_ops/hospitality/restaurant/contracts"
 	hospitality_utilities "sharpnr-engine/property_business_ops/hospitality/utilities"
-	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
+	kitchen_contracts "sharpnr-engine/property_infra/hospitality_infra/kitchen/contracts"
+	hospitality_infra_utils "sharpnr-engine/property_infra/hospitality_infra/utils"
 )
 
 // Engine contract -> wire DTO mapping (rule 3 in orchestrator/service/doc.go).
@@ -48,7 +49,7 @@ func mapKitchenToInfraModule(k *kitchen_contracts.Kitchen_Reader) orchestrator_d
 		ID:        k.ID,
 		Name:      k.Name,
 		Status:    k.Status,
-		InfraType: hospitality_utilities.Kitchen,
+		InfraType: hospitality_infra_utils.Kitchen,
 		Meta:      nil, // shape TBD
 	}
 }

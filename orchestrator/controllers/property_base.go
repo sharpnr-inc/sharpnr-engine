@@ -3,6 +3,11 @@ package orchestrator_controllers
 import (
 	"net/http"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
+	healthcare_utilities "sharpnr-engine/property_business_ops/healthcare/utility"
+	hospitality_utilities "sharpnr-engine/property_business_ops/hospitality/utilities"
+	general_infra_utils "sharpnr-engine/property_infra/general_infra/utils"
+	healthcare_infra_utils "sharpnr-engine/property_infra/healthcare_infra/utils"
+	hospitality_infra_utils "sharpnr-engine/property_infra/hospitality_infra/utils"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
@@ -120,3 +125,40 @@ func (c *OrchestratorController) AddProperty(ctx *gin.Context) {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) InfraModulesHandler(ctx *gin.Context) {
+
+	// Ignore the organization ID and employeeID
+	// this is for Authentication purpose, so no loose enpoint is exposed
+	_, _, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	data := gin.H{
+		"general":     general_infra_utils.GeneralInfraModules,
+		"hospitality": hospitality_infra_utils.HospitalityInfraModules,
+		"healthcare":  healthcare_infra_utils.HealthcareInfraModules,
+	}
+
+	utils.Success(ctx, http.StatusOK, "Infra modules fetched successfully", data)
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) BusinessOperationModulesHandler(ctx *gin.Context) {
+
+	// Ignore the organization ID and employeeID
+	// this is for Authentication purpose, so no loose enpoint is exposed
+	_, _, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	data := gin.H{
+		"hospitality": hospitality_utilities.HospitalityModules,
+		"healthcare":  healthcare_utilities.HealthcareModules,
+	}
+
+	utils.Success(ctx, http.StatusOK, "Business modules fetched successfully", data)
+}

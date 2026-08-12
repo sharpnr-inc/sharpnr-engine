@@ -18,9 +18,9 @@ func registerPropertyRoutes(r *gin.RouterGroup, c *orchestrator_controllers.Orch
 		// Org-level: not scoped to any one property.
 		pr.GET("", c.ListAllOrgProperty)  // list every property in the org
 		pr.POST("/create", c.AddProperty) // create a new property
-		
-		pr.GET("/utils/bm")
-		pr.GET("/utils/infra")
+
+		pr.GET("/utils/bm", c.BusinessOperationModulesHandler)
+		pr.GET("/utils/infra", c.InfraModulesHandler)
 		pr.GET("/utils/resources")
 
 		// Everything below is scoped to a single property by :propertyID.

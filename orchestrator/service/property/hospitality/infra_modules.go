@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	hospitality_utilities "sharpnr-engine/property_business_ops/hospitality/utilities"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
+	hospitality_infra_utils "sharpnr-engine/property_infra/hospitality_infra/utils"
 
 	"github.com/google/uuid"
 )
@@ -24,7 +24,7 @@ func (s *HospitalityOrchestrator) SetupHospitalityInfraModules(
 	modules []orchestrator_dtos.HospitalityInfraModuleQuantity,
 ) error {
 	for _, m := range modules {
-		if m.Module != hospitality_utilities.Kitchen {
+		if m.Module != hospitality_infra_utils.Kitchen {
 			// Not yet supported — skip rather than fail the whole request.
 			continue
 		}

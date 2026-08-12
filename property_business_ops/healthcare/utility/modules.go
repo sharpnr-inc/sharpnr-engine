@@ -2,6 +2,9 @@ package healthcare_utilities
 
 // HealthcareModulesType enumerates the patient-facing service lines a
 // healthcare provider can operate.
+//
+// The infrastructure modules that support these service lines live in
+// sharpnr-engine/property_infra/healthcare_infra/utils.
 type HealthcareModulesType string
 
 const (
@@ -13,19 +16,6 @@ const (
 	HomeCare     HealthcareModulesType = "HOME_CARE"
 )
 
-// HealthcareInfraModulesType enumerates the operational / physical
-// infrastructure areas that support the business modules above.
-type HealthcareInfraModulesType string
-
-const (
-	Ward             HealthcareInfraModulesType = "WARD_INPATIENT_UNIT"
-	OperationTheatre HealthcareInfraModulesType = "OPERATION_THEATRE"
-	Laboratory       HealthcareInfraModulesType = "LABORATORY"
-	PharmacyCounter  HealthcareInfraModulesType = "PHARMACY_COUNTER"
-	Reception        HealthcareInfraModulesType = "RECEPTION_REGISTRATION"
-	Radiology        HealthcareInfraModulesType = "RADIOLOGY_IMAGING"
-)
-
 // Business module
 type HealthcareModule struct {
 	ID          string                `json:"id"`
@@ -33,15 +23,6 @@ type HealthcareModule struct {
 	Description string                `json:"description"`
 	IsAvailable bool                  `json:"isAvailable"`
 	Tags        []string              `json:"tags"`
-}
-
-// Infra module
-type HealthcareInfraModule struct {
-	ID          string                     `json:"id"`
-	ModuleName  HealthcareInfraModulesType `json:"moduleName"`
-	Description string                     `json:"description"`
-	IsAvailable bool                       `json:"isAvailable"`
-	Tags        []string                   `json:"tags"`
 }
 
 var HealthcareModules = []HealthcareModule{
@@ -89,51 +70,6 @@ var HealthcareModules = []HealthcareModule{
 	},
 }
 
-var HealthcareInfraModules = []HealthcareInfraModule{
-	{
-		ID:          "7701WD",
-		ModuleName:  Ward,
-		Description: "Manages bed allocation, ward assignments, and inpatient capacity planning.",
-		IsAvailable: false,
-		Tags:        []string{"wards", "beds", "ipd"},
-	},
-	{
-		ID:          "7745OT",
-		ModuleName:  OperationTheatre,
-		Description: "Surgical suite module for OT scheduling, equipment readiness, and procedure tracking.",
-		IsAvailable: false,
-		Tags:        []string{"surgery", "ot", "scheduling"},
-	},
-	{
-		ID:          "7720LB",
-		ModuleName:  Laboratory,
-		Description: "Physical lab space for sample processing, testing, and result generation.",
-		IsAvailable: false,
-		Tags:        []string{"lab", "samples", "testing"},
-	},
-	{
-		ID:          "7733PH",
-		ModuleName:  PharmacyCounter,
-		Description: "Dispensing point for medication handover and prescription fulfillment.",
-		IsAvailable: false,
-		Tags:        []string{"pharmacy", "dispensing", "medication"},
-	},
-	{
-		ID:          "7710RC",
-		ModuleName:  Reception,
-		Description: "Primary patient interface for registration, appointment check-in, and queue management.",
-		IsAvailable: false,
-		Tags:        []string{"registration", "front-desk", "queue"},
-	},
-	{
-		ID:          "7758RD",
-		ModuleName:  Radiology,
-		Description: "Imaging unit for X-ray, CT, MRI, and ultrasound services with report integration.",
-		IsAvailable: false,
-		Tags:        []string{"imaging", "radiology", "scans"},
-	},
-}
-
 // ---------------------------------------------------------------------------
 // Utilities
 // ---------------------------------------------------------------------------
@@ -142,16 +78,6 @@ var HealthcareInfraModules = []HealthcareInfraModule{
 func (m HealthcareModulesType) IsValid() bool {
 	switch m {
 	case Hospital, Clinic, Pharmacy, Diagnostics, Telemedicine, HomeCare:
-		return true
-	default:
-		return false
-	}
-}
-
-// IsValid reports whether the infra module type is a recognised value.
-func (m HealthcareInfraModulesType) IsValid() bool {
-	switch m {
-	case Ward, OperationTheatre, Laboratory, PharmacyCounter, Reception, Radiology:
 		return true
 	default:
 		return false
@@ -179,26 +105,6 @@ func GetModuleByType(t HealthcareModulesType) (HealthcareModule, bool) {
 	return HealthcareModule{}, false
 }
 
-// GetInfraModuleByID returns the infra module with the given ID.
-func GetInfraModuleByID(id string) (HealthcareInfraModule, bool) {
-	for _, m := range HealthcareInfraModules {
-		if m.ID == id {
-			return m, true
-		}
-	}
-	return HealthcareInfraModule{}, false
-}
-
-// GetInfraModuleByType returns the infra module with the given module type.
-func GetInfraModuleByType(t HealthcareInfraModulesType) (HealthcareInfraModule, bool) {
-	for _, m := range HealthcareInfraModules {
-		if m.ModuleName == t {
-			return m, true
-		}
-	}
-	return HealthcareInfraModule{}, false
-}
-
 // GetAvailableModules returns only the business modules flagged available.
 func GetAvailableModules() []HealthcareModule {
 	out := make([]HealthcareModule, 0, len(HealthcareModules))
@@ -210,35 +116,10 @@ func GetAvailableModules() []HealthcareModule {
 	return out
 }
 
-// GetAvailableInfraModules returns only the infra modules flagged available.
-func GetAvailableInfraModules() []HealthcareInfraModule {
-	out := make([]HealthcareInfraModule, 0, len(HealthcareInfraModules))
-	for _, m := range HealthcareInfraModules {
-		if m.IsAvailable {
-			out = append(out, m)
-		}
-	}
-	return out
-}
-
 // GetModulesByTag returns business modules carrying the given tag.
 func GetModulesByTag(tag string) []HealthcareModule {
 	var out []HealthcareModule
 	for _, m := range HealthcareModules {
-		for _, t := range m.Tags {
-			if t == tag {
-				out = append(out, m)
-				break
-			}
-		}
-	}
-	return out
-}
-
-// GetInfraModulesByTag returns infra modules carrying the given tag.
-func GetInfraModulesByTag(tag string) []HealthcareInfraModule {
-	var out []HealthcareInfraModule
-	for _, m := range HealthcareInfraModules {
 		for _, t := range m.Tags {
 			if t == tag {
 				out = append(out, m)
