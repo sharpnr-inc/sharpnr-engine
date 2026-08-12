@@ -4,15 +4,15 @@ import (
 	"context"
 	restaurant_contracts "sharpnr-engine/property_business_ops/hospitality/restaurant/contracts"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
-	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
+	stockwaveEngineDtos "sharpnr-engine/stockwave_engine/dtos"
+	stockwaveEngineModels "sharpnr-engine/stockwave_engine/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-func (s *restaurantService) GetAllInventoryAccounts(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error) {
-	var inventoryAcconts []inventory_engine_models.InventoryAccount
+func (s *restaurantService) GetAllInventoryAccounts(ctx context.Context, orgID, emplID uuid.UUID) ([]stockwaveEngineModels.InventoryAccount, error) {
+	var inventoryAcconts []stockwaveEngineModels.InventoryAccount
 
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
@@ -44,7 +44,7 @@ func (s *restaurantService) AddNewInventoryInRestaurant(ctx context.Context, org
 			return nil
 		}
 
-		mappedReq := &inventory_dtos.NewInventoryRequestDto{
+		mappedReq := &stockwaveEngineDtos.NewInventoryRequestDto{
 			BusinessUnitID: &restaurantID,
 			LegalEntityID:  restaurantDetails.LegalEntityID,
 			Name:           request.Name,

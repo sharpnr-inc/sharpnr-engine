@@ -5,7 +5,7 @@ import (
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	accounting_engine_contracts "sharpnr-engine/sharp_accounting_engine/accounting_engine/contracts"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
-	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
+	stockwaveEngineModels "sharpnr-engine/stockwave_engine/models"
 
 	"github.com/google/uuid"
 )
@@ -15,7 +15,7 @@ type AccountingServiceInterface interface {
 	GetAccountingBook(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) (accountingdtos.AccountingBook_Response_dto, error)
 	CreateAccount(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, accountRequest accountingdtos.CreateAccountRequest) (accountID uuid.UUID, err error)
 	GetAccountLeger(ctx context.Context, orgID, emplID, legalEntityID, accountID uuid.UUID) (accountingdtos.AccountLedgerDto, error)
-	GetAllInventoriesAccounts(ctx context.Context, orgID, emplID, legalEntity uuid.UUID) ([]inventory_engine_models.Inventory, error)
+	GetAllInventoriesAccounts(ctx context.Context, orgID, emplID, legalEntity uuid.UUID) ([]stockwaveEngineModels.Inventory, error)
 	AddNewPurchaseInvoice(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, request *accountingdtos.PurchaseInvoiceRequestDto) error
 	GetLegalEntitySuppliers(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]accounting_engine_contracts.LegalEntitySuppliersResponseDto, error)
 	AddNewSuppliers(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID, request *accounting_engine_contracts.AddNewSuppliersForLegalEntityRequestDto) error

@@ -4,7 +4,7 @@ import (
 	"context"
 	restaurant_constants "sharpnr-engine/property_business_ops/hospitality/restaurant/constants"
 	restaurant_contracts "sharpnr-engine/property_business_ops/hospitality/restaurant/contracts"
-	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
+	stockwaveEngineModels "sharpnr-engine/stockwave_engine/models"
 
 	"github.com/google/uuid"
 )
@@ -105,7 +105,7 @@ type RestaurantPickUpOrderServiceInterface interface {
 }
 
 type RestaurantInventoryServiceInterface interface {
-	GetAllInventoryAccounts(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error)
+	GetAllInventoryAccounts(ctx context.Context, orgID, emplID uuid.UUID) ([]stockwaveEngineModels.InventoryAccount, error)
 	AddNewInventoryInRestaurant(ctx context.Context, orgID, emplID, restaurantID uuid.UUID, request *restaurant_contracts.AddInventoryRequestDto) error
 	GetRestaurantAllInventories(ctx context.Context, orgID, emplID, restaurantID uuid.UUID, inventoryAccountID *uuid.UUID) ([]restaurant_contracts.RestuarantInventoriesResponseDto, error)
 	// GetRestaurantInventoriesByInventoryAccount(ctx context.Context, orgID, emplID, restaurantID, inventoryAccountID uuid.UUID) ([]restaurant_contracts.RestuarantInventoriesResponseDto, error)

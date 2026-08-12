@@ -20,7 +20,7 @@ import (
 	sentinelEngine "sharpnr-engine/sentinel_engine"
 	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
-	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
+	stockwaveEngineServices "sharpnr-engine/stockwave_engine/services"
 )
 
 func bootstrapSharpnrOrchestrator(
@@ -34,7 +34,7 @@ func bootstrapSharpnrOrchestrator(
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
-	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
+	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	employeeHRService coreEmployeeServices.EmployeeHRServiceInterface,
 	employeeService coreEmployeeServices.EmployeeOrchestratorServiceInterface,

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"sharpnr-engine/shared/utils"
-	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
+	stockwaveEngineDtos "sharpnr-engine/stockwave_engine/dtos"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +15,7 @@ func (c *OrchestratorController) NewInventoryAccountHandler(ctx *gin.Context) {
 		return
 	}
 
-	request, ok := utils.BindJSON[inventory_dtos.NewInventoryAccountRequestDto](ctx)
+	request, ok := utils.BindJSON[stockwaveEngineDtos.NewInventoryAccountRequestDto](ctx)
 	if !ok {
 		return
 	}

@@ -6,7 +6,7 @@ import (
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sero"
 	accounting_sero_event_handler "sharpnr-engine/sharp_accounting_engine/accounting_engine/sero_handler"
-	inventory_engine_sero_handlers "sharpnr-engine/sharp_inventory_engine/sero_handlers"
+	stockwaveEngineSeroHandlers "sharpnr-engine/stockwave_engine/sero_handlers"
 
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 	sse_engine "sharpnr-engine/sse_engine"
@@ -47,7 +47,7 @@ func BootstrapModules(
 
 	/* ---------------------------- inventory engine ---------------------------- */
 	inventoryEngine := bootstrapInventoryEngine(db, txManager, seroEngine)
-	inventory_engine_sero_handlers.RegisterSeroHandler(seroEngine, inventoryEngine)
+	stockwaveEngineSeroHandlers.RegisterSeroHandler(seroEngine, inventoryEngine)
 	/* ---------------------------- inventory engine ---------------------------- */
 
 	// One core employee service instance, handed to each consumer through its

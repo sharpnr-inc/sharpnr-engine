@@ -8,7 +8,7 @@ import (
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
-	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
+	stockwaveEngineServices "sharpnr-engine/stockwave_engine/services"
 
 	invoice_engine_services "sharpnr-engine/sharp_accounting_engine/invoicing_engine/services"
 )
@@ -21,7 +21,7 @@ type restaurantService struct {
 	customerEngine  org_customer_service.OrgCustomerServiceInterface
 	invoiceEngine   invoice_engine_services.InvoiceEngineServiceInterface
 	paymentsEngine  payment_engine_service.PaymentServiceInterface
-	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface
+	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface
 }
 
 // CreateOrder implements RestaurantServiceInterface.
@@ -42,7 +42,7 @@ func NewRestaurantService(
 	customerEngine org_customer_service.OrgCustomerServiceInterface,
 	invoiceEngine invoice_engine_services.InvoiceEngineServiceInterface,
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
-	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
+	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface,
 ) *restaurantService {
 	return &restaurantService{
 		restaurantRepo:  restaurantRepo,

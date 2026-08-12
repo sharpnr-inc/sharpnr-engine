@@ -3,9 +3,9 @@ package orchestrator_service
 import (
 	"context"
 	dbtx "sharpnr-engine/pkg/dbTx"
-	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
-	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
-	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
+	stockwaveEngineDtos "sharpnr-engine/stockwave_engine/dtos"
+	stockwaveEngineModels "sharpnr-engine/stockwave_engine/models"
+	stockwaveEngineServices "sharpnr-engine/stockwave_engine/services"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -14,12 +14,12 @@ import (
 // inventoryOrchestrator implements InventoryOrchestratorServiceInterface.
 type inventoryOrchestrator struct {
 	txManager       dbtx.TxManager
-	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface
+	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface
 }
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *inventoryOrchestrator) AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *inventory_dtos.NewInventoryAccountRequestDto) error {
+func (s *inventoryOrchestrator) AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *stockwaveEngineDtos.NewInventoryAccountRequestDto) error {
 
 	return s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
@@ -35,8 +35,8 @@ func (s *inventoryOrchestrator) AddNewInventoryAccount(ctx context.Context, orgI
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *inventoryOrchestrator) ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error) {
-	var results []inventory_engine_models.InventoryAccount
+func (s *inventoryOrchestrator) ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]stockwaveEngineModels.InventoryAccount, error) {
+	var results []stockwaveEngineModels.InventoryAccount
 
 	// Wrapping in a transaction ensures read consistency across the request
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
@@ -62,8 +62,8 @@ func (s *inventoryOrchestrator) ListAllInventoryAccount(ctx context.Context, org
 
 /* ---------------------------------- <***> --------------------------------- */
 
-func (s *inventoryOrchestrator) GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]inventory_engine_models.Inventory, error) {
-	var inventoryList []inventory_engine_models.Inventory
+func (s *inventoryOrchestrator) GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]stockwaveEngineModels.Inventory, error) {
+	var inventoryList []stockwaveEngineModels.Inventory
 
 	err := s.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)

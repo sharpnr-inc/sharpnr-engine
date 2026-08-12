@@ -8,7 +8,7 @@ import (
 	"sharpnr-engine/sero"
 	accounting_repo "sharpnr-engine/sharp_accounting_engine/accounting_engine/repository"
 	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
-	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
+	stockwaveEngineServices "sharpnr-engine/stockwave_engine/services"
 
 	invoice_engine_services "sharpnr-engine/sharp_accounting_engine/invoicing_engine/services"
 
@@ -21,7 +21,7 @@ func bootstrapAccounting(
 
 	invoiceEngine invoice_engine_services.InvoiceEngineServiceInterface,
 	paymentEngine payment_engine_service.PaymentServiceInterface,
-	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
+	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	seroEngine *sero.SEROEngine,
 	legalEntity legal_entity_service.OrgLegalEntityServiceInterface,

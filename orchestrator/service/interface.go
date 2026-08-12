@@ -15,8 +15,8 @@ import (
 	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
 	sentinelContexts "sharpnr-engine/sentinel_contexts"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
-	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
-	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
+	stockwaveEngineDtos "sharpnr-engine/stockwave_engine/dtos"
+	stockwaveEngineModels "sharpnr-engine/stockwave_engine/models"
 
 	"github.com/google/uuid"
 )
@@ -123,9 +123,9 @@ type SuppliersAndVendorsOrchestratorServiceInterface interface {
 }
 
 type InventoryOrchestratorServiceInterface interface {
-	AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *inventory_dtos.NewInventoryAccountRequestDto) error
-	ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error)
-	GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]inventory_engine_models.Inventory, error)
+	AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *stockwaveEngineDtos.NewInventoryAccountRequestDto) error
+	ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]stockwaveEngineModels.InventoryAccount, error)
+	GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]stockwaveEngineModels.Inventory, error)
 }
 
 /* --------------------------------- <****> --------------------------------- */
