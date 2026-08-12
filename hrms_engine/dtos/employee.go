@@ -1,4 +1,4 @@
-package hrmsEmployeesDtos
+package hrmsEngineDtos
 
 import (
 	coreEmployeeConstants "sharpnr-engine/core/employees/constants"

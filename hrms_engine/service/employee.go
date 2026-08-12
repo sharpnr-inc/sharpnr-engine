@@ -1,31 +1,31 @@
-package hrmsEmployeeServices
+package hrmsEngineService
 
 import (
 	"context"
-	hrmsEmployeesDtos "sharpnr-engine/hrms_engine/employees/dtos"
+	hrmsEngineDtos "sharpnr-engine/hrms_engine/dtos"
 
 	"github.com/google/uuid"
 )
 
-// ListOrgAllEmployees implements HRMSEmployeeServiceInterface.
-func (s *hrmsemployeeService) ListOrgAllEmployees(
+// ListOrgAllEmployees implements HrmsEngineServiceInterface.
+func (s *hrmsService) ListOrgAllEmployees(
 	ctx context.Context,
 	orgID, emplID uuid.UUID,
-) ([]*hrmsEmployeesDtos.OrgEmployeeList, error) {
+) ([]*hrmsEngineDtos.OrgEmployeeList, error) {
 
 	empls, err := s.employeeService.ListOrgAllEmployees(ctx, orgID, emplID)
 	if err != nil {
 		return nil, err
 	}
 
-	result := make([]*hrmsEmployeesDtos.OrgEmployeeList, 0, len(empls))
+	result := make([]*hrmsEngineDtos.OrgEmployeeList, 0, len(empls))
 
 	for _, e := range empls {
 		if e == nil {
 			continue
 		}
 
-		result = append(result, &hrmsEmployeesDtos.OrgEmployeeList{
+		result = append(result, &hrmsEngineDtos.OrgEmployeeList{
 			ID:           e.ID,
 			EmployeeName: e.EmployeeName,
 			EmployeeID:   e.EmployeeID,

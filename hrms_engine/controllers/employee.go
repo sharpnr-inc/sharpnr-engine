@@ -1,4 +1,4 @@
-package employee_controllers
+package hrmsEngineControllers
 
 import (
 	"net/http"
@@ -7,13 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *hrmsEmployeeController) ListAllEmployeesOfOrg(ctx *gin.Context) {
+func (c *hrmsControllers) ListAllEmployeesOfOrg(ctx *gin.Context) {
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
 		return
 	}
 
-	res, err := c.hrmsEmpService.ListOrgAllEmployees(ctx.Request.Context(), orgID, emplID)
+	res, err := c.hrmsService.ListOrgAllEmployees(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
 		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
