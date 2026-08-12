@@ -1,8 +1,8 @@
 package hospitalityMenu_models
 
 import (
-	menu_constants "sharpnr-engine/property_resources/hospitality_resources/menu/constants"
 	hospitality_utilities "sharpnr-engine/property_business_ops/hospitality/utilities"
+	menu_constants "sharpnr-engine/property_resources/hospitality_resources/menu/constants"
 	"time"
 
 	"github.com/google/uuid"
@@ -19,7 +19,7 @@ type MenuGroup struct {
 	Name        string `gorm:"type:varchar(100);not null"`
 	Description string `gorm:"type:varchar(255)"`
 
-	// Owner: RESTAURANT, BAR, HOTEL, HOUSEKEEPING
+	// Owner: RESTAURANT, BAR, HOTEL,
 	OwnerModule hospitality_utilities.HospitalityModulesType `gorm:"type:varchar(50)"`
 	OwnerID     uuid.UUID                                    `gorm:"type:uuid;index"`
 
