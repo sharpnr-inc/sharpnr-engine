@@ -1,35 +1,24 @@
-// Package cables_engine_models holds the persistence models for the chat /
-// messaging module ("cables"). Messages are stored durably in Postgres (the
-// source of truth and the searchable store via a tsvector column); ephemeral
-// state such as presence/typing lives in Redis and is not modelled here.
+// this cables main models
 package cables_engine_models
 
-// ConversationType describes the shape of a conversation thread.
-type ConversationType string
+import (
+	"time"
 
-const (
-	// ConversationDirect is a 1:1 thread between exactly two participants.
-	ConversationDirect ConversationType = "DIRECT"
-	// ConversationGroup is a named, multi-participant thread.
-	ConversationGroup ConversationType = "GROUP"
+	"github.com/google/uuid"
 )
 
-// ParticipantRole controls what a participant may do inside a conversation.
-type ParticipantRole string
+// A organization only gonna have one Cables Account
+// the reason for this Account tables because one day we might need to Individual Cables Account
 
-const (
-	ParticipantMember ParticipantRole = "MEMBER"
-	ParticipantAdmin  ParticipantRole = "ADMIN"
-	ParticipantOwner  ParticipantRole = "OWNER"
-)
+type OrgCablesAccount struct {
+	ID             uuid.UUID
+	OrganizationID uuid.UUID
+	CreatedAt      time.Time
+	IsActive       bool // this is switch which will or can turn-off the Cables service in the organization
+}
 
-// MessageType distinguishes user content from system-generated events
-// (e.g. "X added Y", "name changed") that are rendered inline in the thread.
-type MessageType string
+func (t *OrgCablesAccount) TableName() string {
+	return "cables.org_cables_accounts"
+}
 
-const (
-	MessageText   MessageType = "TEXT"
-	MessageImage  MessageType = "IMAGE"
-	MessageFile   MessageType = "FILE"
-	MessageSystem MessageType = "SYSTEM"
-)
+/* ---------------------------------- <***> --------------------------------- */

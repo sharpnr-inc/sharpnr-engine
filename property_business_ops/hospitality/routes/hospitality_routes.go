@@ -23,7 +23,6 @@ func RegisterHotelModuleRoutes(
 	// this is the hospitality orchestration layer
 	// which manages What resources organization have in Hospitality sector
 	hospitality_orchestration_routes.RegisterOrchestrationRoutes(sharpHospitality, modules)
-
 	hotel_routes.RegisterHotelRoutes(sharpHospitality, modules)
 	kitchen_routes.KitchenRoutes(sharpHospitality, modules)
 	menu_routes.RegisterMenuRoutes(sharpHospitality, modules)
