@@ -12,7 +12,7 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
-	hrmsengine "sharpnr-engine/hrms_engine/engine"
+	hrmsEmployeeServices "sharpnr-engine/hrms_engine/employees/services"
 	iamEngineService "sharpnr-engine/iam_engine/service"
 
 	orchestrator_service "sharpnr-engine/orchestrator/service"
@@ -38,7 +38,7 @@ type ModulesProvider interface {
 
 	EmployeesAuthenticationService() coreEmployeeServices.EmployeeAuthenticationServiceInterface
 	EmployeesHRService() coreEmployeeServices.EmployeeHRServiceInterface
-	HRMS() *hrmsengine.HRMSEngine
+	HRMSEmployeeService() hrmsEmployeeServices.HRMSEmployeeServiceInterface
 	AccountingService() accounting_service.AccountingServiceInterface
 	SseEngine() *sse_engine.StreamManager
 	LegalEntityService() legal_entity_service.OrgLegalEntityServiceInterface
