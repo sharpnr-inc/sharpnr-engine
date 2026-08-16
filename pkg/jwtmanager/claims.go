@@ -32,13 +32,40 @@ type AccessClaims struct {
 
 // RefreshClaims is embedded in long-lived refresh tokens (default 24 h).
 // Used by the mobile API to obtain a new access token without re-login.
-// SessionID ties the token to a specific server-side session record so it
-// can be revoked individually (e.g. "log out this device").
+//
+// Two identifiers work together to make rotation possible:
+//
+//	SessionID ("sid") — the token family, one per login. Stable across every
+//	                    rotation, and the key of the server-side session row
+//	                    that can be revoked ("log out this device").
+//	ID        ("jti") — this individual token, from RegisteredClaims. Changes
+//	                    on every rotation. The session row stores the one jti
+//	                    it will still accept, so presenting an older one is
+//	                    detectable as replay.
+//
+// A refresh token is therefore only usable once: redeeming it advances the
+// stored jti, which retires the token that was just presented.
 type RefreshClaims struct {
 	UserID    uuid.UUID `json:"uid"`
 	OrgID     uuid.UUID `json:"org_id"`
-	SessionID string    `json:"sid"` // string — not necessarily a UUID
+	SessionID uuid.UUID `json:"sid"`
 	jwt.RegisteredClaims
+}
+
+// JTI returns this token's unique ID, parsed from the registered "jti" claim.
+// Tokens issued before rotation existed carry no jti and are rejected here —
+// they have no session row to rotate against, so re-login is the only path.
+func (c RefreshClaims) JTI() (uuid.UUID, error) {
+	if c.ID == "" {
+		return uuid.Nil, ErrInvalidToken
+	}
+
+	jti, err := uuid.Parse(c.ID)
+	if err != nil {
+		return uuid.Nil, ErrInvalidToken
+	}
+
+	return jti, nil
 }
 
 // WebCookieTokenClaims is embedded in the HttpOnly cookie token (default 10 h).
@@ -58,5 +85,14 @@ type WebCookieTokenClaims struct {
 // No OrgID — the org does not exist yet at this point in the flow.
 type SignupClaims struct {
 	UserID uuid.UUID `json:"uid"`
+	jwt.RegisteredClaims
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+type EmployeeProvisioningTokenClaims struct {
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Email     string `json:"email"`
 	jwt.RegisteredClaims
 }

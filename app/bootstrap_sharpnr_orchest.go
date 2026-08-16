@@ -3,7 +3,7 @@ package app
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	auditEngineService "sharpnr-engine/audit_log_engine/service"
-	hospitality_orchestration_service "sharpnr-engine/business_ops/hospitality/orchestration/service"
+	hospitality_orchestration_service "sharpnr-engine/property_business_ops/hospitality/orchestration/service"
 	org_customer_service "sharpnr-engine/core/customer/service"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
@@ -20,7 +20,7 @@ import (
 	sentinelEngine "sharpnr-engine/sentinel_engine"
 	"sharpnr-engine/sero"
 	accounting_service "sharpnr-engine/sharp_accounting_engine/accounting_engine/services"
-	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
+	stockwaveEngineServices "sharpnr-engine/stockwave_engine/services"
 )
 
 func bootstrapSharpnrOrchestrator(
@@ -34,7 +34,7 @@ func bootstrapSharpnrOrchestrator(
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
-	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
+	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	employeeHRService coreEmployeeServices.EmployeeHRServiceInterface,
 	employeeService coreEmployeeServices.EmployeeOrchestratorServiceInterface,

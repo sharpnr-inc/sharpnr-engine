@@ -2,6 +2,7 @@ package coreEmployeeRepo
 
 import (
 	"context"
+	coreEmployeeErrs "sharpnr-engine/core/employees/errs"
 	coreEmployeeModels "sharpnr-engine/core/employees/models"
 
 	"github.com/google/uuid"
@@ -81,7 +82,15 @@ func (r *employeeRepo) EmployeeExistsByEmail(
 		Count(&count).
 		Error
 
-	return count > 0, err
+	if err != nil {
+		return false, err
+	}
+
+	if count > 0 {
+		return true, coreEmployeeErrs.EmployeeAlreadyExistsErr
+	}
+
+	return false, nil
 }
 
 /* ---------------------------------- <***> --------------------------------- */

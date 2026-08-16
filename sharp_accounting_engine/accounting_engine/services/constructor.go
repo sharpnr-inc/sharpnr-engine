@@ -10,7 +10,7 @@ import (
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 	accounting_repo "sharpnr-engine/sharp_accounting_engine/accounting_engine/repository"
 	invoice_engine_services "sharpnr-engine/sharp_accounting_engine/invoicing_engine/services"
-	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
+	stockwaveEngineServices "sharpnr-engine/stockwave_engine/services"
 
 	"github.com/google/uuid"
 )
@@ -22,7 +22,7 @@ type accountingServices struct {
 
 	invoiceEngine   invoice_engine_services.InvoiceEngineServiceInterface
 	paymentEngine   payment_engine_service.PaymentServiceInterface
-	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface
+	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface
 	supplierService suppliers_service.SupplierServiceInterface
 	legalEntity     legal_entity_service.OrgLegalEntityServiceInterface
 }
@@ -39,7 +39,7 @@ func NewAccountingService(
 
 	invoiceEngine invoice_engine_services.InvoiceEngineServiceInterface,
 	paymentEngine payment_engine_service.PaymentServiceInterface,
-	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
+	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	legalEntity legal_entity_service.OrgLegalEntityServiceInterface,
 ) *accountingServices {

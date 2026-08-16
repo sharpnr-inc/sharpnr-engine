@@ -2,11 +2,11 @@ package sentinelservice
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
+	sentinelServiceErrs "sharpnr-engine/sentinel/errs"
 	sentinelengine_models "sharpnr-engine/sentinel/models"
 
 	cedar "github.com/cedar-policy/cedar-go"
@@ -19,10 +19,10 @@ import (
 func validateCedarText(text string) error {
 	list, err := cedar.NewPolicyListFromBytes("policy.cedar", []byte(text))
 	if err != nil {
-		return fmt.Errorf("policy does not compile: %w", err)
+		return fmt.Errorf("%w: %w", sentinelServiceErrs.PolicyDoesNotCompileErr, err)
 	}
 	if len(list) == 0 {
-		return errors.New("policy text contains no policy statements")
+		return sentinelServiceErrs.EmptyPolicyStatementsErr
 	}
 	return nil
 }
@@ -32,10 +32,10 @@ func validateCedarText(text string) error {
 func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error) {
 	name := strings.TrimSpace(in.Name)
 	if name == "" {
-		return uuid.Nil, errors.New("policy name is required")
+		return uuid.Nil, sentinelServiceErrs.PolicyNameRequiredErr
 	}
 	if strings.TrimSpace(in.Policy) == "" {
-		return uuid.Nil, errors.New("policy text is required")
+		return uuid.Nil, sentinelServiceErrs.PolicyTextRequiredErr
 	}
 
 	scope := in.Scope
@@ -43,7 +43,7 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 		scope = sentinelengine_models.PolicyScopeOrganization
 	}
 	if !scope.Valid() {
-		return uuid.Nil, fmt.Errorf("invalid policy scope %q", in.Scope)
+		return uuid.Nil, fmt.Errorf("%w: %q", sentinelServiceErrs.InvalidPolicyScopeErr, in.Scope)
 	}
 
 	if err := validateCedarText(in.Policy); err != nil {
@@ -55,7 +55,7 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 		return uuid.Nil, err
 	}
 	if exists {
-		return uuid.Nil, fmt.Errorf("a policy named %q already exists", name)
+		return uuid.Nil, fmt.Errorf("%w: %q", sentinelServiceErrs.PolicyAlreadyExistsErr, name)
 	}
 
 	policy := &sentinelengine_models.SentinelPolicy{
@@ -79,7 +79,7 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 // ListPolicies implements [SentinelPolicyService].
 func (s *sentinelService) ListPolicies(ctx context.Context, orgID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error) {
 	if scope != "" && !scope.Valid() {
-		return nil, fmt.Errorf("invalid policy scope %q", scope)
+		return nil, fmt.Errorf("%w: %q", sentinelServiceErrs.InvalidPolicyScopeErr, scope)
 	}
 	policies, err := s.repo.ListPoliciesByOrganizationID(ctx, orgID, scope)
 	if err != nil {
@@ -95,7 +95,7 @@ func (s *sentinelService) GetPolicy(ctx context.Context, orgID, policyID uuid.UU
 		return sentinelDtos.PolicyView{}, err
 	}
 	if policy.OrganizationID != orgID {
-		return sentinelDtos.PolicyView{}, errors.New("policy not found in this organization")
+		return sentinelDtos.PolicyView{}, sentinelServiceErrs.PolicyNotFoundInOrgErr
 	}
 	return sentinelDtos.ToPolicyView(&policy), nil
 }
@@ -113,7 +113,7 @@ func (s *sentinelService) AttachPolicies(ctx context.Context, orgID, emplID, rol
 		return err
 	}
 	if role.OrganizationID != orgID {
-		return errors.New("role not found in this organization")
+		return sentinelServiceErrs.RoleNotFoundInOrgErr
 	}
 
 	if err := s.withTx(ctx, func(txCtx context.Context) error {
@@ -123,7 +123,7 @@ func (s *sentinelService) AttachPolicies(ctx context.Context, orgID, emplID, rol
 				return fmt.Errorf("policy %s: %w", policyID, err)
 			}
 			if policy.OrganizationID != orgID {
-				return fmt.Errorf("policy %s not found in this organization", policyID)
+				return fmt.Errorf("%w: %s", sentinelServiceErrs.PolicyNotFoundInOrgErr, policyID)
 			}
 			edge := &sentinelengine_models.RolePolicies{
 				OrganizationID:   orgID,

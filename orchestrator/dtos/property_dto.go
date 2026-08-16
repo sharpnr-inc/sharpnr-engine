@@ -1,9 +1,11 @@
 package orchestrator_dtos
 
 import (
-	general_infra_utils "sharpnr-engine/business_ops/general_infra/utils"
-	healthcare_utilities "sharpnr-engine/business_ops/healthcare/utility"
-	hospitality_utilities "sharpnr-engine/business_ops/hospitality/utilities"
+	healthcare_utilities "sharpnr-engine/property_business_ops/healthcare/utility"
+	hospitality_utilities "sharpnr-engine/property_business_ops/hospitality/utilities"
+	general_infra_utils "sharpnr-engine/property_infra/general_infra/utils"
+	healthcare_infra_utils "sharpnr-engine/property_infra/healthcare_infra/utils"
+	hospitality_infra_utils "sharpnr-engine/property_infra/hospitality_infra/utils"
 
 	"github.com/google/uuid"
 )
@@ -86,13 +88,13 @@ type AddBusinessOpModulesRequestDto struct {
 
 /* ------------------------------------ . ----------------------------------- */
 type HospitalityInfraModuleQuantity struct {
-	Module   hospitality_utilities.HospitalityInfraModulesTypes `json:"module" binding:"required"`
-	Quantity int                                                `json:"quantity" binding:"required,min=1"`
+	Module   hospitality_infra_utils.HospitalityInfraModulesTypes `json:"module" binding:"required"`
+	Quantity int                                                  `json:"quantity" binding:"required,min=1"`
 }
 
 type HealthCareInfraModuleQuantity struct {
-	Module   healthcare_utilities.HealthcareInfraModulesType `json:"module" binding:"required"`
-	Quantity int                                             `json:"quantity" binding:"required,min=1"`
+	Module   healthcare_infra_utils.HealthcareInfraModulesType `json:"module" binding:"required"`
+	Quantity int                                               `json:"quantity" binding:"required,min=1"`
 }
 
 type GeneralInfraModuleQuantity struct {
@@ -163,17 +165,17 @@ type GeneralInfraModule struct {
 }
 
 type HospitalityInfraModule struct {
-	ID        uuid.UUID                                          `json:"id"`
-	Name      string                                             `json:"name"`
-	Status    bool                                               `json:"status"`
-	InfraType hospitality_utilities.HospitalityInfraModulesTypes `json:"infra_type"`
-	Meta      interface{}                                        `json:"meta,omitempty"` // shape TBD
+	ID        uuid.UUID                                            `json:"id"`
+	Name      string                                               `json:"name"`
+	Status    bool                                                 `json:"status"`
+	InfraType hospitality_infra_utils.HospitalityInfraModulesTypes `json:"infra_type"`
+	Meta      interface{}                                          `json:"meta,omitempty"` // shape TBD
 }
 
 type HealthCareInfraModule struct {
-	ID        uuid.UUID                                       `json:"id"`
-	Name      string                                          `json:"name"`
-	InfraType healthcare_utilities.HealthcareInfraModulesType `json:"infra_type"`
+	ID        uuid.UUID                                         `json:"id"`
+	Name      string                                            `json:"name"`
+	InfraType healthcare_infra_utils.HealthcareInfraModulesType `json:"infra_type"`
 }
 
 type PropertyInfraModulesResponseDto struct {

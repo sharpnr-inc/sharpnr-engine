@@ -13,9 +13,9 @@ type RedisOrganizationRepositoryInterface interface {
 	// Store temp org with TTL
 	Create(ctx context.Context, tempOrg *models.OrganizationSignUpStaging) error
 	// Fetch temp org
-	Get(ctx context.Context, signupID string) (*models.OrganizationSignUpStaging, error)
+	Get(ctx context.Context, signupID uuid.UUID) (*models.OrganizationSignUpStaging, error)
 	// Remove after success or expiry
-	Delete(ctx context.Context, signupID string) error
+	Delete(ctx context.Context, signupID uuid.UUID) error
 	GetByEmailOrPhone(ctx context.Context, email string, phone string) (bool, error)
 }
 

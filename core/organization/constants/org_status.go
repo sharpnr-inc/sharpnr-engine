@@ -30,3 +30,10 @@ const (
 )
 
 /* ---------------------------------- <***> --------------------------------- */
+
+type OrganizationSharpnrServices string
+
+const (
+	Silo   OrganizationSharpnrServices = "SILO"
+	Cortex OrganizationSharpnrServices = "CORTEX"
+)

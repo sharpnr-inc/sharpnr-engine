@@ -12,4 +12,5 @@ type PropertySetupInput struct {
 	State        string
 	Country      string
 	Pincode      string
+	Skipped      bool
 }

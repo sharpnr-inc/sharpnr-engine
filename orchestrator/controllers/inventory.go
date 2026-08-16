@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"sharpnr-engine/shared/utils"
-	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
+	stockwaveEngineDtos "sharpnr-engine/stockwave_engine/dtos"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,13 +15,13 @@ func (c *OrchestratorController) NewInventoryAccountHandler(ctx *gin.Context) {
 		return
 	}
 
-	request, ok := utils.BindJSON[inventory_dtos.NewInventoryAccountRequestDto](ctx)
+	request, ok := utils.BindJSON[stockwaveEngineDtos.NewInventoryAccountRequestDto](ctx)
 	if !ok {
 		return
 	}
 
 	if err := c.orchestService.AddNewInventoryAccount(ctx.Request.Context(), orgID, emplID, request); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -39,7 +39,7 @@ func (c *OrchestratorController) ListAllInventoryAccountHandler(ctx *gin.Context
 	// Call the orchestrator to get all accounts for the organization
 	accounts, err := c.orchestService.ListAllInventoryAccount(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Failed to retrieve inventory accounts", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -62,7 +62,7 @@ func (c *OrchestratorController) ListAllInventoriesOfInvetoryAccountHandler(ctx 
 
 	res, err := c.orchestService.GetInventoryAccountDetails(ctx.Request.Context(), orgID, emplID, inventoryAccountID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Failed to retrieve inventories", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "Inventory retrieved successfully", res)

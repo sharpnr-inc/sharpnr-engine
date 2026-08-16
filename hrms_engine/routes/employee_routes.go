@@ -2,19 +2,18 @@ package hr_routes
 
 import (
 	"sharpnr-engine/app"
-	employee_controllers "sharpnr-engine/hrms_engine/employees/controllers"
+	hrmsEngineControllers "sharpnr-engine/hrms_engine/controllers"
 
 	"github.com/gin-gonic/gin"
 )
 
 func registerEmployeeRoutes(hr *gin.RouterGroup, modules app.ModulesProvider) {
 
-	hrmsEmployeeService := modules.HRMS().EmployeeService()
-	newEmpController := employee_controllers.NewEmployeeController(hrmsEmployeeService)
+	hrmsController := hrmsEngineControllers.NewHrmsControllers(modules.HRMSService())
 
 	employees := hr.Group("/employees")
 	{
-		employees.GET("", newEmpController.ListAllEmployeesOfOrg) // List employees (filters, pagination)
+		employees.GET("", hrmsController.ListAllEmployeesOfOrg) // List employees (filters, pagination)
 		employees.POST("/add")
 		employees.GET("/:employeeId") // Returns employee details
 	}

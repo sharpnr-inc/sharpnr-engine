@@ -28,6 +28,14 @@ type EmployeeAuthenticationServiceInterface interface {
 	AuthenticateEmployee(ctx context.Context, email string, pass string) (*coreEmployeeContracts.EmployeeReader, error)
 	GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*coreEmployeeContracts.EmployeeProfileOutput, error)
 	GetEmployeeDetails(ctx context.Context, orgID, emplID uuid.UUID) (*coreEmployeeContracts.EmployeeDetailsOutput, error)
+
+	// Mobile refresh-token sessions. See mobile_session_service.go for the
+	// rotation and reuse-detection rules.
+	StartMobileSession(ctx context.Context, employeeID, orgID uuid.UUID, role string) (sessionID, jti uuid.UUID, err error)
+	RotateMobileSession(ctx context.Context, sessionID, presentedJTI uuid.UUID) (newJTI uuid.UUID, role string, err error)
+	EndMobileSession(ctx context.Context, sessionID uuid.UUID) error
+	EndAllMobileSessions(ctx context.Context, employeeID uuid.UUID) (int64, error)
+	PurgeExpiredMobileSessions(ctx context.Context) (int64, error)
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -38,6 +46,8 @@ type EmployeeHRServiceInterface interface {
 	// General service which will used by the other module to interact with the employee module,
 	EmployeeGeneralServiceInterface
 	ListOrgAllEmployees(ctx context.Context, orgID, emplID uuid.UUID) ([]*coreEmployeeContracts.OrgEmployeeList, error)
+	// Add Employees in bulk in the organization
+	AddEmployeeInBulkInOrg(ctx context.Context, orgID uuid.UUID, emplID uuid.UUID, req []coreEmployeeContracts.AddEmployeeInBulkInOrganizationRequestDto) error
 }
 
 /* ---------------------------------- <***> --------------------------------- */

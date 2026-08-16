@@ -1,8 +1,10 @@
 package coreEmployeeServices
 
 import (
+	auditEngineService "sharpnr-engine/audit_log_engine/service"
 	coreEmployeeRepo "sharpnr-engine/core/employees/repo"
 	dbtx "sharpnr-engine/pkg/dbTx"
+	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	sentinelservice "sharpnr-engine/sentinel/service"
 	sentinelEngine "sharpnr-engine/sentinel_engine"
 	"sharpnr-engine/sero"
@@ -17,6 +19,8 @@ type employeeService struct {
 	mailerEngine    *sharp_mailer_engine.SharpMailerEngine
 	sentinelService sentinelservice.SentinelServiceInterface
 	sentinelEngine  sentinelEngine.SentinelEngineInterface
+	auditEngine     auditEngineService.AuditLogServiceInterface
+	jwtManager      jwt_manager.Manager
 }
 
 func NewEmployeeService(
@@ -26,6 +30,8 @@ func NewEmployeeService(
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	sentinelService sentinelservice.SentinelServiceInterface,
 	sentinelAuthzEngine sentinelEngine.SentinelEngineInterface,
+	auditEngine auditEngineService.AuditLogServiceInterface,
+	jwtManager jwt_manager.Manager,
 ) *employeeService {
 
 	return &employeeService{
@@ -35,5 +41,7 @@ func NewEmployeeService(
 		mailerEngine:    mailerEngine,
 		sentinelService: sentinelService,
 		sentinelEngine:  sentinelAuthzEngine,
+		auditEngine:     auditEngine,
+		jwtManager:      jwtManager,
 	}
 }

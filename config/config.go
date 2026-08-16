@@ -18,15 +18,18 @@ func Load() *Config {
 	loadEnv()
 
 	app := loadApp()
-	ttl := loadTTL()
+
+	// Loaded ahead of the literal because the cookie definitions derive their
+	// Max-Age from the JWT TTLs — see loadCookies.
+	jwt := loadJWT()
 
 	cfg := &Config{
 		App:      app,
 		Database: loadDatabase(),
 		Redis:    loadRedis(),
-		JWT:      loadJWT(),
-		TTL:      ttl,
-		Cookies:  loadCookies(app, ttl),
+		JWT:      jwt,
+		TTL:      loadTTL(),
+		Cookies:  loadCookies(app, jwt),
 		SMTP:     loadSMTP(),
 		Email:    loadEmail(),
 		Cors:     loadCORS(app),

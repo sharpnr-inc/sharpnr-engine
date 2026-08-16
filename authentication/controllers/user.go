@@ -10,18 +10,15 @@ import (
 
 func (c *authenticationControllers) VerifyAuthentication(ctx *gin.Context) {
 
-	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	_, _, ok := c.resolveRequestContexts(ctx)
 	if !ok {
 		return
 	}
 
-	utils.Success(ctx, http.StatusOK, "", gin.H{
-		"authenticated": true,
-		"user_id":       emplID,
-		"org_id":        orgID,
-	})
-
+	utils.Success(ctx, http.StatusAccepted, "User is authenticated")
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (c *authenticationControllers) GetUser(ctx *gin.Context) {
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
@@ -31,11 +28,14 @@ func (c *authenticationControllers) GetUser(ctx *gin.Context) {
 
 	res, err := c.authSvc.GetAuthenticatedUserDetails(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusUnauthorized, "unauthorised", err)
+		utils.Failure(ctx, http.StatusUnauthorized, err)
+		return
 	}
 
 	utils.Success(ctx, http.StatusOK, "Success", res)
 }
+
+/* ---------------------------------- <***> --------------------------------- */
 
 func (c *authenticationControllers) LogoutUser(ctx *gin.Context) {
 

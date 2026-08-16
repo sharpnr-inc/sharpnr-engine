@@ -106,9 +106,9 @@ func (m *manager) VerifyAccess(token string) (*AccessClaims, error) {
 
 // VerifyRefresh verifies a mobile refresh token.
 // On success the caller should:
-//   1. Look up the SessionID in the sessions table to check it hasn't been revoked
-//   2. Issue a new access token
-//   3. Optionally rotate the refresh token (recommended)
+//  1. Look up the SessionID in the sessions table to check it hasn't been revoked
+//  2. Issue a new access token
+//  3. Optionally rotate the refresh token (recommended)
 func (m *manager) VerifyRefresh(token string) (*RefreshClaims, error) {
 	claims := &RefreshClaims{}
 	if err := m.parse(token, claims); err != nil {
@@ -145,5 +145,20 @@ func (m *manager) VerifyWebCookie(token string) (*WebCookieTokenClaims, error) {
 	if err := checkSubject(claims, "web_cookie"); err != nil {
 		return nil, err
 	}
+	return claims, nil
+}
+
+// Verifier for the EmployeeProvisioning token
+func (m *manager) VerifyEmployeeProvisioningToken(token string) (*EmployeeProvisioningTokenClaims, error) {
+	claims := &EmployeeProvisioningTokenClaims{}
+
+	if err := m.parse(token, claims); err != nil {
+		return nil, err
+	}
+
+	if err := checkSubject(claims, "employee_provisioning"); err != nil {
+		return nil, err
+	}
+
 	return claims, nil
 }

@@ -28,3 +28,13 @@ type AddNewSuperAdminInOrganizationRequestDto struct {
 	LastName  string `json:"lastName"`
 	Email     string `json:"email"`
 }
+
+type AddEmployeeInBulkInOrganizationRequestDto struct {
+	FirstName    string  `json:"firstName"`
+	MiddleName   *string `json:"middleName,omitempty"`
+	LastName     *string `json:"lastName,omitempty"`
+	Email        string  `json:"email"`
+	PhoneNumber  string  `json:"phoneNumber"`
+	Nickname     *string `json:"nickname,omitempty"`
+	EmployeeCode *string `json:"employeeCode,omitempty"`
+}

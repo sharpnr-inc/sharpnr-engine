@@ -10,10 +10,10 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 
 	authenticationEngineServices "sharpnr-engine/authentication/services"
-	hospitality_orchestration_service "sharpnr-engine/business_ops/hospitality/orchestration/service"
+	hospitality_orchestration_service "sharpnr-engine/property_business_ops/hospitality/orchestration/service"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
-	hrmsengine "sharpnr-engine/hrms_engine/engine"
+	hrmsEngineService "sharpnr-engine/hrms_engine/service"
 	iamEngineService "sharpnr-engine/iam_engine/service"
 
 	orchestrator_service "sharpnr-engine/orchestrator/service"
@@ -52,9 +52,9 @@ type AppModules struct {
 	// (profile, etc.) backed by the core employees module.
 	iamEngineService iamEngineService.IamEngineServiceInterface
 
-	// hrmsEngine aggregates all HRMS module services (employees, attendance,
-	// payroll, recruitment, ...) behind a single entry point for the HR routes.
-	hrmsEngine *hrmsengine.HRMSEngine
+	// The HRMS engine's service, exposed to the HR routes the same way every
+	// other domain is.
+	hrmsService hrmsEngineService.HrmsEngineServiceInterface
 
 	accountingService    accounting_service.AccountingServiceInterface
 	orgCustomerService   org_customer_service.OrgCustomerServiceInterface
@@ -102,8 +102,8 @@ func (m *AppModules) EmployeesHRService() coreEmployeeServices.EmployeeHRService
 	return m.employeesHRService
 }
 
-func (m *AppModules) HRMS() *hrmsengine.HRMSEngine {
-	return m.hrmsEngine
+func (m *AppModules) HRMSService() hrmsEngineService.HrmsEngineServiceInterface {
+	return m.hrmsService
 }
 
 func (m *AppModules) OrgSignUpService() org_signup_services.OrganizationSignUpServiceInterfaces {

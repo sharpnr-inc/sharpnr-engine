@@ -1,12 +1,15 @@
 package orchestrator_controllers
 
 import (
+	"errors"
 	"net/http"
 	legal_entity_constants "sharpnr-engine/core/legal_entity/constants"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
+	legalEntityErrs "sharpnr-engine/core/legal_entity/errs"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 /* -------------------------------------------------------------------------- */
@@ -16,7 +19,6 @@ import (
 /* -------------------------- list all Legal Entity ------------------------- */
 
 func (c *OrchestratorController) ListAllLegalEntity(ctx *gin.Context) {
-
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
 		return
@@ -24,7 +26,13 @@ func (c *OrchestratorController) ListAllLegalEntity(ctx *gin.Context) {
 
 	res, err := c.orchestService.GetAllLegalEntity(ctx, orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		// Check if the error is a "Not Found" error
+		if errors.Is(err, gorm.ErrRecordNotFound) || errors.Is(err, legalEntityErrs.NoLegalEntityFoundForOrg) {
+			utils.Failure(ctx, http.StatusNotFound, err)
+			return
+		}
+
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -42,12 +50,12 @@ func (c *OrchestratorController) AddLegalEntity(ctx *gin.Context) {
 
 	var req *legal_entity_contracts.NewLegalEntityRequestDto
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed, err)
+		utils.Failure(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	if err := c.orchestService.CreateLegalEntity(ctx, orgID, emplID, req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -69,7 +77,7 @@ func (c *OrchestratorController) GetLegalEntityDetailsHandler(ctx *gin.Context) 
 
 	response, err := c.orchestService.GetDetailsOfLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "some thing went wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -100,7 +108,7 @@ func (c *OrchestratorController) AddContactsInLegalEntityHandler(ctx *gin.Contex
 	}
 
 	if err := c.orchestService.AddContactsInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "something went wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -133,7 +141,7 @@ func (c *OrchestratorController) AddAddressesInLegalEntityHandler(ctx *gin.Conte
 	}
 
 	if err := c.orchestService.AddAddressInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -167,7 +175,7 @@ func (c *OrchestratorController) AddBankAccountDetailsInLegalEntityHandler(ctx *
 	}
 
 	if err := c.orchestService.AddBankAccountDetailsInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -201,7 +209,7 @@ func (c *OrchestratorController) AddIdentifiersInLegalEntityHandler(ctx *gin.Con
 	}
 
 	if err := c.orchestService.AddIdentifiersInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -229,7 +237,7 @@ func (c *OrchestratorController) AddLicenseAndComplianceHandler(ctx *gin.Context
 	}
 
 	if err := c.orchestService.AddLicenseOrComplianceInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, *req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -263,7 +271,7 @@ func (c *OrchestratorController) AddTaxRegistrationInLegalEntityHandler(ctx *gin
 	}
 
 	if err := c.orchestService.AddTaxRegistrationInLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID, *req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something Went wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -297,7 +305,7 @@ func (c *OrchestratorController) ListAllAccountingBooksOfLegalEntityHandler(ctx 
 
 	response, err := c.orchestService.GetAccountingBooksOfLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "some thing went wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -320,7 +328,7 @@ func (c *OrchestratorController) GetAccountBalancesOfLegalEntityHandler(ctx *gin
 
 	response, err := c.orchestService.GetAllAccountBalancesOfLegalEntity(ctx.Request.Context(), orgID, emplID, legalEntityID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "some thing went wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

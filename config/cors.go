@@ -22,6 +22,7 @@ func loadCORS(app AppConfig) CORSConfig {
 				"https://marketplace.sharpnr.com",
 				"https://folio.sharpnr.com",
 				"https://cortex.sharpnr.com",
+				"https://ivacore.sharpnr.com",
 			},
 		}
 	}

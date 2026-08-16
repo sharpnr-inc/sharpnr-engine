@@ -30,3 +30,24 @@ type EmployeeDetailsResponseDto struct {
 	Status     string    `json:"status"`
 	// further details will be added here this is just temporary
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+type AddEmployeeBulkRequestDto struct {
+	FirstName    string     `json:"firstName"`
+	MiddleName   *string    `json:"middleName,omitempty"`
+	LastName     string     `json:"lastName"`
+	NickName     *string    `json:"nickName,omitempty"`
+	EmailAddress string     `json:"emailAddress"`
+	PhoneNumber  string     `json:"phoneNumber"`
+	EmployeeCode *string    `json:"employeeCode,omitempty"`
+	DepartmentID *uuid.UUID `json:"departmentId,omitempty"`
+}
+
+type BulkProcessResult struct {
+	CreatedCount  int      `json:"createdCount"`
+	SkippedCount  int      `json:"skippedCount"`
+	SkippedEmails []string `json:"skippedEmails"`
+}
+
+/* ---------------------------------- <***> --------------------------------- */

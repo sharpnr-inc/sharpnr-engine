@@ -22,7 +22,7 @@ func (c *OrchestratorController) CreateNewSupplierHandler(ctx *gin.Context) {
 
 	if err := c.orchestService.AddNewSupplier(ctx.Request.Context(), orgID, emplID, request); err != nil {
 		// Descriptive error message for internal tracking/debugging
-		utils.Failure(ctx, http.StatusInternalServerError, "Failed to create new supplier", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -38,7 +38,7 @@ func (c *OrchestratorController) ListAllSupplierHandler(ctx *gin.Context) {
 
 	suppliers, err := c.orchestService.ListAllOrganizationSuppliers(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Failed to retrieve organization suppliers", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -65,7 +65,7 @@ func (c *OrchestratorController) AddLegalEntityLinkToSupplierHandler(ctx *gin.Co
 	}
 
 	if err := c.orchestService.AddLegalEntityLinksInSuppliers(ctx.Request.Context(), orgID, emplID, suppliersID, *request); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Failed to link legal entity to supplier", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

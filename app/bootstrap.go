@@ -1,10 +1,12 @@
 package app
 
 import (
+	"sharpnr-engine/config"
 	dbtx "sharpnr-engine/pkg/dbTx"
+	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	"sharpnr-engine/sero"
 	accounting_sero_event_handler "sharpnr-engine/sharp_accounting_engine/accounting_engine/sero_handler"
-	inventory_engine_sero_handlers "sharpnr-engine/sharp_inventory_engine/sero_handlers"
+	stockwaveEngineSeroHandlers "sharpnr-engine/stockwave_engine/sero_handlers"
 
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 	sse_engine "sharpnr-engine/sse_engine"
@@ -20,6 +22,8 @@ func BootstrapModules(
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	seroEngine *sero.SEROEngine,
 	sseEngine *sse_engine.StreamManager,
+	jwtmgr jwt_manager.Manager,
+	ttl config.TTLConfig,
 ) *AppModules {
 
 	// Audit log engine: records every tenant event. Bootstrapped first so it
@@ -34,7 +38,7 @@ func BootstrapModules(
 	// Sentinel authoring service: policy/role/group CRUD + attach/detach.
 	sentinelService := bootstrapSentinel(db, txManager, sentinelAuthzEngine)
 
-	organizationService := bootstrapOrganization(db, redis, mailerEngine, txManager)
+	organizationService := bootstrapOrganization(db, redis, mailerEngine, txManager, ttl)
 	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine, sentinelAuthzEngine)
 
 	// Resources aggregator: every module's mod_resources, for the FE policy builder.
@@ -43,7 +47,7 @@ func BootstrapModules(
 
 	/* ---------------------------- inventory engine ---------------------------- */
 	inventoryEngine := bootstrapInventoryEngine(db, txManager, seroEngine)
-	inventory_engine_sero_handlers.RegisterSeroHandler(seroEngine, inventoryEngine)
+	stockwaveEngineSeroHandlers.RegisterSeroHandler(seroEngine, inventoryEngine)
 	/* ---------------------------- inventory engine ---------------------------- */
 
 	// One core employee service instance, handed to each consumer through its
@@ -52,20 +56,20 @@ func BootstrapModules(
 		employeesHRService,
 		employeesIamEngineService,
 		employeeSignUpService,
-		employeeSetUpWizService, employeeOrchestratorService := bootstrapEmployeeServices(db, seroEngine, txManager, mailerEngine, sentinelService, sentinelAuthzEngine)
+		employeeSetUpWizService, employeeOrchestratorService := bootstrapEmployeeServices(db, seroEngine, txManager, mailerEngine, sentinelService, sentinelAuthzEngine, auditLogService, jwtmgr)
 
 	/* ------------------------------- IAM engine ------------------------------- */
 	iamEngineService := bootstrapIamEngine(employeesIamEngineService)
 	/* ------------------------------- IAM engine ------------------------------- */
 
 	/* ------------------------------ HRMS engine ------------------------------ */
-	hrmsEngine := bootstrapHRMSEngine(db, seroEngine, txManager, mailerEngine, employeesHRService)
+	hrmsService := bootstrapHRMSService(seroEngine, txManager, mailerEngine, employeesHRService)
 	/* ------------------------------ HRMS engine ------------------------------ */
 
 	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
 	orgSupplierService := bootstrapSupplier(db, txManager, mailerEngine, seroEngine)
 
-	authenticationService := bootstrapAuthentication(employeesAuthneticationService, organizationService, sentinelService)
+	authenticationService := bootstrapAuthentication(employeesAuthneticationService, organizationService, sentinelService, auditLogService)
 
 	orgSetupWizardService := bootstrapOrgSetupWizard(
 		db,
@@ -84,6 +88,7 @@ func BootstrapModules(
 		organizationService,
 		orgSetupWizardService,
 		sentinelService,
+		ttl.SignupStaging,
 	)
 
 	paymentsEngine := bootstrapPaymentEngine(db, mailerEngine, txManager, seroEngine)
@@ -153,7 +158,7 @@ func BootstrapModules(
 		employeesAuthneticationService: employeesAuthneticationService,
 		employeesHRService:             employeesHRService,
 		iamEngineService:               iamEngineService,
-		hrmsEngine:                     hrmsEngine,
+		hrmsService:                    hrmsService,
 		accountingService:              accountingService,
 		authenticationService:          authenticationService,
 		hospitality:                    hospitality,

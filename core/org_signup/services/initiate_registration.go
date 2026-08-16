@@ -2,18 +2,14 @@ package org_signup_services
 
 import (
 	"context"
-	"errors"
 	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
 	organization_contracts "sharpnr-engine/core/organization/contracts"
+	organizationErrs "sharpnr-engine/core/organization/errs"
 	"sharpnr-engine/sharp_mailer_engine"
+	"strings"
 
 	"github.com/google/uuid"
 	"golang.org/x/sync/errgroup"
-)
-
-var (
-	ErrUserAlreadyExists = errors.New("user already exists")
-	ErrOrgAlreadyExists  = errors.New("organization already exists")
 )
 
 func (s *orgSignUpService) InitiateRegistration(
@@ -32,7 +28,7 @@ func (s *orgSignUpService) InitiateRegistration(
 			return err
 		}
 		if userExists {
-			return ErrUserAlreadyExists
+			return err
 		}
 		return nil
 	})
@@ -43,7 +39,7 @@ func (s *orgSignUpService) InitiateRegistration(
 			return err
 		}
 		if orgExists {
-			return ErrOrgAlreadyExists
+			return organizationErrs.OrganizationAlreadyExistsErr
 		}
 		return nil
 	})
@@ -65,15 +61,29 @@ func (s *orgSignUpService) InitiateRegistration(
 		return uuid.Nil, err
 	}
 
+	// Signup collects no name yet, so the mail is addressed to the email local
+	// part rather than the phone number — the template greets the recipient
+	// with Name, and a phone number reads as a mistake there.
 	s.mailerEngine.Enqueue(sharp_mailer_engine.NewOTPJob(
 		req.Email, "Sharpnr Signup Verification",
 		sharp_mailer_engine.OTPData{
-			Name:          req.Mobile,
+			Name:          recipientName(req.Email),
 			Code:          otp,
 			Email:         req.Email,
-			ExpiryMinutes: 10,
+			ExpiryMinutes: int(s.stagingTTL.Minutes()),
 		},
 	))
 
 	return slug, nil
+}
+
+// recipientName derives a human-ish greeting from an email address for mails
+// sent before the user has told us their name. Falls back to the full address
+// if there is nothing usable in front of the "@".
+func recipientName(email string) string {
+	local, _, found := strings.Cut(email, "@")
+	if !found || local == "" {
+		return email
+	}
+	return local
 }

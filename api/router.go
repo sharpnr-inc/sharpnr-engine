@@ -86,7 +86,6 @@ func SetupRouter(
 	webV1 := router.Group("/api/v1")
 	{
 		org_signup.OrgSignUpRoute(webV1, cookies, jwtmgr, modules)
-
 		authenticationEngineRoutes.RegisterAuthenticationWebRoutes(webV1, cookies, jwtmgr, modules)
 
 		protected := webV1.Group("/")

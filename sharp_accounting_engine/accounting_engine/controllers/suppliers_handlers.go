@@ -20,7 +20,7 @@ func (c *AccountingController) ListAllLegalEntitySuppliersHandlers(ctx *gin.Cont
 
 	res, err := c.accSvc.GetLegalEntitySuppliers(ctx.Request.Context(), orgID, emplID, legalEntityID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

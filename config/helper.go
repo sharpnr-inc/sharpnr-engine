@@ -74,3 +74,12 @@ func must(value string, name string) {
 		log.Fatalf("❌ missing required config value: %s", name)
 	}
 }
+
+// mustPositiveDuration rejects zero and negative TTLs. Zero is the dangerous
+// one: it parses fine, and Redis treats a zero expiration on SET as "never
+// expire" rather than "expire immediately".
+func mustPositiveDuration(value time.Duration, name string) {
+	if value <= 0 {
+		log.Fatalf("❌ %s must be a positive duration, got %s", name, value)
+	}
+}

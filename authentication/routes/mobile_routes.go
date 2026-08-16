@@ -3,7 +3,6 @@ package authenticationEngineRoutes
 import (
 	"sharpnr-engine/app"
 	authenticationEngineControllers "sharpnr-engine/authentication/controllers"
-	mobile_middleware "sharpnr-engine/middlewares/mobile"
 	"sharpnr-engine/pkg/cookieManager"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 
@@ -24,10 +23,12 @@ func RegisterAuthenticationMobileRoutes(
 	idMobileRoutes := mobileV1.Group("/identity")
 	{
 		idMobileRoutes.POST("/login", authController.MobileLogin)
-		// Refresh endpoint — only needs the refresh token, NOT the access token
-		// so it sits outside MobileMiddleware
-		idMobileRoutes.POST("/auth/refresh", mobile_middleware.RefreshHandler(jwtMgr))
 
+		// Refresh and logout both take the refresh token, not the access
+		// token, so they sit outside MobileMiddleware — by the time either is
+		// called the access token is typically already expired.
+		idMobileRoutes.POST("/auth/refresh", authController.MobileRefresh)
+		idMobileRoutes.POST("/auth/logout", authController.MobileLogout)
 	}
 
 }
@@ -41,12 +42,12 @@ func RegisterAuthenticationProtectedMobileRoutes(
 	cookie cookieManager.Manager,
 	jwtMgr jwt_manager.Manager,
 ) {
-	authService := modules.AuthenticationService()
-	authController := authenticationEngineControllers.NewAuthenticationController(cookie, jwtMgr, authService)
+	// authService := modules.AuthenticationService()
+	// authController := authenticationEngineControllers.NewAuthenticationController(cookie, jwtMgr, authService)
 
 	idMobileProtectesRoutes := mobileV1.Group("/identity")
 	{
-		idMobileProtectesRoutes.GET("/myprofile", authController.GetMyProfile)
+		idMobileProtectesRoutes.GET("/myprofile")
 	}
 
 }

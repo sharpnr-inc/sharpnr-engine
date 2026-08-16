@@ -15,8 +15,8 @@ import (
 	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
 	sentinelContexts "sharpnr-engine/sentinel_contexts"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
-	inventory_dtos "sharpnr-engine/sharp_inventory_engine/dtos"
-	inventory_engine_models "sharpnr-engine/sharp_inventory_engine/models"
+	stockwaveEngineDtos "sharpnr-engine/stockwave_engine/dtos"
+	stockwaveEngineModels "sharpnr-engine/stockwave_engine/models"
 
 	"github.com/google/uuid"
 )
@@ -72,28 +72,13 @@ type EmployeeOrchestrationInterface interface {
 	GetAllEmployeesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) ([]orchestrator_dtos.EmployeeOfOrganization, error)
 	GetEmployeeDetails(ctx context.Context, orgID, emplID uuid.UUID, requestEmplID uuid.UUID) (orchestrator_dtos.EmployeeDetailsResponseDto, error)
 	AddNewSuperAdmin(ctx context.Context, orgID, emplID uuid.UUID, request coreEmployeeContracts.AddNewSuperAdminInOrganizationRequestDto) error
+	AddEmployeeInBulk(ctx context.Context, orgID, emplID uuid.UUID, request *[]orchestrator_dtos.AddEmployeeBulkRequestDto) (*orchestrator_dtos.BulkProcessResult, error)
 }
 
 /* ---------------------------------- <***> --------------------------------- */
 
-// Property Operations in Orchestraor services interface
-type OrganizationPropertyOrchestrationInterface interface {
-
-	// General Property service methods
-	GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error)
-	GetPropertyDetail(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (*orchestrator_dtos.PropertyDetails_res_dto, error)
-	CreateProperty(ctx context.Context, orgID, emplID uuid.UUID, req *orchestrator_dtos.CreatePropertyReq_dto) error
-
-	// Business Modules
-	AddBusinessOperationModulesInProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID, req orchestrator_dtos.AddBusinessOpModulesRequestDto) error
-	ListAllBusinessOpsModules(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (orchestrator_dtos.PropertyBusinessOperationModulesResponseDto, error)
-
-	// Infra Modules
-	AddInfraModulesInProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID, request orchestrator_dtos.AddInfraModulesRequestDto) error
-	ListAllInfraModulesOfProperty(ctx context.Context, orgID, emplID, propertyID uuid.UUID) (orchestrator_dtos.PropertyInfraModulesResponseDto, error)
-}
-
-/* ---------------------------------- <***> --------------------------------- */
+// OrganizationPropertyOrchestrationInterface lives in interface_property.go,
+// next to the package it is implemented by.
 
 /* -------------------------------------------------------------------------- */
 /*                     Orchestration for the Legal Entity                     */
@@ -138,9 +123,9 @@ type SuppliersAndVendorsOrchestratorServiceInterface interface {
 }
 
 type InventoryOrchestratorServiceInterface interface {
-	AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *inventory_dtos.NewInventoryAccountRequestDto) error
-	ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]inventory_engine_models.InventoryAccount, error)
-	GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]inventory_engine_models.Inventory, error)
+	AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *stockwaveEngineDtos.NewInventoryAccountRequestDto) error
+	ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]stockwaveEngineModels.InventoryAccount, error)
+	GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]stockwaveEngineModels.Inventory, error)
 }
 
 /* --------------------------------- <****> --------------------------------- */

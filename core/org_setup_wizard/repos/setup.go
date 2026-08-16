@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
+	orgSetUpWizardErrs "sharpnr-engine/core/org_setup_wizard/errs"
 	org_setup_wizard_models "sharpnr-engine/core/org_setup_wizard/models"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"time"
@@ -18,7 +19,7 @@ func (d *orgSetupWizardRepo) Create(
 ) error {
 
 	if step == nil {
-		return errors.New("organization setup is nil")
+		return orgSetUpWizardErrs.NilSetupStepErr
 	}
 
 	conn := d.db
@@ -64,17 +65,33 @@ func (d *orgSetupWizardRepo) UpdateCurrentStepStatus(
 	ID uuid.UUID,
 ) error {
 	if stepStatus == "" {
-		return errors.New("step cannot be empty")
+		return orgSetUpWizardErrs.EmptyStepStatusErr
 	}
 
-	tx := d.db.
+	now := time.Now()
+
+	updates := map[string]interface{}{
+		"status":     stepStatus,
+		"updated_at": now,
+	}
+
+	// A skipped step is treated as complete, so both terminal statuses stamp the
+	// completion time.
+	if stepStatus == org_setup_wizards_constants.SetupStatusCompleted ||
+		stepStatus == org_setup_wizards_constants.SetupStatusSkipped {
+		updates["completed_at"] = now
+	}
+
+	conn := d.db
+	if txConn, ok := dbtx.ExtractTx(ctx); ok {
+		conn = txConn
+	}
+
+	tx := conn.
 		WithContext(ctx).
 		Model(&org_setup_wizard_models.OrganizationSetup{}).
 		Where("organization_id = ? AND id = ?", orgID, ID).
-		Updates(map[string]interface{}{
-			"status":     stepStatus,
-			"updated_at": time.Now(),
-		})
+		Updates(updates)
 
 	if tx.Error != nil {
 		return tx.Error

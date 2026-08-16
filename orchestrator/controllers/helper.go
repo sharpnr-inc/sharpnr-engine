@@ -17,36 +17,36 @@ import (
 // path is guarded by the authorization engine respond through this helper.
 func failFromServiceError(ctx *gin.Context, err error) {
 	if errors.Is(err, sentinelEngine.ErrAccessDenied) {
-		utils.Failure(ctx, http.StatusForbidden, utils.CodeForbidden, err)
+		utils.Failure(ctx, http.StatusForbidden, err)
 		return
 	}
-	utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+	utils.Failure(ctx, http.StatusInternalServerError, err)
 }
 
 func (c *OrchestratorController) resolveRequestContexts(ctx *gin.Context) (uuid.UUID, uuid.UUID, bool) {
 	// 1. Extract and Parse Employee ID
 	empIDRaw, exists := ctx.Get(webMiddleware.UserIDContextKey)
 	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
+		utils.Failure(ctx, http.StatusUnauthorized, errors.New("user not authenticated"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	empID, err := uuid.Parse(fmt.Sprint(empIDRaw))
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid employee uuid format"))
+		utils.Failure(ctx, http.StatusInternalServerError, errors.New("invalid employee uuid format"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	// 2. Extract and Parse Org ID
 	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
 	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
+		utils.Failure(ctx, http.StatusUnauthorized, errors.New("organization not found in context"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	orgID, err := uuid.Parse(fmt.Sprint(orgUUIDRaw))
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid format"))
+		utils.Failure(ctx, http.StatusInternalServerError, errors.New("invalid org uuid format"))
 		return uuid.Nil, uuid.Nil, false
 	}
 
@@ -59,8 +59,9 @@ func (c *OrchestratorController) resolveRequestContexts(ctx *gin.Context) (uuid.
 func pathUUID(ctx *gin.Context, name string) (uuid.UUID, bool) {
 	id, err := uuid.Parse(ctx.Param(name))
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, utils.CodeValidationFailed,
+		utils.Failure(ctx, http.StatusBadRequest,
 			fmt.Errorf("invalid %s format", name))
+
 		return uuid.Nil, false
 	}
 	return id, true
@@ -68,4 +69,12 @@ func pathUUID(ctx *gin.Context, name string) (uuid.UUID, bool) {
 
 func (c *OrchestratorController) getEmployeeIDFromParams(ctx *gin.Context) (uuid.UUID, bool) {
 	panic("")
+}
+
+func (c *OrchestratorController) getPropertyIDFromParams(ctx *gin.Context) (propertyID uuid.UUID, isThere bool) {
+	return utils.ExtractUUIDParam(ctx, "propertyID")
+}
+
+func (c *OrchestratorController) getRestaurntIDFromParams(ctx *gin.Context) (restaurantID uuid.UUID, isThere bool) {
+	return utils.ExtractUUIDParam(ctx, "restaurantID")
 }

@@ -1,9 +1,9 @@
 package authenticationEngineControllers
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
+	authenticationEngineErrs "sharpnr-engine/authentication/errs"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	"sharpnr-engine/shared/utils"
 
@@ -16,25 +16,27 @@ func (c *authenticationControllers) getOrgIDAndEmpIDFromContext(ctx *gin.Context
 	// 1. Get OrgID from context
 	orgIDVal, ok := ctx.Get(webMiddleware.OrgUUIDContextKey)
 	if !ok {
-		return uuid.Nil, uuid.Nil, errors.New("org_id not found in context")
+		return uuid.Nil, uuid.Nil, authenticationEngineErrs.OrgIDNotInContextErr
 	}
 
 	// 2. Get EmpID from context
 	empIDVal, ok := ctx.Get(webMiddleware.UserIDContextKey)
 	if !ok {
-		return uuid.Nil, uuid.Nil, errors.New("employee_id not found in context")
+		return uuid.Nil, uuid.Nil, authenticationEngineErrs.EmployeeIDNotInContextErr
 	}
 
 	// 3. Parse OrgID (assuming it's a string)
 	orgID, err := uuid.Parse(fmt.Sprint(orgIDVal))
 	if err != nil {
-		return uuid.Nil, uuid.Nil, fmt.Errorf("invalid org_id format: %w", err)
+		return uuid.Nil, uuid.Nil,
+			fmt.Errorf("%w: %v", authenticationEngineErrs.InvalidOrgIDFormatErr, err)
 	}
 
 	// 4. Parse EmpID (assuming it's a string)
 	empID, err := uuid.Parse(fmt.Sprint(empIDVal))
 	if err != nil {
-		return uuid.Nil, uuid.Nil, fmt.Errorf("invalid employee_id format: %w", err)
+		return uuid.Nil, uuid.Nil,
+			fmt.Errorf("%w: %v", authenticationEngineErrs.InvalidEmployeeIDFormatErr, err)
 	}
 
 	return orgID, empID, nil
@@ -46,26 +48,26 @@ func (c *authenticationControllers) resolveRequestContexts(ctx *gin.Context) (uu
 	// 1. Extract and Parse Employee ID
 	empIDRaw, exists := ctx.Get(webMiddleware.UserIDContextKey)
 	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("user not authenticated"))
+		utils.Failure(ctx, http.StatusUnauthorized, authenticationEngineErrs.UserNotAuthenticatedErr)
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	empID, err := uuid.Parse(fmt.Sprint(empIDRaw))
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid employee uuid format"))
+		utils.Failure(ctx, http.StatusInternalServerError, authenticationEngineErrs.InvalidEmployeeIDFormatErr)
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	// 2. Extract and Parse Org ID
 	orgUUIDRaw, exists := ctx.Get(webMiddleware.OrgUUIDContextKey)
 	if !exists {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, errors.New("organization not found in context"))
+		utils.Failure(ctx, http.StatusUnauthorized, authenticationEngineErrs.OrgIDNotInContextErr)
 		return uuid.Nil, uuid.Nil, false
 	}
 
 	orgID, err := uuid.Parse(fmt.Sprint(orgUUIDRaw))
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, errors.New("invalid org uuid format"))
+		utils.Failure(ctx, http.StatusInternalServerError, authenticationEngineErrs.InvalidOrgIDFormatErr)
 		return uuid.Nil, uuid.Nil, false
 	}
 

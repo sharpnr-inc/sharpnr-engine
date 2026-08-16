@@ -21,7 +21,7 @@ func (c *OrchestratorController) CreatePaymentAccount(ctx *gin.Context) {
 	}
 
 	if err := c.orchestService.AddPaymentAccount(ctx.Request.Context(), orgID, emplID, *req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something Went Wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -39,7 +39,7 @@ func (c *OrchestratorController) GetPaymentAccount(ctx *gin.Context) {
 
 	res, err := c.orchestService.GetAllPaymentAccount(ctx.Request.Context(), orgID, emplID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something Went Wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -60,7 +60,7 @@ func (c *OrchestratorController) AddGatwayConfigInPayment(ctx *gin.Context) {
 	}
 
 	if err := c.orchestService.AddGatewayConfigInPaymentAccount(ctx.Request.Context(), orgID, emplID, *req); err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something Went Wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -84,7 +84,7 @@ func (c *OrchestratorController) GetPaymentAccountGatewayDetails(ctx *gin.Contex
 
 	res, err := c.orchestService.GetPaymentAccountDetails(ctx.Request.Context(), orgID, emplID, paymentAccountID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, "Something Went Wrong", err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

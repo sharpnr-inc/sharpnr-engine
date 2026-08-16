@@ -2,27 +2,27 @@ package app
 
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
-	barrepo "sharpnr-engine/business_ops/hospitality/bar/repo"
-	barservices "sharpnr-engine/business_ops/hospitality/bar/services"
-	hotelseroeventhandlers "sharpnr-engine/business_ops/hospitality/hotel/hotel_sero_event_handlers"
-	hotelrepo "sharpnr-engine/business_ops/hospitality/hotel/repo"
-	hotelservices "sharpnr-engine/business_ops/hospitality/hotel/services"
-	"sharpnr-engine/business_ops/hospitality/kitchen/kitchen_sero_event_handlers"
-	kitchenrepo "sharpnr-engine/business_ops/hospitality/kitchen/repos"
-	kitchenservices "sharpnr-engine/business_ops/hospitality/kitchen/services"
-	menurepo "sharpnr-engine/business_ops/hospitality/menu/repo"
-	menuservice "sharpnr-engine/business_ops/hospitality/menu/service"
-	orderEngineSero_event_handlers "sharpnr-engine/business_ops/hospitality/order_engine/order_engine_event_handlers"
-	hospitality_order_engine_repository "sharpnr-engine/business_ops/hospitality/order_engine/repository"
-	hospitality_order_engine_service "sharpnr-engine/business_ops/hospitality/order_engine/service"
-	restaurant_event_handlers "sharpnr-engine/business_ops/hospitality/restaurant/event_handlers"
-	restaurantrepo "sharpnr-engine/business_ops/hospitality/restaurant/repo"
-	restaurantservices "sharpnr-engine/business_ops/hospitality/restaurant/services"
+	barrepo "sharpnr-engine/property_business_ops/hospitality/bar/repo"
+	barservices "sharpnr-engine/property_business_ops/hospitality/bar/services"
+	hotelseroeventhandlers "sharpnr-engine/property_business_ops/hospitality/hotel/hotel_sero_event_handlers"
+	hotelrepo "sharpnr-engine/property_business_ops/hospitality/hotel/repo"
+	hotelservices "sharpnr-engine/property_business_ops/hospitality/hotel/services"
+	"sharpnr-engine/property_infra/hospitality_infra/kitchen/kitchen_sero_event_handlers"
+	kitchenrepo "sharpnr-engine/property_infra/hospitality_infra/kitchen/repos"
+	kitchenservices "sharpnr-engine/property_infra/hospitality_infra/kitchen/services"
+	menurepo "sharpnr-engine/property_resources/hospitality_resources/menu/repo"
+	menuservice "sharpnr-engine/property_resources/hospitality_resources/menu/service"
+	orderEngineSero_event_handlers "sharpnr-engine/property_business_ops/hospitality/order_engine/order_engine_event_handlers"
+	hospitality_order_engine_repository "sharpnr-engine/property_business_ops/hospitality/order_engine/repository"
+	hospitality_order_engine_service "sharpnr-engine/property_business_ops/hospitality/order_engine/service"
+	restaurant_event_handlers "sharpnr-engine/property_business_ops/hospitality/restaurant/event_handlers"
+	restaurantrepo "sharpnr-engine/property_business_ops/hospitality/restaurant/repo"
+	restaurantservices "sharpnr-engine/property_business_ops/hospitality/restaurant/services"
 	org_customer_service "sharpnr-engine/core/customer/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
-	inventory_engine_services "sharpnr-engine/sharp_inventory_engine/services"
+	stockwaveEngineServices "sharpnr-engine/stockwave_engine/services"
 
 	invoice_engine_services "sharpnr-engine/sharp_accounting_engine/invoicing_engine/services"
 	sse_engine "sharpnr-engine/sse_engine"
@@ -38,7 +38,7 @@ func bootstrapHospitality(
 	customerEngineService org_customer_service.OrgCustomerServiceInterface,
 	invoiceEngine invoice_engine_services.InvoiceEngineServiceInterface,
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
-	inventoryEngine inventory_engine_services.InventoryEngineServicesInterface,
+	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface,
 ) *hospitalitydomain.HospitalityDomain {
 
 	// Kitchen

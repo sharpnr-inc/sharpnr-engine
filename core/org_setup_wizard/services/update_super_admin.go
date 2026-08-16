@@ -6,6 +6,7 @@ import (
 	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
 	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
+	orgSetUpWizardErrs "sharpnr-engine/core/org_setup_wizard/errs"
 
 	"github.com/google/uuid"
 )
@@ -51,7 +52,7 @@ func (s *orgSetupWizardService) UpdateSuperAdminDetailsStep(
 			*stepStatus,
 		)
 
-		return ErrorInvalidStepStatus
+		return orgSetUpWizardErrs.InvalidStepStatusErr
 	}
 
 	log.Printf(
@@ -166,7 +167,7 @@ func (s *orgSetupWizardService) UpdateOrgDetailsStep(
 	}
 
 	if *stepstatus != org_setup_wizards_constants.SetupStatusInProgress {
-		return ErrorInvalidStepStatus
+		return orgSetUpWizardErrs.InvalidStepStatusErr
 	}
 
 	// 2. Update the Organization name

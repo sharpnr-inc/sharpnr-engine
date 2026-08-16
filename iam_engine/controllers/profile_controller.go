@@ -16,13 +16,13 @@ func (c *iamEngineControllers) GetMyProfile(ctx *gin.Context) {
 
 	orgID, empID, err := c.getOrgIDAndEmpIDFromContext(ctx)
 	if err != nil {
-		utils.Failure(ctx, http.StatusUnauthorized, utils.CodeUnauthorized, err)
+		utils.Failure(ctx, http.StatusUnauthorized, err)
 		return
 	}
 
 	profile, err := c.iamEngineService.GetProfile(ctx.Request.Context(), orgID, empID)
 	if err != nil {
-		utils.Failure(ctx, http.StatusInternalServerError, utils.CodeInternalError, err)
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 		return
 	}
 

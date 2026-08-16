@@ -12,12 +12,18 @@
 // file with a struct + constructor, add a sub-interface in interface.go, and
 // embed it in orchestratorService.
 //
+// A domain that outgrows one file becomes a package instead — see
+// orchestrator/service/property, which nests a sub-package per business domain
+// under it. The facade embeds the package's exported orchestrator and nothing
+// else changes; its sub-interface moves to interface_<domain>.go beside it.
+//
 // # Rules
 //
-//  1. Authorization: every orchestrator method calls guard.authorize(...)
+//  1. Authorization: every orchestrator method calls guard.Authorize(...)
 //     before doing work, UNLESS a comment names the domain-service check that
 //     already covers it (see CreateProperty for the pattern). Silence is not
-//     an exemption.
+//     an exemption. The guard lives in orchestrator/service/authz so domain
+//     sub-packages can share the one instance built in constructor.go.
 //
 //  2. Transactions: the orchestrator opens txManager.WithTx only when it
 //     coordinates two or more writes across services. Single delegated calls

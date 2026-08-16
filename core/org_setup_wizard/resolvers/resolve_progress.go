@@ -48,7 +48,10 @@ func ResolveSetupProgress(steps []*org_setup_wizard_models.OrganizationSetup) or
 		resultSteps = append(resultSteps, step)
 
 		switch s.Status {
-		case org_setup_wizards_constants.SetupStatusCompleted:
+		// A skipped step counts towards completion: the user opted out of it
+		// rather than leaving it pending.
+		case org_setup_wizards_constants.SetupStatusCompleted,
+			org_setup_wizards_constants.SetupStatusSkipped:
 			completedCount++
 		case org_setup_wizards_constants.SetupStatusInProgress:
 			if currentStep == nil {

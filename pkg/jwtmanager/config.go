@@ -25,8 +25,9 @@ type Config struct {
 
 	// TTLs control how long each token type is valid.
 	// These are loaded from env vars with sensible defaults (see config/jwt.go).
-	AccessTTL         time.Duration // JWT_ACCESS_TTL         (default 15m)  — mobile access token
-	RefreshTTL        time.Duration // JWT_REFRESH_TTL        (default 24h)  — mobile refresh token
-	SignupTTL         time.Duration // JWT_SIGNUP_TTL         (default 24h)  — onboarding gate token
-	WebCookieTokenTTL time.Duration // JWT_AUTH_WEB_COOKIE_TTL (default 10h) — web HttpOnly cookie token
+	AccessTTL                    time.Duration // JWT_ACCESS_TTL         (default 15m)  — mobile access token
+	RefreshTTL                   time.Duration // JWT_REFRESH_TTL        (default 24h)  — mobile refresh token
+	SignupTTL                    time.Duration // JWT_SIGNUP_TTL         (default 24h)  — onboarding gate token
+	WebCookieTokenTTL            time.Duration // JWT_AUTH_WEB_COOKIE_TTL (default 10h) — web HttpOnly cookie token
+	EmployeeProvisioningTokenTTL time.Duration // JWT_EMPLOYEE_PROVISIONING_TOKEN_TTL (default 7 days or 168 hours)
 }

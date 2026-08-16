@@ -1,8 +1,11 @@
 package org_signup_controllers
 
 import (
+	"errors"
 	"net/http"
+	coreEmployeeErrs "sharpnr-engine/core/employees/errs"
 	org_signup_dtos "sharpnr-engine/core/org_signup/dtos"
+	organizationErrs "sharpnr-engine/core/organization/errs"
 	"sharpnr-engine/pkg/cookieManager"
 	"sharpnr-engine/shared/utils"
 
@@ -18,26 +21,51 @@ import (
 // @Param        registration  body      org_signup_dtos.OrganizationRegistrationDTO  true  "Details"
 // @Success      200  {object}  utils.Response{data=string} "Successfully initiated registration"
 // @Failure      400  {object}  utils.Response "Validation Error"
+// @Failure      409  {object}  utils.Response "Email already registered"
+// @Failure      500  {object}  utils.Response "Internal Error"
 // @Router       /signup/initiate [post]
 func (c *orgSignUpController) InitiateNewOrgRegistration(ctx *gin.Context) {
 
-	// This Controller First need to check Request is Correct and comes properly
-	var req org_signup_dtos.OrganizationRegistrationDTO
-
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		utils.ValidationError(ctx, err)
+	req, ok := utils.BindJSON[org_signup_dtos.OrganizationRegistrationDTO](ctx)
+	if !ok {
 		return
 	}
 
-	slug, err := c.signUpSvc.InitiateRegistration(ctx.Request.Context(), req)
+	slug, err := c.signUpSvc.InitiateRegistration(ctx.Request.Context(), *req)
 	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, "Signup error", err)
+		switch {
+		case errors.Is(err, organizationErrs.OrganizationAlreadyExistsErr),
+			errors.Is(err, coreEmployeeErrs.EmployeeAlreadyExistsErr):
+			utils.Failure(ctx, http.StatusConflict, err)
+		default:
+			utils.Failure(
+				ctx,
+				http.StatusInternalServerError,
+				errors.New("could not start signup, please try again"))
+		}
 		return
 	}
 
-	jwt, _ := c.jwtMgr.IssueSignup(slug)
-	c.cookies.Set(ctx, cookieManager.Signup, jwt)
+	// Without this cookie every following signup step is locked out, so a
+	// failure here has to surface instead of returning a cheerful 200.
+	jwt, err := c.jwtMgr.IssueSignup(slug)
+	if err != nil {
+		utils.Failure(
+			ctx,
+			http.StatusInternalServerError,
+			errors.New("could not start signup, please try again"))
 
-	utils.Success(ctx, 200, "Otp Sent successfully")
+		return
+	}
 
+	if err := c.cookies.Set(ctx, cookieManager.Signup, jwt); err != nil {
+		utils.Failure(
+			ctx,
+			http.StatusInternalServerError,
+			errors.New("could not start signup, please try again"))
+
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Otp Sent successfully")
 }

@@ -4,7 +4,7 @@
 
 ## About the Project
 
-- Written in Golang go 1.24.4
+- Written in Golang go 1.24.4 and above this app atleat needs go version go1.26.2-X:nodwarf5
 - Using Gin Framework v1.11.0
 - For more details on the project check go.mod and go.sum
 - Postgressql and Redis For Cache
@@ -19,11 +19,11 @@ endpoints (see `meta` package).
 
 Three values are injected:
 
-| Value        | Source                                              | Example                  |
-| ------------ | --------------------------------------------------- | ------------------------ |
-| `Version`    | `git describe --tags --always --dirty`              | `v0.0.1-4-g1de05ed`      |
-| `Commit`     | `git rev-parse --short HEAD`                         | `1de05ed`                |
-| `BuildTime`  | UTC timestamp at build (`date -u`)                  | `2026-06-17T10:26:54Z`   |
+| Value       | Source                                 | Example                |
+| ----------- | -------------------------------------- | ---------------------- |
+| `Version`   | `git describe --tags --always --dirty` | `v0.0.1-4-g1de05ed`    |
+| `Commit`    | `git rev-parse --short HEAD`           | `1de05ed`              |
+| `BuildTime` | UTC timestamp at build (`date -u`)     | `2026-06-17T10:26:54Z` |
 
 ### How the version string is derived
 
@@ -31,7 +31,7 @@ The `VERSION` is produced by `git describe --tags --always --dirty`. Reading
 `v0.0.1-4-g1de05ed`:
 
 - `v0.0.1` — the most recent **annotated/lightweight tag reachable from the current commit**
-- `4`      — number of commits made **since** that tag
+- `4` — number of commits made **since** that tag
 - `g1de05ed` — the current commit's short SHA (the `g` stands for "git")
 - `-dirty` — appended only when there are **uncommitted changes** in the working tree
 

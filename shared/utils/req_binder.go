@@ -11,7 +11,7 @@ func BindJSON[T any](ctx *gin.Context) (*T, bool) {
 	var req T
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		Failure(ctx, http.StatusBadRequest, "Invalid Request Body", err)
+		Failure(ctx, http.StatusBadRequest, err)
 		return nil, false
 	}
 

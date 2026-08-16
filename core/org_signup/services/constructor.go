@@ -1,6 +1,8 @@
 package org_signup_services
 
 import (
+	"time"
+
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	organization_services "sharpnr-engine/core/organization/services"
@@ -17,6 +19,11 @@ type orgSignUpService struct {
 	organizationService organization_services.OrganizationServiceInterface
 	setUpWizService     org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface
 	sentinelService     sentinelservice.SentinelServiceInterface
+
+	// stagingTTL is the lifetime of the Redis staging record, which is also the
+	// OTP validity window. It is injected rather than hardcoded so the expiry
+	// quoted in the verification email cannot drift away from the real one.
+	stagingTTL time.Duration
 }
 
 func NewOrgSignUpService(
@@ -26,6 +33,7 @@ func NewOrgSignUpService(
 	organizationService organization_services.OrganizationServiceInterface,
 	setUpWizService org_setup_wizard_services.OrgSetupWizardV1_ServiceInterface,
 	sentinelService sentinelservice.SentinelServiceInterface,
+	stagingTTL time.Duration,
 ) *orgSignUpService {
 	return &orgSignUpService{
 		txManager:           txManager,
@@ -34,5 +42,6 @@ func NewOrgSignUpService(
 		organizationService: organizationService,
 		setUpWizService:     setUpWizService,
 		sentinelService:     sentinelService,
+		stagingTTL:          stagingTTL,
 	}
 }

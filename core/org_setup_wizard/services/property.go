@@ -5,6 +5,7 @@ import (
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	org_setup_wizards_constants "sharpnr-engine/core/org_setup_wizard/constants"
 	org_setup_wizard_contracts "sharpnr-engine/core/org_setup_wizard/contracts"
+	orgSetUpWizardErrs "sharpnr-engine/core/org_setup_wizard/errs"
 	organization_constants "sharpnr-engine/core/organization/constants"
 	dbtx "sharpnr-engine/pkg/dbTx"
 
@@ -24,27 +25,40 @@ func (s *orgSetupWizardService) Step_two_AddProperty(ctx context.Context, orgID,
 		}
 
 		if *stepstatus != org_setup_wizards_constants.SetupStatusInProgress {
-			return ErrorInvalidStepStatus
+			return orgSetUpWizardErrs.InvalidStepStatusErr
 		}
 
-		mappedData := org_property_contracts.CreateOrgPropertyInput{
-			OrgID:       input.OrgID,
-			UserID:      emplID,
-			Name:        input.Name,
-			Code:        input.PropertyCode,
-			AddressLine: input.AddressLine,
-			City:        input.City,
-			State:       input.State,
-			Country:     input.Country,
-			Pincode:     input.Pincode,
-		}
+		// A skipped step is treated as complete: the only difference is that no
+		// default property is created for the organization.
+		stepStatus := org_setup_wizards_constants.SetupStatusCompleted
 
-		if err := s.orgPropertySvc.CreatePropertyDefault(dbTx, mappedData); err != nil {
-			return err
+		if input.Skipped {
+			stepStatus = org_setup_wizards_constants.SetupStatusSkipped
+		} else {
+			if input.Name == "" || input.AddressLine == "" || input.City == "" ||
+				input.State == "" || input.Country == "" || input.Pincode == "" {
+				return orgSetUpWizardErrs.PropertyDetailsRequiredErr
+			}
+
+			mappedData := org_property_contracts.CreateOrgPropertyInput{
+				OrgID:       input.OrgID,
+				UserID:      emplID,
+				Name:        input.Name,
+				Code:        input.PropertyCode,
+				AddressLine: input.AddressLine,
+				City:        input.City,
+				State:       input.State,
+				Country:     input.Country,
+				Pincode:     input.Pincode,
+			}
+
+			if err := s.orgPropertySvc.CreatePropertyDefault(dbTx, mappedData); err != nil {
+				return err
+			}
 		}
 
 		if err := s.orgSetWizRepo.UpdateCurrentStepStatus(
-			dbTx, org_setup_wizards_constants.SetupStatusCompleted,
+			dbTx, stepStatus,
 			input.OrgID, input.StepID,
 		); err != nil {
 			return err
