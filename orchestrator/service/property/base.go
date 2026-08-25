@@ -16,9 +16,9 @@ import (
 
 func (s *PropertyOrchestrator) GetAllPropertiesOfOrg(ctx context.Context, orgID, emplID uuid.UUID) (*orchestrator_dtos.PropertiesOfOrganization_ResDto, error) {
 
-	if err := s.guard.Authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, ""); err != nil {
-		return nil, err
-	}
+	// if err := s.guard.Authorize(ctx, orgID, emplID, orgPropertyResources.ActionCanViewProperty, orgPropertyResources.ResourceTypeProperty, ""); err != nil {
+	// 	return nil, err
+	// }
 
 	res, err := s.orgPropertyService.GetPropertiesOfOrg(ctx, orgID)
 	if err != nil {
