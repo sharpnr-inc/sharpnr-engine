@@ -42,7 +42,6 @@ type SentinelPolicy struct {
 	PolicyJson     json.RawMessage `gorm:"type:jsonb"`               // optional Cedar JSON form, stored for the FE builder (engine never reads it)
 	Enabled        bool            `gorm:"not null;default:true"`    // disable without deleting
 	Scope          PolicyScope     `gorm:"type:text;not null;index"` // UI classification bucket
-
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"` // optional: soft delete
