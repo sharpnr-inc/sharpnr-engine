@@ -51,7 +51,12 @@ type PolicyRepository interface {
 // all policies is stored in the sentinel Policy Table.
 // this just Register which policy belongs to which org on Top Level Wise.
 type OrganizationPolicesRepoInterface interface {
-	CreateOrgPolicies(ctx context.Context, orgPolicy sentinelengine_models.OrgSentinelPolicy) error
+	CreateOrgWidePolicy(ctx context.Context, orgPolicy sentinelengine_models.OrgSentinelPolicy) error
+
+	// this will returns the array or slice on in which we can find the SentinelPolicyID
+	// which we can use the fetch the Policy from SentielPolicy Table.
+	GetAllOrgWidePolicesEntry(ctx context.Context, orgID uuid.UUID) ([]sentinelengine_models.OrgSentinelPolicy, error)
+	DeleteOrgPolicy(ctx context.Context, orgID uuid.UUID, orgPolicyID uuid.UUID) error
 }
 
 /* -------------------------------------------------------------------------- */
@@ -65,7 +70,6 @@ type RolesRepository interface {
 
 	// Read
 	GetRoleByID(ctx context.Context, roleID uuid.UUID) (sentinelengine_models.Role, error)
-	GetRoleByName(ctx context.Context, organizationID uuid.UUID, roleName string) (sentinelengine_models.Role, error)
 	ListRolesByOrganizationID(ctx context.Context, organizationID uuid.UUID) ([]*sentinelengine_models.Role, error)
 	UpdateRoleDetails(ctx context.Context, roleID uuid.UUID, updates *sentinelDtos.UpdateRoleDetailsRequestDto) error
 	DeleteRole(ctx context.Context, roleID uuid.UUID) error
