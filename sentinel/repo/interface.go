@@ -14,12 +14,44 @@ import (
 type SentinelRepositoryInterface interface {
 	RolesRepository
 	PolicyRepository
+	OrganizationPolicesRepoInterface
 	RolePoliciesRepository
 	GroupRepository
 	GroupPoliciesRepository
 	UserRoleRepository
 	UserGroupRepository
 	UserPolicyRepository
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   Policies                                 */
+/* -------------------------------------------------------------------------- */
+
+type PolicyRepository interface {
+	// Create
+	CreatePolicy(ctx context.Context, policy *sentinelengine_models.SentinelPolicy) error
+	// Read
+	GetPolicyByID(ctx context.Context, policyID uuid.UUID) (sentinelengine_models.SentinelPolicy, error)
+	ListPoliciesByOrganizationID(ctx context.Context, organizationID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error)
+
+	// Update
+	UpdatePolicy(ctx context.Context, policy *sentinelengine_models.SentinelPolicy) error
+	EnablePolicy(ctx context.Context, policyID uuid.UUID) error
+	DisablePolicy(ctx context.Context, policyID uuid.UUID) error
+
+	// Delete
+	DeletePolicy(ctx context.Context, policyID uuid.UUID) error
+}
+
+/* -------------------------------------------------------------------------- */
+/*                            Organization Policies                           */
+/* -------------------------------------------------------------------------- */
+
+// this is Repo Interface for the Organization Repository
+// all policies is stored in the sentinel Policy Table.
+// this just Register which policy belongs to which org on Top Level Wise.
+type OrganizationPolicesRepoInterface interface {
+	CreateOrgPolicies(ctx context.Context, orgPolicy sentinelengine_models.OrgSentinelPolicy) error
 }
 
 /* -------------------------------------------------------------------------- */
@@ -34,53 +66,11 @@ type RolesRepository interface {
 	GetRoleByID(ctx context.Context, roleID uuid.UUID) (sentinelengine_models.Role, error)
 	GetRoleByName(ctx context.Context, organizationID uuid.UUID, roleName string) (sentinelengine_models.Role, error)
 	ListRolesByOrganizationID(ctx context.Context, organizationID uuid.UUID) ([]*sentinelengine_models.Role, error)
-
-	// Update
-	UpdateRoleDetails(
-		ctx context.Context,
-		roleID uuid.UUID,
-		updates *sentinelDtos.UpdateRoleDetailsRequestDto,
-	) error
-
-	// Delete
+	UpdateRoleDetails(ctx context.Context, roleID uuid.UUID, updates *sentinelDtos.UpdateRoleDetailsRequestDto) error
 	DeleteRole(ctx context.Context, roleID uuid.UUID) error
 
 	// Helpers
 	RoleExists(ctx context.Context, organizationID uuid.UUID, roleName string) (bool, error)
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                   Policies                                 */
-/* -------------------------------------------------------------------------- */
-
-type PolicyRepository interface {
-	// Create
-	CreatePolicy(ctx context.Context, policy *sentinelengine_models.SentinelPolicy) error
-
-	// Read
-	GetPolicyByID(ctx context.Context, policyID uuid.UUID) (sentinelengine_models.SentinelPolicy, error)
-
-	// will fetch the all policies that are scoped to the organization,
-	GetPolciesScopedToOrganization(ctx context.Context, organizationID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error)
-
-	GetPolicyByName(ctx context.Context, organizationID uuid.UUID, policyName string) (sentinelengine_models.SentinelPolicy, error)
-
-	ListPoliciesByOrganizationID(
-		ctx context.Context,
-		organizationID uuid.UUID,
-		scope sentinelengine_models.PolicyScope,
-	) ([]*sentinelengine_models.SentinelPolicy, error)
-
-	// Update
-	UpdatePolicy(ctx context.Context, policy *sentinelengine_models.SentinelPolicy) error
-	EnablePolicy(ctx context.Context, policyID uuid.UUID) error
-	DisablePolicy(ctx context.Context, policyID uuid.UUID) error
-
-	// Delete
-	DeletePolicy(ctx context.Context, policyID uuid.UUID) error
-
-	// Helpers
-	PolicyExists(ctx context.Context, organizationID uuid.UUID, policyName string) (bool, error)
 }
 
 /* -------------------------------------------------------------------------- */

@@ -41,7 +41,7 @@ func registerSentinelRoutes(rg *gin.RouterGroup, c *orchestrator_controllers.Orc
 
 		policies := s.Group("/policies")
 		{
-			policies.GET("", c.ListPoliciesHandler)
+			policies.GET("")
 			policies.POST("", c.CreatePolicyHandler)
 		}
 

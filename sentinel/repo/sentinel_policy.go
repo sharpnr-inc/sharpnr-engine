@@ -34,12 +34,8 @@ func (r *sentinelRepo) GetPolicyByName(ctx context.Context, organizationID uuid.
 
 // ListPoliciesByOrganizationID returns an org's policies, newest first. An empty
 // scope returns every bucket; otherwise it filters to that scope.
-func (r *sentinelRepo) ListPoliciesByOrganizationID(ctx context.Context, organizationID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]*sentinelengine_models.SentinelPolicy, error) {
+func (r *sentinelRepo) ListPoliciesByOrganizationID(ctx context.Context, organizationID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error) {
 	q := r.conn(ctx).Where("organization_id = ?", organizationID)
-	if scope != "" {
-		q = q.Where("scope = ?", scope)
-	}
-
 	var rows []*sentinelengine_models.SentinelPolicy
 	err := q.Order("created_at DESC").Find(&rows).Error
 	return rows, err
@@ -86,7 +82,7 @@ func (r *sentinelRepo) PolicyExists(ctx context.Context, organizationID uuid.UUI
 func (r *sentinelRepo) GetPolciesScopedToOrganization(ctx context.Context, organizationID uuid.UUID) ([]*sentinelengine_models.SentinelPolicy, error) {
 	var rows []*sentinelengine_models.SentinelPolicy
 	err := r.conn(ctx).
-		Where("organization_id = ? AND scope = ?", organizationID, sentinelengine_models.PolicyScopeOrganization).
+		Where("organization_id = ?", organizationID).
 		Find(&rows).Error
 	return rows, err
 }

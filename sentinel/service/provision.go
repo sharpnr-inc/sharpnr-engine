@@ -41,7 +41,6 @@ func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firs
 			Description:    OwnerPolicyDescription,
 			Policy:         ownerPolicyText(),
 			Enabled:        true,
-			Scope:          sentinelengine_models.PolicyScopeRole,
 		}
 		if err := s.repo.CreatePolicy(txCtx, policy); err != nil {
 			return err

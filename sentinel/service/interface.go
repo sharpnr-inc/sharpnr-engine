@@ -4,7 +4,6 @@ import (
 	"context"
 
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
-	sentinelengine_models "sharpnr-engine/sentinel/models"
 
 	"github.com/google/uuid"
 )
@@ -59,7 +58,6 @@ type GroupsService interface {
 	CreatePolicy(ctx context.Context, orgID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error)
 	// ListPolicies returns an org's policies; an empty scope means all buckets,
 	// otherwise only that bucket (organization|role|group|user).
-	ListPolicies(ctx context.Context, orgID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error)
 	GetPolicy(ctx context.Context, orgID, policyID uuid.UUID) (sentinelDtos.PolicyView, error)
 }
 

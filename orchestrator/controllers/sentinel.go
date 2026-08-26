@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
-	sentinelengine_models "sharpnr-engine/sentinel/models"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
@@ -71,20 +70,6 @@ func (c *OrchestratorController) GetAuthzResourceDetailsHandler(ctx *gin.Context
 		return
 	}
 	utils.Success(ctx, http.StatusOK, "Resource details fetched", details)
-}
-
-func (c *OrchestratorController) ListPoliciesHandler(ctx *gin.Context) {
-	orgID, emplID, ok := c.resolveRequestContexts(ctx)
-	if !ok {
-		return
-	}
-	scope := sentinelengine_models.PolicyScope(ctx.Query("scope"))
-	policies, err := c.orchestService.ListPolicies(ctx.Request.Context(), orgID, emplID, scope)
-	if err != nil {
-		utils.Failure(ctx, http.StatusBadRequest, err)
-		return
-	}
-	utils.Success(ctx, http.StatusOK, "Policies fetched", policies)
 }
 
 func (c *OrchestratorController) CreatePolicyHandler(ctx *gin.Context) {

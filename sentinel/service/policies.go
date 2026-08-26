@@ -38,24 +38,8 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 		return uuid.Nil, sentinelServiceErrs.PolicyTextRequiredErr
 	}
 
-	scope := in.Scope
-	if scope == "" {
-		scope = sentinelengine_models.PolicyScopeOrganization
-	}
-	if !scope.Valid() {
-		return uuid.Nil, fmt.Errorf("%w: %q", sentinelServiceErrs.InvalidPolicyScopeErr, in.Scope)
-	}
-
 	if err := validateCedarText(in.Policy); err != nil {
 		return uuid.Nil, err
-	}
-
-	exists, err := s.repo.PolicyExists(ctx, orgID, name)
-	if err != nil {
-		return uuid.Nil, err
-	}
-	if exists {
-		return uuid.Nil, fmt.Errorf("%w: %q", sentinelServiceErrs.PolicyAlreadyExistsErr, name)
 	}
 
 	policy := &sentinelengine_models.SentinelPolicy{
@@ -66,7 +50,6 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 		Policy:         in.Policy,
 		PolicyJson:     in.PolicyJson,
 		Enabled:        in.IsEnabled,
-		Scope:          scope,
 	}
 	if err := s.repo.CreatePolicy(ctx, policy); err != nil {
 		return uuid.Nil, err
@@ -77,11 +60,9 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 }
 
 // ListPolicies implements [SentinelPolicyService].
-func (s *sentinelService) ListPolicies(ctx context.Context, orgID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error) {
-	if scope != "" && !scope.Valid() {
-		return nil, fmt.Errorf("%w: %q", sentinelServiceErrs.InvalidPolicyScopeErr, scope)
-	}
-	policies, err := s.repo.ListPoliciesByOrganizationID(ctx, orgID, scope)
+func (s *sentinelService) ListPolicies(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.PolicyView, error) {
+
+	policies, err := s.repo.ListPoliciesByOrganizationID(ctx, orgID)
 	if err != nil {
 		return nil, err
 	}

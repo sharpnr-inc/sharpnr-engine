@@ -5,7 +5,6 @@ import (
 
 	orchestrator_authz "sharpnr-engine/orchestrator/service/authz"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
-	sentinelengine_models "sharpnr-engine/sentinel/models"
 	sentinelservice "sharpnr-engine/sentinel/service"
 	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
 	sentinelContexts "sharpnr-engine/sentinel_contexts"
@@ -45,10 +44,6 @@ func (s *sentinelOrchestrator) GetAuthzResourceDetails(ctx context.Context, orgI
 
 func (s *sentinelOrchestrator) GetAuthzContextPalette(ctx context.Context, orgID, emplID uuid.UUID) (sentinelContexts.Palette, error) {
 	return s.sentinelAggregator.GetContextPalette(ctx, orgID, emplID)
-}
-
-func (s *sentinelOrchestrator) ListPolicies(ctx context.Context, orgID, emplID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error) {
-	return s.sentinelService.ListPolicies(ctx, orgID, scope)
 }
 
 func (s *sentinelOrchestrator) CreatePolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error) {
