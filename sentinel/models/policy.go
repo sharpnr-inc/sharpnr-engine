@@ -18,7 +18,11 @@ type SentinelPolicy struct {
 	Description    string          `gorm:"type:text"`                // optional
 	Policy         string          `gorm:"type:text;not null"`       // Cedar policy text — the form the engine compiles
 	PolicyJson     json.RawMessage `gorm:"type:jsonb"`               // optional Cedar JSON form, stored for the FE builder (engine never reads it)
-	Enabled        bool            `gorm:"not null;default:true"`    // disable without deleting
+	// No `default:true` tag: GORM OMITS a field carrying its zero value when the
+	// tag declares a default, so `Enabled: false` silently inserted TRUE and a
+	// policy could never be created disabled. The column keeps DEFAULT TRUE in
+	// the schema for raw SQL inserts; GORM now always sends the explicit value.
+	Enabled        bool            `gorm:"not null"`                 // disable without deleting
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	DeletedAt      gorm.DeletedAt `gorm:"index"` // optional: soft delete
