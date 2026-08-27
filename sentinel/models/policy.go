@@ -22,10 +22,10 @@ type SentinelPolicy struct {
 	// tag declares a default, so `Enabled: false` silently inserted TRUE and a
 	// policy could never be created disabled. The column keeps DEFAULT TRUE in
 	// the schema for raw SQL inserts; GORM now always sends the explicit value.
-	Enabled        bool            `gorm:"not null"`                 // disable without deleting
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	DeletedAt      gorm.DeletedAt `gorm:"index"` // optional: soft delete
+	Enabled   bool `gorm:"not null"` // disable without deleting
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"` // optional: soft delete
 }
 
 func (SentinelPolicy) TableName() string {

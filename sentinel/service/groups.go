@@ -13,13 +13,15 @@ import (
 )
 
 // CreateGroup implements [GroupsService]. A parent group, when given, must
-// belong to the same org.
+// belong to the same org — the repo's org-scoped read is what enforces that.
 func (s *sentinelService) CreateGroup(ctx context.Context, orgID uuid.UUID, in sentinelDtos.CreateGroupsRequestDto) (uuid.UUID, error) {
 	name := strings.TrimSpace(in.Name)
 	if name == "" {
 		return uuid.Nil, sentinelServiceErrs.GroupNameRequiredErr
 	}
 
+	// groups has no unique index on (org, name), so this check is the only
+	// thing keeping names distinct.
 	exists, err := s.repo.GroupExists(ctx, orgID, name)
 	if err != nil {
 		return uuid.Nil, err
@@ -29,11 +31,7 @@ func (s *sentinelService) CreateGroup(ctx context.Context, orgID uuid.UUID, in s
 	}
 
 	if in.ParentGroupID != nil {
-		parent, err := s.repo.GetGroupByID(ctx, *in.ParentGroupID)
-		if err != nil {
-			return uuid.Nil, fmt.Errorf("parent group: %w", err)
-		}
-		if parent.OrganizationID != orgID {
+		if _, err := s.repo.GetGroup(ctx, orgID, *in.ParentGroupID); err != nil {
 			return uuid.Nil, sentinelServiceErrs.ParentGroupNotFoundInOrgErr
 		}
 	}
@@ -48,12 +46,16 @@ func (s *sentinelService) CreateGroup(ctx context.Context, orgID uuid.UUID, in s
 	if err := s.repo.CreateGroup(ctx, group); err != nil {
 		return uuid.Nil, err
 	}
+	// No engine invalidation: a new group has no policies registered against it,
+	// so it changes nobody's effective policy set.
 	return group.ID, nil
 }
 
+/* ---------------------------------- <***> --------------------------------- */
+
 // ListGroups implements [GroupsService].
 func (s *sentinelService) ListGroups(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.GroupView, error) {
-	groups, err := s.repo.ListGroupsByOrganizationID(ctx, orgID)
+	groups, err := s.repo.ListGroups(ctx, orgID)
 	if err != nil {
 		return nil, err
 	}
@@ -62,37 +64,20 @@ func (s *sentinelService) ListGroups(ctx context.Context, orgID uuid.UUID) ([]se
 
 /* ---------------------------------- <***> --------------------------------- */
 
+// GetEmployeeGroups implements [SentinelServiceInterface]: the groups an
+// employee belongs to.
+//
+// One org-scoped JOIN. It used to fetch every group edge the employee had in
+// ANY org, filter in Go, then issue one GetGroupByID per surviving edge — an
+// N+1 that also depended on remembering the org check.
+//
+// Direct memberships only: belonging to a child group does not imply the parent.
 func (s *sentinelService) GetEmployeeGroups(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.GroupView, error) {
-
-	// Fetch all group assignments for the given employee
-	userGroups, err := s.repo.GetGroupsAssignedToUser(ctx, emplID)
+	groups, err := s.repo.GetGroupsOfUser(ctx, orgID, emplID)
 	if err != nil {
 		return nil, err
 	}
-
-	// Initialize as an empty slice so it serializes to [] instead of null in JSON
-	result := make([]sentinelDtos.GroupView, 0)
-
-	for _, userGroup := range userGroups {
-		// Enforce tenant scoping by filtering by organization ID
-		if userGroup.OrganizationID == orgID {
-			groupDetails, err := s.repo.GetGroupByID(ctx, userGroup.GroupID)
-			if err != nil {
-				// Fail fast if a group cannot be fetched, or log and continue depending on requirements
-				return nil, err
-			}
-
-			// Map the sentinelengine_models.Group to sentinelDtos.GroupView
-			groupView := sentinelDtos.GroupView{
-				ID:            groupDetails.ID,
-				Name:          groupDetails.Name,
-				Description:   groupDetails.Description,
-				ParentGroupID: groupDetails.ParentGroupID, // Directly maps *uuid.UUID
-			}
-
-			result = append(result, groupView)
-		}
-	}
-
-	return result, nil
+	// ToGroupViews returns an empty slice rather than nil, so this serializes
+	// to [] instead of null.
+	return sentinelDtos.ToGroupViews(groups), nil
 }

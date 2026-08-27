@@ -1,8 +1,13 @@
 package sentinelOwnResources
 
 import (
+	"context"
+	"fmt"
+
 	sentinelservice "sharpnr-engine/sentinel/service"
 	sentinelAggregatorContracts "sharpnr-engine/sentinel_aggregators/contracts"
+
+	"github.com/google/uuid"
 )
 
 type sentinelOwnResources struct {
@@ -10,7 +15,7 @@ type sentinelOwnResources struct {
 }
 
 // Compile-time guard: the provider must satisfy the aggregator contract.
-// var _ sentinelAggregatorContracts.ResourceProvider = (*sentinelOwnResources)(nil)
+var _ sentinelAggregatorContracts.ResourceProvider = (*sentinelOwnResources)(nil)
 
 func NewSentinelOwnResources(sentinelService sentinelservice.SentinelServiceInterface) *sentinelOwnResources {
 	return &sentinelOwnResources{sentinelService: sentinelService}
@@ -75,43 +80,43 @@ func (s *sentinelOwnResources) Resources() []sentinelAggregatorContracts.Resourc
 // ListInstances implements [sentinelAggregatorContracts.ResourceProvider]: the
 // org's live policies, roles or groups as selectable policy targets.
 
-// func (s *sentinelOwnResources) ListInstances(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinelAggregatorContracts.ResourceInstance, error) {
-// 	switch resourceType {
+func (s *sentinelOwnResources) ListInstances(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinelAggregatorContracts.ResourceInstance, error) {
+	switch resourceType {
 
-// 	case ResourceTypeSentinelPolicy:
-// 		policies, err := s.sentinelService.ListPolicies(ctx, orgID)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		instances := make([]sentinelAggregatorContracts.ResourceInstance, 0, len(policies))
-// 		for _, p := range policies {
-// 			instances = append(instances, sentinelAggregatorContracts.ResourceInstance{ID: p.ID.String(), Label: p.Name})
-// 		}
-// 		return instances, nil
+	case ResourceTypeSentinelPolicy:
+		policies, err := s.sentinelService.ListPolicies(ctx, orgID)
+		if err != nil {
+			return nil, err
+		}
+		instances := make([]sentinelAggregatorContracts.ResourceInstance, 0, len(policies))
+		for _, p := range policies {
+			instances = append(instances, sentinelAggregatorContracts.ResourceInstance{ID: p.ID.String(), Label: p.Name})
+		}
+		return instances, nil
 
-// 	case ResourceTypeSentinelRole:
-// 		roles, err := s.sentinelService.ListRoles(ctx, orgID)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		instances := make([]sentinelAggregatorContracts.ResourceInstance, 0, len(roles))
-// 		for _, r := range roles {
-// 			instances = append(instances, sentinelAggregatorContracts.ResourceInstance{ID: r.ID.String(), Label: r.Name})
-// 		}
-// 		return instances, nil
+	case ResourceTypeSentinelRole:
+		roles, err := s.sentinelService.ListRoles(ctx, orgID)
+		if err != nil {
+			return nil, err
+		}
+		instances := make([]sentinelAggregatorContracts.ResourceInstance, 0, len(roles))
+		for _, r := range roles {
+			instances = append(instances, sentinelAggregatorContracts.ResourceInstance{ID: r.ID.String(), Label: r.Name})
+		}
+		return instances, nil
 
-// 	case ResourceTypeSentinelGroup:
-// 		groups, err := s.sentinelService.ListGroups(ctx, orgID)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		instances := make([]sentinelAggregatorContracts.ResourceInstance, 0, len(groups))
-// 		for _, g := range groups {
-// 			instances = append(instances, sentinelAggregatorContracts.ResourceInstance{ID: g.ID.String(), Label: g.Name})
-// 		}
-// 		return instances, nil
+	case ResourceTypeSentinelGroup:
+		groups, err := s.sentinelService.ListGroups(ctx, orgID)
+		if err != nil {
+			return nil, err
+		}
+		instances := make([]sentinelAggregatorContracts.ResourceInstance, 0, len(groups))
+		for _, g := range groups {
+			instances = append(instances, sentinelAggregatorContracts.ResourceInstance{ID: g.ID.String(), Label: g.Name})
+		}
+		return instances, nil
 
-// 	default:
-// 		return nil, fmt.Errorf("sentinel resources: unknown resource type %q", resourceType)
-// 	}
-// }
+	default:
+		return nil, fmt.Errorf("sentinel resources: unknown resource type %q", resourceType)
+	}
+}

@@ -23,11 +23,11 @@ func principalTypes() []sentinelDtos.PrincipalType {
 // GetPrincipals implements [SentinelServiceInterface]: the full principal
 // palette for the policy builder — static types plus the org's roles and groups.
 func (s *sentinelService) GetPrincipals(ctx context.Context, orgID uuid.UUID) (sentinelDtos.PrincipalsView, error) {
-	roles, err := s.repo.ListRolesByOrganizationID(ctx, orgID)
+	roles, err := s.repo.ListRoles(ctx, orgID)
 	if err != nil {
 		return sentinelDtos.PrincipalsView{}, err
 	}
-	groups, err := s.repo.ListGroupsByOrganizationID(ctx, orgID)
+	groups, err := s.repo.ListGroups(ctx, orgID)
 	if err != nil {
 		return sentinelDtos.PrincipalsView{}, err
 	}

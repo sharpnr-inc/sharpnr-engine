@@ -18,7 +18,8 @@ import (
 //	│   └── GET  /:resourceType                     one resource's actions, attributes + live instances
 //	├── /policies
 //	│   ├── GET                                     list the org's policies
-//	│   └── POST                                    create a policy (raw Cedar text)
+//	│   ├── POST                                    create a policy (raw Cedar text)
+//	│   └── GET  /:policyID                         one policy
 //	└── /roles
 //	    ├── GET                                     list roles
 //	    ├── POST                                    create a role (+ optional initial policies)
@@ -41,8 +42,9 @@ func registerSentinelRoutes(rg *gin.RouterGroup, c *orchestrator_controllers.Orc
 
 		policies := s.Group("/policies")
 		{
-			policies.GET("")
+			policies.GET("", c.ListPoliciesHandler)
 			policies.POST("", c.CreatePolicyHandler)
+			policies.GET("/:policyID", c.GetPolicyHandler)
 		}
 
 		roles := s.Group("/roles")

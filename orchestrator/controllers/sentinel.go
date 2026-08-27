@@ -89,6 +89,40 @@ func (c *OrchestratorController) CreatePolicyHandler(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusCreated, "Policy created", gin.H{"id": id})
 }
 
+// ListPoliciesHandler serves the org's policies. There is no scope filter any
+// more — a policy's reach is read from its attachments, not from a bucket
+// label on the row.
+func (c *OrchestratorController) ListPoliciesHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+	policies, err := c.orchestService.ListPolicies(ctx.Request.Context(), orgID, emplID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, err)
+		return
+	}
+	utils.Success(ctx, http.StatusOK, "Policies fetched", policies)
+}
+
+func (c *OrchestratorController) GetPolicyHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+	policyID, err := uuid.Parse(ctx.Param("policyID"))
+	if err != nil {
+		utils.Failure(ctx, http.StatusBadRequest, err)
+		return
+	}
+	policy, err := c.orchestService.GetPolicy(ctx.Request.Context(), orgID, emplID, policyID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusNotFound, err)
+		return
+	}
+	utils.Success(ctx, http.StatusOK, "Policy fetched", policy)
+}
+
 func (c *OrchestratorController) ListRolesHandler(ctx *gin.Context) {
 	orgID, emplID, ok := c.resolveRequestContexts(ctx)
 	if !ok {
