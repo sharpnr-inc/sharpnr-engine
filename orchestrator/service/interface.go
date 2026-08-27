@@ -60,6 +60,7 @@ type SentinelOrchestrationInterface interface {
 
 	AttachPoliciesToRole(ctx context.Context, orgID, emplID, roleID uuid.UUID, in sentinelDtos.AttachPoliciesInput) error
 	DetachPolicyFromRole(ctx context.Context, orgID, emplID, roleID, policyID uuid.UUID) error
+	ListSentinelUserGroups(ctx context.Context, orgID, emplID uuid.UUID) (string, error)
 }
 
 type OrganizationOrchestrationInterface interface {

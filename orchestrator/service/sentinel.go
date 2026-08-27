@@ -77,3 +77,7 @@ func (s *sentinelOrchestrator) AttachPoliciesToRole(ctx context.Context, orgID, 
 func (s *sentinelOrchestrator) DetachPolicyFromRole(ctx context.Context, orgID, emplID, roleID, policyID uuid.UUID) error {
 	return s.sentinelService.DetachPolicy(ctx, orgID, roleID, policyID)
 }
+
+func (s *sentinelOrchestrator) ListSentinelUserGroups(ctx context.Context, orgID, emplID uuid.UUID) (string, error) {
+	panic("")
+}

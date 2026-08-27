@@ -220,3 +220,21 @@ func parseRoleID(ctx *gin.Context) (uuid.UUID, error) {
 	}
 	return id, nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) ListOrgSentinelUserGroups(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	res, err := c.orchestService.ListSentinelUserGroups(ctx.Request.Context(), orgID, emplID)
+	if err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, err)
+	}
+
+	utils.Success(ctx, http.StatusOK, "User Group Fetched successfully", res)
+}
+
+/* ---------------------------------- <***> --------------------------------- */
