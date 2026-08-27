@@ -36,17 +36,18 @@ func (s *sentinelService) CreateRole(ctx context.Context, orgID, emplID uuid.UUI
 	}
 
 	if err := s.withTx(ctx, func(txCtx context.Context) error {
+
 		if err := s.repo.CreateRole(txCtx, role); err != nil {
 			return err
 		}
-		for _, policyID := range in.PolicyIDs {
-			if _, err := s.repo.GetPolicy(txCtx, orgID, policyID); err != nil {
-				return fmt.Errorf("%w: %s", sentinelServiceErrs.PolicyNotFoundInOrgErr, policyID)
-			}
-			if err := s.repo.AttachPolicyToRole(txCtx, orgID, role.ID, policyID); err != nil {
-				return err
-			}
-		}
+		// for _, policyID := range in.PolicyIDs {
+		// 	if _, err := s.repo.GetPolicy(txCtx, orgID, policyID); err != nil {
+		// 		return fmt.Errorf("%w: %s", sentinelServiceErrs.PolicyNotFoundInOrgErr, policyID)
+		// 	}
+		// 	if err := s.repo.AttachPolicyToRole(txCtx, orgID, role.ID, policyID); err != nil {
+		// 		return err
+		// 	}
+		// }
 		return nil
 	}); err != nil {
 		return uuid.Nil, err
