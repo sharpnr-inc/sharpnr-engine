@@ -46,8 +46,8 @@ func registerSentinelRoutes(rg *gin.RouterGroup, c *orchestrator_controllers.Orc
 		// Groups Endpoint
 		groups := s.Group("/groups")
 		{
-			groups.GET("", c.ListOrgSentinelUserGroups) // list all the groups in the organization
-			groups.POST("")                             // Create/Add new Groups in the organization
+			groups.GET("", c.ListOrgSentinelUserGroups)   // list all the groups in the organization
+			groups.POST("", c.AddNewSentinelGroupHandler) // Create/Add new Groups in the organization
 
 			group := groups.Group("/:groupID")
 			{

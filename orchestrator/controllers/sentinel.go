@@ -238,3 +238,22 @@ func (c *OrchestratorController) ListOrgSentinelUserGroups(ctx *gin.Context) {
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (c *OrchestratorController) AddNewSentinelGroupHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	req, ok := utils.BindJSON[sentinelDtos.CreateGroupsRequestDto](ctx)
+	if !ok {
+		return
+	}
+
+	if err := c.orchestService.CreateNewSentinelGroup(ctx.Request.Context(), orgID, emplID, req); err != nil {
+		utils.Failure(ctx, http.StatusInternalServerError, err)
+	}
+
+	utils.Success(ctx, http.StatusOK, "Group Created Successfully")
+
+}

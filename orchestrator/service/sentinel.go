@@ -85,3 +85,12 @@ func (s *sentinelOrchestrator) ListSentinelUserGroups(ctx context.Context, orgID
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (s *sentinelOrchestrator) CreateNewSentinelGroup(ctx context.Context, orgID, emplID uuid.UUID, req *sentinelDtos.CreateGroupsRequestDto) error {
+	_, err := s.sentinelService.CreateGroup(ctx, orgID, *req)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
