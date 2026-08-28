@@ -81,4 +81,9 @@ type RoleService interface {
 type GroupService interface {
 	CreateGroup(ctx context.Context, orgID uuid.UUID, in sentinelDtos.CreateGroupsRequestDto) (uuid.UUID, error)
 	ListGroups(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.GroupView, error)
+
+	// GetGroupDetails returns the group, the policies registered against it, and
+	// its member IDS. Names are the orchestrator's to resolve — sentinel does
+	// not depend on the employee module.
+	GetGroupDetails(ctx context.Context, orgID, groupID uuid.UUID) (sentinelDtos.GroupDetailView, error)
 }

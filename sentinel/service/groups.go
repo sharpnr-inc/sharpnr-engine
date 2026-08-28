@@ -81,3 +81,42 @@ func (s *sentinelService) GetEmployeeGroups(ctx context.Context, orgID, emplID u
 	// to [] instead of null.
 	return sentinelDtos.ToGroupViews(groups), nil
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// GetGroupDetails implements [GroupService]: one group with the policies
+// registered against it and the ids of its members.
+//
+// Member IDS, not names — sentinel has no dependency on the employee module and
+// user_groups.user_id carries no FK. Resolving them is the orchestrator's job.
+//
+// Policies include disabled ones: an admin inspecting a group wants to see a
+// policy that is registered but switched off. The engine is what filters on
+// enabled.
+func (s *sentinelService) GetGroupDetails(ctx context.Context, orgID, groupID uuid.UUID) (sentinelDtos.GroupDetailView, error) {
+	group, err := s.repo.GetGroup(ctx, orgID, groupID)
+	if err != nil {
+		return sentinelDtos.GroupDetailView{}, fmt.Errorf("%w: %s", sentinelServiceErrs.GroupNotFoundInOrgErr, groupID)
+	}
+
+	policies, err := s.repo.ListPoliciesOfGroup(ctx, orgID, groupID)
+	if err != nil {
+		return sentinelDtos.GroupDetailView{}, err
+	}
+
+	memberIDs, err := s.repo.GetUsersOfGroup(ctx, orgID, groupID)
+	if err != nil {
+		return sentinelDtos.GroupDetailView{}, err
+	}
+	if memberIDs == nil {
+		memberIDs = []uuid.UUID{} // serialize to [] rather than null
+	}
+
+	return sentinelDtos.GroupDetailView{
+		Group:     sentinelDtos.ToGroupView(&group),
+		CreatedAt: group.CreatedAt,
+		UpdatedAt: group.UpdatedAt,
+		Policies:  sentinelDtos.ToPolicyViews(policies),
+		MemberIDs: memberIDs,
+	}, nil
+}

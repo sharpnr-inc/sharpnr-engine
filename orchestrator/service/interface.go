@@ -62,6 +62,7 @@ type SentinelOrchestrationInterface interface {
 	DetachPolicyFromRole(ctx context.Context, orgID, emplID, roleID, policyID uuid.UUID) error
 	ListSentinelUserGroups(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.GroupView, error)
 	CreateNewSentinelGroup(ctx context.Context, orgID, emplID uuid.UUID, req *sentinelDtos.CreateGroupsRequestDto) error
+	GetSentinelGroupDetail(ctx context.Context, orgID, emplID, groupID uuid.UUID) (sentinelDtos.GroupDetailsResponseDto, error)
 }
 
 type OrganizationOrchestrationInterface interface {

@@ -257,3 +257,26 @@ func (c *OrchestratorController) AddNewSentinelGroupHandler(ctx *gin.Context) {
 	utils.Success(ctx, http.StatusOK, "Group Created Successfully")
 
 }
+
+// SentinelGroupDetailHandler serves one group: its details, the policies
+// registered against it, and its members.
+func (c *OrchestratorController) SentinelGroupDetailHandler(ctx *gin.Context) {
+	orgID, emplID, ok := c.resolveRequestContexts(ctx)
+	if !ok {
+		return
+	}
+
+	groupID, available := c.getSentinelGroupIDFromParams(ctx)
+	if !available {
+		utils.Failure(ctx, http.StatusBadRequest, errors.New("a valid groupID is required"))
+		return
+	}
+
+	res, err := c.orchestService.GetSentinelGroupDetail(ctx.Request.Context(), orgID, emplID, groupID)
+	if err != nil {
+		failFromServiceError(ctx, err)
+		return
+	}
+
+	utils.Success(ctx, http.StatusOK, "Group details fetched", res)
+}

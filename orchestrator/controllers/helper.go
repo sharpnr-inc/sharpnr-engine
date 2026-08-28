@@ -5,22 +5,36 @@ import (
 	"fmt"
 	"net/http"
 	webMiddleware "sharpnr-engine/middlewares/web"
+	sentinelServiceErrs "sharpnr-engine/sentinel/errs"
 	sentinelEngine "sharpnr-engine/sentinel_engine"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // failFromServiceError maps a service-layer error to the right HTTP failure:
-// a Sentinel deny becomes 403, anything else stays 500. Handlers whose service
-// path is guarded by the authorization engine respond through this helper.
+// a Sentinel deny becomes 403, a "not found in this organization" becomes 404,
+// anything else stays 500. Handlers whose service path is guarded by the
+// authorization engine respond through this helper.
+//
+// The not-found cases matter for tenant safety: the repo now scopes every read
+// by org, so another tenant's group or policy arrives here as not-found. Letting
+// that surface as a 500 would both mislead the caller and hint that the id
+// exists somewhere.
 func failFromServiceError(ctx *gin.Context, err error) {
-	if errors.Is(err, sentinelEngine.ErrAccessDenied) {
+	switch {
+	case errors.Is(err, sentinelEngine.ErrAccessDenied):
 		utils.Failure(ctx, http.StatusForbidden, err)
-		return
+	case errors.Is(err, sentinelServiceErrs.GroupNotFoundInOrgErr),
+		errors.Is(err, sentinelServiceErrs.RoleNotFoundInOrgErr),
+		errors.Is(err, sentinelServiceErrs.PolicyNotFoundInOrgErr),
+		errors.Is(err, gorm.ErrRecordNotFound):
+		utils.Failure(ctx, http.StatusNotFound, err)
+	default:
+		utils.Failure(ctx, http.StatusInternalServerError, err)
 	}
-	utils.Failure(ctx, http.StatusInternalServerError, err)
 }
 
 func (c *OrchestratorController) resolveRequestContexts(ctx *gin.Context) (uuid.UUID, uuid.UUID, bool) {
@@ -77,4 +91,8 @@ func (c *OrchestratorController) getPropertyIDFromParams(ctx *gin.Context) (prop
 
 func (c *OrchestratorController) getRestaurntIDFromParams(ctx *gin.Context) (restaurantID uuid.UUID, isThere bool) {
 	return utils.ExtractUUIDParam(ctx, "restaurantID")
+}
+
+func (c *OrchestratorController) getSentinelGroupIDFromParams(ctx *gin.Context) (sentinelGroupID uuid.UUID, isThere bool) {
+	return utils.ExtractUUIDParam(ctx, "groupID")
 }

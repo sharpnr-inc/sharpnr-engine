@@ -115,6 +115,7 @@ func NewSharpnrOrchestratorService(
 			guard:              guard,
 			sentinelService:    sentinelService,
 			sentinelAggregator: sentinelAggregator,
+			employeeHRService:  employeeHRService,
 		},
 
 		auditOrchestraterService: &auditOrchestraterService{

@@ -51,13 +51,13 @@ func registerSentinelRoutes(rg *gin.RouterGroup, c *orchestrator_controllers.Orc
 
 			group := groups.Group("/:groupID")
 			{
-				group.GET("")                      // list details of Groups Like Users in the Groups, etc
-				group.PATCH("")                    // Edit Group Details
-				group.POST("/polices")             // Add new/polices
-				group.POST("/polices/:policyID")   // Edit policy
-				group.DELETE("/polices/:policyID") // Remove the policy from the Group
-				group.GET("/user/:userID")         // Add user in the Groups
-				group.DELETE("/user/:userID")      // Remove the user from the Group
+				group.GET("", c.SentinelGroupDetailHandler) // list details of Groups Like Users in the Groups, etc
+				group.PATCH("")                             // Edit Group Details
+				group.POST("/polices")                      // Add new/polices
+				group.POST("/polices/:policyID")            // Edit policy
+				group.DELETE("/polices/:policyID")          // Remove the policy from the Group
+				group.GET("/user/:userID")                  // Add user in the Groups
+				group.DELETE("/user/:userID")               // Remove the user from the Group
 
 			}
 		}

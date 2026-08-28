@@ -3,6 +3,7 @@ package orchestrator_service
 import (
 	"context"
 
+	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	orchestrator_authz "sharpnr-engine/orchestrator/service/authz"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
 	sentinelservice "sharpnr-engine/sentinel/service"
@@ -28,6 +29,11 @@ type sentinelOrchestrator struct {
 	guard              *orchestrator_authz.Guard
 	sentinelService    sentinelservice.SentinelServiceInterface
 	sentinelAggregator sentinelAggregatorService.SentinelAggregatorServiceInterface
+
+	// employeeHRService resolves member ids to names. Sentinel stores group
+	// membership as bare employee ids with no FK and no knowledge of the
+	// employee module; composing the two is exactly this layer's job.
+	employeeHRService coreEmployeeServices.EmployeeHRServiceInterface
 }
 
 func (s *sentinelOrchestrator) ListPrincipals(ctx context.Context, orgID, emplID uuid.UUID) (sentinelDtos.PrincipalsView, error) {
@@ -93,4 +99,85 @@ func (s *sentinelOrchestrator) CreateNewSentinelGroup(ctx context.Context, orgID
 	}
 
 	return nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// GetSentinelGroupDetail returns one group with its policies and its members.
+//
+// Two domains meet here: sentinel owns the group, its policy registrations and
+// the ids of its members; the employee module owns who those ids are. Sentinel
+// is asked first, then the ids are resolved to names.
+func (s *sentinelOrchestrator) GetSentinelGroupDetail(ctx context.Context, orgID, emplID, groupID uuid.UUID) (sentinelDtos.GroupDetailsResponseDto, error) {
+	detail, err := s.sentinelService.GetGroupDetails(ctx, orgID, groupID)
+	if err != nil {
+		return sentinelDtos.GroupDetailsResponseDto{}, err
+	}
+
+	members, err := s.resolveGroupMembers(ctx, orgID, emplID, detail.MemberIDs)
+	if err != nil {
+		return sentinelDtos.GroupDetailsResponseDto{}, err
+	}
+
+	policies := make([]sentinelDtos.GroupPolicesResponseDto, 0, len(detail.Policies))
+	for _, p := range detail.Policies {
+		policies = append(policies, sentinelDtos.GroupPolicesResponseDto{
+			ID:          p.ID,
+			Name:        p.Name,
+			Description: p.Description,
+		})
+	}
+
+	return sentinelDtos.GroupDetailsResponseDto{
+		ID:          detail.Group.ID,
+		Name:        detail.Group.Name,
+		Description: detail.Group.Description,
+		CreatedAt:   detail.CreatedAt,
+		UpdatedAt:   detail.UpdatedAt,
+		User:        members,
+		Polices:     policies,
+	}, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// resolveGroupMembers turns sentinel's member ids into {id, name} pairs.
+//
+// It indexes the org's employees once rather than fetching each member, so this
+// stays a single employee-module call regardless of group size. The trade is
+// that it reads the whole org roster to render one group; if that becomes hot,
+// the employee module wants a "list employees by ids" method and this becomes
+// one narrow query.
+//
+// An id with no matching employee is kept with an empty name rather than
+// dropped: a membership row pointing at a removed employee is a real state, and
+// hiding it would make the group look smaller than it is.
+func (s *sentinelOrchestrator) resolveGroupMembers(ctx context.Context, orgID, emplID uuid.UUID, memberIDs []uuid.UUID) ([]sentinelDtos.GroupUserResponseDto, error) {
+	members := make([]sentinelDtos.GroupUserResponseDto, 0, len(memberIDs))
+	if len(memberIDs) == 0 {
+		return members, nil
+	}
+	if s.employeeHRService == nil {
+		// Fail soft: the group and its policies are still worth returning.
+		for _, id := range memberIDs {
+			members = append(members, sentinelDtos.GroupUserResponseDto{ID: id})
+		}
+		return members, nil
+	}
+
+	employees, err := s.employeeHRService.ListOrgAllEmployees(ctx, orgID, emplID)
+	if err != nil {
+		return nil, err
+	}
+	byID := make(map[uuid.UUID]string, len(employees))
+	for _, e := range employees {
+		if e != nil {
+			byID[e.ID] = e.EmployeeName
+		}
+	}
+
+	for _, id := range memberIDs {
+		members = append(members, sentinelDtos.GroupUserResponseDto{ID: id, Name: byID[id]})
+	}
+	return members, nil
 }
