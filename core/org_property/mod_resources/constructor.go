@@ -26,13 +26,12 @@ func NewOrgPropertyResources(propertyService org_property_services.OrganizationP
 	}
 }
 
-// ListInstances implements [sentinelAggregatorContracts.ResourceProvider]: the
-// org's properties as selectable policy targets for the frontend builder.
-func (s *orgPropertyResources) ListInstances(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) ([]sentinelAggregatorContracts.ResourceInstance, error) {
-	if resourceType != ResourceTypeProperty {
-		return nil, fmt.Errorf("org-property resources: unknown resource type %q", resourceType)
-	}
-
+// listProperties is the InstanceLister bound to ResourceTypeProperty: the org's
+// properties as selectable policy targets for the frontend builder.
+//
+// No resource-type switch — the aggregator resolved which lister to call before
+// invoking it.
+func (s *orgPropertyResources) listProperties(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelAggregatorContracts.ResourceInstance, error) {
 	properties, err := s.propertyService.GetPropertiesOfOrg(ctx, orgID)
 	if err != nil {
 		return nil, err

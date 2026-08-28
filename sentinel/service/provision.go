@@ -41,18 +41,14 @@ func (s *sentinelService) ProvisionOrganization(ctx context.Context, orgID, firs
 			Description:    OwnerPolicyDescription,
 			Policy:         ownerPolicyText(),
 			Enabled:        true,
-			Scope:          sentinelengine_models.PolicyScopeRole,
 		}
 		if err := s.repo.CreatePolicy(txCtx, policy); err != nil {
 			return err
 		}
 
-		edge := &sentinelengine_models.RolePolicies{
-			OrganizationID:   orgID,
-			RoleID:           role.ID,
-			SentinelPolicyID: policy.ID,
-		}
-		if err := s.repo.AssignPolicyToRole(txCtx, edge); err != nil {
+		// The seeded policy text names no principal — it reaches owners purely
+		// because it is registered against the Owner role here.
+		if err := s.repo.AttachPolicyToRole(txCtx, orgID, role.ID, policy.ID); err != nil {
 			return err
 		}
 

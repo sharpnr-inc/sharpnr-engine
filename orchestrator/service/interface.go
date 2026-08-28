@@ -11,7 +11,6 @@ import (
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
-	sentinelengine_models "sharpnr-engine/sentinel/models"
 	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
 	sentinelContexts "sharpnr-engine/sentinel_contexts"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
@@ -51,9 +50,9 @@ type SentinelOrchestrationInterface interface {
 	// Context palette: the canonical context.*/principal.* keys the engine
 	// stamps on every evaluation, for the builder's condition editor.
 	GetAuthzContextPalette(ctx context.Context, orgID, emplID uuid.UUID) (sentinelContexts.Palette, error)
-
-	ListPolicies(ctx context.Context, orgID, emplID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error)
 	CreatePolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error)
+	ListOrgPolicies(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.PolicyView, error)
+	GetPolicy(ctx context.Context, orgID, emplID, policyID uuid.UUID) (sentinelDtos.PolicyView, error)
 
 	ListRoles(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.RoleView, error)
 	CreateRole(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.CreateRoleInput) (uuid.UUID, error)
@@ -61,6 +60,9 @@ type SentinelOrchestrationInterface interface {
 
 	AttachPoliciesToRole(ctx context.Context, orgID, emplID, roleID uuid.UUID, in sentinelDtos.AttachPoliciesInput) error
 	DetachPolicyFromRole(ctx context.Context, orgID, emplID, roleID, policyID uuid.UUID) error
+	ListSentinelUserGroups(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.GroupView, error)
+	CreateNewSentinelGroup(ctx context.Context, orgID, emplID uuid.UUID, req *sentinelDtos.CreateGroupsRequestDto) error
+	GetSentinelGroupDetail(ctx context.Context, orgID, emplID, groupID uuid.UUID) (sentinelDtos.GroupDetailsResponseDto, error)
 }
 
 type OrganizationOrchestrationInterface interface {

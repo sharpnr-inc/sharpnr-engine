@@ -3,8 +3,10 @@ package sentinelAggregatorService
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	sentinelAggregatorContracts "sharpnr-engine/sentinel_aggregators/contracts"
+	sentinelAggregatorTypes "sharpnr-engine/sentinel_aggregators/types"
 	sentinelContexts "sharpnr-engine/sentinel_contexts"
 
 	"github.com/google/uuid"
@@ -28,31 +30,109 @@ type SentinelAggregatorServiceInterface interface {
 	GetContextPalette(ctx context.Context, orgID, emplID uuid.UUID) (sentinelContexts.Palette, error)
 }
 
+// registeredResource is one catalog entry: the descriptor the frontend sees and
+// the lister bound to that type.
+type registeredResource struct {
+	descriptor sentinelAggregatorContracts.ResourceDescriptor
+	list       sentinelAggregatorContracts.InstanceLister
+}
+
 type sentinelAggregatorService struct {
-	// ordered as registered at bootstrap, so the FE sees a stable catalog order
-	descriptors []sentinelAggregatorContracts.ResourceDescriptor
-	providers   map[string]sentinelAggregatorContracts.ResourceProvider // resource type -> owning provider
+	// order preserves registration order so the FE sees a stable catalog.
+	order     []string
+	resources map[string]registeredResource
 }
 
 // Compile-time guard: the concrete service must satisfy the interface.
 var _ SentinelAggregatorServiceInterface = (*sentinelAggregatorService)(nil)
 
-// NewSentinelAggregatorService indexes the given providers by the resource
-// types they declare. Two providers claiming the same Cedar entity type is a
-// wiring bug, so it panics at bootstrap rather than serving an ambiguous
-// catalog.
+// NewSentinelAggregatorService builds the catalog from the given providers,
+// validating it as it goes.
+//
+// Every problem below is a WIRING BUG that would otherwise surface as a broken
+// policy builder or, worse, a policy that grants more than its author intended.
+// The catalog is assembled once at bootstrap and never changes, so this panics
+// rather than serving something wrong: a failed boot is loud, a silently
+// over-broad action is not.
 func NewSentinelAggregatorService(providers ...sentinelAggregatorContracts.ResourceProvider) *sentinelAggregatorService {
 	s := &sentinelAggregatorService{
-		providers: make(map[string]sentinelAggregatorContracts.ResourceProvider),
+		resources: make(map[string]registeredResource),
 	}
+
+	// Cedar action ids are a flat global namespace, so this map spans every
+	// resource of every module — not just the one being registered.
+	actionOwner := make(map[string]string)
+
 	for _, provider := range providers {
-		for _, descriptor := range provider.Resources() {
-			if _, dup := s.providers[descriptor.Type]; dup {
-				panic(fmt.Sprintf("sentinel aggregator: resource type %q registered twice", descriptor.Type))
+		for _, reg := range provider.Resources() {
+			d := reg.Descriptor
+			resourceType := strings.TrimSpace(d.Type)
+
+			if resourceType == "" {
+				panic("sentinel aggregator: a resource was registered with an empty Type")
 			}
-			s.providers[descriptor.Type] = provider
-			s.descriptors = append(s.descriptors, descriptor)
+			if _, dup := s.resources[resourceType]; dup {
+				panic(fmt.Sprintf("sentinel aggregator: resource type %q registered twice", resourceType))
+			}
+			validateActions(resourceType, d.Actions, actionOwner)
+			validateAttributes(resourceType, d.Attributes)
+
+			s.resources[resourceType] = registeredResource{descriptor: d, list: reg.ListInstances}
+			s.order = append(s.order, resourceType)
 		}
 	}
 	return s
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// validateActions rejects empty or duplicated action ids.
+//
+// The cross-resource check is the important one. Cedar has no resource
+// qualifier on an action: `permit(principal, action == Action::"canView",
+// resource)` matches that id on EVERY resource type. If two modules both
+// register "canView", a policy meant for one of them silently reaches the
+// other. The aggregator is the only place that sees all modules at once, so it
+// is the only place this can be caught.
+func validateActions(resourceType string, actions []sentinelAggregatorContracts.ActionDescriptor, actionOwner map[string]string) {
+	for _, a := range actions {
+		name := strings.TrimSpace(a.Name)
+		if name == "" {
+			panic(fmt.Sprintf("sentinel aggregator: resource %q has an action with an empty Name", resourceType))
+		}
+		if owner, taken := actionOwner[name]; taken {
+			if owner == resourceType {
+				panic(fmt.Sprintf(
+					"sentinel aggregator: resource %q declares action %q twice",
+					resourceType, name))
+			}
+			panic(fmt.Sprintf(
+				"sentinel aggregator: action %q is registered by both %q and %q. "+
+					"Cedar action ids are global, so a policy scoped to this action would reach both "+
+					"resources. Give each a resource-suffixed name (e.g. %sOn%s).",
+				name, owner, resourceType, name, resourceType))
+		}
+		actionOwner[name] = resourceType
+	}
+}
+
+// validateAttributes rejects empty names, duplicates within a resource, and
+// types the policy builder cannot render.
+func validateAttributes(resourceType string, attributes []sentinelAggregatorContracts.AttributeDescriptor) {
+	seen := make(map[string]struct{}, len(attributes))
+	for _, attr := range attributes {
+		name := strings.TrimSpace(attr.Name)
+		if name == "" {
+			panic(fmt.Sprintf("sentinel aggregator: resource %q has an attribute with an empty Name", resourceType))
+		}
+		if _, dup := seen[name]; dup {
+			panic(fmt.Sprintf("sentinel aggregator: resource %q declares attribute %q twice", resourceType, name))
+		}
+		if !attr.Type.Valid() {
+			panic(fmt.Sprintf(
+				"sentinel aggregator: resource %q attribute %q has type %q; valid types are %v",
+				resourceType, name, attr.Type, sentinelAggregatorTypes.AllAttrTypes))
+		}
+		seen[name] = struct{}{}
+	}
 }
