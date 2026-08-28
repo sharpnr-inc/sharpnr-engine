@@ -11,14 +11,17 @@ import (
 const ResourceTypeProperty = property_constants.ResourceTypeProperty
 
 // Resources implements [sentinelAggregatorContracts.ResourceProvider].
-func (s *orgPropertyResources) Resources() []sentinelAggregatorContracts.ResourceDescriptor {
-	return []sentinelAggregatorContracts.ResourceDescriptor{
+func (s *orgPropertyResources) Resources() []sentinelAggregatorContracts.ResourceRegistration {
+	return []sentinelAggregatorContracts.ResourceRegistration{
 		{
-			Type:        ResourceTypeProperty,
-			Label:       "Property",
-			Description: "A physical property (hotel, restaurant site, ...) of the organization",
-			Actions:     propertyActions(),
-			Attributes:  propertyAttributes(),
+			Descriptor: sentinelAggregatorContracts.ResourceDescriptor{
+				Type:        ResourceTypeProperty,
+				Label:       "Property",
+				Description: "A property owned by the organization",
+				Actions:     propertyActions(),
+				Attributes:  propertyAttributes(),
+			},
+			ListInstances: s.listProperties,
 		},
 	}
 }

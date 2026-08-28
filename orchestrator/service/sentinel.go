@@ -2,7 +2,9 @@ package orchestrator_service
 
 import (
 	"context"
+	"fmt"
 
+	coreEmployeeConstants "sharpnr-engine/core/employees/constants"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	orchestrator_authz "sharpnr-engine/orchestrator/service/authz"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
@@ -36,8 +38,63 @@ type sentinelOrchestrator struct {
 	employeeHRService coreEmployeeServices.EmployeeHRServiceInterface
 }
 
+// ListPrincipals returns the policy builder's principal palette: every live
+// attachment target in the org.
+//
+// Two domains again. Sentinel owns roles and groups and answers for them; the
+// employee module owns who the users are. Sentinel stores employee ids with no
+// FK and has no dependency on that module, so the user half is composed here —
+// the same seam as GetSentinelGroupDetail.
 func (s *sentinelOrchestrator) ListPrincipals(ctx context.Context, orgID, emplID uuid.UUID) (sentinelDtos.PrincipalsView, error) {
-	return s.sentinelService.GetPrincipals(ctx, orgID)
+	view, err := s.sentinelService.GetPrincipals(ctx, orgID)
+	if err != nil {
+		return sentinelDtos.PrincipalsView{}, err
+	}
+
+	users, err := s.listUserPrincipals(ctx, orgID, emplID)
+	if err != nil {
+		return sentinelDtos.PrincipalsView{}, err
+	}
+	view.Users = users
+	return view, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// listUserPrincipals returns the org's employees as selectable principals, for
+// the direct-grant path (user_policies) where a policy is given to one person
+// without a role or group.
+//
+// EXITED employees are omitted: granting a policy to someone who has left is
+// never intended, and offering them in the picker invites it. PENDING and
+// DISABLED are kept — a policy can legitimately be prepared for someone not yet
+// active, and a disabled account can be re-enabled.
+func (s *sentinelOrchestrator) listUserPrincipals(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.PrincipalRef, error) {
+	refs := make([]sentinelDtos.PrincipalRef, 0)
+	if s.employeeHRService == nil {
+		// Fail soft: roles and groups are still a usable palette.
+		return refs, nil
+	}
+
+	employees, err := s.employeeHRService.ListOrgAllEmployees(ctx, orgID, emplID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, e := range employees {
+		if e == nil || e.Status == coreEmployeeConstants.EmployeeStatusExited {
+			continue
+		}
+		label := e.EmployeeName
+		if e.EmployeeID != "" {
+			label = fmt.Sprintf("%s (%s)", e.EmployeeName, e.EmployeeID)
+		}
+		refs = append(refs, sentinelDtos.PrincipalRef{
+			Value: e.ID.String(), // the id every attach endpoint takes
+			Label: label,
+		})
+	}
+	return refs, nil
 }
 
 func (s *sentinelOrchestrator) ListAuthzResources(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelAggregatorService.ResourceSummaryView, error) {

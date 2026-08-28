@@ -6,6 +6,7 @@ import (
 	"net/http"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	sentinelServiceErrs "sharpnr-engine/sentinel/errs"
+	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
 	sentinelEngine "sharpnr-engine/sentinel_engine"
 	"sharpnr-engine/shared/utils"
 
@@ -27,7 +28,8 @@ func failFromServiceError(ctx *gin.Context, err error) {
 	switch {
 	case errors.Is(err, sentinelEngine.ErrAccessDenied):
 		utils.Failure(ctx, http.StatusForbidden, err)
-	case errors.Is(err, sentinelServiceErrs.GroupNotFoundInOrgErr),
+	case errors.Is(err, sentinelAggregatorService.ErrUnknownResourceType),
+		errors.Is(err, sentinelServiceErrs.GroupNotFoundInOrgErr),
 		errors.Is(err, sentinelServiceErrs.RoleNotFoundInOrgErr),
 		errors.Is(err, sentinelServiceErrs.PolicyNotFoundInOrgErr),
 		errors.Is(err, gorm.ErrRecordNotFound):
