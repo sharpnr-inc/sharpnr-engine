@@ -51,7 +51,7 @@ type SentinelOrchestrationInterface interface {
 	// stamps on every evaluation, for the builder's condition editor.
 	GetAuthzContextPalette(ctx context.Context, orgID, emplID uuid.UUID) (sentinelContexts.Palette, error)
 	CreatePolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error)
-	ListPolicies(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.PolicyView, error)
+	ListOrgPolicies(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.PolicyView, error)
 	GetPolicy(ctx context.Context, orgID, emplID, policyID uuid.UUID) (sentinelDtos.PolicyView, error)
 
 	ListRoles(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.RoleView, error)

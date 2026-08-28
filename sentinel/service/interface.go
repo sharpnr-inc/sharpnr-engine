@@ -51,9 +51,15 @@ type PolicyService interface {
 	// FE), revalidating that it compiles, and invalidates the org's engine cache.
 	CreatePolicy(ctx context.Context, orgID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error)
 
-	// ListPolicies returns every policy in the org. There are no buckets — what
-	// a policy reaches is read from the registers, not from a column on it.
+	// ListPolicies returns every policy the org owns — the catalog. Most reach
+	// nobody, or reach only a role/group/user. Used by the policy builder's
+	// instance picker (sentinel/mod_resources).
 	ListPolicies(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.PolicyView, error)
+
+	// ListOrgPolicies returns only the policies registered against the ORG
+	// itself — the ones that reach every employee. A read of the org register,
+	// not of the catalog.
+	ListOrgPolicies(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.PolicyView, error)
 	GetPolicy(ctx context.Context, orgID, policyID uuid.UUID) (sentinelDtos.PolicyView, error)
 
 	// AttachPolicies registers existing policies against a role; DetachPolicy

@@ -56,8 +56,10 @@ func (s *sentinelOrchestrator) CreatePolicy(ctx context.Context, orgID, emplID u
 	return s.sentinelService.CreatePolicy(ctx, orgID, in)
 }
 
-func (s *sentinelOrchestrator) ListPolicies(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.PolicyView, error) {
-	return s.sentinelService.ListPolicies(ctx, orgID)
+// ListOrgPolicies returns the policies registered against the organization —
+// what reaches every employee — not the org's whole policy catalog.
+func (s *sentinelOrchestrator) ListOrgPolicies(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.PolicyView, error) {
+	return s.sentinelService.ListOrgPolicies(ctx, orgID)
 }
 
 func (s *sentinelOrchestrator) GetPolicy(ctx context.Context, orgID, emplID, policyID uuid.UUID) (sentinelDtos.PolicyView, error) {

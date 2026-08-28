@@ -75,11 +75,25 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 
 /* ---------------------------------- <***> --------------------------------- */
 
-// ListPolicies implements [SentinelPolicyService]: every policy in the org.
-// There are no buckets any more — what a policy reaches is read from the
-// attachment registers, not from a column on the policy.
 func (s *sentinelService) ListPolicies(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.PolicyView, error) {
 	policies, err := s.repo.ListPolicies(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+	return sentinelDtos.ToPolicyViews(policies), nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// ListOrgPolicies implements [PolicyService]: the policies registered against
+// the ORGANIZATION itself — the ones that reach every employee.
+//
+// This is a read of the org register (org_sentinel_policies), not of the policy
+// catalog. ListPolicies above returns every policy the org owns, most of which
+// reach nobody or reach only a role/group/user. The two are different sets and
+// the difference is the whole point of attachment-driven evaluation.
+func (s *sentinelService) ListOrgPolicies(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.PolicyView, error) {
+	policies, err := s.repo.ListPoliciesOfOrg(ctx, orgID)
 	if err != nil {
 		return nil, err
 	}

@@ -22,7 +22,7 @@ func registerSentinelRoutes(rg *gin.RouterGroup, c *orchestrator_controllers.Orc
 		// Org Polices Endpoints
 		org_policies := s.Group("/orgpolicies")
 		{
-			org_policies.GET("", c.ListPoliciesHandler)        // this endpoint list all polices attached straight to organization
+			org_policies.GET("", c.ListOrgPoliciesHandler)     // policies registered against the org — these reach every employee
 			org_policies.POST("", c.CreatePolicyHandler)       // this endpoint add/create policies straight to organization
 			org_policies.GET("/:policyID", c.GetPolicyHandler) // to fetch the Policy Details
 		}
