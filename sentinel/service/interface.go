@@ -4,16 +4,17 @@ import (
 	"context"
 
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
-	sentinelengine_models "sharpnr-engine/sentinel/models"
 
 	"github.com/google/uuid"
 )
 
-// SentinelService is the authorization authoring service injected into other
-// modules (and exposed to the frontend through the orchestrator). It owns
-// provisioning, the policy builder's palettes (principals + resources), and CRUD
-// over policies, roles, groups, and their attachments. The engine (evaluation)
-// lives separately.
+// SentinelServiceInterface is the authorization AUTHORING service, injected into
+// other modules and exposed to the frontend through the orchestrator. It owns
+// provisioning, the policy builder's principal palette, and CRUD over policies,
+// roles, groups and the registers that connect them.
+//
+// Evaluation lives elsewhere: sentinel_engine reads the same tables through its
+// own one-method PolicyStore and never goes through this interface.
 type SentinelServiceInterface interface {
 	// ProvisionOrganization sets up a new org's authorization defaults: the
 	// full-access "Owner" role + its policy, the founding employee's owner
@@ -21,50 +22,74 @@ type SentinelServiceInterface interface {
 	// so an org is never left half-provisioned.
 	ProvisionOrganization(ctx context.Context, orgID, firstUserID uuid.UUID) error
 
-	// GetEmployeeRole resolves the role assigned to an employee within an org.
+	// GetEmployeeRole resolves the role an employee holds within an org;
+	// GetEmployeeGroups the groups they belong to.
 	GetEmployeeRole(ctx context.Context, orgID, emplID uuid.UUID) (sentinelDtos.RoleView, error)
 	GetEmployeeGroups(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.GroupView, error)
 
 	// GetPrincipals returns the policy builder's principal palette: the static
-	// Cedar entity types (User/Role/Group) plus the org's live roles and groups.
+	// entity types plus the org's live roles and groups.
 	GetPrincipals(ctx context.Context, orgID uuid.UUID) (sentinelDtos.PrincipalsView, error)
 
-	SentinelPolicyService
-	GroupsService
-	RolesService
+	PolicyService
+	RoleService
+	GroupService
 }
 
 // Compile-time guard: the concrete service must satisfy the interface.
 var _ SentinelServiceInterface = (*sentinelService)(nil)
 
 /* -------------------------------------------------------------------------- */
-/*                              All the services                              */
+/*                                  Policies                                  */
 /* -------------------------------------------------------------------------- */
 
-type SentinelPolicyService interface {
-	// this where create all the Policy related service
+// PolicyService owns the policy rows and the registrations that decide who they
+// reach. A policy created here is attached to nothing and reaches nobody until
+// it is registered against a principal.
+type PolicyService interface {
+	// CreatePolicy persists a raw Cedar policy (authored and validated in the
+	// FE), revalidating that it compiles, and invalidates the org's engine cache.
+	CreatePolicy(ctx context.Context, orgID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error)
 
-	// AttachPolicies groups existing policies under a role; DetachPolicy removes
-	// one grouping. Both leave the policy rows themselves untouched.
+	// ListPolicies returns every policy the org owns — the catalog. Most reach
+	// nobody, or reach only a role/group/user. Used by the policy builder's
+	// instance picker (sentinel/mod_resources).
+	ListPolicies(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.PolicyView, error)
+
+	// ListOrgPolicies returns only the policies registered against the ORG
+	// itself — the ones that reach every employee. A read of the org register,
+	// not of the catalog.
+	ListOrgPolicies(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.PolicyView, error)
+	GetPolicy(ctx context.Context, orgID, policyID uuid.UUID) (sentinelDtos.PolicyView, error)
+
+	// AttachPolicies registers existing policies against a role; DetachPolicy
+	// lifts one registration. Both leave the policy rows themselves untouched.
 	AttachPolicies(ctx context.Context, orgID, emplID, roleID uuid.UUID, policyIDs []uuid.UUID) error
 	DetachPolicy(ctx context.Context, orgID, roleID, policyID uuid.UUID) error
 }
 
-type GroupsService interface {
+/* -------------------------------------------------------------------------- */
+/*                                    Roles                                   */
+/* -------------------------------------------------------------------------- */
+
+type RoleService interface {
+	CreateRole(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.CreateRoleInput) (uuid.UUID, error)
+	ListRoles(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.RoleView, error)
+
+	// GetRolePrivileges returns the role plus every policy registered against it.
+	GetRolePrivileges(ctx context.Context, orgID, roleID uuid.UUID) (sentinelDtos.RolePrivilegesView, error)
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   Groups                                   */
+/* -------------------------------------------------------------------------- */
+
+type GroupService interface {
 	CreateGroup(ctx context.Context, orgID uuid.UUID, in sentinelDtos.CreateGroupsRequestDto) (uuid.UUID, error)
 	ListGroups(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.GroupView, error)
 
-	// CreatePolicy persists a raw Cedar policy (authored/validated in the FE),
-	// revalidating that it compiles, and invalidates the org's engine cache.
-	CreatePolicy(ctx context.Context, orgID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error)
-	// ListPolicies returns an org's policies; an empty scope means all buckets,
-	// otherwise only that bucket (organization|role|group|user).
-	ListPolicies(ctx context.Context, orgID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error)
-	GetPolicy(ctx context.Context, orgID, policyID uuid.UUID) (sentinelDtos.PolicyView, error)
-}
-
-type RolesService interface {
-	CreateRole(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.CreateRoleInput) (uuid.UUID, error)
-	ListRoles(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.RoleView, error)
-	GetRolePrivileges(ctx context.Context, orgID, roleID uuid.UUID) (sentinelDtos.RolePrivilegesView, error)
+	// GetGroupDetails returns the group, the policies registered against it, and
+	// its member IDS. Names are the orchestrator's to resolve — sentinel does
+	// not depend on the employee module.
+	GetGroupDetails(ctx context.Context, orgID, groupID uuid.UUID) (sentinelDtos.GroupDetailView, error)
 }

@@ -11,9 +11,9 @@ import (
 // CreateRoleInput is the create-role payload. PolicyIDs is an optional set of
 // existing policies to attach to the role at creation time.
 type CreateRoleInput struct {
-	Name        string      `json:"name"`
-	Description string      `json:"description"`
-	PolicyIDs   []uuid.UUID `json:"policyIds"`
+	Name        string       `json:"name"`
+	Description string       `json:"description"`
+	PolicyIDs   *[]uuid.UUID `json:"policyIds,omitempty"`
 }
 
 // RoleView is the lightweight role shape for dropdowns / lists.

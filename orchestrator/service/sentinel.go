@@ -2,10 +2,12 @@ package orchestrator_service
 
 import (
 	"context"
+	"fmt"
 
+	coreEmployeeConstants "sharpnr-engine/core/employees/constants"
+	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	orchestrator_authz "sharpnr-engine/orchestrator/service/authz"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
-	sentinelengine_models "sharpnr-engine/sentinel/models"
 	sentinelservice "sharpnr-engine/sentinel/service"
 	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
 	sentinelContexts "sharpnr-engine/sentinel_contexts"
@@ -29,10 +31,70 @@ type sentinelOrchestrator struct {
 	guard              *orchestrator_authz.Guard
 	sentinelService    sentinelservice.SentinelServiceInterface
 	sentinelAggregator sentinelAggregatorService.SentinelAggregatorServiceInterface
+
+	// employeeHRService resolves member ids to names. Sentinel stores group
+	// membership as bare employee ids with no FK and no knowledge of the
+	// employee module; composing the two is exactly this layer's job.
+	employeeHRService coreEmployeeServices.EmployeeHRServiceInterface
 }
 
+// ListPrincipals returns the policy builder's principal palette: every live
+// attachment target in the org.
+//
+// Two domains again. Sentinel owns roles and groups and answers for them; the
+// employee module owns who the users are. Sentinel stores employee ids with no
+// FK and has no dependency on that module, so the user half is composed here —
+// the same seam as GetSentinelGroupDetail.
 func (s *sentinelOrchestrator) ListPrincipals(ctx context.Context, orgID, emplID uuid.UUID) (sentinelDtos.PrincipalsView, error) {
-	return s.sentinelService.GetPrincipals(ctx, orgID)
+	view, err := s.sentinelService.GetPrincipals(ctx, orgID)
+	if err != nil {
+		return sentinelDtos.PrincipalsView{}, err
+	}
+
+	users, err := s.listUserPrincipals(ctx, orgID, emplID)
+	if err != nil {
+		return sentinelDtos.PrincipalsView{}, err
+	}
+	view.Users = users
+	return view, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// listUserPrincipals returns the org's employees as selectable principals, for
+// the direct-grant path (user_policies) where a policy is given to one person
+// without a role or group.
+//
+// EXITED employees are omitted: granting a policy to someone who has left is
+// never intended, and offering them in the picker invites it. PENDING and
+// DISABLED are kept — a policy can legitimately be prepared for someone not yet
+// active, and a disabled account can be re-enabled.
+func (s *sentinelOrchestrator) listUserPrincipals(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.PrincipalRef, error) {
+	refs := make([]sentinelDtos.PrincipalRef, 0)
+	if s.employeeHRService == nil {
+		// Fail soft: roles and groups are still a usable palette.
+		return refs, nil
+	}
+
+	employees, err := s.employeeHRService.ListOrgAllEmployees(ctx, orgID, emplID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, e := range employees {
+		if e == nil || e.Status == coreEmployeeConstants.EmployeeStatusExited {
+			continue
+		}
+		label := e.EmployeeName
+		if e.EmployeeID != "" {
+			label = fmt.Sprintf("%s (%s)", e.EmployeeName, e.EmployeeID)
+		}
+		refs = append(refs, sentinelDtos.PrincipalRef{
+			Value: e.ID.String(), // the id every attach endpoint takes
+			Label: label,
+		})
+	}
+	return refs, nil
 }
 
 func (s *sentinelOrchestrator) ListAuthzResources(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelAggregatorService.ResourceSummaryView, error) {
@@ -47,12 +109,18 @@ func (s *sentinelOrchestrator) GetAuthzContextPalette(ctx context.Context, orgID
 	return s.sentinelAggregator.GetContextPalette(ctx, orgID, emplID)
 }
 
-func (s *sentinelOrchestrator) ListPolicies(ctx context.Context, orgID, emplID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error) {
-	return s.sentinelService.ListPolicies(ctx, orgID, scope)
-}
-
 func (s *sentinelOrchestrator) CreatePolicy(ctx context.Context, orgID, emplID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error) {
 	return s.sentinelService.CreatePolicy(ctx, orgID, in)
+}
+
+// ListOrgPolicies returns the policies registered against the organization —
+// what reaches every employee — not the org's whole policy catalog.
+func (s *sentinelOrchestrator) ListOrgPolicies(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.PolicyView, error) {
+	return s.sentinelService.ListOrgPolicies(ctx, orgID)
+}
+
+func (s *sentinelOrchestrator) GetPolicy(ctx context.Context, orgID, emplID, policyID uuid.UUID) (sentinelDtos.PolicyView, error) {
+	return s.sentinelService.GetPolicy(ctx, orgID, policyID)
 }
 
 func (s *sentinelOrchestrator) ListRoles(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.RoleView, error) {
@@ -73,4 +141,102 @@ func (s *sentinelOrchestrator) AttachPoliciesToRole(ctx context.Context, orgID, 
 
 func (s *sentinelOrchestrator) DetachPolicyFromRole(ctx context.Context, orgID, emplID, roleID, policyID uuid.UUID) error {
 	return s.sentinelService.DetachPolicy(ctx, orgID, roleID, policyID)
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *sentinelOrchestrator) ListSentinelUserGroups(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelDtos.GroupView, error) {
+	return s.sentinelService.ListGroups(ctx, orgID)
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *sentinelOrchestrator) CreateNewSentinelGroup(ctx context.Context, orgID, emplID uuid.UUID, req *sentinelDtos.CreateGroupsRequestDto) error {
+	_, err := s.sentinelService.CreateGroup(ctx, orgID, *req)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// GetSentinelGroupDetail returns one group with its policies and its members.
+//
+// Two domains meet here: sentinel owns the group, its policy registrations and
+// the ids of its members; the employee module owns who those ids are. Sentinel
+// is asked first, then the ids are resolved to names.
+func (s *sentinelOrchestrator) GetSentinelGroupDetail(ctx context.Context, orgID, emplID, groupID uuid.UUID) (sentinelDtos.GroupDetailsResponseDto, error) {
+	detail, err := s.sentinelService.GetGroupDetails(ctx, orgID, groupID)
+	if err != nil {
+		return sentinelDtos.GroupDetailsResponseDto{}, err
+	}
+
+	members, err := s.resolveGroupMembers(ctx, orgID, emplID, detail.MemberIDs)
+	if err != nil {
+		return sentinelDtos.GroupDetailsResponseDto{}, err
+	}
+
+	policies := make([]sentinelDtos.GroupPolicesResponseDto, 0, len(detail.Policies))
+	for _, p := range detail.Policies {
+		policies = append(policies, sentinelDtos.GroupPolicesResponseDto{
+			ID:          p.ID,
+			Name:        p.Name,
+			Description: p.Description,
+		})
+	}
+
+	return sentinelDtos.GroupDetailsResponseDto{
+		ID:          detail.Group.ID,
+		Name:        detail.Group.Name,
+		Description: detail.Group.Description,
+		CreatedAt:   detail.CreatedAt,
+		UpdatedAt:   detail.UpdatedAt,
+		User:        members,
+		Polices:     policies,
+	}, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// resolveGroupMembers turns sentinel's member ids into {id, name} pairs.
+//
+// It indexes the org's employees once rather than fetching each member, so this
+// stays a single employee-module call regardless of group size. The trade is
+// that it reads the whole org roster to render one group; if that becomes hot,
+// the employee module wants a "list employees by ids" method and this becomes
+// one narrow query.
+//
+// An id with no matching employee is kept with an empty name rather than
+// dropped: a membership row pointing at a removed employee is a real state, and
+// hiding it would make the group look smaller than it is.
+func (s *sentinelOrchestrator) resolveGroupMembers(ctx context.Context, orgID, emplID uuid.UUID, memberIDs []uuid.UUID) ([]sentinelDtos.GroupUserResponseDto, error) {
+	members := make([]sentinelDtos.GroupUserResponseDto, 0, len(memberIDs))
+	if len(memberIDs) == 0 {
+		return members, nil
+	}
+	if s.employeeHRService == nil {
+		// Fail soft: the group and its policies are still worth returning.
+		for _, id := range memberIDs {
+			members = append(members, sentinelDtos.GroupUserResponseDto{ID: id})
+		}
+		return members, nil
+	}
+
+	employees, err := s.employeeHRService.ListOrgAllEmployees(ctx, orgID, emplID)
+	if err != nil {
+		return nil, err
+	}
+	byID := make(map[uuid.UUID]string, len(employees))
+	for _, e := range employees {
+		if e != nil {
+			byID[e.ID] = e.EmployeeName
+		}
+	}
+
+	for _, id := range memberIDs {
+		members = append(members, sentinelDtos.GroupUserResponseDto{ID: id, Name: byID[id]})
+	}
+	return members, nil
 }

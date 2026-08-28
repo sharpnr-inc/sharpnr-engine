@@ -29,6 +29,11 @@ func validateCedarText(text string) error {
 
 // CreatePolicy implements [SentinelPolicyService]: persist a raw Cedar policy
 // after revalidating it, then invalidate the org's engine cache.
+//
+// A new policy is attached to NOTHING, so it reaches nobody until someone
+// registers it against a principal. That is the safe default the old `scope`
+// column could not express — it defaulted to "organization", which meant a
+// create call that omitted the field silently granted org-wide.
 func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in sentinelDtos.AddPolicyRequestDto) (uuid.UUID, error) {
 	name := strings.TrimSpace(in.Name)
 	if name == "" {
@@ -37,19 +42,12 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 	if strings.TrimSpace(in.Policy) == "" {
 		return uuid.Nil, sentinelServiceErrs.PolicyTextRequiredErr
 	}
-
-	scope := in.Scope
-	if scope == "" {
-		scope = sentinelengine_models.PolicyScopeOrganization
-	}
-	if !scope.Valid() {
-		return uuid.Nil, fmt.Errorf("%w: %q", sentinelServiceErrs.InvalidPolicyScopeErr, in.Scope)
-	}
-
 	if err := validateCedarText(in.Policy); err != nil {
 		return uuid.Nil, err
 	}
 
+	// sentinel_policies has no unique index on (org, name), so the check is the
+	// only thing keeping names distinct.
 	exists, err := s.repo.PolicyExists(ctx, orgID, name)
 	if err != nil {
 		return uuid.Nil, err
@@ -66,7 +64,6 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 		Policy:         in.Policy,
 		PolicyJson:     in.PolicyJson,
 		Enabled:        in.IsEnabled,
-		Scope:          scope,
 	}
 	if err := s.repo.CreatePolicy(ctx, policy); err != nil {
 		return uuid.Nil, err
@@ -76,61 +73,70 @@ func (s *sentinelService) CreatePolicy(ctx context.Context, orgID uuid.UUID, in 
 	return policy.ID, nil
 }
 
-// ListPolicies implements [SentinelPolicyService].
-func (s *sentinelService) ListPolicies(ctx context.Context, orgID uuid.UUID, scope sentinelengine_models.PolicyScope) ([]sentinelDtos.PolicyView, error) {
-	if scope != "" && !scope.Valid() {
-		return nil, fmt.Errorf("%w: %q", sentinelServiceErrs.InvalidPolicyScopeErr, scope)
-	}
-	policies, err := s.repo.ListPoliciesByOrganizationID(ctx, orgID, scope)
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *sentinelService) ListPolicies(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.PolicyView, error) {
+	policies, err := s.repo.ListPolicies(ctx, orgID)
 	if err != nil {
 		return nil, err
 	}
 	return sentinelDtos.ToPolicyViews(policies), nil
 }
 
-// GetPolicy implements [SentinelPolicyService].
+/* ---------------------------------- <***> --------------------------------- */
+
+// ListOrgPolicies implements [PolicyService]: the policies registered against
+// the ORGANIZATION itself — the ones that reach every employee.
+//
+// This is a read of the org register (org_sentinel_policies), not of the policy
+// catalog. ListPolicies above returns every policy the org owns, most of which
+// reach nobody or reach only a role/group/user. The two are different sets and
+// the difference is the whole point of attachment-driven evaluation.
+func (s *sentinelService) ListOrgPolicies(ctx context.Context, orgID uuid.UUID) ([]sentinelDtos.PolicyView, error) {
+	policies, err := s.repo.ListPoliciesOfOrg(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+	return sentinelDtos.ToPolicyViews(policies), nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// GetPolicy implements [SentinelPolicyService]. The repo scopes by org, so
+// another tenant's policy comes back as not-found rather than being fetched and
+// then rejected here.
 func (s *sentinelService) GetPolicy(ctx context.Context, orgID, policyID uuid.UUID) (sentinelDtos.PolicyView, error) {
-	policy, err := s.repo.GetPolicyByID(ctx, policyID)
+	policy, err := s.repo.GetPolicy(ctx, orgID, policyID)
 	if err != nil {
 		return sentinelDtos.PolicyView{}, err
-	}
-	if policy.OrganizationID != orgID {
-		return sentinelDtos.PolicyView{}, sentinelServiceErrs.PolicyNotFoundInOrgErr
 	}
 	return sentinelDtos.ToPolicyView(&policy), nil
 }
 
-// AttachPolicies implements [SentinelPolicyService]: group existing policies
-// under a role. Every policy must belong to the org; runs in one transaction so
+/* ---------------------------------- <***> --------------------------------- */
+
+// AttachPolicies implements [SentinelPolicyService]: register existing policies
+// against a role, so they reach everyone holding it. Runs in one transaction so
 // a partial attach never persists.
+//
+// Each policy is fetched org-scoped first: the register itself does not verify
+// that a policy id belongs to the org, so skipping this would let a caller
+// attach another tenant's policy.
 func (s *sentinelService) AttachPolicies(ctx context.Context, orgID, emplID, roleID uuid.UUID, policyIDs []uuid.UUID) error {
 	if len(policyIDs) == 0 {
 		return nil
 	}
 
-	role, err := s.repo.GetRoleByID(ctx, roleID)
-	if err != nil {
-		return err
-	}
-	if role.OrganizationID != orgID {
-		return sentinelServiceErrs.RoleNotFoundInOrgErr
+	if _, err := s.repo.GetRole(ctx, orgID, roleID); err != nil {
+		return fmt.Errorf("%w: %s", sentinelServiceErrs.RoleNotFoundInOrgErr, roleID)
 	}
 
 	if err := s.withTx(ctx, func(txCtx context.Context) error {
 		for _, policyID := range policyIDs {
-			policy, err := s.repo.GetPolicyByID(txCtx, policyID)
-			if err != nil {
-				return fmt.Errorf("policy %s: %w", policyID, err)
-			}
-			if policy.OrganizationID != orgID {
+			if _, err := s.repo.GetPolicy(txCtx, orgID, policyID); err != nil {
 				return fmt.Errorf("%w: %s", sentinelServiceErrs.PolicyNotFoundInOrgErr, policyID)
 			}
-			edge := &sentinelengine_models.RolePolicies{
-				OrganizationID:   orgID,
-				RoleID:           roleID,
-				SentinelPolicyID: policyID,
-			}
-			if err := s.repo.AssignPolicyToRole(txCtx, edge); err != nil {
+			if err := s.repo.AttachPolicyToRole(txCtx, orgID, roleID, policyID); err != nil {
 				return err
 			}
 		}
@@ -143,10 +149,13 @@ func (s *sentinelService) AttachPolicies(ctx context.Context, orgID, emplID, rol
 	return nil
 }
 
-// DetachPolicy implements [SentinelPolicyService]: remove one role↔policy
-// grouping, leaving the policy row untouched.
+/* ---------------------------------- <***> --------------------------------- */
+
+// DetachPolicy implements [SentinelPolicyService]: stop a policy reaching a
+// role. The policy row itself is untouched, and the registration is soft-deleted
+// so it can be restored with a history.
 func (s *sentinelService) DetachPolicy(ctx context.Context, orgID, roleID, policyID uuid.UUID) error {
-	if err := s.repo.RemovePolicyFromRole(ctx, orgID, roleID, policyID); err != nil {
+	if err := s.repo.DetachPolicyFromRole(ctx, orgID, roleID, policyID); err != nil {
 		return err
 	}
 	s.invalidateEngine(orgID)

@@ -42,7 +42,6 @@ type EmployeeAuthenticationServiceInterface interface {
 
 // this is interface which will used by the HR module to interact with the employee module, this interface the have employee Ops used by the Org Hr
 type EmployeeHRServiceInterface interface {
-
 	// General service which will used by the other module to interact with the employee module,
 	EmployeeGeneralServiceInterface
 	ListOrgAllEmployees(ctx context.Context, orgID, emplID uuid.UUID) ([]*coreEmployeeContracts.OrgEmployeeList, error)
@@ -60,7 +59,6 @@ type EmployeeIamEngineServiceInterface interface {
 }
 
 type EmployeeOrchestratorServiceInterface interface {
-
 	// since only orchestrator can create a new superAdmin/Owner and only a superAdmin/Owner can add a owner
 	AddNewOwnerOrSuperAdmin(ctx context.Context, orgID, emplID uuid.UUID)
 }
