@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         APP_DIR       = '/opt/apps/sharpnr-engine'
-        BACKUP_DIR    = '/media/sharpnrllpDrive/engines'
+        BACKUP_DIR    = '/media/sharpnrllpDrive/sharpnr-engine-backups'
         BINARY_NAME   = 'sharpnr-engine'
         SERVICE_NAME  = 'sharpnr-engine'
     }
