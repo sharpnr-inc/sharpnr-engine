@@ -11,6 +11,7 @@ import (
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
+	sentinelAggregatorContracts "sharpnr-engine/sentinel_aggregators/contracts"
 	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
 	sentinelContexts "sharpnr-engine/sentinel_contexts"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
@@ -45,7 +46,11 @@ type SentinelOrchestrationInterface interface {
 	// Resources palette, served by the sentinel aggregator: which resource
 	// types exist, and per type its actions, attributes and live instances.
 	ListAuthzResources(ctx context.Context, orgID, emplID uuid.UUID) ([]sentinelAggregatorService.ResourceSummaryView, error)
-	GetAuthzResourceDetails(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) (sentinelAggregatorService.ResourceDetailsView, error)
+	// GetAuthzResourceDetails returns one resource's palette plus a page of its
+	// instances. The filter is passed through from the query string so the
+	// picker can search server-side and resolve the specific instances a stored
+	// policy is scoped to.
+	GetAuthzResourceDetails(ctx context.Context, orgID, emplID uuid.UUID, resourceType string, filter sentinelAggregatorContracts.InstanceFilter) (sentinelAggregatorService.ResourceDetailsView, error)
 
 	// Context palette: the canonical context.*/principal.* keys the engine
 	// stamps on every evaluation, for the builder's condition editor.

@@ -60,6 +60,28 @@ func (f *fakePropertyRepo) GetPropertyByID(context.Context, uuid.UUID) (*org_pro
 	return nil, nil
 }
 
+// GetPropertiesByIDs backs the Sentinel fact resolver. It answers from what the
+// fake has created, org-scoped, so a test can assert that a property belonging
+// to another tenant yields no facts.
+func (f *fakePropertyRepo) GetPropertiesByIDs(
+	_ context.Context, orgID uuid.UUID, ids []uuid.UUID,
+) ([]*org_property_models.OrganizationProperty, error) {
+	want := make(map[uuid.UUID]struct{}, len(ids))
+	for _, id := range ids {
+		want[id] = struct{}{}
+	}
+	var out []*org_property_models.OrganizationProperty
+	for _, p := range f.created {
+		if p.OrganizationID != orgID {
+			continue
+		}
+		if _, ok := want[p.ID]; ok {
+			out = append(out, p)
+		}
+	}
+	return out, nil
+}
+
 // fakeTxManager runs the function immediately; the fake repo ignores the tx.
 type fakeTxManager struct{}
 
