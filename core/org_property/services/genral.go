@@ -3,11 +3,13 @@ package org_property_services
 import (
 	"context"
 	"errors"
+	"fmt"
 	property_constants "sharpnr-engine/core/org_property/constants"
 	org_property_contracts "sharpnr-engine/core/org_property/contracts"
 	org_property_models "sharpnr-engine/core/org_property/models"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	sentinelEngine "sharpnr-engine/sentinel_engine"
+	"sort"
 	"time"
 
 	"github.com/google/uuid"
@@ -129,3 +131,85 @@ func (r *organizationPropertyService) GetPropertyDetailsByID(
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// GetPropertyFacts implements OrganizationPropertyServicesInterfaces: the facts
+// Sentinel stamps onto an authorization request for a property.
+//
+// The org scope lives in the repo query, so a property belonging to another
+// tenant is simply absent from the result rather than fetched and then filtered
+// here. An absent id means the caller has no facts for it, which denies any
+// policy conditioned on them — the safe direction.
+func (r *organizationPropertyService) GetPropertyFacts(
+	ctx context.Context, orgID uuid.UUID, propertyIDs []uuid.UUID,
+) ([]org_property_contracts.PropertyFacts, error) {
+	properties, err := r.orgPropertyRepo.GetPropertiesByIDs(ctx, orgID, propertyIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	facts := make([]org_property_contracts.PropertyFacts, 0, len(properties))
+	for _, p := range properties {
+		facts = append(facts, org_property_contracts.PropertyFacts{
+			ID:             p.ID,
+			OrganizationID: p.OrganizationID,
+			Code:           p.Code,
+			Name:           p.Name,
+			City:           p.City,
+			State:          p.State,
+			Country:        p.Country,
+		})
+	}
+	return facts, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// GetPropertyAttributeValues implements OrganizationPropertyServicesInterfaces:
+// the distinct values an attribute takes across the org, so the policy builder
+// can offer a picker instead of a text box.
+//
+// A text box here is a trap rather than a convenience: Cedar's `==` is
+// case-sensitive, so a rule written against "mumbai" when the data says
+// "Mumbai" reads as active and matches nothing, with no error anywhere.
+//
+// Distinct-in-Go over the org's properties rather than SELECT DISTINCT: this
+// runs when the catalog is read, not per decision, and it keeps the repo
+// surface to the one query the module already had.
+func (r *organizationPropertyService) GetPropertyAttributeValues(
+	ctx context.Context, orgID uuid.UUID, attribute string,
+) ([]string, error) {
+	properties, err := r.orgPropertyRepo.GetAllPropertiesByOrgID(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+
+	seen := make(map[string]struct{}, len(properties))
+	values := make([]string, 0, len(properties))
+	for _, p := range properties {
+		var v string
+		switch attribute {
+		case "city":
+			v = p.City
+		case "state":
+			v = p.State
+		case "country":
+			v = p.Country
+		case "code":
+			v = p.Code
+		default:
+			return nil, fmt.Errorf("org property: no attribute %q", attribute)
+		}
+		if v == "" {
+			continue
+		}
+		if _, dup := seen[v]; dup {
+			continue
+		}
+		seen[v] = struct{}{}
+		values = append(values, v)
+	}
+	sort.Strings(values)
+	return values, nil
+}

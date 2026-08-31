@@ -75,3 +75,24 @@ func (repo *organizationPropertyRepo) UpdateConfigurationStatus(ctx context.Cont
 
 	return nil
 }
+
+// GetPropertiesByIDs implements OrganizationPropertyRepositoryInterface.
+//
+// Org-scoped on purpose: this feeds Sentinel's fact resolver, so a property id
+// belonging to another tenant must simply not come back. Callers treat an absent
+// id as "no facts", which denies container-scoped policies rather than leaking.
+func (o *organizationPropertyRepo) GetPropertiesByIDs(
+	ctx context.Context, orgID uuid.UUID, propertyIDs []uuid.UUID,
+) ([]*org_property_models.OrganizationProperty, error) {
+	if len(propertyIDs) == 0 {
+		return nil, nil
+	}
+	var properties []*org_property_models.OrganizationProperty
+	err := o.db.WithContext(ctx).
+		Where("organization_id = ? AND id IN ?", orgID, propertyIDs).
+		Find(&properties).Error
+	if err != nil {
+		return nil, err
+	}
+	return properties, nil
+}

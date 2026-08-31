@@ -3,8 +3,10 @@ package orchestrator_controllers
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
+	sentinelAggregatorContracts "sharpnr-engine/sentinel_aggregators/contracts"
 	"sharpnr-engine/shared/utils"
 
 	"github.com/gin-gonic/gin"
@@ -64,7 +66,20 @@ func (c *OrchestratorController) GetAuthzResourceDetailsHandler(ctx *gin.Context
 		return
 	}
 	resourceType := ctx.Param("resourceType")
-	details, err := c.orchestService.GetAuthzResourceDetails(ctx.Request.Context(), orgID, emplID, resourceType)
+
+	// The picker searches server-side, and passes ?id= repeatedly to resolve
+	// the specific instances a stored policy is scoped to — without that it
+	// would have to fetch the whole list just to label four of them.
+	filter := sentinelAggregatorContracts.InstanceFilter{
+		Query:  ctx.Query("q"),
+		IDs:    ctx.QueryArray("id"),
+		Cursor: ctx.Query("cursor"),
+	}
+	if limit, err := strconv.Atoi(ctx.Query("limit")); err == nil && limit > 0 {
+		filter.Limit = limit
+	}
+
+	details, err := c.orchestService.GetAuthzResourceDetails(ctx.Request.Context(), orgID, emplID, resourceType, filter)
 	if err != nil {
 		utils.Failure(ctx, http.StatusBadRequest, err)
 		return

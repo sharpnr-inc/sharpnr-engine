@@ -8,6 +8,7 @@ import (
 
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
 	sentinelOwnResources "sharpnr-engine/sentinel/mod_resources"
+	sentinelAggregatorContracts "sharpnr-engine/sentinel_aggregators/contracts"
 	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
 
 	"github.com/google/uuid"
@@ -54,18 +55,17 @@ func TestResourceCatalogEndToEnd(t *testing.T) {
 
 	/* ---- GET /sentinel/resources/:resourceType ---- */
 	cases := []struct {
-		rtype    string
-		wantID   uuid.UUID
-		minActs  int
-		wantAttr string
+		rtype   string
+		wantID  uuid.UUID
+		minActs int
 	}{
-		{sentinelOwnResources.ResourceTypeSentinelRole, roleID, 7, "name"},
-		{sentinelOwnResources.ResourceTypeSentinelGroup, groupID, 5, "name"},
-		{sentinelOwnResources.ResourceTypeSentinelPolicy, policyID, 6, "enabled"},
+		{sentinelOwnResources.ResourceTypeSentinelRole, roleID, 6},
+		{sentinelOwnResources.ResourceTypeSentinelGroup, groupID, 6},
+		{sentinelOwnResources.ResourceTypeSentinelPolicy, policyID, 7},
 	}
 	for _, tc := range cases {
 		t.Run(tc.rtype, func(t *testing.T) {
-			view, err := catalog.GetResourceDetails(ctx, org, empl, tc.rtype)
+			view, err := catalog.GetResourceDetails(ctx, org, empl, tc.rtype, sentinelAggregatorContracts.InstanceFilter{})
 			if err != nil {
 				t.Fatalf("GetResourceDetails: %v", err)
 			}
@@ -77,17 +77,16 @@ func TestResourceCatalogEndToEnd(t *testing.T) {
 					t.Errorf("action rendered blank in the picker: %+v", a)
 				}
 			}
-			var sawAttr bool
-			for _, at := range view.Attributes {
-				if at.Name == tc.wantAttr {
-					sawAttr = true
-				}
-				if !at.Type.Valid() {
-					t.Errorf("attribute %q has unrenderable type %q", at.Name, at.Type)
-				}
-			}
-			if !sawAttr {
-				t.Errorf("expected attribute %q on %s", tc.wantAttr, tc.rtype)
+			// Sentinel's own types declare NO attributes, and that is the
+			// design rather than an omission. The previous version advertised
+			// `name` and `enabled` with nothing anywhere to stamp them, so a
+			// rule like `resource.name != "Owner"` compiled, stored and
+			// displayed as active while matching nothing — Cedar skips a policy
+			// whose attribute is missing. The contract now refuses to boot on a
+			// declaration with no resolver, so an empty list here is the
+			// assertion, not a gap in one.
+			if len(view.Attributes) != 0 {
+				t.Errorf("%s declares attributes with no fact resolver: %+v", tc.rtype, view.Attributes)
 			}
 
 			// the lister ran and returned the seeded row
@@ -127,7 +126,7 @@ func TestResourceInstancesAreTenantScoped(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	view, err := catalog.GetResourceDetails(ctx, orgB, empl, sentinelOwnResources.ResourceTypeSentinelRole)
+	view, err := catalog.GetResourceDetails(ctx, orgB, empl, sentinelOwnResources.ResourceTypeSentinelRole, sentinelAggregatorContracts.InstanceFilter{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -144,7 +143,7 @@ func TestUnknownResourceTypeEndToEnd(t *testing.T) {
 	catalog := sentinelAggregatorService.NewSentinelAggregatorService(
 		sentinelOwnResources.NewSentinelOwnResources(svc),
 	)
-	_, err := catalog.GetResourceDetails(context.Background(), uuid.New(), uuid.New(), "NotAThing")
+	_, err := catalog.GetResourceDetails(context.Background(), uuid.New(), uuid.New(), "NotAThing", sentinelAggregatorContracts.InstanceFilter{})
 	if !errors.Is(err, sentinelAggregatorService.ErrUnknownResourceType) {
 		t.Fatalf("want ErrUnknownResourceType (-> 404), got %v", err)
 	}

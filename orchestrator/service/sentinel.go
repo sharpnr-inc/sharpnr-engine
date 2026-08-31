@@ -9,6 +9,7 @@ import (
 	orchestrator_authz "sharpnr-engine/orchestrator/service/authz"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
 	sentinelservice "sharpnr-engine/sentinel/service"
+	sentinelAggregatorContracts "sharpnr-engine/sentinel_aggregators/contracts"
 	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
 	sentinelContexts "sharpnr-engine/sentinel_contexts"
 
@@ -101,8 +102,13 @@ func (s *sentinelOrchestrator) ListAuthzResources(ctx context.Context, orgID, em
 	return s.sentinelAggregator.ListResources(ctx, orgID, emplID)
 }
 
-func (s *sentinelOrchestrator) GetAuthzResourceDetails(ctx context.Context, orgID, emplID uuid.UUID, resourceType string) (sentinelAggregatorService.ResourceDetailsView, error) {
-	return s.sentinelAggregator.GetResourceDetails(ctx, orgID, emplID, resourceType)
+func (s *sentinelOrchestrator) GetAuthzResourceDetails(
+	ctx context.Context,
+	orgID, emplID uuid.UUID,
+	resourceType string,
+	filter sentinelAggregatorContracts.InstanceFilter,
+) (sentinelAggregatorService.ResourceDetailsView, error) {
+	return s.sentinelAggregator.GetResourceDetails(ctx, orgID, emplID, resourceType, filter)
 }
 
 func (s *sentinelOrchestrator) GetAuthzContextPalette(ctx context.Context, orgID, emplID uuid.UUID) (sentinelContexts.Palette, error) {
