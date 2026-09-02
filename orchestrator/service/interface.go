@@ -3,6 +3,7 @@ package orchestrator_service
 import (
 	"context"
 	auditEngineDtos "sharpnr-engine/audit_log_engine/dto"
+	orgCostCenterDtos "sharpnr-engine/core/cost_center/dtos"
 	org_customer_contracts "sharpnr-engine/core/customer/contracts"
 	org_customer_models "sharpnr-engine/core/customer/models"
 	orgDepartmentsDtos "sharpnr-engine/core/departments/dtos"
@@ -36,6 +37,7 @@ type OrchestratorServiceInterface interface {
 	SentinelOrchestrationInterface
 	OrgDepartmentOrchestratorServiceInterface
 	AuditLogOrchestrationInterface
+	OrgCostCenterOrchestratorServiceInterface
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -174,4 +176,15 @@ type OrgDepartmentOrchestratorServiceInterface interface {
 type AuditLogOrchestrationInterface interface {
 	ListOrgAuditLogs(ctx context.Context, orgID, emplID uuid.UUID, query auditEngineDtos.ListLogsQuery) (auditEngineDtos.AuditLogPageResponseDto, error)
 	GetResourceAuditHistory(ctx context.Context, orgID, emplID uuid.UUID, resourceType string, resourceID uuid.UUID) ([]auditEngineDtos.AuditLogEntry, error)
+}
+
+/* --------------------------------- <****> --------------------------------- */
+
+// OrgCostCenterOrchestratorServiceInterface serves the organization's cost
+// centers: its operating locations, and the sites the cost-center department
+// track hangs off.
+type OrgCostCenterOrchestratorServiceInterface interface {
+	CreateNewCostCenter(ctx context.Context, orgID, emplID uuid.UUID, request orgCostCenterDtos.CreateCostCenterRequestDto) error
+	ListAllOrgCostCenters(ctx context.Context, orgID, emplID uuid.UUID) ([]orgCostCenterDtos.CostCenterResponseDto, error)
+	GetOrgCostCenterDetails(ctx context.Context, orgID, emplID, costCenterID uuid.UUID) (*orgCostCenterDtos.CostCenterResponseDto, error)
 }

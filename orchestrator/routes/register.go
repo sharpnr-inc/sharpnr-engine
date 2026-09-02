@@ -29,5 +29,6 @@ func RegisterOrchestratorRoutes(
 	registerSentinelRoutes(org, orchestController)
 	registerAuditLogEngineRoutes(org, orchestController)
 	registerDepartmentRoutes(org, orchestController)
+	registerCostCenterRoutes(org, orchestController)
 
 }
