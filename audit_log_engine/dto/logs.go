@@ -24,14 +24,18 @@ type RecordEventInput struct {
 }
 
 // ListLogsQuery is the pagination/filter input for reading an org's history.
+//
+// The tags are here because this is also the shape the history screen sends:
+// the orchestrator binds the query string straight onto it rather than keeping
+// a second, identical struct of its own.
 type ListLogsQuery struct {
-	Limit  int // defaults to 50, capped at 200
-	Offset int
+	Limit  int `json:"limit" form:"limit"` // defaults to 50, capped at 200
+	Offset int `json:"offset" form:"offset"`
 
 	// Optional filters — zero values mean "no filter".
-	Module       string
-	Action       string
-	ResourceType string
-	ResourceID   *uuid.UUID
-	ActorID      *uuid.UUID
+	Module       string     `json:"module,omitempty" form:"module"`
+	Action       string     `json:"action,omitempty" form:"action"`
+	ResourceType string     `json:"resourceType,omitempty" form:"resourceType"`
+	ResourceID   *uuid.UUID `json:"resourceId,omitempty" form:"resourceId"`
+	ActorID      *uuid.UUID `json:"actorId,omitempty" form:"actorId"`
 }

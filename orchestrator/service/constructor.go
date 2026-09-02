@@ -122,7 +122,8 @@ func NewSharpnrOrchestratorService(
 		},
 
 		auditOrchestraterService: &auditOrchestraterService{
-			auditLogService: auditLogEngineService,
+			auditLogService:   auditLogEngineService,
+			employeeHRService: employeeHRService,
 		},
 
 		departmentOrchestrator: &departmentOrchestrator{

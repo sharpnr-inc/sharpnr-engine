@@ -2,6 +2,7 @@ package orchestrator_service
 
 import (
 	"context"
+	auditEngineDtos "sharpnr-engine/audit_log_engine/dto"
 	org_customer_contracts "sharpnr-engine/core/customer/contracts"
 	org_customer_models "sharpnr-engine/core/customer/models"
 	orgDepartmentsDtos "sharpnr-engine/core/departments/dtos"
@@ -34,6 +35,7 @@ type OrchestratorServiceInterface interface {
 	EmployeeOrchestrationInterface
 	SentinelOrchestrationInterface
 	OrgDepartmentOrchestratorServiceInterface
+	AuditLogOrchestrationInterface
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -162,4 +164,14 @@ type OrgDepartmentOrchestratorServiceInterface interface {
 	GetOrgDepartmentDetails(ctx context.Context, orgID, emplID, departmentID uuid.UUID) (orgDepartmentsDtos.DepartmentViewResponseDto, error)
 	UpdateOrgDepartment(ctx context.Context, orgID, emplID, departmentID uuid.UUID, request orgDepartmentsDtos.UpdateDepartmentRequestDto) error
 	DeleteOrgDepartment(ctx context.Context, orgID, emplID, departmentID uuid.UUID) error
+}
+
+/* --------------------------------- <****> --------------------------------- */
+
+// AuditLogOrchestrationInterface serves the organization's history: one
+// filtered page of everything that happened in the org, and the full trail of
+// a single entity.
+type AuditLogOrchestrationInterface interface {
+	ListOrgAuditLogs(ctx context.Context, orgID, emplID uuid.UUID, query auditEngineDtos.ListLogsQuery) (auditEngineDtos.AuditLogPageResponseDto, error)
+	GetResourceAuditHistory(ctx context.Context, orgID, emplID uuid.UUID, resourceType string, resourceID uuid.UUID) ([]auditEngineDtos.AuditLogEntry, error)
 }

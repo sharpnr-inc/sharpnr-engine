@@ -10,9 +10,13 @@ import (
 	"github.com/google/uuid"
 )
 
+// Page-size policy for reading an org's history. Exported because the
+// orchestrator clamps with the same numbers before it reports the page it
+// served back to the frontend — one source of truth, so the pagination
+// metadata can never describe a page different from the one the engine built.
 const (
-	defaultPageSize = 50
-	maxPageSize     = 200
+	DefaultPageSize = 50
+	MaxPageSize     = 200
 )
 
 func (s *auditLogService) Record(
@@ -70,10 +74,10 @@ func (s *auditLogService) ListOrgLogs(
 ) ([]auditEngineModels.AuditLog, int64, error) {
 	// Clamp pagination so a bad caller can't pull the whole history at once
 	if query.Limit <= 0 {
-		query.Limit = defaultPageSize
+		query.Limit = DefaultPageSize
 	}
-	if query.Limit > maxPageSize {
-		query.Limit = maxPageSize
+	if query.Limit > MaxPageSize {
+		query.Limit = MaxPageSize
 	}
 	if query.Offset < 0 {
 		query.Offset = 0
