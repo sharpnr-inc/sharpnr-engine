@@ -4,6 +4,7 @@ import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	auditEngineService "sharpnr-engine/audit_log_engine/service"
 	org_customer_service "sharpnr-engine/core/customer/service"
+	orgDepartmentService "sharpnr-engine/core/departments/service"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
@@ -64,6 +65,7 @@ func NewSharpnrOrchestratorService(
 	sentinelAggregator sentinelAggregatorService.SentinelAggregatorServiceInterface,
 	sentinelAuthzEngine sentinelEngine.SentinelEngineInterface,
 	auditLogEngineService auditEngineService.AuditLogServiceInterface,
+	orgDepartmentService orgDepartmentService.OrgDepartmentServiceInterface,
 ) *orchestratorService {
 
 	// One guard shared by every domain orchestrator (rule 1 in doc.go).

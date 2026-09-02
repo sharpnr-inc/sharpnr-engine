@@ -1,6 +1,7 @@
 package orgDepartmentService
 
 import (
+	auditEngineService "sharpnr-engine/audit_log_engine/service"
 	orgDepartmentRepo "sharpnr-engine/core/departments/repos"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sero"
@@ -17,6 +18,7 @@ func NewOrgDepartmentService(
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	seroEngine *sero.SEROEngine,
+	auditEngine *auditEngineService.AuditLogServiceInterface,
 ) *coreOrgDepartmentService {
 	return &coreOrgDepartmentService{
 		orgDepartmentRepository: repo,

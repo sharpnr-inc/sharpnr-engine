@@ -4,6 +4,7 @@ import (
 	"context"
 	org_customer_contracts "sharpnr-engine/core/customer/contracts"
 	org_customer_models "sharpnr-engine/core/customer/models"
+	orgDepartmentsDtos "sharpnr-engine/core/departments/dtos"
 	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
@@ -32,6 +33,7 @@ type OrchestratorServiceInterface interface {
 	OrchestratorSetupWizardInterface
 	EmployeeOrchestrationInterface
 	SentinelOrchestrationInterface
+	OrgDepartmentOrchestratorServiceInterface
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -153,3 +155,8 @@ type OrchestratorSetupWizardInterface interface {
 }
 
 /* --------------------------------- <****> --------------------------------- */
+type OrgDepartmentOrchestratorServiceInterface interface {
+	// All the methods related to the department orchestration will be defined in this interface. This includes methods for each CRUD operation of the department, as well as a method to retrieve the current
+	CreateNewOrgDeparment(ctx context.Context, orgID, emplID uuid.UUID, request orgDepartmentsDtos.CreateDepartmentRequestDto) error
+	ListAllOrgDepartments(ctx context.Context, orgID, emplID uuid.UUID) ([]orgDepartmentsDtos.DepartmentViewResponseDto, error)
+}

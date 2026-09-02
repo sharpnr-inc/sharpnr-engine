@@ -1,6 +1,7 @@
 package app
 
 import (
+	auditEngineService "sharpnr-engine/audit_log_engine/service"
 	orgDepartmentRepo "sharpnr-engine/core/departments/repos"
 	orgDepartmentService "sharpnr-engine/core/departments/service"
 	dbtx "sharpnr-engine/pkg/dbTx"
@@ -15,8 +16,15 @@ func bootstrapOrgDepartments(
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	seroEngine *sero.SEROEngine,
+	auditEngine *auditEngineService.AuditLogServiceInterface,
 ) orgDepartmentService.OrgDepartmentServiceInterface {
 	// Initialize the organization department repository
 	orgDepartmentRepository := orgDepartmentRepo.NewOrgDepartmentRepository(db)
-	return orgDepartmentService.NewOrgDepartmentService(orgDepartmentRepository, txManager, mailerEngine, seroEngine)
+	return orgDepartmentService.NewOrgDepartmentService(
+		orgDepartmentRepository,
+		txManager,
+		mailerEngine,
+		seroEngine,
+		auditEngine,
+	)
 }
