@@ -107,3 +107,49 @@ func (c *orgCostCenterServiceConstructor) recordAudit(
 func describeCostCenter(verb string, costCenter orgCostCenterModels.OrgCostCenter) string {
 	return fmt.Sprintf("Cost center %s (%s) was %s", costCenter.Name, costCenter.Code, verb)
 }
+
+/* -------------------------------------------------------------------------- */
+/*                          Cost center departments                           */
+/* -------------------------------------------------------------------------- */
+
+// recordDepartmentAudit is recordAudit for the department resource type: same
+// entry, pointed at the department rather than at the site it sits in.
+func (c *orgCostCenterServiceConstructor) recordDepartmentAudit(
+	ctx context.Context,
+	orgID, emplID, departmentID uuid.UUID,
+	action, description string,
+	metadata map[string]any,
+) error {
+	if c.auditEngine == nil {
+		return nil
+	}
+
+	var ipAddress string
+	if authz, ok := sentinelContexts.Extract(ctx); ok {
+		ipAddress = authz.Request.IPAddress
+	}
+
+	return c.auditEngine.Record(ctx, auditEngineDtos.RecordEventInput{
+		OrganizationID: orgID,
+		ActorID:        &emplID,
+		ActorType:      auditEngineModels.ActorTypeEmployee,
+		ActorIPAddress: ipAddress,
+		Module:         orgCostCenterConstants.AuditModule,
+		Action:         action,
+		ResourceType:   orgCostCenterConstants.AuditResourceTypeDepartment,
+		ResourceID:     &departmentID,
+		Description:    description,
+		Metadata:       metadata,
+	})
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func describeCostCenterDepartment(
+	verb string,
+	department orgCostCenterModels.CostCenterDepartment,
+	costCenter orgCostCenterModels.OrgCostCenter,
+) string {
+	return fmt.Sprintf("Department %s (%s) in cost center %s was %s",
+		department.Name, department.Code, costCenter.Name, verb)
+}

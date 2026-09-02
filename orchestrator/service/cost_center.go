@@ -42,3 +42,9 @@ func (s *costCenterOrchestrator) GetOrgCostCenterDetails(ctx context.Context, or
 }
 
 /* ---------------------------------- <***> --------------------------------- */
+
+func (s *costCenterOrchestrator) CreateNewDepartmentInCostCenter(ctx context.Context, orgID, emplID, costCenterID uuid.UUID, request orgCostCenterDtos.CreateCostCenterDepartmentRequestDto) error {
+	return s.coreCostCenterService.CreateNewDepartmentInCostCenter(ctx, orgID, emplID, costCenterID, request)
+}
+
+/* ---------------------------------- <***> --------------------------------- */

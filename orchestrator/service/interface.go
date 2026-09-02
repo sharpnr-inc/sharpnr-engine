@@ -187,4 +187,9 @@ type OrgCostCenterOrchestratorServiceInterface interface {
 	CreateNewCostCenter(ctx context.Context, orgID, emplID uuid.UUID, request orgCostCenterDtos.CreateCostCenterRequestDto) error
 	ListAllOrgCostCenters(ctx context.Context, orgID, emplID uuid.UUID) ([]orgCostCenterDtos.CostCenterResponseDto, error)
 	GetOrgCostCenterDetails(ctx context.Context, orgID, emplID, costCenterID uuid.UUID) (*orgCostCenterDtos.CostCenterResponseDto, error)
+
+	// The cost center's own departments — the Bangalore office's Finance team.
+	// Distinct from the org-level departments in
+	// OrgDepartmentOrchestratorServiceInterface: the two tracks never mix.
+	CreateNewDepartmentInCostCenter(ctx context.Context, orgID, emplID, costCenterID uuid.UUID, request orgCostCenterDtos.CreateCostCenterDepartmentRequestDto) error
 }

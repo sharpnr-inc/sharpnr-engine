@@ -21,4 +21,16 @@ type OrgCostCenterRepoInterface interface {
 	// (organization_id, code) is still the race backstop; this is what turns
 	// the common case into a precise error instead of a constraint violation.
 	CostCenterCodeExists(ctx context.Context, orgID uuid.UUID, code string) (bool, error)
+
+	/* ------------------------- Cost center departments ------------------------ */
+
+	// CreateCostCenterDepartment adds one department to a cost center. A cost
+	// center has as many as it needs.
+	CreateCostCenterDepartment(ctx context.Context, department orgCostCenterModels.CostCenterDepartment) error
+
+	// DepartmentCodeExists reports whether a live department in this cost
+	// center already uses the code. Scoped to the cost center, not the org:
+	// two sites may each run their own "FIN", which is what the partial unique
+	// index on (org_cost_center_id, code) allows.
+	DepartmentCodeExists(ctx context.Context, costCenterID uuid.UUID, code string) (bool, error)
 }

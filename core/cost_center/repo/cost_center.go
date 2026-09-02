@@ -91,3 +91,39 @@ func (o *orgCostCenterRepoConstructor) CostCenterCodeExists(ctx context.Context,
 
 	return count > 0, nil
 }
+
+/* -------------------------------------------------------------------------- */
+/*                          Cost center departments                           */
+/* -------------------------------------------------------------------------- */
+
+// CreateCostCenterDepartment implements [OrgCostCenterRepoInterface].
+func (o *orgCostCenterRepoConstructor) CreateCostCenterDepartment(ctx context.Context, department orgCostCenterModels.CostCenterDepartment) error {
+	return o.conn(ctx).Create(&department).Error
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// DepartmentCodeExists implements [OrgCostCenterRepoInterface].
+//
+// Scoped to the cost center, not the organization: two sites may each run their
+// own "FIN", which is exactly what the partial unique index on
+// (org_cost_center_id, code) allows.
+func (o *orgCostCenterRepoConstructor) DepartmentCodeExists(ctx context.Context, costCenterID uuid.UUID, code string) (bool, error) {
+	if code == "" {
+		return false, nil
+	}
+
+	var count int64
+
+	err := o.conn(ctx).
+		Model(&orgCostCenterModels.CostCenterDepartment{}).
+		Where("org_cost_center_id = ? AND code = ?", costCenterID, code).
+		Count(&count).
+		Error
+
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
