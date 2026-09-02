@@ -64,6 +64,7 @@ func bootstrapSharpnrOrchestrator(
 		sentinelAggregator,
 		sentinelAuthzEngine,
 		auditLogService,
+		orgDepartmentService,
 	)
 }
 

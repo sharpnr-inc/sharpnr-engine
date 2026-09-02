@@ -16,7 +16,7 @@ func bootstrapOrgDepartments(
 	txManager dbtx.TxManager,
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	seroEngine *sero.SEROEngine,
-	auditEngine *auditEngineService.AuditLogServiceInterface,
+	auditEngine auditEngineService.AuditLogServiceInterface,
 ) orgDepartmentService.OrgDepartmentServiceInterface {
 	// Initialize the organization department repository
 	orgDepartmentRepository := orgDepartmentRepo.NewOrgDepartmentRepository(db)

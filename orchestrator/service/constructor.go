@@ -39,6 +39,7 @@ type orchestratorService struct {
 	*employeeOrchestrator
 	*sentinelOrchestrator
 	*auditOrchestraterService
+	*departmentOrchestrator
 
 	// Parked: wired at bootstrap but not consumed by any flow yet. Move onto
 	// the owning domain orchestrator when the first flow lands.
@@ -122,6 +123,11 @@ func NewSharpnrOrchestratorService(
 
 		auditOrchestraterService: &auditOrchestraterService{
 			auditLogService: auditLogEngineService,
+		},
+
+		departmentOrchestrator: &departmentOrchestrator{
+			guard:                 guard,
+			coreDepartmentService: orgDepartmentService,
 		},
 
 		seroEngine: seroEngine,

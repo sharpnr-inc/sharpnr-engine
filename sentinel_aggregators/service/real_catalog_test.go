@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	orgDepartmentResources "sharpnr-engine/core/departments/mod_resources"
 	orgPropertyResources "sharpnr-engine/core/org_property/mod_resources"
 	sentinelOwnResources "sharpnr-engine/sentinel/mod_resources"
 	sentinelAggregatorContracts "sharpnr-engine/sentinel_aggregators/contracts"
@@ -24,6 +25,7 @@ func TestRealCatalogPassesValidation(t *testing.T) {
 	svc := sentinelAggregatorService.NewSentinelAggregatorService(
 		orgPropertyResources.NewOrgPropertyResources(nil),
 		sentinelOwnResources.NewSentinelOwnResources(nil),
+		orgDepartmentResources.NewOrgDepartmentResources(nil),
 	)
 
 	resources, err := svc.ListResources(context.Background(), uuid.New(), uuid.New())
@@ -32,6 +34,7 @@ func TestRealCatalogPassesValidation(t *testing.T) {
 	}
 	want := map[string]bool{
 		"Property": false, "SentinelPolicy": false, "SentinelRole": false, "SentinelGroup": false,
+		"Department": false,
 	}
 	for _, r := range resources {
 		if _, ok := want[r.Type]; !ok {
@@ -59,6 +62,7 @@ func TestRealCatalogActionNamesAreUnique(t *testing.T) {
 	providers := []sentinelAggregatorContracts.ResourceProvider{
 		orgPropertyResources.NewOrgPropertyResources(nil),
 		sentinelOwnResources.NewSentinelOwnResources(nil),
+		orgDepartmentResources.NewOrgDepartmentResources(nil),
 	}
 
 	owner := map[string]string{}

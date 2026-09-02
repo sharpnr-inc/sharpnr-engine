@@ -95,6 +95,14 @@ func (c *OrchestratorController) getRestaurntIDFromParams(ctx *gin.Context) (res
 	return utils.ExtractUUIDParam(ctx, "restaurantID")
 }
 
+// getDepartmentIDFromParams reads the department id off the path. It goes
+// through pathUUID rather than utils.ExtractUUIDParam because that one writes
+// no response on a bad value, which would answer a malformed id with an empty
+// 200 instead of a 400.
+func (c *OrchestratorController) getDepartmentIDFromParams(ctx *gin.Context) (departmentID uuid.UUID, isThere bool) {
+	return pathUUID(ctx, "departmentID")
+}
+
 func (c *OrchestratorController) getSentinelGroupIDFromParams(ctx *gin.Context) (sentinelGroupID uuid.UUID, isThere bool) {
 	return utils.ExtractUUIDParam(ctx, "groupID")
 }

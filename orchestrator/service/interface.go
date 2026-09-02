@@ -159,4 +159,7 @@ type OrgDepartmentOrchestratorServiceInterface interface {
 	// All the methods related to the department orchestration will be defined in this interface. This includes methods for each CRUD operation of the department, as well as a method to retrieve the current
 	CreateNewOrgDeparment(ctx context.Context, orgID, emplID uuid.UUID, request orgDepartmentsDtos.CreateDepartmentRequestDto) error
 	ListAllOrgDepartments(ctx context.Context, orgID, emplID uuid.UUID) ([]orgDepartmentsDtos.DepartmentViewResponseDto, error)
+	GetOrgDepartmentDetails(ctx context.Context, orgID, emplID, departmentID uuid.UUID) (orgDepartmentsDtos.DepartmentViewResponseDto, error)
+	UpdateOrgDepartment(ctx context.Context, orgID, emplID, departmentID uuid.UUID, request orgDepartmentsDtos.UpdateDepartmentRequestDto) error
+	DeleteOrgDepartment(ctx context.Context, orgID, emplID, departmentID uuid.UUID) error
 }

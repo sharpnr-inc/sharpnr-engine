@@ -41,8 +41,12 @@ func BootstrapModules(
 	organizationService := bootstrapOrganization(db, redis, mailerEngine, txManager, ttl)
 	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine, sentinelAuthzEngine)
 
+	// Departments are bootstrapped ahead of the aggregator because their
+	// mod_resources provider lists the org's departments for the policy builder.
+	orgDepartmentService := bootstrapOrgDepartments(db, txManager, mailerEngine, seroEngine, auditLogService)
+
 	// Resources aggregator: every module's mod_resources, for the FE policy builder.
-	sentinelAggregator := bootstrapSentinelAggregator(orgPropertyService, sentinelService)
+	sentinelAggregator := bootstrapSentinelAggregator(orgPropertyService, sentinelService, orgDepartmentService)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
 
 	/* ---------------------------- inventory engine ---------------------------- */
@@ -68,7 +72,6 @@ func BootstrapModules(
 
 	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
 	orgSupplierService := bootstrapSupplier(db, txManager, mailerEngine, seroEngine)
-	orgDepartmentService := bootstrapOrgDepartments(db, txManager, mailerEngine, seroEngine, &auditLogService)
 
 	authenticationService := bootstrapAuthentication(employeesAuthneticationService, organizationService, sentinelService, auditLogService)
 
