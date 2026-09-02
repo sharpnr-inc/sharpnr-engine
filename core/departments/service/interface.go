@@ -1,20 +1,19 @@
 package orgDepartmentService
 
-import orgDepartmentModels "sharpnr-engine/core/departments/models"
+import (
+	"context"
+	orgDepartmentsDtos "sharpnr-engine/core/departments/dtos"
+
+	"github.com/google/uuid"
+)
 
 type OrgDepartmentServiceInterface interface {
 	// Create a new department
-	CreateDepartment(department *orgDepartmentModels.OrgDeparment) error
-
-	// Get a department by ID
-	GetDepartmentByID(id string) (*orgDepartmentModels.OrgDeparment, error)
-
+	CreateDepartment(ctx context.Context, orgID, emplID uuid.UUID, request orgDepartmentsDtos.CreateDepartmentRequestDto) error
 	// Update a department
-	UpdateDepartment(department *orgDepartmentModels.OrgDeparment) error
-
+	UpdateDepartment(ctx context.Context, orgID, emplID uuid.UUID, updateReq orgDepartmentsDtos.UpdateDepartmentRequestDto) error
 	// Delete a department by ID
-	DeleteDepartment(id string) error
-
-	// List all departments for an organization
-	ListDepartments(organizationID string) ([]*orgDepartmentModels.OrgDeparment, error)
+	DeleteDepartment(ctx context.Context, orgID, emplID uuid.UUID, DepartmentID uuid.UUID) error
+	ListDepartments(ctx context.Context, orgID, emplID uuid.UUID) ([]orgDepartmentsDtos.DepartmentViewResponseDto, error)
+	GetDepartmentByID(ctx context.Context, orgID, emplID uuid.UUID, departmentID uuid.UUID) (orgDepartmentsDtos.DepartmentViewResponseDto, error)
 }
