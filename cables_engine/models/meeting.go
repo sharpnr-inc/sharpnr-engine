@@ -101,7 +101,7 @@ type CablesMeeting struct {
 }
 
 func (t *CablesMeeting) TableName() string {
-	return "cables.cables_meetings"
+	return "cables_engine.cables_meetings"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -156,7 +156,7 @@ type CablesMeetingLink struct {
 }
 
 func (t *CablesMeetingLink) TableName() string {
-	return "cables.cables_meeting_links"
+	return "cables_engine.cables_meeting_links"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -205,7 +205,7 @@ type CablesGuestSession struct {
 }
 
 func (t *CablesGuestSession) TableName() string {
-	return "cables.cables_guest_sessions"
+	return "cables_engine.cables_guest_sessions"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -244,7 +244,7 @@ type CablesMeetingInvitee struct {
 }
 
 func (t *CablesMeetingInvitee) TableName() string {
-	return "cables.cables_meeting_invitees"
+	return "cables_engine.cables_meeting_invitees"
 }
 
 /* ---------------------------------- <***> --------------------------------- */

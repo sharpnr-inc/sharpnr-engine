@@ -8,19 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// so a channel account gonna have multiple channels
-// a organization can as much channels as they want
-// Channel is kinda Group
-//
-// A channel owns exactly one conversation (see CablesConversation) — the
-// channel row holds the *identity* of the group (name, topic, who can see it)
-// and the conversation row holds the *messages*.
-//
-// indexes:
-//
-//	unique (org_cables_account_id, slug) where deleted_at is null
-//	index  (organization_id, visibility, is_archived)
-//	index  (channel_category_id)
 type CablesChannel struct {
 	ID                 uuid.UUID
 	OrganizationID     uuid.UUID
@@ -37,8 +24,7 @@ type CablesChannel struct {
 	// Type lives here and NOT on the settings table on purpose: every channel
 	// list query filters/renders by it, and we don't want to join settings for
 	// a sidebar. Settings stays for things you only read on the settings screen.
-	Type       cablesEngineConstants.ChannelType       // TEXT | AUDIO | VIDEO
-	Visibility cablesEngineConstants.ChannelVisibility // PUBLIC | PRIVATE
+	Type cablesEngineConstants.ChannelType // TEXT | AUDIO | VIDEO
 
 	// optional discord-style grouping in the sidebar
 	ChannelCategoryID *uuid.UUID
@@ -62,28 +48,7 @@ type CablesChannel struct {
 }
 
 func (t *CablesChannel) TableName() string {
-	return "cables.cables_channels"
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
-// Sidebar grouping ("ENGINEERING", "SOCIAL"). Purely cosmetic, no permissions.
-type CablesChannelCategory struct {
-	ID                 uuid.UUID
-	OrganizationID     uuid.UUID
-	OrgCablesAccountID uuid.UUID
-
-	Name      string
-	SortOrder int
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	CreatedBy *uuid.UUID
-	DeletedAt gorm.DeletedAt
-}
-
-func (t *CablesChannelCategory) TableName() string {
-	return "cables.cables_channel_categories"
+	return "cables_engine.cables_channels"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -138,36 +103,7 @@ type CablesChannelSettings struct {
 }
 
 func (t *CablesChannelSettings) TableName() string {
-	return "cables.cables_channel_settings"
-}
-
-/* ---------------------------------- <***> --------------------------------- */
-
-// Invite to a PRIVATE channel (or to the cables account itself for guests).
-// Public channels don't need this — members just join.
-//
-// indexes: index (cables_channel_id, status), unique (token_hash)
-type CablesChannelInvite struct {
-	ID              uuid.UUID
-	OrganizationID  uuid.UUID
-	CablesChannelID uuid.UUID
-
-	InvitedMemberID *uuid.UUID // existing member being pulled in
-	InvitedEmail    *string    // external guest, no member row yet
-	InvitedBy       uuid.UUID
-
-	TokenHash string // same pattern as employee_provisioning — never store the raw token
-	Status    string // PENDING | ACCEPTED | REVOKED | EXPIRED
-
-	ExpiresAt  time.Time
-	AcceptedAt *time.Time
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
-func (t *CablesChannelInvite) TableName() string {
-	return "cables.cables_channel_invites"
+	return "cables_engine.cables_channel_settings"
 }
 
 /* ---------------------------------- <***> --------------------------------- */

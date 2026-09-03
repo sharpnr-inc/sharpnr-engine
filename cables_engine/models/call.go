@@ -8,22 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// CablesCall is one *session* — from the moment somebody starts it until the
-// last person hangs up. A persistent meeting room has many calls over its life;
-// a DM call has one.
-//
-// We are not building the media stack. Signalling, SFU, TURN, bandwidth — that
-// is LiveKit / Daily / Jitsi. This table is the record of what happened, plus
-// the handle (ProviderRoomID) the client needs to be issued a media token.
-// Keeping our own row rather than querying the provider means the history,
-// the billing minutes and the "who was in that call" list survive a provider swap.
-//
-// indexes:
-//
-//	index  (conversation_id, started_at DESC)
-//	index  (cables_meeting_id, started_at DESC)
-//	unique (conversation_id) where status = 'ONGOING'   -- one live call per room
-//	index  (organization_id, started_at DESC)           -- usage/billing reporting
 type CablesCall struct {
 	ID             uuid.UUID
 	OrganizationID uuid.UUID
@@ -77,7 +61,7 @@ type CablesCall struct {
 }
 
 func (t *CablesCall) TableName() string {
-	return "cables.cables_calls"
+	return "cables_engine.cables_calls"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -142,7 +126,7 @@ type CablesCallParticipant struct {
 }
 
 func (t *CablesCallParticipant) TableName() string {
-	return "cables.cables_call_participants"
+	return "cables_engine.cables_call_participants"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -173,7 +157,7 @@ type CablesCallEvent struct {
 }
 
 func (t *CablesCallEvent) TableName() string {
-	return "cables.cables_call_events"
+	return "cables_engine.cables_call_events"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -226,7 +210,7 @@ type CablesCallRecording struct {
 }
 
 func (t *CablesCallRecording) TableName() string {
-	return "cables.cables_call_recordings"
+	return "cables_engine.cables_call_recordings"
 }
 
 /* ---------------------------------- <***> --------------------------------- */

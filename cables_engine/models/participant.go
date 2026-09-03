@@ -62,7 +62,7 @@ type CablesParticipant struct {
 }
 
 func (t *CablesParticipant) TableName() string {
-	return "cables.cables_participants"
+	return "cables_engine.cables_participants"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -93,7 +93,7 @@ type CablesThreadFollower struct {
 }
 
 func (t *CablesThreadFollower) TableName() string {
-	return "cables.cables_thread_followers"
+	return "cables_engine.cables_thread_followers"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
