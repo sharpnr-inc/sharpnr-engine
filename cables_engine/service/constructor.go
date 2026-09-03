@@ -1,4 +1,4 @@
-package cables_service
+package cablesEngineService
 
 import (
 	auditEngineService "sharpnr-engine/audit_log_engine/service"
@@ -12,4 +12,18 @@ type cablesService struct {
 	mailerEngine       *sharp_mailer_engine.SharpMailerEngine
 	auditLogEngine     auditEngineService.AuditLogServiceInterface
 	employeeIamService coreEmployeeServices.EmployeeIamEngineServiceInterface
+}
+
+func NewCablesEngineService(
+	cablesRepo cables_repo.CablesRepoInterface,
+	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
+	auditLogEngine auditEngineService.AuditLogServiceInterface,
+	employeeIamService coreEmployeeServices.EmployeeIamEngineServiceInterface,
+) *cablesService {
+	return &cablesService{
+		cablesRepo:         cablesRepo,
+		mailerEngine:       mailerEngine,
+		auditLogEngine:     auditLogEngine,
+		employeeIamService: employeeIamService,
+	}
 }

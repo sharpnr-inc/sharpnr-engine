@@ -38,6 +38,7 @@ type OrchestratorServiceInterface interface {
 	OrgDepartmentOrchestratorServiceInterface
 	AuditLogOrchestrationInterface
 	OrgCostCenterOrchestratorServiceInterface
+	CablesOrchestratorServiceInterface
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -192,4 +193,7 @@ type OrgCostCenterOrchestratorServiceInterface interface {
 	// Distinct from the org-level departments in
 	// OrgDepartmentOrchestratorServiceInterface: the two tracks never mix.
 	CreateNewDepartmentInCostCenter(ctx context.Context, orgID, emplID, costCenterID uuid.UUID, request orgCostCenterDtos.CreateCostCenterDepartmentRequestDto) error
+}
+
+type CablesOrchestratorServiceInterface struct {
 }
