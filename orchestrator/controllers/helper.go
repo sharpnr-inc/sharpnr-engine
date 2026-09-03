@@ -109,6 +109,12 @@ func (c *OrchestratorController) getDepartmentIDFromParams(ctx *gin.Context) (de
 	return pathUUID(ctx, "departmentID")
 }
 
+// getCablesChannelIDFromParams reads the channel id off the path, answering a
+// malformed value with a 400 — see getDepartmentIDFromParams.
+func (c *OrchestratorController) getCablesChannelIDFromParams(ctx *gin.Context) (channelID uuid.UUID, isThere bool) {
+	return pathUUID(ctx, "channelID")
+}
+
 func (c *OrchestratorController) getSentinelGroupIDFromParams(ctx *gin.Context) (sentinelGroupID uuid.UUID, isThere bool) {
 	return utils.ExtractUUIDParam(ctx, "groupID")
 }

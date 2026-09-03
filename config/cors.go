@@ -18,11 +18,11 @@ func loadCORS(app AppConfig) CORSConfig {
 				"https://hospitality.sharpnr.com",
 				"https://silo.sharpnr.com",
 				"https://cables.sharpnr.com",
-				"https://marketing.sharpnr.com",
 				"https://marketplace.sharpnr.com",
 				"https://folio.sharpnr.com",
 				"https://cortex.sharpnr.com",
 				"https://ivacore.sharpnr.com",
+				"https://sharpcrm.sharpnr.com",
 			},
 		}
 	}
@@ -34,9 +34,14 @@ func loadCORS(app AppConfig) CORSConfig {
 			"https://auth.sharpnr.test",
 			"https://iam.sharpnr.test",
 			"https://hr.sharpnr.test",
-			"https://marketing.sharpnr.test",
 			"https://accounting.sharpnr.test",
 			"https://orchestrator.sharpnr.test",
+			"https://cables.sharpnr.test",
+			"https://silo.sharpnr.test",
+			"https://folio.sharpnr.test",
+			"https://sharpcrm.sharpnr.test",
+			"https://cortex.sharpnr.test",
+			"https://marketplace.sharpnr.test",
 		},
 	}
 }

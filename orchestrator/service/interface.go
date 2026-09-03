@@ -3,6 +3,7 @@ package orchestrator_service
 import (
 	"context"
 	auditEngineDtos "sharpnr-engine/audit_log_engine/dto"
+	cablesEngineDtos "sharpnr-engine/cables_engine/dtos"
 	orgCostCenterDtos "sharpnr-engine/core/cost_center/dtos"
 	org_customer_contracts "sharpnr-engine/core/customer/contracts"
 	org_customer_models "sharpnr-engine/core/customer/models"
@@ -195,5 +196,18 @@ type OrgCostCenterOrchestratorServiceInterface interface {
 	CreateNewDepartmentInCostCenter(ctx context.Context, orgID, emplID, costCenterID uuid.UUID, request orgCostCenterDtos.CreateCostCenterDepartmentRequestDto) error
 }
 
-type CablesOrchestratorServiceInterface struct {
+// CablesOrchestratorServiceInterface serves the organization's cables account:
+// whether the chat/meet service is switched on for the org, and the channels
+// that live inside it.
+//
+// Cables is opt-in per organization, so the status read comes before every
+// other call here — an org that never started the service has an account to
+// create, not channels to list.
+type CablesOrchestratorServiceInterface interface {
+	GetCablesAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (cablesEngineDtos.CablesServiceResponseDto, error)
+	StartCablesService(ctx context.Context, orgID, emplID uuid.UUID, request cablesEngineDtos.StartCablesServiceRequestsDto) error
+
+	CreateCablesChannel(ctx context.Context, orgID, emplID uuid.UUID, request cablesEngineDtos.CreateChannelRequestDto) error
+	ListCablesChannels(ctx context.Context, orgID, emplID uuid.UUID) ([]cablesEngineDtos.ChannelResponseDto, error)
+	GetCablesChannelDetails(ctx context.Context, orgID, emplID, channelID uuid.UUID) (cablesEngineDtos.ChannelResponseDto, error)
 }

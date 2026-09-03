@@ -26,6 +26,13 @@ type CablesChannel struct {
 	// a sidebar. Settings stays for things you only read on the settings screen.
 	Type cablesEngineConstants.ChannelType // TEXT | AUDIO | VIDEO
 
+	// Who can find the channel and how someone gets in. PRIVATE is invite-only
+	// (see CablesChannelInvite) and stays out of the channel browser; PUBLIC is
+	// joinable by any member of the cables account. Lives here for the same
+	// reason Type does — the channel browser filters on it, and the committed
+	// index (organization_id, visibility, is_archived) is exactly that read.
+	Visibility cablesEngineConstants.ChannelVisibility // PUBLIC | PRIVATE
+
 	// optional discord-style grouping in the sidebar
 	ChannelCategoryID *uuid.UUID
 	SortOrder         int

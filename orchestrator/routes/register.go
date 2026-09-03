@@ -30,5 +30,6 @@ func RegisterOrchestratorRoutes(
 	registerAuditLogEngineRoutes(org, orchestController)
 	registerDepartmentRoutes(org, orchestController)
 	registerCostCenterRoutes(org, orchestController)
+	registerCablesOrchestratorRoutes(org, orchestController)
 
 }
