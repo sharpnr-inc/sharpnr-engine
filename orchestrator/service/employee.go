@@ -4,9 +4,11 @@ import (
 	"context"
 	"fmt"
 	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
+	coreEmployeeErrs "sharpnr-engine/core/employees/errs"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	sentinelservice "sharpnr-engine/sentinel/service"
+	sentinelEngine "sharpnr-engine/sentinel_engine"
 	"strings"
 
 	"github.com/google/uuid"
@@ -19,7 +21,8 @@ type employeeOrchestrator struct {
 	employeeHRService coreEmployeeServices.EmployeeHRServiceInterface
 	sentinelService   sentinelservice.SentinelServiceInterface
 
-	// Wired for the upcoming owner-management flows; not consumed yet.
+	// Owner/super-admin creation — the only flow the orchestrator-facing
+	// employee service exposes.
 	employeeService coreEmployeeServices.EmployeeOrchestratorServiceInterface
 }
 
@@ -72,14 +75,50 @@ func (s *employeeOrchestrator) GetAllEmployeesOfOrg(
 /*                            Add a New Super Admin                           */
 /* -------------------------------------------------------------------------- */
 
+// AddNewSuperAdmin adds a second owner/super-admin to the caller's org.
+//
+// TEMPORARY: the account is created straight away from a password supplied in
+// the request — the invitation flow this endpoint is meant to run (and whose
+// wording the controller still uses) is not built yet. See the note on
+// coreEmployeeServices.AddNewOwnerOrSuperAdmin for what changes when it lands.
 func (s *employeeOrchestrator) AddNewSuperAdmin(
 	ctx context.Context,
 	orgID, emplID uuid.UUID,
 	request coreEmployeeContracts.AddNewSuperAdminInOrganizationRequestDto,
 ) error {
 
-	// step 1 first we will check if these user is in other companies
-	// step 2 then we create a temporary
+	// Authorization (rule 1 in doc.go): employees are not a Cedar resource type
+	// yet, so there is nothing for guard.Authorize to evaluate. Minting an owner
+	// hands out full access to the whole org, so it is gated on the caller
+	// already being one — the same rule the interface comment in
+	// core/employees/services states.
+	callerRole, err := s.sentinelService.GetEmployeeRole(ctx, orgID, emplID)
+	if err != nil {
+		return err
+	}
+	if !strings.EqualFold(callerRole.Name, sentinelservice.OwnerRoleName) {
+		return fmt.Errorf("%w: %s", sentinelEngine.ErrAccessDenied, coreEmployeeErrs.NotAnOwnerErr)
+	}
+
+	// The email is the login identity and is unique across the whole system, so
+	// a duplicate is rejected here rather than surfacing as a constraint
+	// violation from the insert. Normalized first so the check and the row that
+	// follows agree on what the address is.
+	request.Email = strings.ToLower(strings.TrimSpace(request.Email))
+
+	exists, err := s.employeeHRService.IsUserExists(ctx, request.Email)
+	if err != nil {
+		return fmt.Errorf("failed to check user existence for email %s: %w", request.Email, err)
+	}
+	if exists {
+		return fmt.Errorf("%w: %s", coreEmployeeErrs.EmployeeAlreadyExistsErr, request.Email)
+	}
+
+	// Single delegated write (rule 2 in doc.go): the employee service owns the
+	// transaction that spans the employee, auth, onboarding and owner-role rows.
+	if _, err := s.employeeService.AddNewOwnerOrSuperAdmin(ctx, orgID, emplID, request); err != nil {
+		return err
+	}
 
 	return nil
 }

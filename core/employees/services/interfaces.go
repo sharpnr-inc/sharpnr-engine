@@ -60,7 +60,11 @@ type EmployeeIamEngineServiceInterface interface {
 
 type EmployeeOrchestratorServiceInterface interface {
 	// since only orchestrator can create a new superAdmin/Owner and only a superAdmin/Owner can add a owner
-	AddNewOwnerOrSuperAdmin(ctx context.Context, orgID, emplID uuid.UUID)
+	//
+	// emplID is the acting owner; the returned id is the employee that was
+	// created. Whether the caller is allowed to do this is the orchestrator's
+	// call — see AddNewSuperAdmin there.
+	AddNewOwnerOrSuperAdmin(ctx context.Context, orgID, emplID uuid.UUID, req coreEmployeeContracts.AddNewSuperAdminInOrganizationRequestDto) (uuid.UUID, error)
 }
 
 type EmployeeSetupWizServiceInterface interface {
