@@ -23,6 +23,7 @@ func loadCORS(app AppConfig) CORSConfig {
 				"https://cortex.sharpnr.com",
 				"https://ivacore.sharpnr.com",
 				"https://sharpcrm.sharpnr.com",
+				"https://stockwave.sharpnr.com",
 			},
 		}
 	}
@@ -42,6 +43,7 @@ func loadCORS(app AppConfig) CORSConfig {
 			"https://sharpcrm.sharpnr.test",
 			"https://cortex.sharpnr.test",
 			"https://marketplace.sharpnr.test",
+			"https://stockwave.sharpnr.test",
 		},
 	}
 }
