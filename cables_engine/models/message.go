@@ -11,7 +11,7 @@ import (
 
 // CablesMessage — the hot table. Everything here is shaped around one query:
 //
-//	SELECT ... FROM cables.cables_messages
+//	SELECT ... FROM cables_engine.cables_messages
 //	WHERE conversation_id = ? AND seq < ?   -- cursor
 //	ORDER BY seq DESC LIMIT 50
 //
@@ -27,6 +27,9 @@ import (
 type CablesMessage struct {
 	ID             uuid.UUID
 	OrganizationID uuid.UUID
+
+	// The container. A channel post and a DM are the same row shape because
+	// both hang off a conversation — see CablesConversation.
 	ConversationID uuid.UUID
 
 	// Seq is per-conversation and gap-free-ish: taken from
@@ -84,7 +87,7 @@ type CablesMessage struct {
 }
 
 func (t *CablesMessage) TableName() string {
-	return "cables.cables_messages"
+	return "cables_engine.cables_messages"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -118,7 +121,7 @@ type CablesMessageAttachment struct {
 }
 
 func (t *CablesMessageAttachment) TableName() string {
-	return "cables.cables_message_attachments"
+	return "cables_engine.cables_message_attachments"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -140,7 +143,7 @@ type CablesMessageReaction struct {
 }
 
 func (t *CablesMessageReaction) TableName() string {
-	return "cables.cables_message_reactions"
+	return "cables_engine.cables_message_reactions"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -166,7 +169,7 @@ type CablesMessageMention struct {
 }
 
 func (t *CablesMessageMention) TableName() string {
-	return "cables.cables_message_mentions"
+	return "cables_engine.cables_message_mentions"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -187,7 +190,7 @@ type CablesMessagePin struct {
 }
 
 func (t *CablesMessagePin) TableName() string {
-	return "cables.cables_message_pins"
+	return "cables_engine.cables_message_pins"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -210,7 +213,7 @@ type CablesSavedMessage struct {
 }
 
 func (t *CablesSavedMessage) TableName() string {
-	return "cables.cables_saved_messages"
+	return "cables_engine.cables_saved_messages"
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -235,7 +238,7 @@ type CablesDraft struct {
 }
 
 func (t *CablesDraft) TableName() string {
-	return "cables.cables_drafts"
+	return "cables_engine.cables_drafts"
 }
 
 /* ---------------------------------- <***> --------------------------------- */

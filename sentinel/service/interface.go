@@ -78,6 +78,11 @@ type RoleService interface {
 
 	// GetRolePrivileges returns the role plus every policy registered against it.
 	GetRolePrivileges(ctx context.Context, orgID, roleID uuid.UUID) (sentinelDtos.RolePrivilegesView, error)
+
+	// AssignOwnerRole grants an existing employee the org's seeded Owner role —
+	// the one ProvisionOrganization created, carrying the full-access policy.
+	// Used when a second owner/super-admin is added to a live org.
+	AssignOwnerRole(ctx context.Context, orgID, emplID uuid.UUID) error
 }
 
 /* -------------------------------------------------------------------------- */

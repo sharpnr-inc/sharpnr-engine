@@ -3,6 +3,7 @@ package app
 import (
 	hospitalitydomain "sharpnr-engine/app/hospitality_domain"
 	auditEngineService "sharpnr-engine/audit_log_engine/service"
+	cablesEngineService "sharpnr-engine/cables_engine/service"
 	org_customer_service "sharpnr-engine/core/customer/service"
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
@@ -10,11 +11,11 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 
 	authenticationEngineServices "sharpnr-engine/authentication/services"
-	hospitality_orchestration_service "sharpnr-engine/property_business_ops/hospitality/orchestration/service"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
 	hrmsEngineService "sharpnr-engine/hrms_engine/service"
 	iamEngineService "sharpnr-engine/iam_engine/service"
+	hospitality_orchestration_service "sharpnr-engine/property_business_ops/hospitality/orchestration/service"
 
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
@@ -22,6 +23,7 @@ import (
 	utilitiesApi_service "sharpnr-engine/utilities_apis/service"
 
 	sse_engine "sharpnr-engine/sse_engine"
+	ws_engine "sharpnr-engine/ws_engine"
 )
 
 type AppModules struct {
@@ -56,11 +58,18 @@ type AppModules struct {
 	// other domain is.
 	hrmsService hrmsEngineService.HrmsEngineServiceInterface
 
-	accountingService    accounting_service.AccountingServiceInterface
-	orgCustomerService   org_customer_service.OrgCustomerServiceInterface
-	sseEngine            *sse_engine.StreamManager
+	accountingService  accounting_service.AccountingServiceInterface
+	orgCustomerService org_customer_service.OrgCustomerServiceInterface
+	sseEngine          *sse_engine.StreamManager
+
+	// wsEngine is the app's WebSocket transport. It is a sibling of sseEngine,
+	// not a replacement: kitchen's snapshot streams stay on SSE, while anything
+	// that cannot be expressed as "here is the latest state" (chat, calls) needs
+	// the socket's per-event delivery.
+	wsEngine             *ws_engine.Engine
 	paymentEngineService payment_engine_service.PaymentServiceInterface
 	utilitiesApiService  utilitiesApi_service.UtilitiesAPIServiceInterface
+	cablesEngineService  cablesEngineService.CablesEngineServiceInterface
 
 	// sentinelEngine is the Cedar authorization engine. It is injected into
 	// services for s.sentinelEngine.IsAuthorized(...) calls and also handed to
@@ -126,6 +135,10 @@ func (m *AppModules) SseEngine() *sse_engine.StreamManager {
 	return m.sseEngine
 }
 
+func (m *AppModules) WsEngine() *ws_engine.Engine {
+	return m.wsEngine
+}
+
 func (m *AppModules) LegalEntityService() legal_entity_service.OrgLegalEntityServiceInterface {
 	return m.orgLegalEntityService
 }
@@ -148,4 +161,8 @@ func (m *AppModules) AuditLogService() auditEngineService.AuditLogServiceInterfa
 
 func (m *AppModules) IamEngineService() iamEngineService.IamEngineServiceInterface {
 	return m.iamEngineService
+}
+
+func (m *AppModules) CablesEngineService() cablesEngineService.CablesEngineServiceInterface {
+	return m.cablesEngineService
 }

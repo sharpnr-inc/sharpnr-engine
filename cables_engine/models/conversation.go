@@ -70,7 +70,7 @@ type CablesConversation struct {
 }
 
 func (t *CablesConversation) TableName() string {
-	return "cables.cables_conversations"
+	return "cables_engine.cables_conversations"
 }
 
 /* ---------------------------------- <***> --------------------------------- */

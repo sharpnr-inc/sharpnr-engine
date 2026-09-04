@@ -10,6 +10,7 @@ import (
 
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 	sse_engine "sharpnr-engine/sse_engine"
+	ws_engine "sharpnr-engine/ws_engine"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -22,6 +23,7 @@ func BootstrapModules(
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	seroEngine *sero.SEROEngine,
 	sseEngine *sse_engine.StreamManager,
+	wsEngine *ws_engine.Engine,
 	jwtmgr jwt_manager.Manager,
 	ttl config.TTLConfig,
 ) *AppModules {
@@ -41,8 +43,13 @@ func BootstrapModules(
 	organizationService := bootstrapOrganization(db, redis, mailerEngine, txManager, ttl)
 	orgPropertyService := bootstrapOrgProperty(db, txManager, mailerEngine, sentinelAuthzEngine)
 
+	// Departments are bootstrapped ahead of the aggregator because their
+	// mod_resources provider lists the org's departments for the policy builder.
+	orgDepartmentService := bootstrapOrgDepartments(db, txManager, mailerEngine, seroEngine, auditLogService)
+	orgCostCenterService := bootstrapCostCenterService(db, txManager, auditLogService, mailerEngine, seroEngine)
+
 	// Resources aggregator: every module's mod_resources, for the FE policy builder.
-	sentinelAggregator := bootstrapSentinelAggregator(orgPropertyService, sentinelService)
+	sentinelAggregator := bootstrapSentinelAggregator(orgPropertyService, sentinelService, orgDepartmentService)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
 
 	/* ---------------------------- inventory engine ---------------------------- */
@@ -70,6 +77,7 @@ func BootstrapModules(
 	orgSupplierService := bootstrapSupplier(db, txManager, mailerEngine, seroEngine)
 
 	authenticationService := bootstrapAuthentication(employeesAuthneticationService, organizationService, sentinelService, auditLogService)
+	cablesEngineService := bootstrapCablesEngine(db, txManager, mailerEngine, auditLogService, employeesIamEngineService, wsEngine)
 
 	orgSetupWizardService := bootstrapOrgSetupWizard(
 		db,
@@ -145,6 +153,9 @@ func BootstrapModules(
 		sentinelAggregator,
 		sentinelAuthzEngine,
 		auditLogService,
+		orgDepartmentService,
+		orgCostCenterService,
+		cablesEngineService,
 	)
 
 	utilitiesApiService := bootstrapUtilitiesApiService(db)
@@ -166,8 +177,10 @@ func BootstrapModules(
 		orchestratorService:            orchestratorService,
 		orgSetupWizard:                 orgSetupWizardService,
 		sseEngine:                      sseEngine,
+		wsEngine:                       wsEngine,
 		orgCustomerService:             orgCustomerService,
 		utilitiesApiService:            utilitiesApiService,
+		cablesEngineService:            cablesEngineService,
 	}
 
 }

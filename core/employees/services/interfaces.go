@@ -55,12 +55,23 @@ type EmployeeIamEngineServiceInterface interface {
 	// this is General service which will used by the other module to interact with the employee module,
 	EmployeeGeneralServiceInterface
 	GetEmployeeProfile(ctx context.Context, orgID uuid.UUID, empID uuid.UUID) (*coreEmployeeContracts.EmployeeProfileOutput, error)
+
+	// ListOrgEmployees is the org roster as plain identity rows: id, name,
+	// email, status. Deliberately thinner than the HR listing, which decorates
+	// every employee with a sentinel role lookup — a consumer that only needs
+	// names should not pay for that, and must not fail when an employee has no
+	// role. Cables reads this once per roster sync, never on a hot path.
+	ListOrgEmployees(ctx context.Context, orgID uuid.UUID) ([]coreEmployeeContracts.OrgEmployeeIdentity, error)
 	// GetEmployeeEmploymentDetails()
 }
 
 type EmployeeOrchestratorServiceInterface interface {
 	// since only orchestrator can create a new superAdmin/Owner and only a superAdmin/Owner can add a owner
-	AddNewOwnerOrSuperAdmin(ctx context.Context, orgID, emplID uuid.UUID)
+	//
+	// emplID is the acting owner; the returned id is the employee that was
+	// created. Whether the caller is allowed to do this is the orchestrator's
+	// call — see AddNewSuperAdmin there.
+	AddNewOwnerOrSuperAdmin(ctx context.Context, orgID, emplID uuid.UUID, req coreEmployeeContracts.AddNewSuperAdminInOrganizationRequestDto) (uuid.UUID, error)
 }
 
 type EmployeeSetupWizServiceInterface interface {

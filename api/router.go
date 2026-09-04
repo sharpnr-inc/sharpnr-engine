@@ -18,6 +18,7 @@ import (
 	dbtx "sharpnr-engine/pkg/dbTx"
 	jwt_manager "sharpnr-engine/pkg/jwtmanager"
 	utilitiesApi_routes "sharpnr-engine/utilities_apis/routes"
+	ws_engine_routes "sharpnr-engine/ws_engine/routes"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -100,6 +101,7 @@ func SetupRouter(
 			orchestrator_routes.RegisterOrchestratorRoutes(protected, modules)
 			authenticationEngineRoutes.RegisterAuthenticationProtectedWebRoutes(protected, cookies, jwtmgr, modules)
 			utilitiesApi_routes.UtilitesApiGeoRoutes(protected, modules)
+			ws_engine_routes.RegisterWebSocketRoutes(protected, modules)
 		}
 	}
 

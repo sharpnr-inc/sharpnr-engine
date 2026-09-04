@@ -2,8 +2,12 @@ package orchestrator_service
 
 import (
 	"context"
+	auditEngineDtos "sharpnr-engine/audit_log_engine/dto"
+	cablesEngineDtos "sharpnr-engine/cables_engine/dtos"
+	orgCostCenterDtos "sharpnr-engine/core/cost_center/dtos"
 	org_customer_contracts "sharpnr-engine/core/customer/contracts"
 	org_customer_models "sharpnr-engine/core/customer/models"
+	orgDepartmentsDtos "sharpnr-engine/core/departments/dtos"
 	coreEmployeeContracts "sharpnr-engine/core/employees/contracts"
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
@@ -32,6 +36,10 @@ type OrchestratorServiceInterface interface {
 	OrchestratorSetupWizardInterface
 	EmployeeOrchestrationInterface
 	SentinelOrchestrationInterface
+	OrgDepartmentOrchestratorServiceInterface
+	AuditLogOrchestrationInterface
+	OrgCostCenterOrchestratorServiceInterface
+	CablesOrchestratorServiceInterface
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -153,3 +161,53 @@ type OrchestratorSetupWizardInterface interface {
 }
 
 /* --------------------------------- <****> --------------------------------- */
+type OrgDepartmentOrchestratorServiceInterface interface {
+	// All the methods related to the department orchestration will be defined in this interface. This includes methods for each CRUD operation of the department, as well as a method to retrieve the current
+	CreateNewOrgDeparment(ctx context.Context, orgID, emplID uuid.UUID, request orgDepartmentsDtos.CreateDepartmentRequestDto) error
+	ListAllOrgDepartments(ctx context.Context, orgID, emplID uuid.UUID) ([]orgDepartmentsDtos.DepartmentViewResponseDto, error)
+	GetOrgDepartmentDetails(ctx context.Context, orgID, emplID, departmentID uuid.UUID) (orgDepartmentsDtos.DepartmentViewResponseDto, error)
+	UpdateOrgDepartment(ctx context.Context, orgID, emplID, departmentID uuid.UUID, request orgDepartmentsDtos.UpdateDepartmentRequestDto) error
+	DeleteOrgDepartment(ctx context.Context, orgID, emplID, departmentID uuid.UUID) error
+}
+
+/* --------------------------------- <****> --------------------------------- */
+
+// AuditLogOrchestrationInterface serves the organization's history: one
+// filtered page of everything that happened in the org, and the full trail of
+// a single entity.
+type AuditLogOrchestrationInterface interface {
+	ListOrgAuditLogs(ctx context.Context, orgID, emplID uuid.UUID, query auditEngineDtos.ListLogsQuery) (auditEngineDtos.AuditLogPageResponseDto, error)
+	GetResourceAuditHistory(ctx context.Context, orgID, emplID uuid.UUID, resourceType string, resourceID uuid.UUID) ([]auditEngineDtos.AuditLogEntry, error)
+}
+
+/* --------------------------------- <****> --------------------------------- */
+
+// OrgCostCenterOrchestratorServiceInterface serves the organization's cost
+// centers: its operating locations, and the sites the cost-center department
+// track hangs off.
+type OrgCostCenterOrchestratorServiceInterface interface {
+	CreateNewCostCenter(ctx context.Context, orgID, emplID uuid.UUID, request orgCostCenterDtos.CreateCostCenterRequestDto) error
+	ListAllOrgCostCenters(ctx context.Context, orgID, emplID uuid.UUID) ([]orgCostCenterDtos.CostCenterResponseDto, error)
+	GetOrgCostCenterDetails(ctx context.Context, orgID, emplID, costCenterID uuid.UUID) (*orgCostCenterDtos.CostCenterResponseDto, error)
+
+	// The cost center's own departments — the Bangalore office's Finance team.
+	// Distinct from the org-level departments in
+	// OrgDepartmentOrchestratorServiceInterface: the two tracks never mix.
+	CreateNewDepartmentInCostCenter(ctx context.Context, orgID, emplID, costCenterID uuid.UUID, request orgCostCenterDtos.CreateCostCenterDepartmentRequestDto) error
+}
+
+// CablesOrchestratorServiceInterface serves the organization's cables account:
+// whether the chat/meet service is switched on for the org, and the channels
+// that live inside it.
+//
+// Cables is opt-in per organization, so the status read comes before every
+// other call here — an org that never started the service has an account to
+// create, not channels to list.
+type CablesOrchestratorServiceInterface interface {
+	GetCablesAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (cablesEngineDtos.CablesServiceResponseDto, error)
+	StartCablesService(ctx context.Context, orgID, emplID uuid.UUID, request cablesEngineDtos.StartCablesServiceRequestsDto) error
+
+	CreateCablesChannel(ctx context.Context, orgID, emplID uuid.UUID, request cablesEngineDtos.CreateChannelRequestDto) error
+	ListCablesChannels(ctx context.Context, orgID, emplID uuid.UUID) ([]cablesEngineDtos.ChannelResponseDto, error)
+	GetCablesChannelDetails(ctx context.Context, orgID, emplID, channelID uuid.UUID) (cablesEngineDtos.ChannelResponseDto, error)
+}

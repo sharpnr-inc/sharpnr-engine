@@ -23,10 +23,18 @@ type UpdateSuperAdminEmployeeInput struct {
 	SecondaryEmail *string
 }
 
+// AddNewSuperAdminInOrganizationRequestDto is the payload for adding a second
+// owner/super-admin to a live organization.
+//
+// TEMP: Password is here only because the account is created directly for now.
+// The intended flow mails the invitee a provisioning link and lets them set
+// their own password — drop this field when that lands. See
+// coreEmployeeServices.AddNewOwnerOrSuperAdmin.
 type AddNewSuperAdminInOrganizationRequestDto struct {
-	FirstName string `json:"firstName"`
+	FirstName string `json:"firstName" binding:"required"`
 	LastName  string `json:"lastName"`
-	Email     string `json:"email"`
+	Email     string `json:"email" binding:"required,email"`
+	Password  string `json:"password" binding:"required"`
 }
 
 type AddEmployeeInBulkInOrganizationRequestDto struct {
@@ -37,4 +45,18 @@ type AddEmployeeInBulkInOrganizationRequestDto struct {
 	PhoneNumber  string  `json:"phoneNumber"`
 	Nickname     *string `json:"nickname,omitempty"`
 	EmployeeCode *string `json:"employeeCode,omitempty"`
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// OrgEmployeeIdentity is an employee reduced to who they are — no role, no
+// employment details. It is what a consuming module needs to render a name
+// beside something, and nothing more.
+type OrgEmployeeIdentity struct {
+	ID           uuid.UUID
+	OrgID        uuid.UUID
+	DisplayName  string
+	Email        string
+	Status       string
+	EmployeeCode string
 }

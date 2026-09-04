@@ -92,6 +92,32 @@ func (s *sentinelService) GetRolePrivileges(ctx context.Context, orgID, roleID u
 
 /* ---------------------------------- <***> --------------------------------- */
 
+// AssignOwnerRole implements [RolesService]: put an existing employee into the
+// org's seeded Owner role, so they inherit the full-access policy registered
+// against it. The role is not re-created here — an org that has never been
+// provisioned has no Owner role, and that is an error rather than something to
+// paper over.
+//
+// The repo's assignment is idempotent (it skips an existing membership row), so
+// re-granting owner to someone who already holds it is a no-op.
+func (s *sentinelService) AssignOwnerRole(ctx context.Context, orgID, emplID uuid.UUID) error {
+	role, err := s.repo.GetRoleByName(ctx, orgID, OwnerRoleName)
+	if err != nil {
+		return fmt.Errorf("%w: %s", sentinelServiceErrs.RoleNotFoundInOrgErr, OwnerRoleName)
+	}
+
+	if err := s.repo.AssignRoleToUser(ctx, orgID, emplID, role.ID); err != nil {
+		return err
+	}
+
+	// The employee's effective policy set just changed; drop the org's compiled
+	// policies so the next authorization call recompiles with the new edge.
+	s.invalidateEngine(orgID)
+	return nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
 // GetEmployeeRole implements [SentinelServiceInterface]: the role an employee
 // holds in an org.
 //
