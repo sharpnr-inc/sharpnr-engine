@@ -6,6 +6,7 @@ import (
 	coreEmployeeServices "sharpnr-engine/core/employees/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
 	"sharpnr-engine/sharp_mailer_engine"
+	ws_engine "sharpnr-engine/ws_engine"
 )
 
 type cablesService struct {
@@ -17,11 +18,18 @@ type cablesService struct {
 	txManager      dbtx.TxManager
 	auditLogEngine auditEngineService.AuditLogServiceInterface
 
-	// Parked: wired here but not consumed by any cables flow yet. Nothing in
-	// the account or channel flows mails anyone or needs to resolve an employee
-	// profile — an invite does, and that is the flow that will reach for these.
-	mailerEngine       *sharp_mailer_engine.SharpMailerEngine
+	// wsEngine carries the fan-out. Nil is a working configuration — every
+	// publish becomes a no-op and the HTTP API still behaves — so tests and any
+	// build without the socket wired do not have to special-case it.
+	wsEngine *ws_engine.Engine
+
+	// employeeIamService is read exactly once per bootstrap, to reconcile the
+	// org roster into cables_members. Never on a hot path: after the sync,
+	// rendering an author is a single-table read of cables' own data.
 	employeeIamService coreEmployeeServices.EmployeeIamEngineServiceInterface
+
+	// Parked: no cables flow mails anyone yet. An invite will.
+	mailerEngine *sharp_mailer_engine.SharpMailerEngine
 }
 
 func NewCablesEngineService(
@@ -30,6 +38,7 @@ func NewCablesEngineService(
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	auditLogEngine auditEngineService.AuditLogServiceInterface,
 	employeeIamService coreEmployeeServices.EmployeeIamEngineServiceInterface,
+	wsEngine *ws_engine.Engine,
 ) *cablesService {
 	return &cablesService{
 		cablesRepo:         cablesRepo,
@@ -37,5 +46,6 @@ func NewCablesEngineService(
 		mailerEngine:       mailerEngine,
 		auditLogEngine:     auditLogEngine,
 		employeeIamService: employeeIamService,
+		wsEngine:           wsEngine,
 	}
 }

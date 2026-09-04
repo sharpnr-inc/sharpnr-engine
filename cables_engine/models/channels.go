@@ -113,21 +113,9 @@ func (t *CablesChannelSettings) TableName() string {
 	return "cables_engine.cables_channel_settings"
 }
 
-// Channel member is record which have members of channels
-// a Channel can have mutliple member
-type ChannelsMember struct {
-	ID              uuid.UUID
-	OrganizationID  uuid.UUID
-	CablesChannelID uuid.UUID
-	MemberID        uuid.UUID // employee ID which is added in the channel
-	AddedAt         time.Time
-	AddedBy         uuid.UUID // employeeID who added the user in this channel
-	RemovedAt       *time.Time
-	RemovedBy       *uuid.UUID // employeeID who removed him/her/they
-}
-
-func (ChannelsMember) TableName() string {
-	return "cables_engine.channel_members"
-}
+// A channel's roster is NOT here. It lives on CablesConversationMember, keyed
+// on the conversation this channel owns: a channel maps 1:1 to a conversation,
+// so keying membership there costs nothing for channels and lets DMs and group
+// DMs reuse the same table, the same unread math and the same fan-out.
 
 /* ---------------------------------- <***> --------------------------------- */

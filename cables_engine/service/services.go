@@ -140,10 +140,9 @@ func (c *cablesService) AddNewChannel(ctx context.Context, orgID, emplID uuid.UU
 		OrganizationID:     orgID,
 		OrgCablesAccountID: account.ID,
 
-		// The conversation is the message container this channel owns. Its row
-		// lands when cables_conversations exists; the id is minted here so the
-		// column — and the unique index over it — is honest in the meantime,
-		// and so the client can hold a stable handle from day one.
+		// The conversation is the message container this channel owns. The id is
+		// minted here and the row is written in the same transaction below, so
+		// the two can never disagree.
 		ConversationID: uuid.New(),
 
 		Name:       name,
@@ -153,10 +152,8 @@ func (c *cablesService) AddNewChannel(ctx context.Context, orgID, emplID uuid.UU
 
 		Active: true,
 
-		// CreatedBy stays nil: it points at cables_members.id, and members do
-		// not exist yet. Writing the employee id into it would put the wrong
-		// kind of id in the column; the audit entry below carries who did it
-		// until the members table lands.
+		// CreatedBy is filled in below, once the creator's cables member id is
+		// resolved — the column holds a cables_members.id, never an employee id.
 	}
 
 	if topic := strings.TrimSpace(request.Topic); topic != "" {
@@ -166,10 +163,40 @@ func (c *cablesService) AddNewChannel(ctx context.Context, orgID, emplID uuid.UU
 		channel.Description = &description
 	}
 
+	creator, err := c.cablesRepo.GetMemberByEmployee(ctx, account.ID, emplID)
+	if err != nil {
+		return err
+	}
+	channel.CreatedBy = &creator.ID
+	channel.MemberCount = 1
+
 	return c.txManager.WithTx(ctx, func(tx *gorm.DB) error {
 		txCtx := dbtx.InjectTx(ctx, tx)
 
 		if err := c.cablesRepo.CreateChannel(txCtx, channel); err != nil {
+			return err
+		}
+
+		// The channel is the discoverable face; the conversation is where
+		// messages actually live. Same transaction, because a channel whose
+		// conversation is missing can be opened but never posted to.
+		conversation := cables_engine_models.CablesConversation{
+			ID:                 channel.ConversationID,
+			OrganizationID:     orgID,
+			OrgCablesAccountID: account.ID,
+			Type:               cablesEngineConstants.ConversationTypeChannel,
+			ChannelID:          &channel.ID,
+			ParticipantCount:   1,
+			CreatedBy:          &creator.ID,
+		}
+		if err := c.cablesRepo.CreateConversation(txCtx, &conversation); err != nil {
+			return err
+		}
+
+		// The creator owns it: somebody has to be able to manage a channel the
+		// moment it exists.
+		if err := c.addMember(txCtx, orgID, conversation.ID, creator.ID,
+			cablesEngineConstants.ParticipantRoleOwner, nil, false); err != nil {
 			return err
 		}
 
@@ -189,11 +216,13 @@ func (c *cablesService) AddNewChannel(ctx context.Context, orgID, emplID uuid.UU
 
 /* ---------------------------------- <***> --------------------------------- */
 
-// ListChannels implements [CablesEngineServiceInterface].
+// ListChannels implements [CablesEngineServiceInterface]: every channel of the
+// account, private ones included.
 //
-// Every channel of the account is returned, private ones included: membership
-// filtering belongs to the participant table, which does not exist yet. This is
-// the admin-side list — see the ⚠ note in the orchestrator.
+// This is the ADMIN-side list, which is why it does not filter by membership —
+// the orchestrator's channel screen is meant to show everything. The app's own
+// sidebar comes from ListConversations, where a private channel is absent
+// simply because the caller holds no membership row in it.
 func (c *cablesService) ListChannels(ctx context.Context, orgID, emplID uuid.UUID) ([]cablesEngineDtos.ChannelResponseDto, error) {
 	account, err := c.activeAccount(ctx, orgID)
 	if err != nil {
@@ -227,4 +256,64 @@ func (c *cablesService) GetChannelDetails(ctx context.Context, orgID, emplID, ch
 	}
 
 	return toChannelView(*channel), nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// JoinChannel implements [CablesEngineServiceInterface]: put the caller into a
+// public channel and hand back the sidebar row for it.
+//
+// Only PUBLIC channels are joinable. A private one is not refused here as a
+// permission error so much as by definition — being added by someone already
+// inside is the only way in, which is what "private" means in this model.
+//
+// Idempotent: joining a channel you are already in is the upsert clearing a
+// removed_at that was not set, and your read state survives.
+func (c *cablesService) JoinChannel(ctx context.Context, orgID, emplID, channelID uuid.UUID) (cablesEngineDtos.ConversationSummaryDto, error) {
+	account, err := c.activeAccount(ctx, orgID)
+	if err != nil {
+		return cablesEngineDtos.ConversationSummaryDto{}, err
+	}
+
+	channel, err := c.cablesRepo.GetChannelByID(ctx, orgID, channelID)
+	if err != nil {
+		return cablesEngineDtos.ConversationSummaryDto{}, err
+	}
+
+	if channel.Visibility != cablesEngineConstants.ChannelVisibilityPublic {
+		return cablesEngineDtos.ConversationSummaryDto{}, cablesEngineErrs.ErrChannelNotJoinable
+	}
+	if channel.IsArchived {
+		return cablesEngineDtos.ConversationSummaryDto{}, cablesEngineErrs.ErrChannelArchived
+	}
+
+	me, err := c.cablesRepo.GetMemberByEmployee(ctx, account.ID, emplID)
+	if err != nil {
+		return cablesEngineDtos.ConversationSummaryDto{}, err
+	}
+
+	if err := c.addMember(ctx, orgID, channel.ConversationID, me.ID,
+		cablesEngineConstants.ParticipantRoleMember, nil, false); err != nil {
+		return cablesEngineDtos.ConversationSummaryDto{}, err
+	}
+
+	conversation, err := c.cablesRepo.GetConversation(ctx, orgID, channel.ConversationID)
+	if err != nil {
+		return cablesEngineDtos.ConversationSummaryDto{}, err
+	}
+
+	name, slug, channelType := channel.Name, channel.Slug, string(channel.Type)
+
+	return cablesEngineDtos.ConversationSummaryDto{
+		ID:               conversation.ID,
+		Type:             string(conversation.Type),
+		ChannelID:        &channel.ID,
+		Name:             &name,
+		Slug:             &slug,
+		ChannelType:      &channelType,
+		LastSeq:          conversation.LastSeq,
+		LastMessageAt:    conversation.LastMessageAt,
+		LastMessageBrief: conversation.LastMessageBrief,
+		MemberCount:      conversation.ParticipantCount,
+	}, nil
 }

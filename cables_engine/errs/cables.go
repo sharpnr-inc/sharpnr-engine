@@ -33,4 +33,33 @@ var (
 
 	ErrInvalidChannelType       = errors.New("channel type must be one of TEXT, AUDIO or VIDEO")
 	ErrInvalidChannelVisibility = errors.New("channel visibility must be either PUBLIC or PRIVATE")
+
+	/* --------------------------- members & messaging -------------------------- */
+
+	// ErrMemberNotFound means the employee has no cables identity yet. Normally
+	// impossible after a roster sync, so it points at an employee created since
+	// the last one rather than at a bad request.
+	ErrMemberNotFound = errors.New("no cables member found for this employee")
+
+	ErrConversationNotFound = errors.New("conversation not found")
+
+	// ErrNotAConversationMember is the authorization answer for every read,
+	// send and socket subscribe. It deliberately does not distinguish "does not
+	// exist" from "not yours" — that difference is how a caller enumerates
+	// conversations it cannot see.
+	ErrNotAConversationMember = errors.New("you are not a member of this conversation")
+
+	ErrMessageNotFound = errors.New("message not found")
+	ErrMessageEmpty    = errors.New("a message needs a body")
+	ErrMessageTooLong  = errors.New("message exceeds the maximum length")
+
+	// ErrChannelNotJoinable answers a join on a private channel. Private means
+	// somebody inside has to add you — there is no self-service path in.
+	ErrChannelNotJoinable = errors.New("this channel is private, ask a member to add you")
+
+	ErrChannelArchived = errors.New("this channel is archived and read-only")
+
+	// ErrCannotDirectMessageSelf guards the DM upsert: a self-DM would produce
+	// a direct_key of one id and a conversation with a single participant.
+	ErrCannotDirectMessageSelf = errors.New("you cannot open a direct conversation with yourself")
 )

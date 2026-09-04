@@ -46,3 +46,17 @@ type AddEmployeeInBulkInOrganizationRequestDto struct {
 	Nickname     *string `json:"nickname,omitempty"`
 	EmployeeCode *string `json:"employeeCode,omitempty"`
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// OrgEmployeeIdentity is an employee reduced to who they are — no role, no
+// employment details. It is what a consuming module needs to render a name
+// beside something, and nothing more.
+type OrgEmployeeIdentity struct {
+	ID           uuid.UUID
+	OrgID        uuid.UUID
+	DisplayName  string
+	Email        string
+	Status       string
+	EmployeeCode string
+}

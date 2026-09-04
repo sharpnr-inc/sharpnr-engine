@@ -2,8 +2,10 @@ package cablesEngineService
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	auditEngineDtos "sharpnr-engine/audit_log_engine/dto"
 	auditEngineModels "sharpnr-engine/audit_log_engine/models"
@@ -172,4 +174,199 @@ func (c *cablesService) recordAudit(
 func describeChannel(verb string, channel cables_engine_models.CablesChannel) string {
 	return fmt.Sprintf("%s channel #%s (%s) was %s",
 		channel.Visibility, channel.Slug, channel.Name, verb)
+}
+
+/* -------------------------------------------------------------------------- */
+/*                          Members & authorization                           */
+/* -------------------------------------------------------------------------- */
+
+// resolveMember maps the employee behind a request to their cables identity.
+//
+// Everything downstream addresses members, not employees, so this is the first
+// step of nearly every flow. A miss means the employee predates the last roster
+// sync — Bootstrap is what fixes that, which is why the client calls it first.
+func (c *cablesService) resolveMember(ctx context.Context, orgID, emplID uuid.UUID) (*cables_engine_models.CablesMember, error) {
+	account, err := c.activeAccount(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.cablesRepo.GetMemberByEmployee(ctx, account.ID, emplID)
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// authorizeConversation is the guard in front of every read and write on a
+// conversation, and behind the websocket subscribe as well.
+//
+// One rule, one place: you may touch a conversation if you hold a live
+// membership row in it. Nothing branches on channel visibility here — a private
+// channel is invisible because no membership row exists, not because a separate
+// check says so.
+func (c *cablesService) authorizeConversation(
+	ctx context.Context,
+	orgID, emplID, conversationID uuid.UUID,
+) (*cables_engine_models.CablesMember, *cables_engine_models.CablesConversationMember, error) {
+
+	me, err := c.resolveMember(ctx, orgID, emplID)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// Scoped to the org first, so an id from another tenant reads as not found
+	// rather than as a membership question.
+	if _, err := c.cablesRepo.GetConversation(ctx, orgID, conversationID); err != nil {
+		return nil, nil, err
+	}
+
+	membership, err := c.cablesRepo.GetConversationMember(ctx, conversationID, me.ID)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return me, membership, nil
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// addMember puts one member in a conversation. hidden keeps the row out of
+// their sidebar until the first message — see RevealConversation.
+func (c *cablesService) addMember(
+	ctx context.Context,
+	orgID, conversationID, cablesMemberID uuid.UUID,
+	role cablesEngineConstants.ParticipantRole,
+	addedBy *uuid.UUID,
+	hidden bool,
+) error {
+	now := time.Now()
+
+	return c.cablesRepo.AddConversationMember(ctx, &cables_engine_models.CablesConversationMember{
+		ID:                uuid.New(),
+		OrganizationID:    orgID,
+		ConversationID:    conversationID,
+		CablesMemberID:    cablesMemberID,
+		Role:              role,
+		NotificationLevel: cablesEngineConstants.NotificationLevelAll,
+		IsHidden:          hidden,
+		AddedAt:           now,
+		AddedBy:           addedBy,
+		CreatedAt:         now,
+		UpdatedAt:         now,
+	})
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// otherDirectMember resolves the person on the other side of a DM, which is
+// what the client renders as its title and avatar.
+func (c *cablesService) otherDirectMember(ctx context.Context, conversationID, meID uuid.UUID) (*uuid.UUID, error) {
+	members, err := c.cablesRepo.ListConversationMembers(ctx, conversationID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, m := range members {
+		if m.CablesMemberID != meID {
+			otherID := m.CablesMemberID
+			return &otherID, nil
+		}
+	}
+
+	// A DM whose counterpart left: the conversation still renders, just without
+	// a name to hang on it.
+	return nil, nil
+}
+
+// summarizeDirect builds the sidebar row for a DM that was just opened. It is
+// a fresh conversation, so the counters are all zero rather than read back.
+func (c *cablesService) summarizeDirect(
+	_ context.Context,
+	conversation cables_engine_models.CablesConversation,
+	_ uuid.UUID,
+	otherMemberID uuid.UUID,
+) cablesEngineDtos.ConversationSummaryDto {
+	other := otherMemberID
+
+	return cablesEngineDtos.ConversationSummaryDto{
+		ID:               conversation.ID,
+		Type:             string(conversation.Type),
+		OtherMemberID:    &other,
+		LastSeq:          conversation.LastSeq,
+		LastMessageAt:    conversation.LastMessageAt,
+		LastMessageBrief: conversation.LastMessageBrief,
+		MemberCount:      conversation.ParticipantCount,
+	}
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                 Wire shapes                                */
+/* -------------------------------------------------------------------------- */
+
+func toMemberView(member cables_engine_models.CablesMember) cablesEngineDtos.MemberResponseDto {
+	return cablesEngineDtos.MemberResponseDto{
+		ID:          member.ID,
+		EmployeeID:  member.EmployeeID,
+		Type:        string(member.Type),
+		DisplayName: member.DisplayName,
+		AvatarURL:   member.AvatarURL,
+		Presence:    string(member.Presence),
+	}
+}
+
+// toMessageView maps a stored message onto the wire.
+//
+// A deleted message keeps its row so seq stays stable and threads do not break,
+// so it goes out as a tombstone — the flag set and the body blanked — rather
+// than being omitted, which would leave a gap the client reads as missing
+// history.
+func toMessageView(message cables_engine_models.CablesMessage) cablesEngineDtos.MessageResponseDto {
+	view := cablesEngineDtos.MessageResponseDto{
+		ID:              message.ID,
+		ConversationID:  message.ConversationID,
+		Seq:             message.Seq,
+		SenderMemberID:  message.SenderMemberID,
+		Type:            string(message.Type),
+		Body:            message.Body,
+		ClientMessageID: message.ClientMessageID,
+		IsEdited:        message.IsEdited,
+		EditedAt:        message.EditedAt,
+		CreatedAt:       message.CreatedAt,
+	}
+
+	if message.SubType != nil {
+		subType := string(*message.SubType)
+		view.SubType = &subType
+	}
+
+	if message.DeletedAt.Valid {
+		view.IsDeleted = true
+		view.Body = ""
+	}
+
+	return view
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  Realtime                                  */
+/* -------------------------------------------------------------------------- */
+
+// cablesEngineErrsNotYourTopic is the deny for a member topic that belongs to
+// somebody else. Local to the service because it never leaves the socket path.
+var cablesEngineErrsNotYourTopic = errors.New("this topic belongs to another member")
+
+// parseTopicUUID pulls the id out of a "<namespace>:<uuid>" topic. The engine
+// has already established the namespace is ours; this validates the rest before
+// it reaches a query.
+func parseTopicUUID(topic string) (uuid.UUID, error) {
+	_, rest, found := strings.Cut(topic, ":")
+	if !found {
+		return uuid.Nil, cablesEngineErrs.ErrConversationNotFound
+	}
+
+	id, err := uuid.Parse(rest)
+	if err != nil {
+		return uuid.Nil, cablesEngineErrs.ErrConversationNotFound
+	}
+
+	return id, nil
 }

@@ -33,7 +33,3 @@ func (c *cablesEngineController) GetCablesAccountStatus(ctx *gin.Context) {
 
 	utils.Success(ctx, http.StatusOK, "Cables status fetched successfully", status)
 }
-
-func (c *cablesEngineController) GetHomeHandler(ctx *gin.Context) {
-
-}

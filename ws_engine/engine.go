@@ -215,6 +215,13 @@ func (e *Engine) Serve(w http.ResponseWriter, r *http.Request, id Identity) {
 		return
 	}
 
+	// Behind gin (and any wrapper of its shape) the handshake must hijack past
+	// the wrapper, or the upgrade half-succeeds in a way that looks like a
+	// protocol error much later. See hijack.go.
+	if needsUnwrapHijack(w) {
+		w = unwrapHijacker{ResponseWriter: w}
+	}
+
 	ws, err := websocket.Accept(w, r, &websocket.AcceptOptions{
 		// The library's own origin check compares hosts and ignores the scheme.
 		// checkOrigin above already compared the full origin against the app's
