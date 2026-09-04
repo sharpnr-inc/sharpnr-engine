@@ -10,6 +10,7 @@ import (
 
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 	sse_engine "sharpnr-engine/sse_engine"
+	ws_engine "sharpnr-engine/ws_engine"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -22,6 +23,7 @@ func BootstrapModules(
 	mailerEngine *sharp_mailer_engine.SharpMailerEngine,
 	seroEngine *sero.SEROEngine,
 	sseEngine *sse_engine.StreamManager,
+	wsEngine *ws_engine.Engine,
 	jwtmgr jwt_manager.Manager,
 	ttl config.TTLConfig,
 ) *AppModules {
@@ -175,6 +177,7 @@ func BootstrapModules(
 		orchestratorService:            orchestratorService,
 		orgSetupWizard:                 orgSetupWizardService,
 		sseEngine:                      sseEngine,
+		wsEngine:                       wsEngine,
 		orgCustomerService:             orgCustomerService,
 		utilitiesApiService:            utilitiesApiService,
 		cablesEngineService:            cablesEngineService,

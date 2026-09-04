@@ -27,7 +27,6 @@ import (
 type CablesMessage struct {
 	ID             uuid.UUID
 	OrganizationID uuid.UUID
-	ConversationID uuid.UUID
 
 	// Seq is per-conversation and gap-free-ish: taken from
 	// conversation.last_seq via an atomic UPDATE ... RETURNING inside the send

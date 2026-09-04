@@ -16,6 +16,7 @@ import (
 	"sharpnr-engine/shared/database"
 	sharp_mailer_engine "sharpnr-engine/sharp_mailer_engine"
 	sse_engine "sharpnr-engine/sse_engine"
+	ws_engine "sharpnr-engine/ws_engine"
 
 	_ "sharpnr-engine/docs"
 
@@ -101,7 +102,15 @@ func main() {
 	txManager := dbtx.NewGormTxManager(db)
 	sseEngine := sse_engine.NewStreamManager()
 	defer sseEngine.Close()
-	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, mailerEng, seroEngine, sseEngine, jwtmgr, cfg.TTL)
+
+	// The socket's origin allow-list is the CORS list: a WebSocket handshake
+	// carries the session cookie but is NOT subject to CORS, so this is the
+	// only thing stopping another origin from opening a socket as a logged-in
+	// user. Sharing the list keeps the two from drifting apart.
+	wsEngine := ws_engine.New(ws_engine.Config{AllowedOrigins: cfg.Cors.WebOrgin})
+	defer wsEngine.Close()
+
+	sharpnrModules := app.BootstrapModules(db, redisDb, txManager, mailerEng, seroEngine, sseEngine, wsEngine, jwtmgr, cfg.TTL)
 
 	// Mobile refresh sessions are rows without a TTL, so something has to
 	// reclaim them. Shares the SERO relay's context, so it stops on shutdown.

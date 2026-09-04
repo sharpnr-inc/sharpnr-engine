@@ -23,6 +23,7 @@ import (
 	utilitiesApi_service "sharpnr-engine/utilities_apis/service"
 
 	sse_engine "sharpnr-engine/sse_engine"
+	ws_engine "sharpnr-engine/ws_engine"
 )
 
 type AppModules struct {
@@ -57,9 +58,15 @@ type AppModules struct {
 	// other domain is.
 	hrmsService hrmsEngineService.HrmsEngineServiceInterface
 
-	accountingService    accounting_service.AccountingServiceInterface
-	orgCustomerService   org_customer_service.OrgCustomerServiceInterface
-	sseEngine            *sse_engine.StreamManager
+	accountingService  accounting_service.AccountingServiceInterface
+	orgCustomerService org_customer_service.OrgCustomerServiceInterface
+	sseEngine          *sse_engine.StreamManager
+
+	// wsEngine is the app's WebSocket transport. It is a sibling of sseEngine,
+	// not a replacement: kitchen's snapshot streams stay on SSE, while anything
+	// that cannot be expressed as "here is the latest state" (chat, calls) needs
+	// the socket's per-event delivery.
+	wsEngine             *ws_engine.Engine
 	paymentEngineService payment_engine_service.PaymentServiceInterface
 	utilitiesApiService  utilitiesApi_service.UtilitiesAPIServiceInterface
 	cablesEngineService  cablesEngineService.CablesEngineServiceInterface
@@ -126,6 +133,10 @@ func (m *AppModules) OrgSetupWiz() org_setup_wizard_services.OrgSetupWizardV1_Se
 
 func (m *AppModules) SseEngine() *sse_engine.StreamManager {
 	return m.sseEngine
+}
+
+func (m *AppModules) WsEngine() *ws_engine.Engine {
+	return m.wsEngine
 }
 
 func (m *AppModules) LegalEntityService() legal_entity_service.OrgLegalEntityServiceInterface {

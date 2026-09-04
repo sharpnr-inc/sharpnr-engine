@@ -22,6 +22,7 @@ import (
 	utilitiesApi_service "sharpnr-engine/utilities_apis/service"
 
 	sse_engine "sharpnr-engine/sse_engine"
+	ws_engine "sharpnr-engine/ws_engine"
 )
 
 type ModulesProvider interface {
@@ -42,6 +43,7 @@ type ModulesProvider interface {
 	HRMSService() hrmsEngineService.HrmsEngineServiceInterface
 	AccountingService() accounting_service.AccountingServiceInterface
 	SseEngine() *sse_engine.StreamManager
+	WsEngine() *ws_engine.Engine
 	LegalEntityService() legal_entity_service.OrgLegalEntityServiceInterface
 	CustomerEngineService() org_customer_service.OrgCustomerServiceInterface
 	PaymentEngineService() payment_engine_service.PaymentServiceInterface
