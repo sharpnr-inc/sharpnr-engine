@@ -121,3 +121,35 @@ func (c *cablesService) publishToMember(cablesMemberID uuid.UUID, event string, 
 func (c *cablesService) logRealtimeFailure(what string, err error) {
 	slog.Warn("cables best-effort step failed", "step", what, "error", err)
 }
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// notifyDirectParticipants pings everyone in a DM except the sender on their
+// own member topic.
+//
+// Best effort, and deliberately after the commit: a failure here costs a live
+// notification, never the message. The recipient's next read still shows it.
+func (c *cablesService) notifyDirectParticipants(
+	ctx context.Context,
+	conversationID, senderMemberID uuid.UUID,
+	payload any,
+) {
+	if c.wsEngine == nil {
+		return
+	}
+
+	members, err := c.cablesRepo.ListConversationMembers(ctx, conversationID)
+	if err != nil {
+		c.logRealtimeFailure("resolve direct participants for notification", err)
+		return
+	}
+
+	for _, member := range members {
+		// The sender already has the message — it is what they just posted.
+		if member.CablesMemberID == senderMemberID {
+			continue
+		}
+
+		c.publishToMember(member.CablesMemberID, cablesEngineConstants.EventMessageCreated, payload)
+	}
+}

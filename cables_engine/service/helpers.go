@@ -206,7 +206,7 @@ func (c *cablesService) resolveMember(ctx context.Context, orgID, emplID uuid.UU
 func (c *cablesService) authorizeConversation(
 	ctx context.Context,
 	orgID, emplID, conversationID uuid.UUID,
-) (*cables_engine_models.CablesMember, *cables_engine_models.CablesConversationMember, error) {
+) (*cables_engine_models.CablesMember, *cables_engine_models.CablesConversation, error) {
 
 	me, err := c.resolveMember(ctx, orgID, emplID)
 	if err != nil {
@@ -215,16 +215,16 @@ func (c *cablesService) authorizeConversation(
 
 	// Scoped to the org first, so an id from another tenant reads as not found
 	// rather than as a membership question.
-	if _, err := c.cablesRepo.GetConversation(ctx, orgID, conversationID); err != nil {
-		return nil, nil, err
-	}
-
-	membership, err := c.cablesRepo.GetConversationMember(ctx, conversationID, me.ID)
+	conversation, err := c.cablesRepo.GetConversation(ctx, orgID, conversationID)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return me, membership, nil
+	if _, err := c.cablesRepo.GetConversationMember(ctx, conversationID, me.ID); err != nil {
+		return nil, nil, err
+	}
+
+	return me, conversation, nil
 }
 
 /* ---------------------------------- <***> --------------------------------- */

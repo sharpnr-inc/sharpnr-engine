@@ -87,7 +87,7 @@ func (c *cablesService) SendMessage(
 	request cablesEngineDtos.SendMessageRequestDto,
 ) (cablesEngineDtos.MessageResponseDto, error) {
 
-	me, _, err := c.authorizeConversation(ctx, orgID, emplID, conversationID)
+	me, conversation, err := c.authorizeConversation(ctx, orgID, emplID, conversationID)
 	if err != nil {
 		return cablesEngineDtos.MessageResponseDto{}, err
 	}
@@ -158,6 +158,21 @@ func (c *cablesService) SendMessage(
 	// Committed — safe to announce.
 	view := toMessageView(message)
 	c.publishToConversation(conversationID, cablesEngineConstants.EventMessageCreated, view)
+
+	// A DM also goes to each participant's own topic.
+	//
+	// Without this, the first message of a brand-new DM reaches nobody live:
+	// the recipient has no reason to be subscribed to a conversation they have
+	// never seen, so they would only discover it on their next refetch. Their
+	// member topic is the one thing they are always listening on, which is what
+	// makes a DM able to arrive anywhere in the suite — including from an app
+	// that is not cables.
+	//
+	// Restricted to DMs on purpose: doing this for a channel would turn one
+	// message into a publish per member.
+	if conversation.Type == cablesEngineConstants.ConversationTypeDirect {
+		c.notifyDirectParticipants(ctx, conversationID, me.ID, view)
+	}
 
 	// The sender's own read cursor follows their own message, so their sidebar
 	// does not light up with a badge for something they just wrote.
