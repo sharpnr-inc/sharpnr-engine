@@ -9,6 +9,7 @@ import (
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
+	sharpCrmEngineService "sharpnr-engine/sharpCRM_engine/service"
 
 	authenticationEngineServices "sharpnr-engine/authentication/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
@@ -70,6 +71,8 @@ type AppModules struct {
 	paymentEngineService payment_engine_service.PaymentServiceInterface
 	utilitiesApiService  utilitiesApi_service.UtilitiesAPIServiceInterface
 	cablesEngineService  cablesEngineService.CablesEngineServiceInterface
+
+	sharpCrmEngineService sharpCrmEngineService.SharpCrmEngineServiceInterface
 
 	// sentinelEngine is the Cedar authorization engine. It is injected into
 	// services for s.sentinelEngine.IsAuthorized(...) calls and also handed to
@@ -165,4 +168,8 @@ func (m *AppModules) IamEngineService() iamEngineService.IamEngineServiceInterfa
 
 func (m *AppModules) CablesEngineService() cablesEngineService.CablesEngineServiceInterface {
 	return m.cablesEngineService
+}
+
+func (m *AppModules) SharpCrmEngineService() sharpCrmEngineService.SharpCrmEngineServiceInterface {
+	return m.sharpCrmEngineService
 }

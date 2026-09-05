@@ -14,6 +14,7 @@ import (
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	organization_services "sharpnr-engine/core/organization/services"
 	hospitality_orchestration_service "sharpnr-engine/property_business_ops/hospitality/orchestration/service"
+	sharpCrmEngineService "sharpnr-engine/sharpCRM_engine/service"
 
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
@@ -48,6 +49,7 @@ func bootstrapSharpnrOrchestrator(
 	orgDepartmentService orgDepartmentService.OrgDepartmentServiceInterface,
 	orgCostCenterService orgCostCenterService.OrgCostCenterServiceInterface,
 	cablesEngineService cablesEngineService.CablesEngineServiceInterface,
+	sharpCrmEngineService sharpCrmEngineService.SharpCrmEngineServiceInterface,
 
 ) orchestrator_service.OrchestratorServiceInterface {
 	return orchestrator_service.NewSharpnrOrchestratorService(
@@ -72,6 +74,7 @@ func bootstrapSharpnrOrchestrator(
 		orgDepartmentService,
 		orgCostCenterService,
 		cablesEngineService,
+		sharpCrmEngineService,
 	)
 }
 

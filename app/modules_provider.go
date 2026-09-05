@@ -15,6 +15,7 @@ import (
 	hrmsEngineService "sharpnr-engine/hrms_engine/service"
 	iamEngineService "sharpnr-engine/iam_engine/service"
 	hospitality_orchestration_service "sharpnr-engine/property_business_ops/hospitality/orchestration/service"
+	sharpCrmEngineService "sharpnr-engine/sharpCRM_engine/service"
 
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
@@ -51,4 +52,5 @@ type ModulesProvider interface {
 	AuditLogService() auditEngineService.AuditLogServiceInterface
 	IamEngineService() iamEngineService.IamEngineServiceInterface
 	CablesEngineService() cablesEngineService.CablesEngineServiceInterface
+	SharpCrmEngineService() sharpCrmEngineService.SharpCrmEngineServiceInterface
 }
