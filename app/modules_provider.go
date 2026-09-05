@@ -17,6 +17,7 @@ import (
 	iamEngineService "sharpnr-engine/iam_engine/service"
 	hospitality_orchestration_service "sharpnr-engine/property_business_ops/hospitality/orchestration/service"
 	sharpCrmEngineService "sharpnr-engine/sharpCRM_engine/service"
+	siloEngineService "sharpnr-engine/silo_engine/service"
 
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
@@ -55,4 +56,5 @@ type ModulesProvider interface {
 	CablesEngineService() cablesEngineService.CablesEngineServiceInterface
 	SharpCrmEngineService() sharpCrmEngineService.SharpCrmEngineServiceInterface
 	CortexEngineService() cortexEngineService.CortexEngineServiceInterface
+	SiloEngineService() siloEngineService.SiloEngineServiceInterface
 }

@@ -33,5 +33,6 @@ func RegisterOrchestratorRoutes(
 	registerCablesOrchestratorRoutes(org, orchestController)
 	registerCrmOrchestratorRoutes(org, orchestController)
 	registerCortexOrchestratorRoutes(org, orchestController)
+	registerSiloOrchestratorRoutes(org, orchestController)
 
 }

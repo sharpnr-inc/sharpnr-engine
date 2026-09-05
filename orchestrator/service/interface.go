@@ -21,6 +21,7 @@ import (
 	sentinelContexts "sharpnr-engine/sentinel_contexts"
 	sharpCrmEngineDtos "sharpnr-engine/sharpCRM_engine/dtos"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
+	siloEngineDtos "sharpnr-engine/silo_engine/dtos"
 	stockwaveEngineDtos "sharpnr-engine/stockwave_engine/dtos"
 	stockwaveEngineModels "sharpnr-engine/stockwave_engine/models"
 
@@ -44,6 +45,7 @@ type OrchestratorServiceInterface interface {
 	CablesOrchestratorServiceInterface
 	SharpCrmOrchestratorServiceInterface
 	CortexOrchestratorServiceInterface
+	SiloOrchestratorServiceInterface
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -238,4 +240,16 @@ type SharpCrmOrchestratorServiceInterface interface {
 type CortexOrchestratorServiceInterface interface {
 	GetCortexAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (cortexEngineDtos.CortexAccountStatusResponse, error)
 	StartCortexService(ctx context.Context, orgID, emplID uuid.UUID, request cortexEngineDtos.StartCortexServiceRequestDto) error
+}
+
+// SiloOrchestratorServiceInterface serves the organization's Silo account:
+// whether the storage and data service is switched on for the org, and the
+// provisioning call that switches it on.
+//
+// Silo is opt-in per organization, so the status read comes before every other
+// call here — an org that never started the service has an account to create,
+// not buckets and databases to list.
+type SiloOrchestratorServiceInterface interface {
+	GetSiloAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (siloEngineDtos.SiloAccountStatusResponse, error)
+	StartSiloService(ctx context.Context, orgID, emplID uuid.UUID, request siloEngineDtos.StartSiloServiceRequestDto) error
 }
