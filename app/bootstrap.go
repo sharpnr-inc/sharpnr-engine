@@ -133,7 +133,7 @@ func BootstrapModules(
 	)
 	accounting_sero_event_handler.Register(seroEngine, accountingService)
 
-	sharpCrmEngineService := bootstrapSharpCRMEngine(db, orgCustomerService)
+	sharpCrmEngineService := bootstrapSharpCRMEngine(db, txManager, auditLogService, orgCustomerService)
 	/* ---------------------------- Accounting Engine --------------------------- */
 
 	orchestratorService := bootstrapSharpnrOrchestrator(

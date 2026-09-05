@@ -18,6 +18,7 @@ import (
 	sentinelAggregatorContracts "sharpnr-engine/sentinel_aggregators/contracts"
 	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
 	sentinelContexts "sharpnr-engine/sentinel_contexts"
+	sharpCrmEngineDtos "sharpnr-engine/sharpCRM_engine/dtos"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 	stockwaveEngineDtos "sharpnr-engine/stockwave_engine/dtos"
 	stockwaveEngineModels "sharpnr-engine/stockwave_engine/models"
@@ -213,6 +214,14 @@ type CablesOrchestratorServiceInterface interface {
 	GetCablesChannelDetails(ctx context.Context, orgID, emplID, channelID uuid.UUID) (cablesEngineDtos.ChannelResponseDto, error)
 }
 
+// SharpCrmOrchestratorServiceInterface serves the organization's SharpCRM
+// account: whether the CRM service is switched on for the org, and the
+// provisioning call that switches it on.
+//
+// SharpCRM is opt-in per organization, so the status read comes before every
+// other call here — an org that never started the service has an account to
+// create, not customers to list.
 type SharpCrmOrchestratorServiceInterface interface {
-	GetCrmAccountStatus(ctx context.Context) error
+	GetCrmAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (sharpCrmEngineDtos.SharpCrmAccountStatusResponse, error)
+	StartCrmService(ctx context.Context, orgID, emplID uuid.UUID, request sharpCrmEngineDtos.StartCRMServiceRequestDto) error
 }
