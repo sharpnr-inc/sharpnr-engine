@@ -40,6 +40,7 @@ type OrchestratorServiceInterface interface {
 	AuditLogOrchestrationInterface
 	OrgCostCenterOrchestratorServiceInterface
 	CablesOrchestratorServiceInterface
+	SharpCrmOrchestratorServiceInterface
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -210,4 +211,8 @@ type CablesOrchestratorServiceInterface interface {
 	CreateCablesChannel(ctx context.Context, orgID, emplID uuid.UUID, request cablesEngineDtos.CreateChannelRequestDto) error
 	ListCablesChannels(ctx context.Context, orgID, emplID uuid.UUID) ([]cablesEngineDtos.ChannelResponseDto, error)
 	GetCablesChannelDetails(ctx context.Context, orgID, emplID, channelID uuid.UUID) (cablesEngineDtos.ChannelResponseDto, error)
+}
+
+type SharpCrmOrchestratorServiceInterface interface {
+	GetCrmAccountStatus(ctx context.Context) error
 }

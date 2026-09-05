@@ -7,5 +7,9 @@ import (
 )
 
 func registerCrmOrchestratorRoutes(r *gin.RouterGroup, co *orchestrator_controllers.OrchestratorController) {
+	crm := r.Group("/sharpcrm")
+	{
+		crm.GET("", co.GetCrmAccountStatusHandler)
+	}
 
 }
