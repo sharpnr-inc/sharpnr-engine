@@ -136,6 +136,7 @@ func BootstrapModules(
 	sharpCrmEngineService := bootstrapSharpCRMEngine(db, txManager, auditLogService, orgCustomerService)
 	cortexEngineService := bootstrapCortexEngine(db, txManager, auditLogService)
 	siloEngineService := bootstrapSiloEngine(db, txManager, auditLogService)
+	folioEngineService := bootstrapFolioEngine(db, txManager, auditLogService)
 	/* ---------------------------- Accounting Engine --------------------------- */
 
 	orchestratorService := bootstrapSharpnrOrchestrator(
@@ -163,6 +164,7 @@ func BootstrapModules(
 		sharpCrmEngineService,
 		cortexEngineService,
 		siloEngineService,
+		folioEngineService,
 	)
 
 	utilitiesApiService := bootstrapUtilitiesApiService(db)
@@ -191,6 +193,7 @@ func BootstrapModules(
 		sharpCrmEngineService:          sharpCrmEngineService,
 		cortexEngineService:            cortexEngineService,
 		siloEngineService:              siloEngineService,
+		folioEngineService:             folioEngineService,
 	}
 
 }

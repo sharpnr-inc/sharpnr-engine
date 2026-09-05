@@ -13,6 +13,7 @@ import (
 	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
 	cortexEngineDtos "sharpnr-engine/cortex_engine/dtos"
+	folioEngineDtos "sharpnr-engine/folio_engine/dtos"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
@@ -46,6 +47,7 @@ type OrchestratorServiceInterface interface {
 	SharpCrmOrchestratorServiceInterface
 	CortexOrchestratorServiceInterface
 	SiloOrchestratorServiceInterface
+	FolioOrchestratorServiceInterface
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -252,4 +254,16 @@ type CortexOrchestratorServiceInterface interface {
 type SiloOrchestratorServiceInterface interface {
 	GetSiloAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (siloEngineDtos.SiloAccountStatusResponse, error)
 	StartSiloService(ctx context.Context, orgID, emplID uuid.UUID, request siloEngineDtos.StartSiloServiceRequestDto) error
+}
+
+// FolioOrchestratorServiceInterface serves the organization's Folio account:
+// whether the documents service — docs, sheets, slides, whiteboards — is
+// switched on for the org, and the provisioning call that switches it on.
+//
+// Folio is opt-in per organization, so the status read comes before every other
+// call here — an org that never started the service has an account to create,
+// not documents to list.
+type FolioOrchestratorServiceInterface interface {
+	GetFolioAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (folioEngineDtos.FolioAccountStatusResponse, error)
+	StartFolioService(ctx context.Context, orgID, emplID uuid.UUID, request folioEngineDtos.StartFolioServiceRequestDto) error
 }
