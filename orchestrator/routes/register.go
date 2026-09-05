@@ -32,5 +32,6 @@ func RegisterOrchestratorRoutes(
 	registerCostCenterRoutes(org, orchestController)
 	registerCablesOrchestratorRoutes(org, orchestController)
 	registerCrmOrchestratorRoutes(org, orchestController)
+	registerCortexOrchestratorRoutes(org, orchestController)
 
 }

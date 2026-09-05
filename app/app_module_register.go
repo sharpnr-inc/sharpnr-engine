@@ -9,6 +9,7 @@ import (
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
+	cortexEngineService "sharpnr-engine/cortex_engine/service"
 	sharpCrmEngineService "sharpnr-engine/sharpCRM_engine/service"
 
 	authenticationEngineServices "sharpnr-engine/authentication/services"
@@ -73,6 +74,10 @@ type AppModules struct {
 	cablesEngineService  cablesEngineService.CablesEngineServiceInterface
 
 	sharpCrmEngineService sharpCrmEngineService.SharpCrmEngineServiceInterface
+
+	// cortexEngineService is the org's IT controls plane: roles, policies,
+	// API keys and the access reviews over them.
+	cortexEngineService cortexEngineService.CortexEngineServiceInterface
 
 	// sentinelEngine is the Cedar authorization engine. It is injected into
 	// services for s.sentinelEngine.IsAuthorized(...) calls and also handed to
@@ -172,4 +177,8 @@ func (m *AppModules) CablesEngineService() cablesEngineService.CablesEngineServi
 
 func (m *AppModules) SharpCrmEngineService() sharpCrmEngineService.SharpCrmEngineServiceInterface {
 	return m.sharpCrmEngineService
+}
+
+func (m *AppModules) CortexEngineService() cortexEngineService.CortexEngineServiceInterface {
+	return m.cortexEngineService
 }

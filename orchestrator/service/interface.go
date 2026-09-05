@@ -12,6 +12,7 @@ import (
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
+	cortexEngineDtos "sharpnr-engine/cortex_engine/dtos"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
@@ -42,6 +43,7 @@ type OrchestratorServiceInterface interface {
 	OrgCostCenterOrchestratorServiceInterface
 	CablesOrchestratorServiceInterface
 	SharpCrmOrchestratorServiceInterface
+	CortexOrchestratorServiceInterface
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -224,4 +226,16 @@ type CablesOrchestratorServiceInterface interface {
 type SharpCrmOrchestratorServiceInterface interface {
 	GetCrmAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (sharpCrmEngineDtos.SharpCrmAccountStatusResponse, error)
 	StartCrmService(ctx context.Context, orgID, emplID uuid.UUID, request sharpCrmEngineDtos.StartCRMServiceRequestDto) error
+}
+
+// CortexOrchestratorServiceInterface serves the organization's Cortex account:
+// whether the IT controls and access management service is switched on for the
+// org, and the provisioning call that switches it on.
+//
+// Cortex is opt-in per organization, so the status read comes before every
+// other call here — an org that never started the service has an account to
+// create, not roles and policies to list.
+type CortexOrchestratorServiceInterface interface {
+	GetCortexAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (cortexEngineDtos.CortexAccountStatusResponse, error)
+	StartCortexService(ctx context.Context, orgID, emplID uuid.UUID, request cortexEngineDtos.StartCortexServiceRequestDto) error
 }
