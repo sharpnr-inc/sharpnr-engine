@@ -12,9 +12,13 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
 	organization_services "sharpnr-engine/core/organization/services"
+	cortexEngineService "sharpnr-engine/cortex_engine/service"
+	folioEngineService "sharpnr-engine/folio_engine/service"
 	hrmsEngineService "sharpnr-engine/hrms_engine/service"
 	iamEngineService "sharpnr-engine/iam_engine/service"
 	hospitality_orchestration_service "sharpnr-engine/property_business_ops/hospitality/orchestration/service"
+	sharpCrmEngineService "sharpnr-engine/sharpCRM_engine/service"
+	siloEngineService "sharpnr-engine/silo_engine/service"
 
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
@@ -51,4 +55,8 @@ type ModulesProvider interface {
 	AuditLogService() auditEngineService.AuditLogServiceInterface
 	IamEngineService() iamEngineService.IamEngineServiceInterface
 	CablesEngineService() cablesEngineService.CablesEngineServiceInterface
+	SharpCrmEngineService() sharpCrmEngineService.SharpCrmEngineServiceInterface
+	CortexEngineService() cortexEngineService.CortexEngineServiceInterface
+	SiloEngineService() siloEngineService.SiloEngineServiceInterface
+	FolioEngineService() folioEngineService.FolioEngineServiceInterface
 }

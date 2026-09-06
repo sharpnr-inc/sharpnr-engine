@@ -132,6 +132,11 @@ func BootstrapModules(
 		orgLegalEntityService,
 	)
 	accounting_sero_event_handler.Register(seroEngine, accountingService)
+
+	sharpCrmEngineService := bootstrapSharpCRMEngine(db, txManager, auditLogService, orgCustomerService)
+	cortexEngineService := bootstrapCortexEngine(db, txManager, auditLogService)
+	siloEngineService := bootstrapSiloEngine(db, txManager, auditLogService)
+	folioEngineService := bootstrapFolioEngine(db, txManager, auditLogService)
 	/* ---------------------------- Accounting Engine --------------------------- */
 
 	orchestratorService := bootstrapSharpnrOrchestrator(
@@ -156,6 +161,10 @@ func BootstrapModules(
 		orgDepartmentService,
 		orgCostCenterService,
 		cablesEngineService,
+		sharpCrmEngineService,
+		cortexEngineService,
+		siloEngineService,
+		folioEngineService,
 	)
 
 	utilitiesApiService := bootstrapUtilitiesApiService(db)
@@ -181,6 +190,10 @@ func BootstrapModules(
 		orgCustomerService:             orgCustomerService,
 		utilitiesApiService:            utilitiesApiService,
 		cablesEngineService:            cablesEngineService,
+		sharpCrmEngineService:          sharpCrmEngineService,
+		cortexEngineService:            cortexEngineService,
+		siloEngineService:              siloEngineService,
+		folioEngineService:             folioEngineService,
 	}
 
 }

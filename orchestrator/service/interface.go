@@ -12,13 +12,17 @@ import (
 	legal_entity_contracts "sharpnr-engine/core/legal_entity/contracts"
 	supplier_contracts "sharpnr-engine/core/org_supplier/contracts"
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
+	cortexEngineDtos "sharpnr-engine/cortex_engine/dtos"
+	folioEngineDtos "sharpnr-engine/folio_engine/dtos"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
 	sentinelAggregatorContracts "sharpnr-engine/sentinel_aggregators/contracts"
 	sentinelAggregatorService "sharpnr-engine/sentinel_aggregators/service"
 	sentinelContexts "sharpnr-engine/sentinel_contexts"
+	sharpCrmEngineDtos "sharpnr-engine/sharpCRM_engine/dtos"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
+	siloEngineDtos "sharpnr-engine/silo_engine/dtos"
 	stockwaveEngineDtos "sharpnr-engine/stockwave_engine/dtos"
 	stockwaveEngineModels "sharpnr-engine/stockwave_engine/models"
 
@@ -40,6 +44,10 @@ type OrchestratorServiceInterface interface {
 	AuditLogOrchestrationInterface
 	OrgCostCenterOrchestratorServiceInterface
 	CablesOrchestratorServiceInterface
+	SharpCrmOrchestratorServiceInterface
+	CortexOrchestratorServiceInterface
+	SiloOrchestratorServiceInterface
+	FolioOrchestratorServiceInterface
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -210,4 +218,52 @@ type CablesOrchestratorServiceInterface interface {
 	CreateCablesChannel(ctx context.Context, orgID, emplID uuid.UUID, request cablesEngineDtos.CreateChannelRequestDto) error
 	ListCablesChannels(ctx context.Context, orgID, emplID uuid.UUID) ([]cablesEngineDtos.ChannelResponseDto, error)
 	GetCablesChannelDetails(ctx context.Context, orgID, emplID, channelID uuid.UUID) (cablesEngineDtos.ChannelResponseDto, error)
+}
+
+// SharpCrmOrchestratorServiceInterface serves the organization's SharpCRM
+// account: whether the CRM service is switched on for the org, and the
+// provisioning call that switches it on.
+//
+// SharpCRM is opt-in per organization, so the status read comes before every
+// other call here — an org that never started the service has an account to
+// create, not customers to list.
+type SharpCrmOrchestratorServiceInterface interface {
+	GetCrmAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (sharpCrmEngineDtos.SharpCrmAccountStatusResponse, error)
+	StartCrmService(ctx context.Context, orgID, emplID uuid.UUID, request sharpCrmEngineDtos.StartCRMServiceRequestDto) error
+}
+
+// CortexOrchestratorServiceInterface serves the organization's Cortex account:
+// whether the IT controls and access management service is switched on for the
+// org, and the provisioning call that switches it on.
+//
+// Cortex is opt-in per organization, so the status read comes before every
+// other call here — an org that never started the service has an account to
+// create, not roles and policies to list.
+type CortexOrchestratorServiceInterface interface {
+	GetCortexAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (cortexEngineDtos.CortexAccountStatusResponse, error)
+	StartCortexService(ctx context.Context, orgID, emplID uuid.UUID, request cortexEngineDtos.StartCortexServiceRequestDto) error
+}
+
+// SiloOrchestratorServiceInterface serves the organization's Silo account:
+// whether the storage and data service is switched on for the org, and the
+// provisioning call that switches it on.
+//
+// Silo is opt-in per organization, so the status read comes before every other
+// call here — an org that never started the service has an account to create,
+// not buckets and databases to list.
+type SiloOrchestratorServiceInterface interface {
+	GetSiloAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (siloEngineDtos.SiloAccountStatusResponse, error)
+	StartSiloService(ctx context.Context, orgID, emplID uuid.UUID, request siloEngineDtos.StartSiloServiceRequestDto) error
+}
+
+// FolioOrchestratorServiceInterface serves the organization's Folio account:
+// whether the documents service — docs, sheets, slides, whiteboards — is
+// switched on for the org, and the provisioning call that switches it on.
+//
+// Folio is opt-in per organization, so the status read comes before every other
+// call here — an org that never started the service has an account to create,
+// not documents to list.
+type FolioOrchestratorServiceInterface interface {
+	GetFolioAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (folioEngineDtos.FolioAccountStatusResponse, error)
+	StartFolioService(ctx context.Context, orgID, emplID uuid.UUID, request folioEngineDtos.StartFolioServiceRequestDto) error
 }

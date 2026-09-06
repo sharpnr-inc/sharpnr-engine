@@ -13,9 +13,13 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	organization_services "sharpnr-engine/core/organization/services"
+	cortexEngineService "sharpnr-engine/cortex_engine/service"
+	folioEngineService "sharpnr-engine/folio_engine/service"
 	orchestrator_authz "sharpnr-engine/orchestrator/service/authz"
 	property_orchestrator "sharpnr-engine/orchestrator/service/property"
 	propertyHospitalityOrchestrator "sharpnr-engine/orchestrator/service/property/hospitality"
+	sharpCrmEngineService "sharpnr-engine/sharpCRM_engine/service"
+	siloEngineService "sharpnr-engine/silo_engine/service"
 
 	payment_engine_service "sharpnr-engine/payment_engine/services"
 	dbtx "sharpnr-engine/pkg/dbTx"
@@ -44,6 +48,10 @@ type orchestratorService struct {
 	*departmentOrchestrator
 	*costCenterOrchestrator
 	*cablesEngineOrchestrator
+	*sharpCrmOrchestratorService
+	*cortexOrchestratorService
+	*siloOrchestratorService
+	*folioOrchestratorService
 
 	// Parked: wired at bootstrap but not consumed by any flow yet. Move onto
 	// the owning domain orchestrator when the first flow lands.
@@ -73,6 +81,10 @@ func NewSharpnrOrchestratorService(
 	orgDepartmentService orgDepartmentService.OrgDepartmentServiceInterface,
 	orgCostCenterService orgCostCenterService.OrgCostCenterServiceInterface,
 	cablesEngineService cablesEngineService.CablesEngineServiceInterface,
+	sharpCrmEngineService sharpCrmEngineService.SharpCrmEngineServiceInterface,
+	cortexEngineService cortexEngineService.CortexEngineServiceInterface,
+	siloEngineService siloEngineService.SiloEngineServiceInterface,
+	folioEngineService folioEngineService.FolioEngineServiceInterface,
 ) *orchestratorService {
 
 	// One guard shared by every domain orchestrator (rule 1 in doc.go).
@@ -143,6 +155,22 @@ func NewSharpnrOrchestratorService(
 
 		cablesEngineOrchestrator: &cablesEngineOrchestrator{
 			cablesEngineService: cablesEngineService,
+		},
+
+		sharpCrmOrchestratorService: &sharpCrmOrchestratorService{
+			crmService: sharpCrmEngineService,
+		},
+
+		cortexOrchestratorService: &cortexOrchestratorService{
+			cortexService: cortexEngineService,
+		},
+
+		siloOrchestratorService: &siloOrchestratorService{
+			siloService: siloEngineService,
+		},
+
+		folioOrchestratorService: &folioOrchestratorService{
+			folioService: folioEngineService,
 		},
 
 		seroEngine: seroEngine,

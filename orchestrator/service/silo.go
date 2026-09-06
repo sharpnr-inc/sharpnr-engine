@@ -1,0 +1,39 @@
+package orchestrator_service
+
+import (
+	"context"
+
+	siloEngineDtos "sharpnr-engine/silo_engine/dtos"
+	siloEngineService "sharpnr-engine/silo_engine/service"
+
+	"github.com/google/uuid"
+)
+
+// siloOrchestratorService implements SiloOrchestratorServiceInterface.
+//
+// Every method is a single delegated call, so there is no transaction here
+// (rule 2 in doc.go) — the Silo service owns its own consistency, and it already
+// commits the account, its settings row and the audit entry describing them in
+// one transaction.
+//
+// ⚠ No guard.Authorize calls yet (doc.go rule 1): Silo has no Sentinel resource
+// registered, so there is no action id to check against — guarding against an
+// unregistered type would deny every request rather than protect it. Starting
+// the org's Silo service is currently open to any authenticated employee of the
+// org; wire the guard here the day that registration lands, the way
+// departmentOrchestrator does.
+type siloOrchestratorService struct {
+	siloService siloEngineService.SiloEngineServiceInterface
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *siloOrchestratorService) GetSiloAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (siloEngineDtos.SiloAccountStatusResponse, error) {
+	return s.siloService.GetSiloAccountStatus(ctx, orgID, emplID)
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+func (s *siloOrchestratorService) StartSiloService(ctx context.Context, orgID, emplID uuid.UUID, request siloEngineDtos.StartSiloServiceRequestDto) error {
+	return s.siloService.StartSiloServiceForOrg(ctx, orgID, emplID, request)
+}

@@ -13,7 +13,11 @@ import (
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	organization_services "sharpnr-engine/core/organization/services"
+	cortexEngineService "sharpnr-engine/cortex_engine/service"
+	folioEngineService "sharpnr-engine/folio_engine/service"
 	hospitality_orchestration_service "sharpnr-engine/property_business_ops/hospitality/orchestration/service"
+	sharpCrmEngineService "sharpnr-engine/sharpCRM_engine/service"
+	siloEngineService "sharpnr-engine/silo_engine/service"
 
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
@@ -48,6 +52,10 @@ func bootstrapSharpnrOrchestrator(
 	orgDepartmentService orgDepartmentService.OrgDepartmentServiceInterface,
 	orgCostCenterService orgCostCenterService.OrgCostCenterServiceInterface,
 	cablesEngineService cablesEngineService.CablesEngineServiceInterface,
+	sharpCrmEngineService sharpCrmEngineService.SharpCrmEngineServiceInterface,
+	cortexEngineService cortexEngineService.CortexEngineServiceInterface,
+	siloEngineService siloEngineService.SiloEngineServiceInterface,
+	folioEngineService folioEngineService.FolioEngineServiceInterface,
 
 ) orchestrator_service.OrchestratorServiceInterface {
 	return orchestrator_service.NewSharpnrOrchestratorService(
@@ -72,6 +80,10 @@ func bootstrapSharpnrOrchestrator(
 		orgDepartmentService,
 		orgCostCenterService,
 		cablesEngineService,
+		sharpCrmEngineService,
+		cortexEngineService,
+		siloEngineService,
+		folioEngineService,
 	)
 }
 

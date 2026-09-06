@@ -9,6 +9,10 @@ import (
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	org_property_services "sharpnr-engine/core/org_property/services"
 	org_setup_wizard_services "sharpnr-engine/core/org_setup_wizard/services"
+	cortexEngineService "sharpnr-engine/cortex_engine/service"
+	folioEngineService "sharpnr-engine/folio_engine/service"
+	sharpCrmEngineService "sharpnr-engine/sharpCRM_engine/service"
+	siloEngineService "sharpnr-engine/silo_engine/service"
 
 	authenticationEngineServices "sharpnr-engine/authentication/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
@@ -70,6 +74,20 @@ type AppModules struct {
 	paymentEngineService payment_engine_service.PaymentServiceInterface
 	utilitiesApiService  utilitiesApi_service.UtilitiesAPIServiceInterface
 	cablesEngineService  cablesEngineService.CablesEngineServiceInterface
+
+	sharpCrmEngineService sharpCrmEngineService.SharpCrmEngineServiceInterface
+
+	// cortexEngineService is the org's IT controls plane: roles, policies,
+	// API keys and the access reviews over them.
+	cortexEngineService cortexEngineService.CortexEngineServiceInterface
+
+	// siloEngineService is the org's storage and data plane: buckets,
+	// databases, warehouses and the drive over them.
+	siloEngineService siloEngineService.SiloEngineServiceInterface
+
+	// folioEngineService is the org's document plane: docs, sheets, slides,
+	// whiteboards and the templates over them.
+	folioEngineService folioEngineService.FolioEngineServiceInterface
 
 	// sentinelEngine is the Cedar authorization engine. It is injected into
 	// services for s.sentinelEngine.IsAuthorized(...) calls and also handed to
@@ -165,4 +183,20 @@ func (m *AppModules) IamEngineService() iamEngineService.IamEngineServiceInterfa
 
 func (m *AppModules) CablesEngineService() cablesEngineService.CablesEngineServiceInterface {
 	return m.cablesEngineService
+}
+
+func (m *AppModules) SharpCrmEngineService() sharpCrmEngineService.SharpCrmEngineServiceInterface {
+	return m.sharpCrmEngineService
+}
+
+func (m *AppModules) CortexEngineService() cortexEngineService.CortexEngineServiceInterface {
+	return m.cortexEngineService
+}
+
+func (m *AppModules) SiloEngineService() siloEngineService.SiloEngineServiceInterface {
+	return m.siloEngineService
+}
+
+func (m *AppModules) FolioEngineService() folioEngineService.FolioEngineServiceInterface {
+	return m.folioEngineService
 }
