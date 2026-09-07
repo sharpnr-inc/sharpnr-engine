@@ -72,7 +72,7 @@ func NewSharpnrOrchestratorService(
 	seroEngine *sero.SEROEngine,
 	customerEngine org_customer_service.OrgCustomerServiceInterface,
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
-	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface,
+	inventoryEngine stockwaveEngineServices.StockwaveEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	employeeHRService coreEmployeeServices.EmployeeHRServiceInterface,
 	employeeService coreEmployeeServices.EmployeeOrchestratorServiceInterface,

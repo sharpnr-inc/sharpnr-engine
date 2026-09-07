@@ -42,7 +42,7 @@ func bootstrapSharpnrOrchestrator(
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
-	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface,
+	inventoryEngine stockwaveEngineServices.StockwaveEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	employeeHRService coreEmployeeServices.EmployeeHRServiceInterface,
 	employeeService coreEmployeeServices.EmployeeOrchestratorServiceInterface,

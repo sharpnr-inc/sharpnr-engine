@@ -24,8 +24,6 @@ import (
 	sharpCrmEngineDtos "sharpnr-engine/sharpCRM_engine/dtos"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 	siloEngineDtos "sharpnr-engine/silo_engine/dtos"
-	stockwaveEngineDtos "sharpnr-engine/stockwave_engine/dtos"
-	stockwaveEngineModels "sharpnr-engine/stockwave_engine/models"
 
 	"github.com/google/uuid"
 )
@@ -149,9 +147,9 @@ type SuppliersAndVendorsOrchestratorServiceInterface interface {
 }
 
 type InventoryOrchestratorServiceInterface interface {
-	AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *stockwaveEngineDtos.NewInventoryAccountRequestDto) error
-	ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]stockwaveEngineModels.InventoryAccount, error)
-	GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]stockwaveEngineModels.Inventory, error)
+	// AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *stockwaveEngineDtos.NewInventoryAccountRequestDto) error
+	// ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]stockwaveEngineModels.InventoryAccount, error)
+	// GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]stockwaveEngineModels.Inventory, error)
 }
 
 /* --------------------------------- <****> --------------------------------- */

@@ -21,11 +21,11 @@ type accountingServices struct {
 	accRepo    accounting_repo.AccountingRepositoryInterface
 	txManager  dbtx.TxManager
 
-	invoiceEngine   invoice_engine_services.InvoiceEngineServiceInterface
-	paymentEngine   payment_engine_service.PaymentServiceInterface
-	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface
-	supplierService suppliers_service.SupplierServiceInterface
-	legalEntity     legal_entity_service.OrgLegalEntityServiceInterface
+	invoiceEngine          invoice_engine_services.InvoiceEngineServiceInterface
+	paymentEngine          payment_engine_service.PaymentServiceInterface
+	stockwaveEngineService stockwaveEngineServices.StockwaveEngineServicesInterface
+	supplierService        suppliers_service.SupplierServiceInterface
+	legalEntity            legal_entity_service.OrgLegalEntityServiceInterface
 
 	// auditLogEngine records the org-level account lifecycle onto the org's
 	// history. Nil is a working configuration — recordEngineAccountAudit becomes
@@ -42,23 +42,22 @@ func NewAccountingService(
 	seroEngine *sero.SEROEngine,
 	accRepo accounting_repo.AccountingRepositoryInterface,
 	txManager dbtx.TxManager,
-
 	invoiceEngine invoice_engine_services.InvoiceEngineServiceInterface,
 	paymentEngine payment_engine_service.PaymentServiceInterface,
-	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface,
+	stockwaveEngineService stockwaveEngineServices.StockwaveEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	legalEntity legal_entity_service.OrgLegalEntityServiceInterface,
 	auditLogEngine auditEngineService.AuditLogServiceInterface,
 ) *accountingServices {
 	return &accountingServices{
-		seroEngine:      seroEngine,
-		accRepo:         accRepo,
-		txManager:       txManager,
-		invoiceEngine:   invoiceEngine,
-		paymentEngine:   paymentEngine,
-		inventoryEngine: inventoryEngine,
-		supplierService: supplierService,
-		legalEntity:     legalEntity,
-		auditLogEngine:  auditLogEngine,
+		seroEngine:             seroEngine,
+		accRepo:                accRepo,
+		txManager:              txManager,
+		invoiceEngine:          invoiceEngine,
+		paymentEngine:          paymentEngine,
+		stockwaveEngineService: stockwaveEngineService,
+		supplierService:        supplierService,
+		legalEntity:            legalEntity,
+		auditLogEngine:         auditLogEngine,
 	}
 }

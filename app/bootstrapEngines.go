@@ -1,6 +1,7 @@
 package app
 
 import (
+	auditEngineService "sharpnr-engine/audit_log_engine/service"
 	org_customer_repo "sharpnr-engine/core/customer/repo"
 	org_customer_service "sharpnr-engine/core/customer/service"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
@@ -75,11 +76,13 @@ func bootstrapInventoryEngine(
 	db *gorm.DB,
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,
-) stockwaveEngineServices.InventoryEngineServicesInterface {
-	repo := stockwaveEngineRepo.NewInventoryEngineRepo(db)
-	return stockwaveEngineServices.NewInventoryEngineService(
+	auditLogService auditEngineService.AuditLogServiceInterface,
+) stockwaveEngineServices.StockwaveEngineServicesInterface {
+	repo := stockwaveEngineRepo.NewStockwaveEngineRepo(db)
+	return stockwaveEngineServices.NewStockwaveEngineService(
 		repo,
 		txManager,
 		seroEngine,
+		auditLogService,
 	)
 }
