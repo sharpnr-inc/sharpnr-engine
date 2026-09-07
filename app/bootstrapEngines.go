@@ -72,7 +72,7 @@ func bootstrapPaymentEngine(
 	)
 }
 
-func bootstrapInventoryEngine(
+func bootstrapStockwaveEngine(
 	db *gorm.DB,
 	txManager dbtx.TxManager,
 	seroEngine *sero.SEROEngine,

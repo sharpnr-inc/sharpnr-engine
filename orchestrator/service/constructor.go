@@ -42,7 +42,7 @@ type orchestratorService struct {
 	*customerOrchestrator
 	*paymentsOrchestrator
 	*suppliersOrchestrator
-	*inventoryOrchestrator
+	*stockwaveOrchestrator
 	*employeeOrchestrator
 	*sentinelOrchestrator
 	*auditOrchestraterService
@@ -72,7 +72,7 @@ func NewSharpnrOrchestratorService(
 	seroEngine *sero.SEROEngine,
 	customerEngine org_customer_service.OrgCustomerServiceInterface,
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
-	inventoryEngine stockwaveEngineServices.StockwaveEngineServicesInterface,
+	stockwaveEngine stockwaveEngineServices.StockwaveEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	employeeHRService coreEmployeeServices.EmployeeHRServiceInterface,
 	employeeService coreEmployeeServices.EmployeeOrchestratorServiceInterface,
@@ -127,9 +127,8 @@ func NewSharpnrOrchestratorService(
 			supplierService:    supplierService,
 			legalEntityService: legalEntityService,
 		},
-		inventoryOrchestrator: &inventoryOrchestrator{
-			txManager:       txManager,
-			inventoryEngine: inventoryEngine,
+		stockwaveOrchestrator: &stockwaveOrchestrator{
+			stockwaveEngine: stockwaveEngine,
 		},
 		employeeOrchestrator: &employeeOrchestrator{
 			employeeHRService: employeeHRService,

@@ -38,7 +38,7 @@ func bootstrapHospitality(
 	customerEngineService org_customer_service.OrgCustomerServiceInterface,
 	invoiceEngine invoice_engine_services.InvoiceEngineServiceInterface,
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
-	inventoryEngine stockwaveEngineServices.StockwaveEngineServicesInterface,
+	stockwaveEngine stockwaveEngineServices.StockwaveEngineServicesInterface,
 ) *hospitalitydomain.HospitalityDomain {
 
 	// Kitchen
@@ -74,7 +74,7 @@ func bootstrapHospitality(
 		customerEngineService,
 		invoiceEngine,
 		paymentsEngine,
-		inventoryEngine,
+		stockwaveEngine,
 	)
 	restaurant_event_handlers.Register(seroEngine, restaurantService)
 

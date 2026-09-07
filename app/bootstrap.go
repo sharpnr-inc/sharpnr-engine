@@ -51,9 +51,9 @@ func BootstrapModules(
 	sentinelAggregator := bootstrapSentinelAggregator(orgPropertyService, sentinelService, orgDepartmentService)
 	orgLegalEntityService := bootstrapOrgLegalEntity(db, txManager, mailerEngine)
 
-	/* ---------------------------- inventory engine ---------------------------- */
-	inventoryEngine := bootstrapInventoryEngine(db, txManager, seroEngine, auditLogService)
-	/* ---------------------------- inventory engine ---------------------------- */
+	/* ---------------------------- stockwave engine ---------------------------- */
+	stockwaveEngine := bootstrapStockwaveEngine(db, txManager, seroEngine, auditLogService)
+	/* ---------------------------- stockwave engine ---------------------------- */
 
 	// One core employee service instance, handed to each consumer through its
 	// own segregated interface.
@@ -109,7 +109,7 @@ func BootstrapModules(
 		orgCustomerService,
 		invoiceEngine,
 		paymentsEngine,
-		inventoryEngine,
+		stockwaveEngine,
 	)
 
 	hospitalityOrchestration := bootstrapHospitalityDomainOrchestration(
@@ -124,7 +124,7 @@ func BootstrapModules(
 		txManager,
 		invoiceEngine,
 		paymentsEngine,
-		inventoryEngine,
+		stockwaveEngine,
 		orgSupplierService,
 		seroEngine,
 		orgLegalEntityService,
@@ -149,7 +149,7 @@ func BootstrapModules(
 		txManager,
 		seroEngine,
 		paymentsEngine,
-		inventoryEngine,
+		stockwaveEngine,
 		orgSupplierService,
 		employeesHRService,
 		employeeOrchestratorService,

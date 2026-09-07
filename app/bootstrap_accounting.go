@@ -22,7 +22,7 @@ func bootstrapAccounting(
 
 	invoiceEngine invoice_engine_services.InvoiceEngineServiceInterface,
 	paymentEngine payment_engine_service.PaymentServiceInterface,
-	inventoryEngine stockwaveEngineServices.StockwaveEngineServicesInterface,
+	stockwaveEngine stockwaveEngineServices.StockwaveEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	seroEngine *sero.SEROEngine,
 	legalEntity legal_entity_service.OrgLegalEntityServiceInterface,
@@ -35,7 +35,7 @@ func bootstrapAccounting(
 		txManager,
 		invoiceEngine,
 		paymentEngine,
-		inventoryEngine,
+		stockwaveEngine,
 		supplierService,
 		legalEntity,
 		auditLogService,

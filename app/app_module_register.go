@@ -13,6 +13,7 @@ import (
 	folioEngineService "sharpnr-engine/folio_engine/service"
 	sharpCrmEngineService "sharpnr-engine/sharpCRM_engine/service"
 	siloEngineService "sharpnr-engine/silo_engine/service"
+	stockwaveEngineServices "sharpnr-engine/stockwave_engine/services"
 
 	authenticationEngineServices "sharpnr-engine/authentication/services"
 	org_signup_services "sharpnr-engine/core/org_signup/services"
@@ -88,6 +89,11 @@ type AppModules struct {
 	// folioEngineService is the org's document plane: docs, sheets, slides,
 	// whiteboards and the templates over them.
 	folioEngineService folioEngineService.FolioEngineServiceInterface
+
+	// stockwaveEngineService is the org's stock plane. Formerly the inventory
+	// engine: migration 000062 renamed the schema and dropped the old tables,
+	// and the engine is being rewritten on top of the account layer.
+	stockwaveEngineService stockwaveEngineServices.StockwaveEngineServicesInterface
 
 	// sentinelEngine is the Cedar authorization engine. It is injected into
 	// services for s.sentinelEngine.IsAuthorized(...) calls and also handed to
@@ -199,4 +205,8 @@ func (m *AppModules) SiloEngineService() siloEngineService.SiloEngineServiceInte
 
 func (m *AppModules) FolioEngineService() folioEngineService.FolioEngineServiceInterface {
 	return m.folioEngineService
+}
+
+func (m *AppModules) StockwaveEngineService() stockwaveEngineServices.StockwaveEngineServicesInterface {
+	return m.stockwaveEngineService
 }

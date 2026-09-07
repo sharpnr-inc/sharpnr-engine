@@ -32,6 +32,6 @@ func RegisterModuleRoutes(
 	cortexEngineRoutes.RegisterCortexEngineRoutes(v1, modules)
 	siloEngineRoutes.RegisterSiloEngineRoutes(v1, modules)
 	folioEngineRoutes.RegisterFolioEngineRoutes(v1, modules)
-	stockwaveEngineRoutes.RegisterStockwaveEngineRoutes()
+	stockwaveEngineRoutes.RegisterStockwaveEngineRoutes(v1, modules)
 
 }

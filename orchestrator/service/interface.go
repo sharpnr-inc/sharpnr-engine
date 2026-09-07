@@ -24,6 +24,7 @@ import (
 	sharpCrmEngineDtos "sharpnr-engine/sharpCRM_engine/dtos"
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 	siloEngineDtos "sharpnr-engine/silo_engine/dtos"
+	stockwaveEngineDtos "sharpnr-engine/stockwave_engine/dtos"
 
 	"github.com/google/uuid"
 )
@@ -35,7 +36,7 @@ type OrchestratorServiceInterface interface {
 	CustomerOrchestratorServiceInterface
 	PaymentOrchestratorServiceInterface
 	SuppliersAndVendorsOrchestratorServiceInterface
-	InventoryOrchestratorServiceInterface
+	StockwaveOrchestratorServiceInterface
 	OrchestratorSetupWizardInterface
 	EmployeeOrchestrationInterface
 	SentinelOrchestrationInterface
@@ -146,10 +147,16 @@ type SuppliersAndVendorsOrchestratorServiceInterface interface {
 	AddLegalEntityLinksInSuppliers(ctx context.Context, orgID, emplID, suppliersID uuid.UUID, request *supplier_contracts.AddLegalEntityLinkInSuppliersRequestDto) error
 }
 
-type InventoryOrchestratorServiceInterface interface {
-	// AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *stockwaveEngineDtos.NewInventoryAccountRequestDto) error
-	// ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]stockwaveEngineModels.InventoryAccount, error)
-	// GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]stockwaveEngineModels.Inventory, error)
+// StockwaveOrchestratorServiceInterface serves the organization's stockwave
+// account: whether the org has taken the stock service, and the provisioning
+// call that switches it on.
+//
+// Formerly InventoryOrchestratorServiceInterface. Its three account/inventory
+// reads are gone with the tables migration 000062 dropped; the stock reads that
+// replace them join here as the engine is rewritten.
+type StockwaveOrchestratorServiceInterface interface {
+	GetStockwaveAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (stockwaveEngineDtos.StockwaveEngineStatusResponseDto, error)
+	StartStockwaveService(ctx context.Context, orgID, emplID uuid.UUID, request stockwaveEngineDtos.StartStockwaveEngineRequestDto) error
 }
 
 /* --------------------------------- <****> --------------------------------- */
