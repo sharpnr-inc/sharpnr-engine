@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	hrmsEngineErrs "sharpnr-engine/hrms_engine/errs"
 	webMiddleware "sharpnr-engine/middlewares/web"
 	"sharpnr-engine/shared/utils"
 
@@ -39,4 +40,31 @@ func (c *hrmsControllers) resolveRequestContexts(ctx *gin.Context) (uuid.UUID, u
 	}
 
 	return orgID, empID, true
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// failFromHrmsError maps the module's sentinel errors onto status codes.
+//
+// It is the client-facing twin of the orchestrator's mapper of the same name;
+// the two are separate because the packages are, and this one only has to cover
+// the errors the product API can actually raise.
+//
+// "Not found" and "disabled" are both 409 rather than 404: the org is real and
+// the caller is allowed to ask, but the service is in a state that refuses the
+// request — and the fix differs, which is why the two stay apart all the way to
+// the client.
+func failFromHrmsError(ctx *gin.Context, err error) {
+	switch {
+	case errors.Is(err, hrmsEngineErrs.ErrNoHRMSAccountFound),
+		errors.Is(err, hrmsEngineErrs.ErrAccountDisabled),
+		errors.Is(err, hrmsEngineErrs.ErrHrmsServiceAlreadyStarted):
+		utils.Failure(ctx, http.StatusConflict, err)
+
+	case errors.Is(err, hrmsEngineErrs.ErrTermsNotAccepted):
+		utils.Failure(ctx, http.StatusBadRequest, err)
+
+	default:
+		utils.Failure(ctx, http.StatusInternalServerError, err)
+	}
 }

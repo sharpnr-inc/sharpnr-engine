@@ -15,6 +15,7 @@ import (
 	organization_services "sharpnr-engine/core/organization/services"
 	cortexEngineService "sharpnr-engine/cortex_engine/service"
 	folioEngineService "sharpnr-engine/folio_engine/service"
+	hrmsEngineService "sharpnr-engine/hrms_engine/service"
 	orchestrator_authz "sharpnr-engine/orchestrator/service/authz"
 	property_orchestrator "sharpnr-engine/orchestrator/service/property"
 	propertyHospitalityOrchestrator "sharpnr-engine/orchestrator/service/property/hospitality"
@@ -52,6 +53,7 @@ type orchestratorService struct {
 	*cortexOrchestratorService
 	*siloOrchestratorService
 	*folioOrchestratorService
+	*hrmsOrchestratorService
 
 	// Parked: wired at bootstrap but not consumed by any flow yet. Move onto
 	// the owning domain orchestrator when the first flow lands.
@@ -85,6 +87,7 @@ func NewSharpnrOrchestratorService(
 	cortexEngineService cortexEngineService.CortexEngineServiceInterface,
 	siloEngineService siloEngineService.SiloEngineServiceInterface,
 	folioEngineService folioEngineService.FolioEngineServiceInterface,
+	hrmsEngineService hrmsEngineService.HrmsEngineServiceInterface,
 ) *orchestratorService {
 
 	// One guard shared by every domain orchestrator (rule 1 in doc.go).
@@ -171,6 +174,10 @@ func NewSharpnrOrchestratorService(
 
 		folioOrchestratorService: &folioOrchestratorService{
 			folioService: folioEngineService,
+		},
+
+		hrmsOrchestratorService: &hrmsOrchestratorService{
+			hrmsService: hrmsEngineService,
 		},
 
 		seroEngine: seroEngine,

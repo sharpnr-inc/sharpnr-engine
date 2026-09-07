@@ -14,6 +14,7 @@ import (
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
 	cortexEngineDtos "sharpnr-engine/cortex_engine/dtos"
 	folioEngineDtos "sharpnr-engine/folio_engine/dtos"
+	hrmsEngineDtos "sharpnr-engine/hrms_engine/dtos"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
@@ -48,6 +49,7 @@ type OrchestratorServiceInterface interface {
 	CortexOrchestratorServiceInterface
 	SiloOrchestratorServiceInterface
 	FolioOrchestratorServiceInterface
+	HrmsOrchestratorServiceInterface
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -266,4 +268,16 @@ type SiloOrchestratorServiceInterface interface {
 type FolioOrchestratorServiceInterface interface {
 	GetFolioAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (folioEngineDtos.FolioAccountStatusResponse, error)
 	StartFolioService(ctx context.Context, orgID, emplID uuid.UUID, request folioEngineDtos.StartFolioServiceRequestDto) error
+}
+
+// HrmsOrchestratorServiceInterface serves the organization's HRMS (SharpHR)
+// account: whether the HR service is switched on for the org, and the
+// provisioning call that switches it on.
+//
+// HRMS is opt-in per organization, so the status read comes before every
+// HRMS-owned call. The employee roster is the exception and stays available
+// either way — it belongs to the core employees module, not to HRMS.
+type HrmsOrchestratorServiceInterface interface {
+	GetHrmsAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (hrmsEngineDtos.HrmsAccountStatusResponse, error)
+	StartHrmsService(ctx context.Context, orgID, emplID uuid.UUID, request hrmsEngineDtos.StartHrmsServiceRequestDto) error
 }

@@ -70,7 +70,7 @@ func BootstrapModules(
 	/* ------------------------------- IAM engine ------------------------------- */
 
 	/* ------------------------------ HRMS engine ------------------------------ */
-	hrmsService := bootstrapHRMSService(seroEngine, txManager, mailerEngine, employeesHRService)
+	hrmsService := bootstrapHRMSService(db, seroEngine, txManager, mailerEngine, employeesHRService, auditLogService)
 	/* ------------------------------ HRMS engine ------------------------------ */
 
 	orgCustomerService := bootStrapCustomerEngine(db, txManager, seroEngine)
@@ -165,6 +165,7 @@ func BootstrapModules(
 		cortexEngineService,
 		siloEngineService,
 		folioEngineService,
+		hrmsService,
 	)
 
 	utilitiesApiService := bootstrapUtilitiesApiService(db)

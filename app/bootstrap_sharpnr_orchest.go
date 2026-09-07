@@ -15,6 +15,7 @@ import (
 	organization_services "sharpnr-engine/core/organization/services"
 	cortexEngineService "sharpnr-engine/cortex_engine/service"
 	folioEngineService "sharpnr-engine/folio_engine/service"
+	hrmsEngineService "sharpnr-engine/hrms_engine/service"
 	hospitality_orchestration_service "sharpnr-engine/property_business_ops/hospitality/orchestration/service"
 	sharpCrmEngineService "sharpnr-engine/sharpCRM_engine/service"
 	siloEngineService "sharpnr-engine/silo_engine/service"
@@ -56,6 +57,7 @@ func bootstrapSharpnrOrchestrator(
 	cortexEngineService cortexEngineService.CortexEngineServiceInterface,
 	siloEngineService siloEngineService.SiloEngineServiceInterface,
 	folioEngineService folioEngineService.FolioEngineServiceInterface,
+	hrmsEngineService hrmsEngineService.HrmsEngineServiceInterface,
 
 ) orchestrator_service.OrchestratorServiceInterface {
 	return orchestrator_service.NewSharpnrOrchestratorService(
@@ -84,6 +86,7 @@ func bootstrapSharpnrOrchestrator(
 		cortexEngineService,
 		siloEngineService,
 		folioEngineService,
+		hrmsEngineService,
 	)
 }
 
