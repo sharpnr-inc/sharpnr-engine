@@ -54,6 +54,7 @@ type orchestratorService struct {
 	*siloOrchestratorService
 	*folioOrchestratorService
 	*hrmsOrchestratorService
+	*accountingOrchestratorService
 
 	// Parked: wired at bootstrap but not consumed by any flow yet. Move onto
 	// the owning domain orchestrator when the first flow lands.
@@ -178,6 +179,10 @@ func NewSharpnrOrchestratorService(
 
 		hrmsOrchestratorService: &hrmsOrchestratorService{
 			hrmsService: hrmsEngineService,
+		},
+
+		accountingOrchestratorService: &accountingOrchestratorService{
+			accountingService: accountingEngineService,
 		},
 
 		seroEngine: seroEngine,

@@ -130,6 +130,7 @@ func BootstrapModules(
 		orgSupplierService,
 		seroEngine,
 		orgLegalEntityService,
+		auditLogService,
 	)
 	accounting_sero_event_handler.Register(seroEngine, accountingService)
 

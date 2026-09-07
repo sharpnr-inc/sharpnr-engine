@@ -21,6 +21,23 @@ type AccountingRepositoryInterface interface {
 	JournalLineRepositoryInterface
 	ReportingRepositoryInterface
 	PurchaseInvoiceRepositoryInterface
+	EngineAccountRepositoryInterface
+}
+
+/* ---------------------------------- <***> --------------------------------- */
+
+// EngineAccountRepositoryInterface owns the org-level account row that says the
+// organization has taken the accounting service. It sits above the books: an
+// org has one of these, and a book per legal entity under it.
+type EngineAccountRepositoryInterface interface {
+	InitializeAccountingEngineAccount(ctx context.Context, acc accounting_models.OrgAccountineEngineAccount) error
+	CreateSettingForAccountingEngineAccount(ctx context.Context, accSetting accounting_models.AccountingEngineAccountSetting) error
+	GetAccountingEngineAccountByOrgID(ctx context.Context, orgID uuid.UUID) (*accounting_models.OrgAccountineEngineAccount, error)
+
+	// AccountingEngineAccountSwitch is the kill switch, and the path a start on
+	// an already provisioned-but-disabled org takes: the account is
+	// re-activated, never replaced.
+	AccountingEngineAccountSwitch(ctx context.Context, orgID, orgAccountingAccountID uuid.UUID, isActive bool) error
 }
 
 /* ---------------------------------- <***> --------------------------------- */

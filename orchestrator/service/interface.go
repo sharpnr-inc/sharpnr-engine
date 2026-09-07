@@ -50,6 +50,7 @@ type OrchestratorServiceInterface interface {
 	SiloOrchestratorServiceInterface
 	FolioOrchestratorServiceInterface
 	HrmsOrchestratorServiceInterface
+	AccountingOrchestratorServiceInterface
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -280,4 +281,16 @@ type FolioOrchestratorServiceInterface interface {
 type HrmsOrchestratorServiceInterface interface {
 	GetHrmsAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (hrmsEngineDtos.HrmsAccountStatusResponse, error)
 	StartHrmsService(ctx context.Context, orgID, emplID uuid.UUID, request hrmsEngineDtos.StartHrmsServiceRequestDto) error
+}
+
+// AccountingOrchestratorServiceInterface serves the organization's
+// accounting-engine account: whether the org has taken the accounting service,
+// and the provisioning call that switches it on.
+//
+// This is the org-level switch. The per-legal-entity accounting reads — books
+// and account balances — are on LegalEntityOrchestrationServiceInterface,
+// because they are scoped to an entity rather than to the organization.
+type AccountingOrchestratorServiceInterface interface {
+	GetAccountingAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (accountingdtos.AccountingAccountStatusResponse, error)
+	StartAccountingService(ctx context.Context, orgID, emplID uuid.UUID, request accountingdtos.StartAccountingServiceRequestDto) error
 }

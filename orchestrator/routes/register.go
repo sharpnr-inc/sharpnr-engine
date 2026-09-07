@@ -36,5 +36,6 @@ func RegisterOrchestratorRoutes(
 	registerSiloOrchestratorRoutes(org, orchestController)
 	registerFolioOrchestratorRoutes(org, orchestController)
 	registerHrmsOrchestratorRoutes(org, orchestController)
+	registerAccountingOrchestratorRoutes(org, orchestController)
 
 }

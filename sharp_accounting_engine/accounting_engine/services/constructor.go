@@ -2,6 +2,7 @@ package accounting_service
 
 import (
 	"context"
+	auditEngineService "sharpnr-engine/audit_log_engine/service"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
@@ -25,6 +26,11 @@ type accountingServices struct {
 	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface
 	supplierService suppliers_service.SupplierServiceInterface
 	legalEntity     legal_entity_service.OrgLegalEntityServiceInterface
+
+	// auditLogEngine records the org-level account lifecycle onto the org's
+	// history. Nil is a working configuration — recordEngineAccountAudit becomes
+	// a no-op — so a build without the audit engine wired still serves the API.
+	auditLogEngine auditEngineService.AuditLogServiceInterface
 }
 
 // GetAccountGroupDetails implements [AccountingServiceInterface].
@@ -42,6 +48,7 @@ func NewAccountingService(
 	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	legalEntity legal_entity_service.OrgLegalEntityServiceInterface,
+	auditLogEngine auditEngineService.AuditLogServiceInterface,
 ) *accountingServices {
 	return &accountingServices{
 		seroEngine:      seroEngine,
@@ -52,5 +59,6 @@ func NewAccountingService(
 		inventoryEngine: inventoryEngine,
 		supplierService: supplierService,
 		legalEntity:     legalEntity,
+		auditLogEngine:  auditLogEngine,
 	}
 }
