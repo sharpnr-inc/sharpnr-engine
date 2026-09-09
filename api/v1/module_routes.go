@@ -9,6 +9,7 @@ import (
 	sharpCrmEngineRoutes "sharpnr-engine/sharpCRM_engine/routes"
 	accounting_engine_routes "sharpnr-engine/sharp_accounting_engine/accounting_engine/routes"
 	siloEngineRoutes "sharpnr-engine/silo_engine/routes"
+	stockwaveEngineRoutes "sharpnr-engine/stockwave_engine/routes"
 
 	hr_routes "sharpnr-engine/hrms_engine/routes"
 	hospitality_routes "sharpnr-engine/property_business_ops/hospitality/routes"
@@ -31,5 +32,6 @@ func RegisterModuleRoutes(
 	cortexEngineRoutes.RegisterCortexEngineRoutes(v1, modules)
 	siloEngineRoutes.RegisterSiloEngineRoutes(v1, modules)
 	folioEngineRoutes.RegisterFolioEngineRoutes(v1, modules)
+	stockwaveEngineRoutes.RegisterStockwaveEngineRoutes(v1, modules)
 
 }

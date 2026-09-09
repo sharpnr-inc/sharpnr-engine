@@ -15,6 +15,7 @@ import (
 	organization_services "sharpnr-engine/core/organization/services"
 	cortexEngineService "sharpnr-engine/cortex_engine/service"
 	folioEngineService "sharpnr-engine/folio_engine/service"
+	hrmsEngineService "sharpnr-engine/hrms_engine/service"
 	orchestrator_authz "sharpnr-engine/orchestrator/service/authz"
 	property_orchestrator "sharpnr-engine/orchestrator/service/property"
 	propertyHospitalityOrchestrator "sharpnr-engine/orchestrator/service/property/hospitality"
@@ -41,7 +42,7 @@ type orchestratorService struct {
 	*customerOrchestrator
 	*paymentsOrchestrator
 	*suppliersOrchestrator
-	*inventoryOrchestrator
+	*stockwaveOrchestrator
 	*employeeOrchestrator
 	*sentinelOrchestrator
 	*auditOrchestraterService
@@ -52,6 +53,8 @@ type orchestratorService struct {
 	*cortexOrchestratorService
 	*siloOrchestratorService
 	*folioOrchestratorService
+	*hrmsOrchestratorService
+	*accountingOrchestratorService
 
 	// Parked: wired at bootstrap but not consumed by any flow yet. Move onto
 	// the owning domain orchestrator when the first flow lands.
@@ -69,7 +72,7 @@ func NewSharpnrOrchestratorService(
 	seroEngine *sero.SEROEngine,
 	customerEngine org_customer_service.OrgCustomerServiceInterface,
 	paymentsEngine payment_engine_service.PaymentServiceInterface,
-	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface,
+	stockwaveEngine stockwaveEngineServices.StockwaveEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	employeeHRService coreEmployeeServices.EmployeeHRServiceInterface,
 	employeeService coreEmployeeServices.EmployeeOrchestratorServiceInterface,
@@ -85,6 +88,7 @@ func NewSharpnrOrchestratorService(
 	cortexEngineService cortexEngineService.CortexEngineServiceInterface,
 	siloEngineService siloEngineService.SiloEngineServiceInterface,
 	folioEngineService folioEngineService.FolioEngineServiceInterface,
+	hrmsEngineService hrmsEngineService.HrmsEngineServiceInterface,
 ) *orchestratorService {
 
 	// One guard shared by every domain orchestrator (rule 1 in doc.go).
@@ -123,9 +127,8 @@ func NewSharpnrOrchestratorService(
 			supplierService:    supplierService,
 			legalEntityService: legalEntityService,
 		},
-		inventoryOrchestrator: &inventoryOrchestrator{
-			txManager:       txManager,
-			inventoryEngine: inventoryEngine,
+		stockwaveOrchestrator: &stockwaveOrchestrator{
+			stockwaveEngine: stockwaveEngine,
 		},
 		employeeOrchestrator: &employeeOrchestrator{
 			employeeHRService: employeeHRService,
@@ -171,6 +174,14 @@ func NewSharpnrOrchestratorService(
 
 		folioOrchestratorService: &folioOrchestratorService{
 			folioService: folioEngineService,
+		},
+
+		hrmsOrchestratorService: &hrmsOrchestratorService{
+			hrmsService: hrmsEngineService,
+		},
+
+		accountingOrchestratorService: &accountingOrchestratorService{
+			accountingService: accountingEngineService,
 		},
 
 		seroEngine: seroEngine,

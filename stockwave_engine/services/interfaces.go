@@ -2,39 +2,23 @@ package stockwaveEngineServices
 
 import (
 	"context"
-	stockwaveEngineContracts "sharpnr-engine/stockwave_engine/contracts"
 	stockwaveEngineDtos "sharpnr-engine/stockwave_engine/dtos"
-	stockwaveEngineModels "sharpnr-engine/stockwave_engine/models"
 
 	"github.com/google/uuid"
 )
 
-type InventoryEngineServicesInterface interface {
-	AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *stockwaveEngineDtos.NewInventoryAccountRequestDto) error
-	ListInventoryAccountOfOrg(ctx context.Context, orgID, emplID uuid.UUID) ([]stockwaveEngineModels.InventoryAccount, error)
-	GetInventoryAccountID(ctx context.Context, orgID, emplID, inventoryAccountID uuid.UUID) (*stockwaveEngineModels.InventoryAccount, error)
+// StockwaveEngineServicesInterface is the stockwave engine's public surface.
+//
+// It carries the account layer only. Every method it used to have read or wrote
+// the inventory tables migration 000062 dropped; the stock flows that replace
+// them join this interface as they are designed, all gated on the account
+// below.
+type StockwaveEngineServicesInterface interface {
+	// StartStockwaveServiceForOrg provisions the org's one stockwave account
+	// together with its settings row.
+	StartStockwaveServiceForOrg(ctx context.Context, orgID, emplID uuid.UUID, req stockwaveEngineDtos.StartStockwaveEngineRequestDto) error
 
-	InventoryServiceInterface
-	InventoryItemServiceInterface
-	InventoryItemPriceServiceInterface
-	InventoryItemHistoryServiceInterface
-}
-
-type InventoryServiceInterface interface {
-	AddNewInventory(ctx context.Context, orgID, emplID, inventoryAccountID uuid.UUID, request *stockwaveEngineDtos.NewInventoryRequestDto) error
-	ListAllInventoryOfInventoryAccount(ctx context.Context, orgID, emplID, inventoryAccountID uuid.UUID) ([]stockwaveEngineModels.Inventory, error)
-	GetAllSharedInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]stockwaveEngineModels.InventoryAccount, error)
-	GetInventoriesOfBusinessUnit(ctx context.Context, orgID, emplID, businessUnitID uuid.UUID, inventoryAccountID *uuid.UUID) ([]stockwaveEngineModels.Inventory, error)
-	GetInventoriesOfLegalEntity(ctx context.Context, orgID, emplID, legalEntityID uuid.UUID) ([]stockwaveEngineModels.Inventory, error)
-	GetInventoryByID(ctx context.Context, orgID, emplID, inventoryID uuid.UUID) (*stockwaveEngineModels.Inventory, error)
-}
-
-type InventoryItemServiceInterface interface {
-	AddItemsInInventory(ctx context.Context, input stockwaveEngineContracts.AddItemsInInventoryInput) error
-}
-
-type InventoryItemPriceServiceInterface interface {
-}
-
-type InventoryItemHistoryServiceInterface interface {
+	// GetStockwaveAccountStatus is the read every other stockwave flow is gated
+	// on: has this org started stockwave, and is that account switched on.
+	GetStockwaveAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (stockwaveEngineDtos.StockwaveEngineStatusResponseDto, error)
 }

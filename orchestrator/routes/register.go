@@ -24,7 +24,7 @@ func RegisterOrchestratorRoutes(
 	registerCustomerRoutes(org, orchestController)
 	paymentOrchestratorRoutes(org, orchestController)
 	registerOrgSupplierRoutes(org, orchestController)
-	registerInventoryRoutes(org, orchestController)
+	registerStockwaveOrchestratorRoutes(org, orchestController)
 	registerEmployeeRoutes(org, orchestController)
 	registerSentinelRoutes(org, orchestController)
 	registerAuditLogEngineRoutes(org, orchestController)
@@ -35,5 +35,7 @@ func RegisterOrchestratorRoutes(
 	registerCortexOrchestratorRoutes(org, orchestController)
 	registerSiloOrchestratorRoutes(org, orchestController)
 	registerFolioOrchestratorRoutes(org, orchestController)
+	registerHrmsOrchestratorRoutes(org, orchestController)
+	registerAccountingOrchestratorRoutes(org, orchestController)
 
 }

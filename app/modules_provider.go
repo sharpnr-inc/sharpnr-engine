@@ -19,6 +19,7 @@ import (
 	hospitality_orchestration_service "sharpnr-engine/property_business_ops/hospitality/orchestration/service"
 	sharpCrmEngineService "sharpnr-engine/sharpCRM_engine/service"
 	siloEngineService "sharpnr-engine/silo_engine/service"
+	stockwaveEngineServices "sharpnr-engine/stockwave_engine/services"
 
 	orchestrator_service "sharpnr-engine/orchestrator/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
@@ -59,4 +60,5 @@ type ModulesProvider interface {
 	CortexEngineService() cortexEngineService.CortexEngineServiceInterface
 	SiloEngineService() siloEngineService.SiloEngineServiceInterface
 	FolioEngineService() folioEngineService.FolioEngineServiceInterface
+	StockwaveEngineService() stockwaveEngineServices.StockwaveEngineServicesInterface
 }

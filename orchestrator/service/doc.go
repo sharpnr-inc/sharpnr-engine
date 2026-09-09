@@ -1,6 +1,6 @@
 // Package orchestrator_service implements the organization control panel's
 // backend-for-frontend: a facade that composes the domain engines (properties,
-// legal entities, payments, inventory, ...) into the flows the frontend needs.
+// legal entities, payments, stockwave, ...) into the flows the frontend needs.
 //
 // # Structure
 //

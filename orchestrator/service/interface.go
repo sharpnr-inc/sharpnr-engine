@@ -14,6 +14,7 @@ import (
 	suppliers_dtos "sharpnr-engine/core/org_supplier/dtos"
 	cortexEngineDtos "sharpnr-engine/cortex_engine/dtos"
 	folioEngineDtos "sharpnr-engine/folio_engine/dtos"
+	hrmsEngineDtos "sharpnr-engine/hrms_engine/dtos"
 	orchestrator_dtos "sharpnr-engine/orchestrator/dtos"
 	payment_engine_contracts "sharpnr-engine/payment_engine/contracts"
 	sentinelDtos "sharpnr-engine/sentinel/dtos"
@@ -24,7 +25,6 @@ import (
 	accountingdtos "sharpnr-engine/sharp_accounting_engine/accounting_engine/dto"
 	siloEngineDtos "sharpnr-engine/silo_engine/dtos"
 	stockwaveEngineDtos "sharpnr-engine/stockwave_engine/dtos"
-	stockwaveEngineModels "sharpnr-engine/stockwave_engine/models"
 
 	"github.com/google/uuid"
 )
@@ -36,7 +36,7 @@ type OrchestratorServiceInterface interface {
 	CustomerOrchestratorServiceInterface
 	PaymentOrchestratorServiceInterface
 	SuppliersAndVendorsOrchestratorServiceInterface
-	InventoryOrchestratorServiceInterface
+	StockwaveOrchestratorServiceInterface
 	OrchestratorSetupWizardInterface
 	EmployeeOrchestrationInterface
 	SentinelOrchestrationInterface
@@ -48,6 +48,8 @@ type OrchestratorServiceInterface interface {
 	CortexOrchestratorServiceInterface
 	SiloOrchestratorServiceInterface
 	FolioOrchestratorServiceInterface
+	HrmsOrchestratorServiceInterface
+	AccountingOrchestratorServiceInterface
 }
 
 /* ---------------------------------- <***> --------------------------------- */
@@ -145,10 +147,16 @@ type SuppliersAndVendorsOrchestratorServiceInterface interface {
 	AddLegalEntityLinksInSuppliers(ctx context.Context, orgID, emplID, suppliersID uuid.UUID, request *supplier_contracts.AddLegalEntityLinkInSuppliersRequestDto) error
 }
 
-type InventoryOrchestratorServiceInterface interface {
-	AddNewInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID, request *stockwaveEngineDtos.NewInventoryAccountRequestDto) error
-	ListAllInventoryAccount(ctx context.Context, orgID, emplID uuid.UUID) ([]stockwaveEngineModels.InventoryAccount, error)
-	GetInventoryAccountDetails(ctx context.Context, orgID, emplID, InventoryAccountID uuid.UUID) ([]stockwaveEngineModels.Inventory, error)
+// StockwaveOrchestratorServiceInterface serves the organization's stockwave
+// account: whether the org has taken the stock service, and the provisioning
+// call that switches it on.
+//
+// Formerly InventoryOrchestratorServiceInterface. Its three account/inventory
+// reads are gone with the tables migration 000062 dropped; the stock reads that
+// replace them join here as the engine is rewritten.
+type StockwaveOrchestratorServiceInterface interface {
+	GetStockwaveAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (stockwaveEngineDtos.StockwaveEngineStatusResponseDto, error)
+	StartStockwaveService(ctx context.Context, orgID, emplID uuid.UUID, request stockwaveEngineDtos.StartStockwaveEngineRequestDto) error
 }
 
 /* --------------------------------- <****> --------------------------------- */
@@ -266,4 +274,28 @@ type SiloOrchestratorServiceInterface interface {
 type FolioOrchestratorServiceInterface interface {
 	GetFolioAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (folioEngineDtos.FolioAccountStatusResponse, error)
 	StartFolioService(ctx context.Context, orgID, emplID uuid.UUID, request folioEngineDtos.StartFolioServiceRequestDto) error
+}
+
+// HrmsOrchestratorServiceInterface serves the organization's HRMS (SharpHR)
+// account: whether the HR service is switched on for the org, and the
+// provisioning call that switches it on.
+//
+// HRMS is opt-in per organization, so the status read comes before every
+// HRMS-owned call. The employee roster is the exception and stays available
+// either way — it belongs to the core employees module, not to HRMS.
+type HrmsOrchestratorServiceInterface interface {
+	GetHrmsAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (hrmsEngineDtos.HrmsAccountStatusResponse, error)
+	StartHrmsService(ctx context.Context, orgID, emplID uuid.UUID, request hrmsEngineDtos.StartHrmsServiceRequestDto) error
+}
+
+// AccountingOrchestratorServiceInterface serves the organization's
+// accounting-engine account: whether the org has taken the accounting service,
+// and the provisioning call that switches it on.
+//
+// This is the org-level switch. The per-legal-entity accounting reads — books
+// and account balances — are on LegalEntityOrchestrationServiceInterface,
+// because they are scoped to an entity rather than to the organization.
+type AccountingOrchestratorServiceInterface interface {
+	GetAccountingAccountStatus(ctx context.Context, orgID, emplID uuid.UUID) (accountingdtos.AccountingAccountStatusResponse, error)
+	StartAccountingService(ctx context.Context, orgID, emplID uuid.UUID, request accountingdtos.StartAccountingServiceRequestDto) error
 }

@@ -1,6 +1,7 @@
 package app
 
 import (
+	auditEngineService "sharpnr-engine/audit_log_engine/service"
 	legal_entity_service "sharpnr-engine/core/legal_entity/service"
 	suppliers_service "sharpnr-engine/core/org_supplier/service"
 	payment_engine_service "sharpnr-engine/payment_engine/services"
@@ -21,10 +22,11 @@ func bootstrapAccounting(
 
 	invoiceEngine invoice_engine_services.InvoiceEngineServiceInterface,
 	paymentEngine payment_engine_service.PaymentServiceInterface,
-	inventoryEngine stockwaveEngineServices.InventoryEngineServicesInterface,
+	stockwaveEngine stockwaveEngineServices.StockwaveEngineServicesInterface,
 	supplierService suppliers_service.SupplierServiceInterface,
 	seroEngine *sero.SEROEngine,
 	legalEntity legal_entity_service.OrgLegalEntityServiceInterface,
+	auditLogService auditEngineService.AuditLogServiceInterface,
 ) accounting_service.AccountingServiceInterface {
 	repo := accounting_repo.NewAccountingRepository(db)
 	return accounting_service.NewAccountingService(
@@ -33,8 +35,9 @@ func bootstrapAccounting(
 		txManager,
 		invoiceEngine,
 		paymentEngine,
-		inventoryEngine,
+		stockwaveEngine,
 		supplierService,
 		legalEntity,
+		auditLogService,
 	)
 }
