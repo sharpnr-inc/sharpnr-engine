@@ -85,3 +85,19 @@ make build VERSION=v0.1.0
 > all that is needed to bump the deployed version.
 
 ---
+
+## License
+
+Copyright (C) 2025-2026 Kashif Nawaz and Ujjawal Singh Nirwan
+
+Sharpnr Engine is free software: you can redistribute it and/or modify it under the
+terms of the GNU Affero General Public License as published by the Free Software
+Foundation, version 3 only (`SPDX-License-Identifier: AGPL-3.0-only`).
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the [GNU Affero General Public License](LICENSE) for more
+details.
+
+If you modify Sharpnr Engine and let users interact with it over a network, the AGPL
+requires you to offer those users the complete source code of your modified version.
