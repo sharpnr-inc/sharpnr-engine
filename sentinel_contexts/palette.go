@@ -42,7 +42,7 @@ func BuilderPalette() Palette {
 				Type:        "string",
 				Label:       "Channel",
 				Description: "Which client the request came from",
-				Values:      []string{ChannelWeb, ChannelMobile},
+				Values:      []string{ChannelWeb, ChannelMobile, ChannelMCP},
 			},
 			{
 				Key:         ContextKeyIP,

@@ -9,7 +9,7 @@ package sentinelContexts
 
 // Request-environment keys, read in policy text as `context.<key>`.
 const (
-	ContextKeyChannel     = "channel"     // "web" | "mobile" (empty when unauthenticated paths evaluate)
+	ContextKeyChannel     = "channel"     // "web" | "mobile" | "mcp" (empty when unauthenticated paths evaluate)
 	ContextKeyIP          = "ip"          // client IP as a string
 	ContextKeyRequestedAt = "requestedAt" // evaluation time (datetime)
 	ContextKeyMFAVerified = "mfaVerified" // whether the session completed MFA
@@ -27,4 +27,9 @@ const (
 const (
 	ChannelWeb    = "web"
 	ChannelMobile = "mobile"
+
+	// ChannelMCP marks a request made by an AI agent through the MCP server
+	// (mcp_engine). Policies can use it to keep agents away from actions a
+	// person should take in the app themselves.
+	ChannelMCP = "mcp"
 )

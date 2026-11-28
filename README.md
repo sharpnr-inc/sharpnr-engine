@@ -101,3 +101,15 @@ details.
 
 If you modify Sharpnr Engine and let users interact with it over a network, the AGPL
 requires you to offer those users the complete source code of your modified version.
+
+### Trademarks
+
+"Sharpnr", the names of Sharpnr products and apps, and the associated logos are
+trademarks of Kashif Nawaz and Ujjawal Singh Nirwan. The AGPL-3.0 license covers the
+source code only. It grants no rights to use these names or logos (as permitted by
+section 7(e) of the license).
+
+You may use the names to truthfully describe where your work comes from, for example
+"based on Sharpnr". If you distribute or publicly host a modified version, give it a
+different name, replace the Sharpnr logos and branding, and do not present it as the
+official product or as endorsed by the trademark holders.

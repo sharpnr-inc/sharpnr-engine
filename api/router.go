@@ -9,6 +9,7 @@ import (
 	"sharpnr-engine/config"
 	org_signup "sharpnr-engine/core/org_signup"
 	iamEngineRoutes "sharpnr-engine/iam_engine/routes"
+	mcp_engine_routes "sharpnr-engine/mcp_engine/routes"
 	"sharpnr-engine/meta"
 	"sharpnr-engine/middlewares"
 	mobile_middleware "sharpnr-engine/middlewares/mobile"
@@ -80,6 +81,11 @@ func SetupRouter(
 	router.GET("/version", func(c *gin.Context) {
 		c.JSON(200, meta.Get())
 	})
+
+	// ========================
+	// 🤖 MCP (AI agents, bearer tokens)
+	// ========================
+	mcp_engine_routes.RegisterMCPRoutes(router, jwtmgr, modules)
 
 	// ========================
 	// 🌐 WEB API (cookies)
